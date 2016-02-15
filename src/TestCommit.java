@@ -1,7 +1,10 @@
 
 public class TestCommit {
-	// can u see this?
-	// CAN NOT SEE HAI
+//CLEAN
 }
+<<<<<<< HEAD
 	//i cant see this
 //HELP THIS
+=======
+	
+>>>>>>> bd88d32b70728ea62ae5c8c3729c800921018527
