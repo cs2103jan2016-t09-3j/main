@@ -13,7 +13,7 @@ public class Logic {
 	
 	//Mutator
 	public void executeCommand(String userInput){
-		Tnoteparser = new Tnoteparser(userInput); // using beiyu object
+		TNotesParser = new TNotesParser(userInput); // using beiyu object
 		// write down getter methods from beiyu's code
 		// then pass it down to Daniel
 		
