@@ -22,7 +22,7 @@ public class TNoteMain {
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		Logic logic = new Logic();
-		System.out.println(WELCOME_MESSAGE);
+		System.out.println("Welcome to TNote. What would you like to do today?");
 		
 		TNoteMain tNote = new TNoteMain();
 		
@@ -40,27 +40,36 @@ public class TNoteMain {
 	private String executeCommand(String userInput){
 		ArrayList<String> userCommandSplit = new ArrayList<String>();
 		userCommandSplit = parser.parseInput(userInput);
-		String command = getFirstWord(userCommandSplit);
+		String commandString = getFirstWord(userCommandSplit);
 		
-		COMMAND_TYPE command = determineCommandType(command);
+		COMMAND_TYPE command = determineCommandType(commandString);
 		
 		switch(command){
-			
-			
+		case ADD_COMMAND:
+			logic.executeCommand(userInput);
+				
 		}
 		
 		return result;
 	}
 	
-	private COMMAND_TYPE determineCommandType(String command){
-		if(command.equals(MESSAGE_ADD)){
+	private COMMAND_TYPE determineCommandType(String commandString){
+		if(checkCommand(commandString, "add")){
 			return COMMAND_TYPE.ADD_COMMAND;
-		}
-		
-		else {
+		} else if (checkCommand(commandString, "edit")){
+			return COMMAND_TYPE.EDIT_COMMAND;
+		} else if(checkCommand(commandString, "delete")){
+			return COMMAND_TYPE.DELETE_COMMAND;
+		} else if(checkCommand(commandString, "view")){
+			return COMMAND_TYPE.VIEW_COMMAND;
+		} else {
 			return COMMAND_TYPE.INVALID;
 		}
 		
+	}
+	
+	private boolean checkCommand(String commandString, String typeOfCommand){
+		return commandString.equals(typeOfCommand);
 	}
 	
 	private String getFirstWord(ArrayList<String> userCommandArrayList ){
