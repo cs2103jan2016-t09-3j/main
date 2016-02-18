@@ -8,11 +8,11 @@ import java.util.ArrayList;
 public class TNoteStorage {
 
 	// Attributes
-	private ArrayList<File> fList;
+	private ArrayList<TaskFile> fList;
 
 	// Constructor
 	public TNoteStorage() {
-		fList = new ArrayList<File>();
+		fList = new ArrayList<TaskFile>();
 	}
 
 	// Directory Constructors
@@ -31,9 +31,8 @@ public class TNoteStorage {
 	private boolean createFile(String fileName) {
 		try {
 			File newFile = new File(fileName);
-			newFile.createNewFile();
 			fList.add(newFile);
-			return true;
+			return newFile.createNewFile();
 		} catch (IOException ioEx) {
 			return false;
 		}
@@ -41,7 +40,7 @@ public class TNoteStorage {
 
 	private boolean readList() {
 		try {
-			fList = new ArrayList<File>();
+			fList = new ArrayList<TaskFile>();
 			FileReader fr = new FileReader(fileName);
 			BufferedReader br = new BufferedReader(fr);
 			String content = br.readLine();
