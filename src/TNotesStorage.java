@@ -23,16 +23,17 @@ private ArrayList<taskFile> arrayDate = new ArrayList<taskFile>();
 		
 		public boolean addNewFile(taskFile newTaskFile){
 			arrayDate.add(newTaskFile);
-			
-			if (createFile(taskFile.getTaskFileName())){
-				if(writeFile(taskFile.getTaskFileName(), taskFile.getEvent(), taskFile.getTime())){
-					return true;
-				}
-				else 
-					return false;
+			if(!createFile(taskFile.getTaskFileName())){
+				return addToExistingFile(newTaskFile);
 			}
-			else
+			
+			
+			if(writeFile(taskFile.getTaskFileName(), taskFile.getEvent(), taskFile.getTime())){
 				return true;
+			}
+			else{ 
+				return false;
+			}
 		}
 		
 		public boolean addToExistingFile(taskFile newTaskFile) {

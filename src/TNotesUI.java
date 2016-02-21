@@ -45,7 +45,9 @@ public class TNotesUI {
 			//logic.editEvent(commandArguments);
 			break;
 		case DELETE_COMMAND:
-			//logic.deleteEvent(commandArguments);
+//			if(logic.deleteTask(taskName)){
+//				result = "deleted" + taskName;
+//			} 
 			break;
 		case VIEW_COMMAND:
 			//logic.executeCommand(userInput);

@@ -16,23 +16,23 @@ public class TNotesLogic {
 		}
 	}
 
-	public boolean deleteTask(String whatever) {
-		TNotesStorage storage = new TNotesStorage(list);
-		if (storage.deleteEvent(whatever)) {
-			return true;
-		} else {
-			return false;
-		}
-	}
+//	public boolean deleteTask(String whatever) {
+//		TNotesStorage storage = new TNotesStorage(list);
+//		if (storage.deleteEvent(whatever)) {
+//			return true;
+//		} else {
+//			return false;
+//		}
+//	}
 
-	public boolean viewTask() {
-		TNotesStorage storage = new TNotesStorage(list);
-
-		return false;
-	}
-
-	public boolean editTask(String whatever) {
-		return false;
-	}
+//	public boolean viewTask() {
+//		TNotesStorage storage = new TNotesStorage(list);
+//
+//		return false;
+//	}
+//
+//	public boolean editTask(String whatever) {
+//		return false;
+//	}
 
 }
