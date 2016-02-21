@@ -13,6 +13,7 @@ public class TNotesUI {
 	ArrayList<String> commandArguments;
 	String commandString;
 	String result;
+	String taskName;
 	
 	public TNotesUI(){
 		parser = new TNotesParser();
@@ -27,6 +28,7 @@ public class TNotesUI {
 		userCommandSplit = TNotesParser.checkCommand(userInput);
 		commandString = getFirstWord(userCommandSplit);
 		commandArguments = removeFirstWord(userCommandSplit);
+		taskName = getTaskName(userCommandSplit);
 		
 		
 		COMMAND_TYPE command = determineCommandType(commandString);
@@ -34,7 +36,7 @@ public class TNotesUI {
 		switch(command){
 		case ADD_COMMAND:
 			if(logic.addTask(commandArguments)){
-			result = "successfully added";	
+			result = "successfully added" + taskName;	
 			} else {
 				result = "addition failed";
 			}
@@ -52,7 +54,7 @@ public class TNotesUI {
 			result = "Invalid Input";
 			break;
 		default:
-			result = "Invalid Input";				
+			result = "Error!";				
 		}
 		
 		return result;
@@ -85,5 +87,9 @@ public class TNotesUI {
 		userCommandArrayList.remove(0);
 		
 		return userCommandArrayList;
+	}
+	
+	private String getTaskName(ArrayList<String> userCommandArrayList){
+		return userCommandArrayList.get(1);
 	}
 }
