@@ -26,7 +26,7 @@ public class TNotesUI {
 		ArrayList<String> userCommandSplit = new ArrayList<String>();
 		userCommandSplit = TNotesParser.checkCommand(userInput);
 		commandString = getFirstWord(userCommandSplit);
-		commandArguments = getCommandArguments(userCommandSplit);
+		commandArguments = removeFirstWord(userCommandSplit);
 		
 		
 		COMMAND_TYPE command = determineCommandType(commandString);
@@ -79,7 +79,7 @@ public class TNotesUI {
 		return userCommandArrayList.get(0);
 	}
 	
-	private String getCommandArguments(ArrayList<String> userCommandArrayList){
-		return userCommandArrayList.get(1);
+	private String removeFirstWord(ArrayList<String> userCommandArrayList){
+		return userCommandArrayList.remove(0);
 	}
 }
