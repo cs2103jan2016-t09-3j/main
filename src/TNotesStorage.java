@@ -6,7 +6,7 @@ import java.util.ArrayList;
 
 // Note that must change storage to NotesStorage when using commit
 public class TNotesStorage {
-<<<<<<< HEAD
+
 
 	private ArrayList<taskFile> arrayDate = new ArrayList<taskFile>();
 
@@ -39,37 +39,7 @@ public class TNotesStorage {
 		boolean flag_addToExistingFile = true;
 		if (writeFile(taskFile.getTaskFileName(), taskFile.getEvent(), taskFile.getTime())) {
 			flag_addToExistingFile = true;
-=======
-	
-private ArrayList<taskFile> arrayDate = new ArrayList<taskFile>();
-	
-		
-		public TNotesStorage () {
 			
-		}
-		
-		// ------------testing----------------------------
-		public static void main(String[] args) {
-			
-		}
-		
-		
-		// ----------------------
-		
-		public boolean addNewFile(taskFile newTaskFile){
-			arrayDate.add(newTaskFile);
-			if(!createFile(taskFile.getTaskFileName())){
-				return addToExistingFile(newTaskFile);
-			}
-			
-			
-			if(writeFile(taskFile.getTaskFileName(), taskFile.getEvent(), taskFile.getTime())){
-				return true;
-			}
-			else{ 
-				return false;
-			}
->>>>>>> 362961f47d54ecd1a4b42950e5756a3a26b798f7
 		}
 
 		else {
