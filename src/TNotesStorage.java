@@ -25,18 +25,19 @@ public class TNotesStorage {
 		boolean flag_addNewFile = true;
 		arrayDate.add(newTaskFile);
 		
-		// Check if file can exists 
+		// Check if file can exists, if false: add to file, if true: add create file
 		if (!createFile(taskFile.getTaskFileName())) {
 			addToExistingFile(newTaskFile);
 		}
 			
-		if (writeFile(taskFile.getTaskFileName(), taskFile.getEvent(), taskFile.getTime())) {
+		else if (writeFile(taskFile.getTaskFileName(), taskFile.getEvent(), taskFile.getTime())) {
 			
 		} 
 		
 		else {
 			flag_addNewFile=false;
 		}
+		
 		return flag_addNewFile;
 		
 	}
