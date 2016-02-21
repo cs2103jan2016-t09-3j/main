@@ -61,7 +61,7 @@ public class TNotesStorage {
 	// -------------------------------
 	public boolean createFile(String date) {
 		boolean flag_createFile = true;
-		File newFile = new File(date+".txt");
+		File newFile = new File(date + ".txt");
 		try {
 			if (newFile.createNewFile()) {
 				System.out.println(date + " is ready for use");

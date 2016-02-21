@@ -10,7 +10,7 @@ public class TNotesUI {
 	
 	TNotesParser parser;
 	TNotesLogic logic;
-	String commandArguments;
+	ArrayList<String> commandArguments;
 	String commandString;
 	String result;
 	
@@ -35,6 +35,8 @@ public class TNotesUI {
 		case ADD_COMMAND:
 			if(logic.addTask(commandArguments)){
 			result = "successfully added";	
+			} else {
+				result = "addition failed";
 			}
 			break;
 		case EDIT_COMMAND:
@@ -79,7 +81,9 @@ public class TNotesUI {
 		return userCommandArrayList.get(0);
 	}
 	
-	private String removeFirstWord(ArrayList<String> userCommandArrayList){
-		return userCommandArrayList.remove(0);
+	private ArrayList<String> removeFirstWord(ArrayList<String> userCommandArrayList){
+		userCommandArrayList.remove(0);
+		
+		return userCommandArrayList;
 	}
 }
