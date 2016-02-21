@@ -7,8 +7,8 @@ public class TNotesParser {
 
 	public static void main(String[] args) {
 		String output = new String();
-		for (int i = 0; i < checkCommand("view 2-2-2").size(); i++) {
-			output = checkCommand("view 2-2-2").get(i);// 24 hour cloc
+		for (int i = 0; i < checkCommand("add call mom haha due 2-2-2 at 12:00").size(); i++) {
+			output = checkCommand("add call mom haha due 2-2-2 at 12:00").get(i);// 24 hour cloc
 			System.out.println(output);
 		}
 	}
@@ -23,8 +23,26 @@ public class TNotesParser {
 		// String forthWord = arr[3].toLowerCase();
 		// System.out.println(secWord);
 		if (firstWord.equals("add")) {
-			for (int i = 0; i < arr.length; i++) {
-				list.add(arr[i]);
+			String title = new String();
+			list.add(firstWord);
+			for (int j = 0; j < arr.length; j++) {
+
+				if (arr[j].equals("due")) {
+					for (int num = 1; num <= j - 1; num++) {
+						title += "" + arr[num] + " ";
+					}
+					list.add(title);
+					list.add(arr[j + 1]);
+				} else if (arr[j].equals("at")) {
+					list.add(arr[j + 1]);
+				} else if (arr[j].equals("every")) {
+					for (int num = 0; num <= j - 1; num++) {
+						title += "" + arr[num] + " ";
+					}
+					list.add(title);
+					list.add(arr[j + 1]);
+				}
+
 			}
 			return list;
 		} else if (firstWord.equals("viewtoday")) {
