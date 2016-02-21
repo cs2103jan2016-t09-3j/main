@@ -7,8 +7,9 @@ public class TNotesLogic {
 	ArrayList<String> list = new ArrayList<String>();
 
 	public boolean addTask(ArrayList<String> whatever) {
-		TNotesStorage storage = new TNotesStorage(whatever);
-		if (storage.addThisEvent()) {
+		taskFile currentFile = new taskFile(whatever);
+		TNotesStorage storage = new TNotesStorage();
+		if (storage.addNewFile(currentFile)) {
 			return true;
 		} else {
 			return false;
@@ -17,7 +18,7 @@ public class TNotesLogic {
 
 	public boolean deleteTask(String whatever) {
 		TNotesStorage storage = new TNotesStorage(list);
-		if (storage.deleteEvent()) {
+		if (storage.deleteEvent(whatever)) {
 			return true;
 		} else {
 			return false;
