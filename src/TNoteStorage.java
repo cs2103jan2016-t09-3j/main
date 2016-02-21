@@ -56,7 +56,6 @@ public class TNoteStorage {
 		return newFile.createFile(fileName);
 	}
 
-
 	public static void main(String[] args) {
 		Scanner sc = new Scanner(System.in);
 		TaskFile tf = new TaskFile();
