@@ -19,32 +19,40 @@ public class TNotesStorage {
 
 	}
 
-	// ----------------------
+	// ---------------------Methods--------------------------
 
 	public boolean addNewFile(taskFile newTaskFile) {
+		boolean flag_addNewFile = true;
 		arrayDate.add(newTaskFile);
-
-		if (createFile(taskFile.getTaskFileName())) {
-			if (writeFile(taskFile.getTaskFileName(), taskFile.getEvent(), taskFile.getTime())) {
-				return true;
-			} else
-				return false;
-		} else
-			return true;
+		
+		// Check if file can exists 
+		if (!createFile(taskFile.getTaskFileName())) {
+			addToExistingFile(newTaskFile);
+		}
+			
+		if (writeFile(taskFile.getTaskFileName(), taskFile.getEvent(), taskFile.getTime())) {
+			
+		} 
+		
+		else {
+			flag_addNewFile=false;
+		}
+		return flag_addNewFile;
+		
 	}
 
-	public boolean addToExistingFile(taskFile newTaskFile) {
-		arrayDate.add(newTaskFile);
-
+	public boolean addToExistingFile(taskFile newTaskFile) {	
 		boolean flag_addToExistingFile = true;
+		
+		arrayDate.add(newTaskFile);
+		
 		if (writeFile(taskFile.getTaskFileName(), taskFile.getEvent(), taskFile.getTime())) {
-			flag_addToExistingFile = true;
-			
+			flag_addToExistingFile = true;		
 		}
 
 		else {
 			flag_addToExistingFile = false;
-			System.out.println("addToExistingFile has an error");
+			System.out.println("addToExistingFile HAS AN ERROR");
 		}
 		return flag_addToExistingFile;
 	}
