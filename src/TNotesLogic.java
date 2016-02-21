@@ -16,10 +16,17 @@ public class TNotesLogic {
 	}
 
 	public boolean deleteTask(String whatever) {
-		return false;
+		TNotesStorage storage = new TNotesStorage(list);
+		if (storage.deleteEvent()) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 
-	public boolean readTask() {
+	public boolean viewTask() {
+		TNotesStorage storage = new TNotesStorage(list);
+
 		return false;
 	}
 
