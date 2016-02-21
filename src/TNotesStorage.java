@@ -114,16 +114,12 @@ public class TNotesStorage {
 
 	}
 
-<<<<<<< HEAD
+
 	public boolean deleteFile(String filename) {
 		System.out.println(filename);
 		String xStrPath = "C:\\Users/Asus/Desktop/SourceTreeRepo/" + filename;
 		Path xPath = Paths.get(xStrPath.trim());
-=======
-	public void deleteFile(String filename) {
-		String xStrPath = "c:\\Tnote\\"+filename;
-		Path xPath = Paths.get(xStrPath);
->>>>>>> 81a11c8f880240e8bce5e5c0c9962ad8739d7231
+
 		try {
 			Files.delete(xPath);
 			System.out.println("File successfully deleted!");
