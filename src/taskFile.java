@@ -12,15 +12,6 @@ public class taskFile {
 		date=list.get(1);
 		time=list.get(2);
 		taskFileName = event +".txt";
-<<<<<<< HEAD
-=======
-	}
-	public taskFile(String taskName){
-		event = taskName;
-		this.date = date;
-		this.time = time;
-		taskFileName = event +".txt";
->>>>>>> c8976e508e8cb71380035d58aac76961e10c04e3
 	}
 	
 	// Getters
