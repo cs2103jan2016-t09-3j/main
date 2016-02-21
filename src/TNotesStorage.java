@@ -4,10 +4,12 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 // Note that must change storage to NotesStorage when using commit
-public class TNotesStorage {		
+public class TNotesStorage {
+	private ArrayList<String> arrayDate = new ArrayList<String>();
+	
 		
-		public TNotesStorage (ArrayList<String> list) {
-			taskFile newTask = new taskFile(list);	   
+		public TNotesStorage (taskFile newTaskFile) {
+			arrayDate.add(newTaskFile);
 		}
 		
 		// ------------testing----------------------------
@@ -25,7 +27,8 @@ public class TNotesStorage {
 			input2.add("eat rice");
 			input2.add("tmr");
 			input2.add("12pm");
-			TNotesStorage test2 = new TNotesStorage(input2);
+			
+			
 			if(test.addToExistingFile()){
 				System.out.println("added new event");
 			}
