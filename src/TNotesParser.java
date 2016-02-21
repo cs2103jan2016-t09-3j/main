@@ -2,13 +2,13 @@ import java.util.ArrayList;
 import java.util.Scanner;
 import java.io.*;
 
-public class Test {
+public class TNotesParser {
 	// ArrayList<String> list = new ArrayList<String>();
 	
 	public static void main(String[] args) {
 		String output = new String();
-		for (int i = 0; i < checkCommand("view 2/23/23").size(); i++) {
-		output = checkCommand("view 2/23/34").get(i);
+		for (int i = 0; i < checkCommand("view 2-2-2").size(); i++) {
+		output = checkCommand("view 2-2-2").get(i);//24 hour cloc
 		System.out.println(output);
 		}
 	}
@@ -39,19 +39,21 @@ public class Test {
 		}
 		//do all possibilities for dates
 		else if(firstWord.equals("view")){
-			if(viewIsLetters(secWord .trim())==1){
+			if(isLetters(secWord .trim())==1){
 				for(int i=0;i<arr.length;i++){
 					list.add(arr[i]);
 				}
 				return list;
 			}
-			else if(viewIsLetters(secWord.trim()) == 0){
+			else if(isLetters(secWord.trim()) == 0){
 				if((secWord.substring(0, 1)).equals("-") || (secWord.substring(1, 2)).equals("-")){
 					String[] dateArr = secWord.split("-");
 					list.add(firstWord);
+					//System.out.println(dateArr[1]);
 					for(int i=0;i<dateArr.length;i++){
 						list.add(dateArr[i]);
 					}
+					
 				return list;
 				}
 				else if((secWord.substring(0, 1)).equals("/") || (secWord.substring(1, 2)).equals("/")){
@@ -71,11 +73,14 @@ public class Test {
 					}
 				return list;
 				}
-				else{
-					for(int i=0;i<arr.length;i++){
-						list.add(arr[i]);
+				else if((secWord.substring(0, 1)).equals("_") || (secWord.substring(1, 2)).equals("_")){
+					String[] dateArr = secWord.split("_");
+					list.add(firstWord);
+					for(int i=0;i<dateArr.length;i++){
+						list.add(dateArr[i]);
+
 					}
-					return list;
+				return list;
 				}
 			}
 		}
@@ -95,13 +100,34 @@ public class Test {
 			return list;
 		}
 		else{
-			list.add(errorMessage);
+			String title = new String();
+			for(int j=0;j<arr.length;j++){
+				
+				if(arr[j].equals("due")){
+					for(int num = 0; num<=j-1; num++){
+						title += ""+arr[num]+" ";
+					}
+					list.add(title);
+					list.add(arr[j+1]);
+				}
+				else if(arr[j].equals("at")){
+					list.add(arr[j+1]);
+				}
+				else if(arr[j].equals("every")){
+					for(int num = 0; num<=j-1; num++){
+						title += ""+arr[num]+" ";
+					}
+					list.add(title);
+					list.add(arr[j+1]);
+				}
+				
+			}
 			return list;
 		}
 		
 		return list;
 		}
-	public static int viewIsLetters(String theRest){
+	public static int isLetters(String theRest){
 		if(theRest.matches("[a-zA-Z]+")){
 			return 1;
 		}
