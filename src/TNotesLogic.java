@@ -9,7 +9,7 @@ public class TNotesLogic {
 	
 	
 	public boolean addTask(String whatever){
-		list = parser.checkCommand(whatever);
+		list = TNotesParser.checkCommand(whatever);
 		TNotesStorage storage = new TNotesStorage(list);
 		if(storage.addThisEvent()){
 			return true;
