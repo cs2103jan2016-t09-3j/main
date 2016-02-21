@@ -2,21 +2,23 @@ import java.util.ArrayList;
 
 public class Logic {
 	
-	//Default constructor
+
 	public Logic(){
 		
 	}
 	
-	//Getters
-	public  String welcomeMessage() {
-		return "Hello, welcome to Tnote. What would you like to do today?";
-	}
-	
-	//Mutator
-	public  void executeCommand(String userInput){
+
+	public  void addCommand(String userInput){// userInput without command word
 		TNotesParser parser = new TNotesParser(); 
-		ArrayList<String> wordList = parser.checkAdd(userInput);
-		System.out.println(wordList.get(1));
+		ArrayList<String> wordList = parser.checkAdd(userInput);;
+		// Get from daniel 
+		
+		// pass to beiyu
+		
+		// pass to adam
+		
+		
+		}
 	}
 	
 	
