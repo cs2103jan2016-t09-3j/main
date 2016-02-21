@@ -31,7 +31,13 @@ public class TNotesStorage {
 
 	// =============================TESTING=================================================
 	public static void main(String[] args) {
-
+		
+		TNotesStorage tNs = new TNotesStorage();
+		
+		
+		System.out.println(tNs.addNewTask(new taskFile("name")));
+		System.out.println(tNs.delete("name"));
+		
 	}
 
 	public ArrayList<String> getArray() {
@@ -43,7 +49,7 @@ public class TNotesStorage {
 	// not
 	public boolean createFile(String fileName) {
 		boolean flag_createFile = true;
-		File newFile = new File(fileName);
+		File newFile = new File(fileName.trim());
 
 		try {
 			if (newFile.createNewFile()) {
@@ -66,8 +72,9 @@ public class TNotesStorage {
 		try {
 			FileWriter fw = new FileWriter(fileName, true);
 			PrintWriter pw = new PrintWriter(fw);
+			listOfEvents.add(fileName);
 			String writeThisTask = event + " at " + time;
-			listOfEvents.add(writeThisTask);
+			
 			pw.println(writeThisTask);
 			pw.close();
 
@@ -94,25 +101,31 @@ public class TNotesStorage {
 
 	// =========================DELETEFILE=========================================================
 	// function will delete file
-	public void delete(String searchInput) {
+	public boolean delete(String searchInput) {
 		for (int i = 0; i < listOfEvents.size(); i++) {
-			if (listOfEvents.contains(searchInput)) {
+			String text = listOfEvents.get(i);
+			if (text.contains(searchInput)) {
 				String deleteThisFile = listOfEvents.get(i);
 				listOfEvents.remove(i);
-				deleteFile(deleteThisFile);
+				return deleteFile(deleteThisFile);
 			}
 		}
+		return false;
 
 	}
 
-	public void deleteFile(String filename) {
-		String xStrPath = filename;
-		Path xPath = Paths.get(xStrPath);
+	public boolean deleteFile(String filename) {
+		System.out.println(filename);
+		String xStrPath = "C:\\Users/Asus/Desktop/SourceTreeRepo/" + filename;
+		Path xPath = Paths.get(xStrPath.trim());
 		try {
 			Files.delete(xPath);
 			System.out.println("File successfully deleted!");
+			return true;
 		} catch (Exception e) {
+			System.out.println(e.getMessage());
 			System.out.println("File not found! Nothing was deleted.");
+			return false;
 		}
 
 	}

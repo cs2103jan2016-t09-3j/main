@@ -27,8 +27,9 @@ public class TNotesUI {
 		ArrayList<String> userCommandSplit = new ArrayList<String>();
 		userCommandSplit = TNotesParser.checkCommand(userInput);
 		commandString = getFirstWord(userCommandSplit);
-		commandArguments = removeFirstWord(userCommandSplit);
 		taskName = getTaskName(userCommandSplit);
+		commandArguments = removeFirstWord(userCommandSplit);
+		
 		
 		
 		COMMAND_TYPE command = determineCommandType(commandString);
@@ -45,9 +46,9 @@ public class TNotesUI {
 			//logic.editEvent(commandArguments);
 			break;
 		case DELETE_COMMAND:
-//			if(logic.deleteTask(taskName)){
-//				result = "deleted" + taskName;
-//			} 
+			if(logic.deleteTask(taskName)){
+			result = "deleted" + taskName;
+			} 
 			break;
 		case VIEW_COMMAND:
 			//logic.executeCommand(userInput);
