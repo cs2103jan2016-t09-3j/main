@@ -33,18 +33,15 @@ public class TNotesUI {
 		
 		switch(command){
 		case ADD_COMMAND:
-			TaskFile resultFile = logic.createEvent(commandArguments);
-			if(resultFile != null){
-				result = resultFile.getTaskName();
-			} else {
-				result = "error";
+			if(logic.addTask(commandArguments)){
+			result = "successfully added";	
 			}
 			break;
 		case EDIT_COMMAND:
-			logic.editEvent(commandArguments);
+			//logic.editEvent(commandArguments);
 			break;
 		case DELETE_COMMAND:
-			logic.deleteEvent(commandArguments);
+			//logic.deleteEvent(commandArguments);
 			break;
 		case VIEW_COMMAND:
 			//logic.executeCommand(userInput);

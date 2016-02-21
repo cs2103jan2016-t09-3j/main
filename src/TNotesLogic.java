@@ -6,8 +6,10 @@ public class TNotesLogic {
 
 	ArrayList<String> list = new ArrayList<String>();
 
-	public boolean addTask(String whatever) {
-		list = parser.checkCommand(whatever);
+	
+	public boolean addTask(String whatever){
+		list = TNotesParser.checkCommand(whatever);
+
 		TNotesStorage storage = new TNotesStorage(list);
 		if (storage.addThisEvent()) {
 			return true;
