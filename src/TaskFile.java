@@ -1,6 +1,10 @@
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 
 public class TaskFile implements Comparator<TaskFile> {
 	
@@ -17,14 +21,23 @@ public class TaskFile implements Comparator<TaskFile> {
 
 	public TaskFile(String taskName, String details, String date, String time, File directory) {
 		this.taskName = taskName;
-		this.details = details;
 		this.date = date;
 		this.time = time;
 		this.directory = directory;
 		
-		
 	}
-
+	public void addLines(String lineOfText) {
+		try {
+			FileWriter fw = new FileWriter(new File(directory, taskName), true);
+			BufferedWriter bw = new BufferedWriter(fw);
+			bw.write(lineOfText);
+			bw.newLine();
+			bw.close();
+		} catch (IOException ioEx) {
+			ioEx.printStackTrace();
+		}
+	}
+	
 	public boolean createFile(String taskName) {
 		//String temp = directory + "\\" + taskName;
 		
