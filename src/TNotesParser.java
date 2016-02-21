@@ -96,8 +96,27 @@ public class TNotesParser {
 				}
 			}
 		} else if (firstWord.equals("delete")) {
+			String title = new String();
 			list.add(firstWord);
-			list.add(secWord);
+			for (int j = 0; j < arr.length; j++) {
+
+				if (arr[j].equals("due")) {
+					for (int num = 1; num <= j - 1; num++) {
+						title += "" + arr[num] + " ";
+					}
+					list.add(title);
+					list.add(arr[j + 1]);
+				} else if (arr[j].equals("at")) {
+					list.add(arr[j + 1]);
+				} else if (arr[j].equals("every")) {
+					for (int num = 0; num <= j - 1; num++) {
+						title += "" + arr[num] + " ";
+					}
+					list.add(title);
+					list.add(arr[j + 1]);
+				}
+
+			}
 			return list;
 		} else if (firstWord.equals("edit")) {
 			list.add(firstWord);
