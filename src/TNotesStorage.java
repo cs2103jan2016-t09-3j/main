@@ -106,7 +106,7 @@ public class TNotesStorage {
 	}
 
 	public void deleteFile(String filename) {
-		String xStrPath = filename;
+		String xStrPath = "c:\\Tnote\\"+filename;
 		Path xPath = Paths.get(xStrPath);
 		try {
 			Files.delete(xPath);
