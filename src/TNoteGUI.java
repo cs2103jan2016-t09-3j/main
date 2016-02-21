@@ -15,10 +15,13 @@ import javafx.scene.layout.HBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollBar;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TextArea;
 
 
 public class TNoteGUI extends Application {
-
+	
+	TNotesUI tNote = new TNotesUI();
+	
 	@Override
 	public void start(Stage primaryStage) {
 		primaryStage.setTitle("ABC");
@@ -26,15 +29,9 @@ public class TNoteGUI extends Application {
 		BorderPane root = new BorderPane();
 		Button btn = new Button();
 		btn.setText("Hello");
-		Text t = new Text("goodbye");
-//		btn.setOnAction(new EventHandler<ActionEvent>() {
-//			
-//			@Override
-//			public void handle(ActionEvent event){
-//				t.setText("Hello");
-//			}
-//		});
-//		
+		btn.setPrefWidth(100);
+		TextArea t = new TextArea(tNote.getWelcomeMessage() + "\n");
+		t.setWrapText(true);
 		
 		
 		ScrollBar sc = new ScrollBar();
@@ -42,22 +39,33 @@ public class TNoteGUI extends Application {
 		sc.setMax(100);
 		sc.setValue(50);
 		sc.setOrientation(Orientation.VERTICAL);
-		
-		Label testLabel = new Label("input");
+	
 		TextField textField = new TextField();
 		
-		textField.setPrefWidth(500);
+		textField.setPrefWidth(400);
 		
 		HBox hb = new HBox();
 		hb.setAlignment(Pos.CENTER);
-		hb.getChildren().add(textField);
+		hb.getChildren().addAll(textField, btn);
 		
+		textField.setOnAction(new EventHandler<ActionEvent>() {
+			
+			@Override
+			public void handle(ActionEvent event){
+				if((textField.getText() != null && !textField.getText().isEmpty())){
+					String result = tNote.executeCommand(textField.getText());
+					t.appendText(result+ "\n");
+					textField.clear();
+				}
+				
+			}
+		});
 		
 		
 		root.setCenter(t);
 		root.setBottom(hb);
 		root.setRight(sc);
-		root.setStyle("-fx-background-color: red");
+		root.setStyle("-fx-background-color: grey");
 		Scene scene = new Scene(root, 500, 400);
 		
 		primaryStage.setScene(scene);
