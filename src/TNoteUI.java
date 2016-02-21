@@ -9,11 +9,11 @@ public class TNoteUI {
 	
 	
 	TNotesParser parser;
-	Logic logic;
+	TNotesLogic logic;
 	
 	public TNoteUI(){
 		parser = new TNotesParser();
-		logic = new Logic();
+		logic = new TNotesLogic();
 	}
 	
 	public String getWelcomeMessage (){
@@ -21,17 +21,35 @@ public class TNoteUI {
 	}
 	private String executeCommand(String userInput){
 		ArrayList<String> userCommandSplit = new ArrayList<String>();
-		userCommandSplit = parser.parseInput(userInput);
+		userCommandSplit = TNotesParser.checkCommand(userInput);
 		String commandString = getFirstWord(userCommandSplit);
+		String commandArguments = getCommandArguments(userCommandSplit);
+		String result;
 		
 		COMMAND_TYPE command = determineCommandType(commandString);
 		
 		switch(command){
 		case ADD_COMMAND:
-			logic.executeCommand(userInput);
-				
+			TaskFile resultFile = logic.createEvent(commandArguments);
+			if(resultFile != null){
+				result = resultFile.getTaskName();
+			}
+			break;
+		case EDIT_COMMAND:
+			logic.editEvent(commandArguments);
+			break;
+		case DELETE_COMMAND:
+			logic.deleteEvent(commandArguments);
+			break;
+		case VIEW_COMMAND:
+			//logic.executeCommand(userInput);
+			break;
+		case INVALID:
+			result = "Invalid Input";
+			break;
+		default:
+			result = "Invalid Input";				
 		}
-
 		
 		return result;
 	}
@@ -57,5 +75,9 @@ public class TNoteUI {
 	
 	private String getFirstWord(ArrayList<String> userCommandArrayList ){
 		return userCommandArrayList.get(0);
+	}
+	
+	private String getCommandArguments(ArrayList<String> userCommandArrayList){
+		return userCommandArrayList.get(1);
 	}
 }
