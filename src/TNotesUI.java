@@ -1,7 +1,7 @@
 import java.util.ArrayList;
 import java.util.Scanner;
 
-public class TNoteUI {
+public class TNotesUI {
 
 	enum COMMAND_TYPE {
 		ADD_COMMAND, EDIT_COMMAND, DELETE_COMMAND, VIEW_COMMAND, INVALID, EXIT
@@ -10,8 +10,11 @@ public class TNoteUI {
 	
 	TNotesParser parser;
 	TNotesLogic logic;
+	String commandArguments;
+	String commandString;
+	String result;
 	
-	public TNoteUI(){
+	public TNotesUI(){
 		parser = new TNotesParser();
 		logic = new TNotesLogic();
 	}
@@ -19,12 +22,12 @@ public class TNoteUI {
 	public String getWelcomeMessage (){
 		return "Welcome to TNote. What would you like to do today?";
 	}
-	private String executeCommand(String userInput){
+	protected String executeCommand(String userInput){
 		ArrayList<String> userCommandSplit = new ArrayList<String>();
 		userCommandSplit = TNotesParser.checkCommand(userInput);
-		String commandString = getFirstWord(userCommandSplit);
-		String commandArguments = getCommandArguments(userCommandSplit);
-		String result;
+		commandString = getFirstWord(userCommandSplit);
+		commandArguments = getCommandArguments(userCommandSplit);
+		
 		
 		COMMAND_TYPE command = determineCommandType(commandString);
 		
@@ -33,6 +36,8 @@ public class TNoteUI {
 			TaskFile resultFile = logic.createEvent(commandArguments);
 			if(resultFile != null){
 				result = resultFile.getTaskName();
+			} else {
+				result = "error";
 			}
 			break;
 		case EDIT_COMMAND:

@@ -1,16 +1,15 @@
 import java.util.ArrayList;
 import java.util.Scanner;
 
-public class TNoteMain {
+public class TNotesMain {
 	
 	//Define Display Messages 
 	
 	private static Scanner sc = new Scanner(System.in);
 	
 	public static void main(String[] args) {
-		// TODO Auto-generated method stud
 		
-		TNoteUI tNote = new TNoteUI();
+		TNotesUI tNote = new TNotesUI();
 		String welcomeMessage = tNote.getWelcomeMessage();
 		showToUser(welcomeMessage);
 		
@@ -20,15 +19,10 @@ public class TNoteMain {
 		String result = tNote.executeCommand(userInput);
 		
 		showToUser(result);
-		
-		//System.out.println(response);
-		}
-		
-		//Call parser to figure out which command
-		
+		}		
 	}
 	
-	public static void showToUser (String textToBeShown){
+	protected static void showToUser (String textToBeShown){
 		System.out.println(textToBeShown);
 	}
 	
