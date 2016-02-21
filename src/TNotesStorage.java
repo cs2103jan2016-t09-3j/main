@@ -114,10 +114,6 @@ public class TNotesStorage {
 
 	}
 
-<<<<<<< HEAD
-
-=======
->>>>>>> a0fe26ae371fde2d620e200b6cfe8cbc517e7730
 	public boolean deleteFile(String filename) {
 		System.out.println(filename);
 		String xStrPath = "C:\\Users/Asus/Desktop/SourceTreeRepo/" + filename;
