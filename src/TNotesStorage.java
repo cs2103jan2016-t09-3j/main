@@ -7,8 +7,8 @@ import java.util.ArrayList;
 // Note that must change storage to NotesStorage when using commit
 public class TNotesStorage {
 
-
 	private ArrayList<taskFile> arrayDate = new ArrayList<taskFile>();
+	private ArrayList<String> taskList = new ArrayList<String>(); // keeps track of all tasks in a particular date
 
 	public TNotesStorage() {
 
@@ -45,7 +45,7 @@ public class TNotesStorage {
 	public boolean addToExistingFile(taskFile newTaskFile) {	
 		boolean flag_addToExistingFile = true;
 		
-		arrayDate.add(newTaskFile);
+		//arrayDate.add(newTaskFile);
 		
 		if (writeFile(taskFile.getTaskFileName(), taskFile.getEvent(), taskFile.getTime())) {
 			flag_addToExistingFile = true;		
@@ -62,6 +62,8 @@ public class TNotesStorage {
 	public boolean createFile(String fileName) {
 		boolean flag_createFile = true;
 		File newFile = new File(fileName);
+		
+		
 		try {
 			if (newFile.createNewFile()) {
 				System.out.println(fileName + " is ready for use");
@@ -81,8 +83,9 @@ public class TNotesStorage {
 		try {
 			FileWriter fw = new FileWriter(fileName, true);
 			PrintWriter pw = new PrintWriter(fw);
-
-			pw.println(event + " at " + time);
+			String inputTask = event + " at " + time;
+			pw.println(inputTask);
+			taskList.add(inputTask);	
 			pw.close();
 
 		} catch (IOException e) {
@@ -90,6 +93,22 @@ public class TNotesStorage {
 			flag_writeFile = false;
 		}
 		return flag_writeFile;
+	}
+	
+	public void deleteTask(String input){
+		int resultIndex;
+		// search for date.txt that contains this input
+		for(int i=0; i<taskList.size(); i++){
+			if (taskList.contains(input)){
+				resultIndex = i;
+				break;
+			}
+		}
+		// use file.contains?
+		// remove from the list of task
+		// delete the task
+		
+		
 	}
 
 }

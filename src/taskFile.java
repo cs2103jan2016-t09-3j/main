@@ -11,7 +11,7 @@ public class taskFile {
 		event=list.get(0);
 		date=list.get(1);
 		time=list.get(2);
-		taskFileName = date +".txt";
+		taskFileName = event +".txt";
 	}
 	
 	// Getters
