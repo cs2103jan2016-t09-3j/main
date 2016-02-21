@@ -3,12 +3,13 @@ import java.util.Scanner;
 
 public class TNotesMain {
 	
+	
+	
 	//Define Display Messages 
 	
 	private static Scanner sc = new Scanner(System.in);
 	
 	public static void main(String[] args) {
-		
 		TNotesUI tNote = new TNotesUI();
 		String welcomeMessage = tNote.getWelcomeMessage();
 		showToUser(welcomeMessage);
@@ -21,6 +22,7 @@ public class TNotesMain {
 		showToUser(result);
 		}		
 	}
+	
 	
 	protected static void showToUser (String textToBeShown){
 		System.out.println(textToBeShown);

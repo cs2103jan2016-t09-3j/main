@@ -36,7 +36,7 @@ public class TNotesUI {
 		switch(command){
 		case ADD_COMMAND:
 			if(logic.addTask(commandArguments)){
-			result = "successfully added" + taskName;	
+			result = "successfully added " + taskName;	
 			} else {
 				result = "addition failed";
 			}

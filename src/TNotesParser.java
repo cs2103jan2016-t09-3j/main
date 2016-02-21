@@ -29,8 +29,8 @@ public class TNotesParser {
 	
 	public static void main(String[] args) {
 		String output = new String();
-		for (int i = 0; i < checkCommand("view 02 02 02").size(); i++) {
-			output = checkCommand("view 02 02 02").get(i);// 24 hour cloc
+		for (int i = 0; i < checkCommand("edit call mom time 12:00").size(); i++){
+			output = checkCommand("edit call mom time 12:00").get(i);// 24 hour cloc
 			System.out.println(output);
 		}
 	}
@@ -101,30 +101,33 @@ public class TNotesParser {
 		} else if (firstWord.equals("delete")) {
 			String title = new String();
 			list.add(firstWord);
-			for (int j = 0; j < arr.length; j++) {
-
-				if (arr[j].equals("due")) {
-					for (int num = 1; num <= j - 1; num++) {
-						title += "" + arr[num] + " ";
-					}
-					list.add(title);
-					list.add(arr[j + 1]);
-				} else if (arr[j].equals("at")) {
-					list.add(arr[j + 1]);
-				} else if (arr[j].equals("every")) {
-					for (int num = 0; num <= j - 1; num++) {
-						title += "" + arr[num] + " ";
-					}
-					list.add(title);
-					list.add(arr[j + 1]);
-				}
-
+			for (int j = 1; j < arr.length; j++) {
+				title += "" + arr[j]+" ";
 			}
+			list.add(title);
 			return list;
 		} else if (firstWord.equals("edit")) {
 			list.add(firstWord);
-			list.add(secWord);
+			String title_beforeDate = new String();
+			String title_afterDate = new String();
+			//System.out.println(arr[3]);
+			for (int  f= 1;  f< arr.length ; f++){
+				if (arr[f].equals("date") || arr[f].equals("time") || arr[f].equals("details")) {
+					for (int num1 = 1; num1 <= f - 1; num1++) {
+						title_beforeDate += "" + arr[num1] + " ";
+					}
+					//System.out.println(title_beforeDate);
+					list.add(title_beforeDate);
+					list.add(arr[f]);//"word"
+					for(int num2 = f+1; num2<arr.length; num2++){
+						title_afterDate +=arr[num2]+" ";
+					}
+					list.add(title_afterDate);
+
+			}
+			}
 			return list;
+			
 		} else if (firstWord.equals("save")) {
 			list.add(firstWord);
 			list.add(secWord);
