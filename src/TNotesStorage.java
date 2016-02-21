@@ -5,39 +5,24 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 // Note that must change storage to NotesStorage when using commit
 public class TNotesStorage {
-	private ArrayList<String> arrayDate = new ArrayList<String>();
+	
+private ArrayList<taskFile> arrayDate = new ArrayList<taskFile>();
 	
 		
-		public TNotesStorage (taskFile newTaskFile) {
-			arrayDate.add(newTaskFile);
+		public TNotesStorage () {
+			
 		}
 		
 		// ------------testing----------------------------
 		public static void main(String[] args) {
-			ArrayList<String> input1 = new ArrayList<String>();
-			input1.add("eat maggie mee");
-			input1.add("tmr");
-			input1.add("12pm");
 			
-			TNotesStorage test = new TNotesStorage(input1);
-			if(test.addNewFile()){
-				System.out.println("added new event");
-			}
-			ArrayList<String> input2 = new ArrayList<String>();
-			input2.add("eat rice");
-			input2.add("tmr");
-			input2.add("12pm");
-			
-			
-			if(test.addToExistingFile()){
-				System.out.println("added new event");
-			}
 		}
 		
 		
 		// ----------------------
 		
-		public boolean addNewFile(){
+		public boolean addNewFile(taskFile newTaskFile){
+			arrayDate.add(newTaskFile);
 			
 			if (createFile(taskFile.getTaskFileName())){
 				if(writeFile(taskFile.getTaskFileName(), taskFile.getEvent(), taskFile.getTime())){
@@ -50,7 +35,9 @@ public class TNotesStorage {
 				return true;
 		}
 		
-		public boolean addToExistingFile() {
+		public boolean addToExistingFile(taskFile newTaskFile) {
+			arrayDate.add(newTaskFile);
+			
 				boolean flag_addToExistingFile = true;
 				if(writeFile(taskFile.getTaskFileName(), taskFile.getEvent(), taskFile.getTime())){
 					flag_addToExistingFile = true;
