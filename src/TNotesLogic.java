@@ -1,6 +1,7 @@
 import java.util.ArrayList;
 
 public class TNotesLogic {
+<<<<<<< HEAD
 
 	public static void main(String[] args) {
 		
@@ -22,20 +23,24 @@ public class TNotesLogic {
 		
 	return flag;	
 	}
+=======
+>>>>>>> 1186c82ceb40180dd481cdc7d99a90cced1b0a62
 	
-	public boolean redo(){
+	TNotesParser parser = new TNotesParser();
+	TNotesStorage storage = new TNotesStorage();
+	ArrayList<String> list = new ArrayList<String>();
+	
+	
+	public boolean addTask(String whatever){
+		list = parser.checkCommand(whatever);
 		
+		if(storage.addEvent(list)){
+			return true;
+		}
+		else{
+			return false;
+		}
 	}
-	
-	public boolean undo(){
-		
-	}
-	
-	public boolean editEvent(){
-		
-	}
-	
-	
 	
 	
 }
