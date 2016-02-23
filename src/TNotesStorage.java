@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Scanner;
 
 public class TNotesStorage {
 
@@ -41,7 +40,7 @@ public class TNotesStorage {
 	// File name
 	private static  final String fileName = "MasterList.txt"; //Contains all events
 	
-	//private static Scanner sc = new Scanner(System.in);
+	
 	private static ArrayList<String> list;
 	private static int arrayIndex=0;
 
