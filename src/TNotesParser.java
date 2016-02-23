@@ -6,31 +6,38 @@ import java.io.*;
 import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
+import java.util.Arrays;
+import java.time.DateTimeException;
 
 public class TNotesParser {
 	//date cannot be zero
+	//the first letter of the month must be capital 
+	//date cannot be separated by space
 	private static final List<String> DATE_POSSIBLE_FORMATE = Arrays.asList(
-			"d/M/y", "d/M/yyyy", "d/MM/yy","d/MMM/yyyy",  
+			"d/M/y", "d/M/yyyy", "d/MM/yy","d/MMM/yy", "d/MMM/yyyy",
 			"dd/MM/yy","dd/M/yyyy", "dd/MM/yy", "dd/MMM/yyyy", 
 			"dd/MMMM/yy","d/MMMM/yyyy", "dd/MMMM/yyyy",
     		
 			"d-M-y", "d-M-yyyy", "d-MM-yy","d-MMM-yyyy",  
-			"dd-MM-yy","dd-M-yyyy", "dd-MM-yy", "dd-MMM-yyyy", 
-			"dd-MMMM-yy","d-MMMM-yyyy", "dd-MMMM-yyyy",
+			"dd-MM-yy","dd-M-yyyy", "dd-MM-yy", "dd-MMM-yyyy", "d-MMM-yyyy",
+			"d-MMMM-yy","d-MMMM-yyyy", "dd-MMMM-yyyy",
 			
 			"d.M.yy", "d.M.yyyy", "d.MM.yy","d.MMM.yyyy",  
 			"dd.MM.yy","dd.M.yyyy", "dd.MM.yy", "dd.MMM.yyyy", 
 			"dd.MMMM.yy","d.MMMM.yyyy", "dd.MMMM.yyyy",
 			
-			"d M yy", "d M yyyy", "d MM yy","d MMM yyyy",  
+			"d M y", "d M yy", "d M yyyy", "d MM yy","d MMM yyyy",  
 			"dd MM yy","dd M yyyy", "dd MM yy", "dd MMM yyyy", 
 			"dd MMMM yy","d MMMM yyyy", "dd MMMM yyyy"
     		);
 	
 	public static void main(String[] args) {
 		String output = new String();
-		for (int i = 0; i < checkCommand("add call mom due 2/2/2 at 12:00").size(); i++){
-			output = checkCommand("add call mom due 2/2/2 at 12:00").get(i);// 24 hour cloc
+		for (int i = 0; i < checkCommand("edit call mom date 2-2-2").size(); i++){
+			output = checkCommand("edit call mom date 2-2-2").get(i);// 24 hour cloc
 			System.out.println(output);
 		}
 	}
@@ -40,7 +47,8 @@ public class TNotesParser {
 		//String errorMessage = "invalid command";
 		String arr[] = inputString.split(" ");
 		String firstWord = arr[0].toLowerCase();
-		String secWord = arr[1].toLowerCase();
+		//String secWord = arr[1].toLowerCase();
+		String secWord = arr[1];
 		// System.out.println(secWord);
 		if (firstWord.equals("add")) {
 			String title = new String();
@@ -52,7 +60,8 @@ public class TNotesParser {
 						title += "" + arr[num] + " ";
 					}
 					list.add(title);
-					list.add(arr[j + 1]);
+					String addDate = formatDate(arr[j + 1]);
+					list.add(addDate);
 				} else if (arr[j].equals("at")) {
 					list.add(arr[j + 1]);
 				} else if (arr[j].equals("every")) {
@@ -91,7 +100,8 @@ public class TNotesParser {
 					
 				}
 				else{
-					String outputDate = formatDate(secWord);
+					//System.out.println(secWord);
+					String outputDate = formatDate(secWord.trim());
 					list.add(firstWord);
 					list.add(outputDate);			
 				}
@@ -110,21 +120,39 @@ public class TNotesParser {
 			list.add(firstWord);
 			String title_beforeDate = new String();
 			String title_afterDate = new String();
+			String title_before = new String();
+			String title_after = new String();
 			//System.out.println(arr[3]);
 			for (int  f= 1;  f< arr.length ; f++){
-				if (arr[f].equals("date") || arr[f].equals("time") || arr[f].equals("details")) {
+				if (arr[f].equals("time") || arr[f].equals("details")) {
 					for (int num1 = 1; num1 <= f - 1; num1++) {
-						title_beforeDate += "" + arr[num1] + " ";
+						title_before += "" + arr[num1] + " ";
 					}
 					//System.out.println(title_beforeDate);
-					list.add(title_beforeDate);
+					list.add(title_before);
 					list.add(arr[f]);//"word"
 					for(int num2 = f+1; num2<arr.length; num2++){
-						title_afterDate +=arr[num2]+" ";
+						title_after +=arr[num2]+" ";
 					}
-					list.add(title_afterDate);
+					
+						list.add(title_after);
+					
+						
+					}
 
-			}
+				else if(arr[f].equals("date")){
+						for (int num1 = 1; num1 <= f - 1; num1++) {
+							title_beforeDate += "" + arr[num1] + " ";
+						}
+						//System.out.println(title_beforeDate);
+						list.add(title_beforeDate);
+						list.add(arr[f]);//"word"
+						for(int num2 = f+1; num2<arr.length; num2++){
+							title_afterDate +=arr[num2]+" ";
+						}
+						String editDate = formatDate(title_afterDate.trim());
+						list.add(editDate);
+				}
 			}
 			return list;
 			
@@ -159,20 +187,31 @@ public class TNotesParser {
 		return list;
 	}
 	public static String formatDate(String inputDate){
-	      LocalDate parsedDate = null;	          	      
+	      LocalDate parsedDate = null;	
+	      String date = new String();
+	      date = inputDate.trim();
+//	      if(date.equals("1/Jul/03")){
+//	    	  System.out.println("true");
+//	      }
+//	      System.out.println(date);
+	      //date = "1/Jul/03";
 	      for (String pattern : DATE_POSSIBLE_FORMATE) {
 	    	  try {
 	  			DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern);
-	  			parsedDate = LocalDate.parse(inputDate, formatter);
+	  			parsedDate = LocalDate.parse(date, formatter);
 	  		} catch (DateTimeException e) {
 	  			parsedDate = null;
 	  		}
 				if (parsedDate != null) {
-					String outputDate = parsedDate.toString();
-					return outputDate;
+					return parsedDate.toString();
 				}
+				//else{
+				//	return "the date is invalid";
+				//}
 			}
+	      //System.out.println(parsedDate);
 		return "the date is invalid";
+	     // return "";
 	}
 	public static int isLetters(String theRest) {
 		if (theRest.matches("[a-zA-Z]+")) {
