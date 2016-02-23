@@ -10,11 +10,11 @@ import java.time.format.DateTimeFormatter;
 public class TNotesParser {
 	//date cannot be zero
 	private static final List<String> DATE_POSSIBLE_FORMATE = Arrays.asList(
-			"d/M/yy", "d/M/yyyy", "d/MM/yy","d/MMM/yyyy",  
+			"d/M/y", "d/M/yyyy", "d/MM/yy","d/MMM/yyyy",  
 			"dd/MM/yy","dd/M/yyyy", "dd/MM/yy", "dd/MMM/yyyy", 
 			"dd/MMMM/yy","d/MMMM/yyyy", "dd/MMMM/yyyy",
     		
-			"d-M-yy", "d-M-yyyy", "d-MM-yy","d-MMM-yyyy",  
+			"d-M-y", "d-M-yyyy", "d-MM-yy","d-MMM-yyyy",  
 			"dd-MM-yy","dd-M-yyyy", "dd-MM-yy", "dd-MMM-yyyy", 
 			"dd-MMMM-yy","d-MMMM-yyyy", "dd-MMMM-yyyy",
 			
@@ -29,8 +29,8 @@ public class TNotesParser {
 	
 	public static void main(String[] args) {
 		String output = new String();
-		for (int i = 0; i < checkCommand("edit call mom time 12:00").size(); i++){
-			output = checkCommand("edit call mom time 12:00").get(i);// 24 hour cloc
+		for (int i = 0; i < checkCommand("add call mom due 2/2/2 at 12:00").size(); i++){
+			output = checkCommand("add call mom due 2/2/2 at 12:00").get(i);// 24 hour cloc
 			System.out.println(output);
 		}
 	}
