@@ -6,11 +6,13 @@ import java.nio.file.Paths;
 
 public class Folder {
 	
+	// Default constructor
 	public Folder() {
 	
 		
-	}	
-
+	}
+	
+	// Testing 
 	public static void main(String[] args) {
 
 		String newFolderName = "TNote"; // type in name of folder
