@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class TNotesLogic {
 	TNotesStorage storage = new TNotesStorage();
@@ -33,15 +34,15 @@ public class TNotesLogic {
 		TaskFile currentFile = storage.getTaskFileByName(title);
 		switch (type) {
 		case ("time"):
-			currentFile = storage.deleteTask(currentFile.get(2))
+			storage.deleteTask(title);
 			storage.addTask(currentFile);
 			return true;
 		case ("date"):
-			currentFile = storage.deleteTask(currentFile.get(1))
+			storage.deleteTask(title);
 			storage.addTask(currentFile);
 			return true;
 		case ("details"):
-			currentFile = storage.deleteTask(currentFile.get(0))
+			storage.deleteTask(title);
 			storage.addTask(currentFile);
 			return true;
 		default:
@@ -49,13 +50,20 @@ public class TNotesLogic {
 		}
 	}
 
-	public boolean searchTask(String lineOfText) {
-		showToUser(TNotesStorage.searchList(lineOfText));
-		return true;
+	public ArrayList<String> searchTask(String lineOfText) {
+		ArrayList<String> taskList = new ArrayList<String>();
+		ArrayList<String> masterList = storage.readFromMasterFile();
+		for (String text : masterList) {
+			if (text.equals(lineOfText))
+				taskList.add(text);
+		}
+		return taskList;
 	}
 
-	public void sortTask() {
-		showToUser(TNotesStorage.sortList());
+	public ArrayList<String> sortTask() {
+		ArrayList<String> masterList = storage.readFromMasterFile();
+		Collections.sort(masterList);
+		return masterList;
 	}
 
 	public void showToUser(String lineOfText) {
