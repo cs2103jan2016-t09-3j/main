@@ -56,9 +56,9 @@ public class TNotesUI {
 			
 		COMMAND_TYPE command = determineCommandType(commandString);
 		
-		System.err.println(userInput);
-		System.err.println(commandString);
-		System.err.println(commandArguments);
+//		System.err.println(userInput);
+//		System.err.println(commandString);
+//		System.err.println(commandArguments);
 		switch(command){
 		case ADD_COMMAND:
 			if(logic.addTask(commandArguments)){

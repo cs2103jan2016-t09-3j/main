@@ -4,9 +4,8 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.Collections;
+
 
 public class TNotesStorage {
 
@@ -27,48 +26,41 @@ public class TNotesStorage {
 	FileReader fReader;
 
 	// Constructor
-	
-	
+
 	public TNotesStorage(String directory) {
-		try{
+		try {
 			this.directory = new File(directory);
 			masterFile = new File(directory, masterFileName);
 			masterFile.createNewFile();
 			masterList = readFromMasterFile();
-			
-			}catch(IOException ioEx){
-				System.err.println("Error creating master file");
-			}
+
+		} catch (IOException ioEx) {
+			System.err.println("Error creating master file");
+		}
 	}
+
 	public TNotesStorage() {
-		try{
+		try {
 			this.directory = new File("C:\\TNote");
 			masterFile = new File(directory, masterFileName);
 			masterFile.createNewFile();
 			masterList = readFromMasterFile();
-			
-			}catch(IOException ioEx){
-				
-			}
+
+		} catch (IOException ioEx) {
+
+		}
 	}
 
 
-//	public static void main (String[] args){
-//		TNotesStorage tNoteStore = new TNotesStorage();
-//		TaskFile task1 = new TaskFile("pie.txt", "02/09/16", "12:00");
-//		TaskFile task2 = new TaskFile("banana.txt", "03/09/16", "13:00");
-//		tNoteStore.addTask(task1);
-//		tNoteStore.addTask(task2);
-//		tNoteStore.deleteTask(task2.getEvent());
-//		
-//	}
-	
 	public boolean addTask(TaskFile task) {
 
-		if (writeTaskToMasterFile(task)) {
+		if (!masterList.contains(task.getEvent())) {
 			masterList.add(task.getEvent());
-			if (createTaskFile(directory, task)) {
-				return true;
+			if (writeTaskToMasterFile(task)) {
+				if (createTaskFile(directory, task)) {
+					return true;
+				}
+				return false;
 			}
 			masterList.remove(task.getEvent());
 			return false;
@@ -76,104 +68,93 @@ public class TNotesStorage {
 		return false;
 	}
 
-
-	public boolean deleteTask(String task){
+	public boolean deleteTask(String task) {
 		File fileToDelete = new File(directory, task + ".txt");
 
-		if(fileToDelete.delete()){
+		if (fileToDelete.delete()) {
 			System.err.println("delete");
 			masterList.remove(task);
 			clearMasterFile();
 			writeListToMasterFile();
 			return true;
-		} 
+		}
 		return false;
 	}
 
-
 	public TaskFile getTaskFileByName(String taskName) {
-		if(!masterList.contains(taskName)){
+		if (!masterList.contains(taskName)) {
 			return null;
-		} 
-		
-		File taskFileToBeFound = new File(directory, taskName);
-		
+		}
+
+		File taskFileToBeFound = new File(directory, taskName + ".txt");
+
 		TaskFile taskFile = readTaskFile(taskFileToBeFound);
-		
+
+		// System.err.println(taskFile.getDate());
 		return taskFile;
-		
+
 	}
-	
-	public TaskFile readTaskFile(File taskFileToBeFound){
-		try{
-		fReader = new FileReader(taskFileToBeFound);
-		bReader = new BufferedReader(fReader);
-		
-		TaskFile taskFile = new TaskFile();
-		
-		if(bReader.ready()){
-			String taskFileInfo = bReader.readLine();
-			int row = 0;
-			while(taskFileInfo != null){
-				switch(row){
-				case 0:
-					taskFile.setEvent(taskFileInfo);
-					break;
-				case 1:
-					taskFile.setDate(taskFileInfo);
-					break;
-				case 2:
-					taskFile.setTime(taskFileInfo);
-					break;
-				default:
-					return null;
-				} 
-			}			
+
+	public TaskFile readTaskFile(File taskFileToBeFound) {
+		try {
+			fReader = new FileReader(taskFileToBeFound);
+			bReader = new BufferedReader(fReader);
+			ArrayList<String> taskFileInfoArray = new ArrayList<String>();
 			
-		}
-		bReader.close();
-		
-		return taskFile;
-		} catch (IOException ioEx){
+			TaskFile taskFile = new TaskFile();
+
+			if (bReader.ready()) {
+				String taskFileInfo = bReader.readLine();
+				while (taskFileInfo != null) {
+					taskFileInfoArray.add(taskFileInfo);
+					taskFileInfo = bReader.readLine();
+				}
+			}
+			bReader.close();
+			
+			taskFile.setEvent(taskFileInfoArray.get(0));
+			taskFile.setDate(taskFileInfoArray.get(1));
+			taskFile.setTime(taskFileInfoArray.get(2));
+
+			return taskFile;
+		} catch (IOException ioEx) {
 			return null;
 		}
 	}
 
-	
-	public boolean clearMasterFile(){
-		try{
-		fWriter = new FileWriter(masterFile);
-		bWriter = new BufferedWriter(fWriter);
-		
-		bWriter.write("");
-		bWriter.close();
-		return true;
-		}catch(IOException ioEx){
+	public boolean clearMasterFile() {
+		try {
+			fWriter = new FileWriter(masterFile);
+			bWriter = new BufferedWriter(fWriter);
+
+			bWriter.write("");
+			bWriter.close();
+			return true;
+		} catch (IOException ioEx) {
 			return false;
 		}
 	}
-	
-	public boolean writeListToMasterFile(){
-		try{
-		fWriter = new FileWriter(masterFile, true);
-		bWriter = new BufferedWriter(fWriter);
-		
-		
-		for(String taskName: masterList){
-		bWriter.append(taskName);
-		bWriter.newLine();
 
-		}
-		bWriter.close();
-		fWriter.close();
+	public boolean writeListToMasterFile() {
+		try {
+			fWriter = new FileWriter(masterFile, true);
+			bWriter = new BufferedWriter(fWriter);
 
-		return true;
-		}catch(IOException ioEx){
+			for (String taskName : masterList) {
+				bWriter.append(taskName);
+				bWriter.newLine();
+
+			}
+			bWriter.close();
+			fWriter.close();
+
+			return true;
+		} catch (IOException ioEx) {
 			return false;
 		}
 	}
+
 	private boolean writeTaskToMasterFile(TaskFile task) {
-
 
 		try {
 			fWriter = new FileWriter(masterFile, true);
@@ -183,7 +164,6 @@ public class TNotesStorage {
 			bWriter.newLine();
 
 			bWriter.close();
-			fWriter.close();
 
 			return true;
 		} catch (IOException ioEx) {
@@ -193,14 +173,13 @@ public class TNotesStorage {
 		}
 	}
 
-
 	public boolean createTaskFile(File directory, TaskFile task) {
 
 		try {
 			if (!directory.exists()) {
 				directory.mkdirs();
 			}
-			File newTask = new File(directory, task.getEvent()+ ".txt");
+			File newTask = new File(directory, task.getEvent() + ".txt");
 
 			if (!newTask.exists()) {
 				newTask.createNewFile();
@@ -213,7 +192,6 @@ public class TNotesStorage {
 			return false;
 		}
 	}
-
 
 	public boolean writeToTaskFile(File newTask, TaskFile task) {
 
@@ -231,32 +209,32 @@ public class TNotesStorage {
 			bWriter.close();
 			System.err.println("writing");
 			return true;
+			
 		} catch (IOException ioEx) {
 			return false;
 		}
 
 	}
 
-
 	public ArrayList<String> readFromMasterFile() {
-		try{
-		fReader = new FileReader(masterFile);
-		bReader = new BufferedReader(fReader);
-		ArrayList<String> contentInFile = new ArrayList<String>();
+		try {
+			fReader = new FileReader(masterFile);
+			bReader = new BufferedReader(fReader);
+			ArrayList<String> contentInFile = new ArrayList<String>();
 
-		if (bReader.ready()) {
-			String textInFile = bReader.readLine();
-			while (textInFile != null) {
-				contentInFile.add(textInFile);
-				textInFile = bReader.readLine();
+			if (bReader.ready()) {
+				String textInFile = bReader.readLine();
+				while (textInFile != null) {
+					contentInFile.add(textInFile);
+					textInFile = bReader.readLine();
 
+				}
 			}
-		}
 
-		bReader.close();
-		
-		return contentInFile;
-		} catch (IOException ioEx){
+			bReader.close();
+
+			return contentInFile;
+		} catch (IOException ioEx) {
 			return null;
 		}
 	}
