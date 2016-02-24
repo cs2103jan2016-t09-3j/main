@@ -82,6 +82,14 @@ public class TNotesParser {
 			list.add(firstWord);
 			list.add(secWord);
 			return list;
+		}else if (firstWord.equals("sort")) {
+			list.add(firstWord);
+			list.add(secWord);
+			return list;
+		} else if (firstWord.equals("search")) {
+			list.add(firstWord);
+			list.add(secWord);
+			return list;
 		}
 		// do all possibilities for dates
 		else if (firstWord.equals("view")) {
