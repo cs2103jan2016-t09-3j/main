@@ -53,15 +53,15 @@ public class TNotesStorage {
 	}
 
 
-	public static void main (String[] args){
-		TNotesStorage tNoteStore = new TNotesStorage();
-		TaskFile task1 = new TaskFile("pie.txt", "02/09/16", "12:00");
-		TaskFile task2 = new TaskFile("banana.txt", "03/09/16", "13:00");
-		tNoteStore.addTask(task1);
-		tNoteStore.addTask(task2);
-		tNoteStore.deleteTask(task2.getEvent());
-		
-	}
+//	public static void main (String[] args){
+//		TNotesStorage tNoteStore = new TNotesStorage();
+//		TaskFile task1 = new TaskFile("pie.txt", "02/09/16", "12:00");
+//		TaskFile task2 = new TaskFile("banana.txt", "03/09/16", "13:00");
+//		tNoteStore.addTask(task1);
+//		tNoteStore.addTask(task2);
+//		tNoteStore.deleteTask(task2.getEvent());
+//		
+//	}
 	
 	public boolean addTask(TaskFile task) {
 
