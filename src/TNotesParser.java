@@ -40,8 +40,8 @@ public class TNotesParser {
 	//edit call mom date 2-2-2
 	public static void main(String[] args) {
 		String output = new String();
-		for (int i = 0; i < checkCommand("edit call mom date 2-2-2").size(); i++){
-			output = checkCommand("edit call mom date 2-2-2").get(i);// 24 hour cloc
+		for (int i = 0; i < checkCommand("search call mom").size(); i++){
+			output = checkCommand("search call mom").get(i);// 24 hour cloc
 			System.out.println(output);
 		}
 	}
@@ -82,7 +82,12 @@ public class TNotesParser {
 		} else if (firstWord.equals("search")) {
 			
 			list.add(firstWord);
-			list.add(secWord);
+			//list.add(secWord);
+			String searchStr = new String();
+			for(int i=1; i<arr.length; i++){
+				searchStr += arr[i] +" ";
+			}
+			list.add(searchStr);
 			
 			return list;
 		}
