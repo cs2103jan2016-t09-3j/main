@@ -94,7 +94,7 @@ public class TNotesStorage {
 		executeCommand(taskFile);
 	}
 
-	private static void executeCommand(TaskFile taskFile) {
+	public void executeCommand(TaskFile taskFile) {
 		String command = taskFile.getCommand();	
 		
 			if (command.equals("add")) {
@@ -139,7 +139,7 @@ public class TNotesStorage {
 		}
 	
 
-	public static String searchList(String keyWord) {
+	public String searchList(String keyWord) {
 		String endResult = "";
 		String newResult = "";
 		String result = "";
@@ -164,14 +164,14 @@ public class TNotesStorage {
 		return result;
 	}
 
-	public static String sortList() {
+	public String sortList() {
 		Collections.sort(list);
 		clearFile(fileName);
 		saveContent();
 		return String.format(MESSAGE_SORTED);
 	}
 
-	private static void saveContent() {
+	public void saveContent() {
 		arrayIndex = 0;
 		for (int i = 0; i < list.size(); i++) {
 			writeFile(list.get(i));
@@ -179,7 +179,7 @@ public class TNotesStorage {
 		}
 	}
 
-	public static String deleteContent(int num, String deleted) {
+	public String deleteContent(int num, String deleted) {
 		String resultMessage ="";
 		if(!list.isEmpty()) {
 			list.remove(num);
@@ -194,14 +194,14 @@ public class TNotesStorage {
 		return resultMessage;
 	}
 
-	public static String clearAll() {
+	public String clearAll() {
 		list.clear();
 		clearFile(fileName);
 		arrayIndex = 0;
 		return String.format(MESSAGE_CLEAR, fileName);
 	}
 	
-	public static String addText(String sentence) {
+	public String addText(String sentence) {
 		list.add(sentence);
 		writeFile(sentence);
 		arrayIndex++;
@@ -214,7 +214,7 @@ public class TNotesStorage {
 //	}
 
 	// Method to scan in filename at args[0]
-	public static String scanFileName(String[] arguments) {
+	public  String scanFileName(String[] arguments) {
 		String scannedFileName = "";
 		if (arguments.length > 0) {
 			scannedFileName = arguments[0];
@@ -226,7 +226,7 @@ public class TNotesStorage {
 	}
 
 	// Clears all data from the file
-	private static void clearFile(String fileName) {
+	public void clearFile(String fileName) {
 		try {
 			FileWriter fw = new FileWriter(fileName);
 			PrintWriter pw = new PrintWriter(fw);
@@ -240,7 +240,7 @@ public class TNotesStorage {
 	}
 
 	// Reads and returns the contents of the file as string
-	public static String readList() {
+	public String readList() {
 		String str="";
 		for(int i=0; i<list.size(); i++){
 			String numberedSentence = (i+1) + ". " + list.get(i) + "\n";
@@ -250,7 +250,7 @@ public class TNotesStorage {
 	}
 
 	// Writes in the file
-	private static void writeFile(String sentence) {
+	public void writeFile(String sentence) {
 		try {
 			FileWriter fw = new FileWriter(fileName, true);
 			PrintWriter pw = new PrintWriter(fw);
@@ -264,7 +264,7 @@ public class TNotesStorage {
 	}
 
 	// Creates the file
-	static String createFile() {
+	public  createFile() {
 		File newFile = new File(fileName);
 		String printMessage = "";
 		try {
@@ -280,7 +280,7 @@ public class TNotesStorage {
 	}
 
 	// This function will print messages on the display
-	public static void print(String printThisMessage) {
+	public void print(String printThisMessage) {
 		System.out.print(printThisMessage);
 	}
 
