@@ -4,7 +4,7 @@ import java.util.Scanner;
 public class TNotesUI {
 
 	enum COMMAND_TYPE {
-		ADD_COMMAND, EDIT_COMMAND, DELETE_COMMAND, VIEW_COMMAND, INVALID, EXIT
+		ADD_COMMAND, EDIT_COMMAND, DELETE_COMMAND, VIEW_COMMAND, INVALID, SEARCH_COMMAND, SORT_COMMAND, EXIT
 		}
 	
 	private static final String MESSAGE_WELCOME = "Welcome to TextBuddy. %s is ready for use\n";
@@ -35,7 +35,7 @@ public class TNotesUI {
 	TNotesLogic logic;
 	ArrayList<String> commandArguments;
 	String commandString;
-	String result;
+	String result="";
 	String taskName;
 	
 	public TNotesUI(){
@@ -56,6 +56,9 @@ public class TNotesUI {
 			
 		COMMAND_TYPE command = determineCommandType(commandString);
 		
+		System.err.println(userInput);
+		System.err.println(commandString);
+		System.err.println(commandArguments);
 		switch(command){
 		case ADD_COMMAND:
 			if(logic.addTask(commandArguments)){
@@ -65,7 +68,12 @@ public class TNotesUI {
 			}
 			break;
 		case EDIT_COMMAND:
-			//logic.editEvent(commandArguments);
+			if(logic.editTask(commandArguments)){
+				result = "successfully edited";
+			} else {
+				result = "edit failed";
+			}
+			
 			break;
 		case DELETE_COMMAND:
 			if(logic.deleteTask(taskName)){
@@ -73,7 +81,28 @@ public class TNotesUI {
 			} 
 			break;
 		case VIEW_COMMAND:
-			//logic.executeCommand(userInput);
+			ArrayList<String> arr = new ArrayList<String>();
+			arr = logic.displayList();
+			System.out.println("[TASK LIST]");
+			for(int i=0; i<arr.size(); i++) {
+				System.out.println(arr.get(i));
+			}
+			break;
+		case SEARCH_COMMAND:
+			ArrayList<String> arrSearch = new ArrayList<String>();
+			arrSearch = logic.searchTask(commandArguments.get(0));
+			System.out.println("[SEARCH RESULT]");
+			for(int i=0; i<arrSearch.size(); i++) {
+				System.out.println(arrSearch.get(i));
+			}
+			break;
+		case SORT_COMMAND:
+			ArrayList<String> arrSort = new ArrayList<String>();
+			arrSort = logic.sortTask();
+			System.out.println("[SORT RESULT]");
+			for(int i=0; i<arrSort.size(); i++) {
+				System.out.println(arrSort.get(i));
+			}
 			break;
 		case INVALID:
 			result = "Invalid Input";
@@ -91,9 +120,14 @@ public class TNotesUI {
 		} else if (checkCommand(commandString, "edit")){
 			return COMMAND_TYPE.EDIT_COMMAND;
 		} else if(checkCommand(commandString, "delete")){
+			System.err.println("deletecommandentered");
 			return COMMAND_TYPE.DELETE_COMMAND;
 		} else if(checkCommand(commandString, "view")){
-			return COMMAND_TYPE.VIEW_COMMAND;
+			return COMMAND_TYPE.VIEW_COMMAND;	
+		} else if(checkCommand(commandString, "search")){
+			return COMMAND_TYPE.SEARCH_COMMAND;
+		} else if(checkCommand(commandString, "sort")){
+			return COMMAND_TYPE.SORT_COMMAND;
 		} else {
 			return COMMAND_TYPE.INVALID;
 		}
