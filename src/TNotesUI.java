@@ -56,6 +56,9 @@ public class TNotesUI {
 			
 		COMMAND_TYPE command = determineCommandType(commandString);
 		
+		System.err.println(userInput);
+		System.err.println(commandString);
+		System.err.println(commandArguments);
 		switch(command){
 		case ADD_COMMAND:
 			if(logic.addTask(commandArguments)){
@@ -91,6 +94,7 @@ public class TNotesUI {
 		} else if (checkCommand(commandString, "edit")){
 			return COMMAND_TYPE.EDIT_COMMAND;
 		} else if(checkCommand(commandString, "delete")){
+			System.err.println("deletecommandentered");
 			return COMMAND_TYPE.DELETE_COMMAND;
 		} else if(checkCommand(commandString, "view")){
 			return COMMAND_TYPE.VIEW_COMMAND;
