@@ -208,10 +208,10 @@ public class TNotesStorage {
 		return String.format(MESSAGE_ADDED, fileName, sentence);
 	}
 	
-	private static String extractCommandWord(String input) {
-		String command = input.replaceFirst("command:", "").trim();
-		return command;
-	}
+//	private static String extractCommandWord(String input) {
+//		String command = input.replaceFirst("command:", "").trim();
+//		return command;
+//	}
 
 	// Method to scan in filename at args[0]
 	public static String scanFileName(String[] arguments) {

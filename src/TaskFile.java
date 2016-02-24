@@ -32,7 +32,7 @@ public class TaskFile {
 		return command;
 	}
 	
-	public static String getEvent(){
+	public String getEvent(){
 		return event;
 	}
 	
