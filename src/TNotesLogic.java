@@ -45,12 +45,12 @@ public class TNotesLogic {
 		}
 	}
 
-	public ArrayList<String> searchTask(String lineOfText) {
-		ArrayList<String> taskList = new ArrayList<String>();
+	public ArrayList<TaskFile> searchTask(String lineOfText) {
+		ArrayList<TaskFile> taskList = new ArrayList<TaskFile>();
 		ArrayList<String> masterList = storage.readFromMasterFile();
 		for (String text : masterList) {
 			if (text.equals(lineOfText))
-				taskList.add(text);
+				taskList.add(storage.getTaskFileByName(text));
 		}
 		return taskList;
 	}
