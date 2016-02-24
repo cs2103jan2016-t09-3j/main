@@ -4,37 +4,35 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public class TaskFile {
-	private String command;
+	
 	private String event;
 	private String date;
 	private String time;
 
 	// Constructor
 	public TaskFile() {
-		setCommand("");
+		
 		setEvent("");
 		setDate("");
 		setTime("");
 	}
 	
-	public TaskFile(String command, String event, String date, String time){
-		setCommand(command);
+	public TaskFile(String event, String date, String time){
+		
 		setEvent(event);
 		setDate(date);
 		setTime(time);
 	}
 	
 	public TaskFile(ArrayList<String> list) {
-		setCommand(list.get(0));
-		setEvent(list.get(1));
-		setDate(list.get(2));
-		setTime(list.get(3));
+		
+		setEvent(list.get(0));
+		setDate(list.get(1));
+		setTime(list.get(2));
 	}
 
 	// Getters
-	public String getCommand() {
-		return command;
-	}
+	
 
 	public String getEvent() {
 		return event;
@@ -49,9 +47,6 @@ public class TaskFile {
 	}
 
 	// Setters
-	public void setCommand(String input) {
-		command = input;
-	}
 
 	public void setEvent(String input) {
 		event = input;

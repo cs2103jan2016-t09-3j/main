@@ -27,30 +27,39 @@ public class TNotesStorage {
 	FileReader fReader;
 
 	// Constructor
-	public TNotesStorage() {
-		try{
-		directory = new File("C:\\TNote");
-		masterFile = new File(directory, masterFileName);
-		masterFile.createNewFile();
-		masterList = new ArrayList<String>();
-		
-		}catch(IOException ioEx){
-			
-		}
-	}
+	
 	
 	public TNotesStorage(String directory) {
-
+		try{
+			this.directory = new File(directory);
+			masterFile = new File(directory, masterFileName);
+			masterFile.createNewFile();
+			masterList = new ArrayList<String>();
+			
+			}catch(IOException ioEx){
+				
+			}
+	}
+	public TNotesStorage() {
+		try{
+			this.directory = new File("C:\\TNote");
+			masterFile = new File(directory, masterFileName);
+			masterFile.createNewFile();
+			masterList = new ArrayList<String>();
+			
+			}catch(IOException ioEx){
+				
+			}
 	}
 
 
 	public static void main (String[] args){
 		TNotesStorage tNoteStore = new TNotesStorage();
-		TaskFile task1 = new TaskFile("add", "pie.txt", "02/09/16", "12:00");
-		TaskFile task2 = new TaskFile("add", "banana.txt", "03/09/16", "13:00");
+		TaskFile task1 = new TaskFile("pie.txt", "02/09/16", "12:00");
+		TaskFile task2 = new TaskFile("banana.txt", "03/09/16", "13:00");
 		tNoteStore.addTask(task1);
 		tNoteStore.addTask(task2);
-		tNoteStore.deleteTask(task2);
+		tNoteStore.deleteTask(task2.getEvent());
 		
 	}
 	
@@ -84,6 +93,54 @@ public class TNotesStorage {
 //	public boolean editTask(TaskFile task) {
 //
 //	}
+	public TaskFile getTaskFileByName(String taskName) {
+		if(!masterList.contains(taskName)){
+			return null;
+		} 
+		
+		File taskFileToBeFound = new File(directory, taskName);
+		
+		TaskFile taskFile = readTaskFile(taskFileToBeFound);
+		
+		return taskFile;
+		
+	}
+	
+	public TaskFile readTaskFile(File taskFileToBeFound){
+		try{
+		fReader = new FileReader(taskFileToBeFound);
+		bReader = new BufferedReader(fReader);
+		
+		TaskFile taskFile = new TaskFile();
+		
+		if(bReader.ready()){
+			String taskFileInfo = bReader.readLine();
+			int row = 0;
+			while(taskFileInfo != null){
+				switch(row){
+				case 0:
+					taskFile.setEvent(taskFileInfo);
+					break;
+				case 1:
+					taskFile.setDate(taskFileInfo);
+					break;
+				case 2:
+					taskFile.setTime(taskFileInfo);
+					break;
+				default:
+					return null;
+				} 
+			}			
+			
+		}
+		bReader.close();
+		
+		return taskFile;
+		} catch (IOException ioEx){
+			return null;
+		}
+	}
+
 	
 	public boolean clearMasterFile(){
 		try{
