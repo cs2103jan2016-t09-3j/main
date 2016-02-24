@@ -31,17 +31,21 @@ public class TNotesLogic {
 	public boolean editTask(ArrayList<String> fromParser) {
 		String type = fromParser.get(2);
 		String title = fromParser.get(1);
+		String newText = fromParser.get(3);
 		TaskFile currentFile = storage.getTaskFileByName(title);
 		switch (type) {
 		case ("time"):
+			currentFile.setTime(newText);
 			storage.deleteTask(title);
 			storage.addTask(currentFile);
 			return true;
 		case ("date"):
+			currentFile.setTime(newText);
 			storage.deleteTask(title);
 			storage.addTask(currentFile);
 			return true;
 		case ("details"):
+			currentFile.setTime(newText);
 			storage.deleteTask(title);
 			storage.addTask(currentFile);
 			return true;

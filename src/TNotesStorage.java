@@ -34,10 +34,10 @@ public class TNotesStorage {
 			this.directory = new File(directory);
 			masterFile = new File(directory, masterFileName);
 			masterFile.createNewFile();
-			masterList = new ArrayList<String>();
+			masterList = readFromMasterFile();
 			
 			}catch(IOException ioEx){
-				
+				System.err.println("Error creating master file");
 			}
 	}
 	public TNotesStorage() {
@@ -45,7 +45,7 @@ public class TNotesStorage {
 			this.directory = new File("C:\\TNote");
 			masterFile = new File(directory, masterFileName);
 			masterFile.createNewFile();
-			masterList = new ArrayList<String>();
+			masterList = readFromMasterFile();
 			
 			}catch(IOException ioEx){
 				
@@ -78,7 +78,7 @@ public class TNotesStorage {
 
 
 	public boolean deleteTask(String task){
-		File fileToDelete = new File(directory, task);
+		File fileToDelete = new File(directory, task + ".txt");
 
 		if(fileToDelete.delete()){
 			System.err.println("delete");
@@ -90,9 +90,7 @@ public class TNotesStorage {
 		return false;
 	}
 
-//	public boolean editTask(TaskFile task) {
-//
-//	}
+
 	public TaskFile getTaskFileByName(String taskName) {
 		if(!masterList.contains(taskName)){
 			return null;
@@ -202,7 +200,7 @@ public class TNotesStorage {
 			if (!directory.exists()) {
 				directory.mkdirs();
 			}
-			File newTask = new File(directory, task.getEvent());
+			File newTask = new File(directory, task.getEvent()+ ".txt");
 
 			if (!newTask.exists()) {
 				newTask.createNewFile();
