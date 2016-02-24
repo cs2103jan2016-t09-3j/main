@@ -89,11 +89,12 @@ public class TNotesUI {
 			}
 			break;
 		case SEARCH_COMMAND:
-			ArrayList<String> arrSearch = new ArrayList<String>();
+			ArrayList<TaskFile> arrSearch = new ArrayList<TaskFile>();
 			arrSearch = logic.searchTask(commandArguments.get(0));
 			System.out.println("[SEARCH RESULT]");
 			for(int i=0; i<arrSearch.size(); i++) {
-				System.out.println(arrSearch.get(i));
+				System.out.println("[" + arrSearch.get(i).getDate() + "] " +
+						arrSearch.get(i).getEvent() + " at " + arrSearch.get(i).getTime());
 			}
 			break;
 		case SORT_COMMAND:
