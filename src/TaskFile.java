@@ -49,15 +49,15 @@ public class TaskFile {
 	// Setters
 
 	public void setEvent(String input) {
-		event = input;
+		this.event = input;
 	}
 
 	public void setDate(String input) {
-		date = input;
+		this.date = input;
 	}
 
 	public void setTime(String input) {
-		time = input;
+		this.time = input;
 	}
 
 }
