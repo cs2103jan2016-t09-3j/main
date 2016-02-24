@@ -49,21 +49,20 @@ public class TaskFile {
 	}
 
 	// Setters
-	public String setCommand(String input) {
-		return command = input;
+	public void setCommand(String input) {
+		command = input;
 	}
 
-	public String setEvent(String input) {
-		return event = input;
+	public void setEvent(String input) {
+		event = input;
 	}
 
-	public String setDate(String input) {
-		return date = input;
+	public void setDate(String input) {
+		date = input;
 	}
 
-	public String setTime(String input) {
-		return time = input;
+	public void setTime(String input) {
+		time = input;
 	}
-
 
 }

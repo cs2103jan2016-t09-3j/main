@@ -29,10 +29,11 @@ public class TNotesStorage {
 	// Constructor
 	public TNotesStorage() {
 		try{
-		masterFile = new File(masterFileName);
+		directory = new File("C:\\TNote");
+		masterFile = new File(directory, masterFileName);
 		masterFile.createNewFile();
 		masterList = new ArrayList<String>();
-		directory = new File("C:\\TNote");
+		
 		}catch(IOException ioEx){
 			
 		}
@@ -64,16 +65,15 @@ public class TNotesStorage {
 			return false;
 		}
 		return false;
-
-
 	}
 
 
-	public boolean deleteTask(TaskFile task){
-		File fileToDelete = new File(directory, task.getEvent());
-		
+	public boolean deleteTask(String task){
+		File fileToDelete = new File(directory, task);
+
 		if(fileToDelete.delete()){
-			masterList.remove(task.getEvent());
+			System.err.println("delete");
+			masterList.remove(task);
 			clearMasterFile();
 			writeListToMasterFile();
 			return true;
@@ -166,14 +166,15 @@ public class TNotesStorage {
 			fWriter = new FileWriter(newTask, true);
 
 			bWriter = new BufferedWriter(fWriter);
-
+			System.err.println(task.getEvent());
 			bWriter.append(task.getEvent());
 			bWriter.newLine();
 			bWriter.append(task.getDate());
 			bWriter.newLine();
 			bWriter.append(task.getTime());
 			bWriter.newLine();
-
+			bWriter.close();
+			System.err.println("writing");
 			return true;
 		} catch (IOException ioEx) {
 			return false;
