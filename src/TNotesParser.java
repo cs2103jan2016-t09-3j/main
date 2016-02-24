@@ -13,6 +13,7 @@ import java.util.Arrays;
 import java.time.DateTimeException;
 
 public class TNotesParser {
+	//private static ArrayList<String> list = new ArrayList<String>();
 	//date cannot be zero
 	//the first letter of the month must be capital 
 	//date cannot be separated by space
@@ -33,65 +34,59 @@ public class TNotesParser {
 			"dd MM yy","dd M yyyy", "dd MM yy", "dd MMM yyyy", 
 			"dd MMMM yy","d MMMM yyyy", "dd MMMM yyyy"
     		);
-	
+	/* 
+	 * the main is for testing 
+	 */
+	//edit call mom date 2-2-2
 	public static void main(String[] args) {
 		String output = new String();
-		for (int i = 0; i < checkCommand("save 2-2-2").size(); i++){
-			output = checkCommand("save 2-2-2").get(i);// 24 hour cloc
+		for (int i = 0; i < checkCommand("edit call mom date 2-2-2").size(); i++){
+			output = checkCommand("edit call mom date 2-2-2").get(i);// 24 hour cloc
 			System.out.println(output);
 		}
 	}
-
+	/*
+	 * this function will recognize all the valid commands
+	 */
 	public static ArrayList<String> checkCommand(String inputString) {
 		ArrayList<String> list = new ArrayList<String>();
 		//String errorMessage = "invalid command";
 		String arr[] = inputString.split(" ");
 		String firstWord = arr[0].toLowerCase();
-		//String secWord = arr[1].toLowerCase();
 		String secWord = arr[1];
 		// System.out.println(secWord);
 		if (firstWord.equals("add")) {
-			String title = new String();
+			
 			list.add(firstWord);
-			for (int j = 0; j < arr.length; j++) {
-
-				if (arr[j].equals("due")) {
-					for (int num = 1; num <= j - 1; num++) {
-						title += "" + arr[num] + " ";
-					}
-					list.add(title);
-					String addDate = formatDate(arr[j + 1]);
-					list.add(addDate);
-				} else if (arr[j].equals("at")) {
-					list.add(arr[j + 1]);
-				} else if (arr[j].equals("every")) {
-					for (int num = 0; num <= j - 1; num++) {
-						title += "" + arr[num] + " ";
-					}
-					list.add(title);
-					list.add(arr[j + 1]);
-				}
-
-			}
+			list.addAll(addCommand(arr));
+			
 			return list;
 		} else if (firstWord.equals("viewtoday")) {
+			
 			list.add(firstWord);
 			list.add(secWord);
+			
 			return list;
 		} else if (firstWord.equals("saveddirectory")) {
+			
 			list.add(firstWord);
 			list.add(secWord);
+			
 			return list;
 		}else if (firstWord.equals("sort")) {
+			
 			list.add(firstWord);
 			list.add(secWord);
+			
 			return list;
 		} else if (firstWord.equals("search")) {
+			
 			list.add(firstWord);
 			list.add(secWord);
+			
 			return list;
 		}
-		// do all possibilities for dates
+
 		else if (firstWord.equals("view")) {
 			if (isLetters(secWord.trim()) == 1) {
 				for (int i = 0; i < arr.length; i++) {
@@ -126,48 +121,16 @@ public class TNotesParser {
 			list.add(title);
 			return list;
 		} else if (firstWord.equals("edit")) {
-			list.add(firstWord);
-			String title_beforeDate = new String();
-			String title_afterDate = new String();
-			String title_before = new String();
-			String title_after = new String();
-			//System.out.println(arr[3]);
-			for (int  f= 1;  f< arr.length ; f++){
-				if (arr[f].equals("time") || arr[f].equals("details")) {
-					for (int num1 = 1; num1 <= f - 1; num1++) {
-						title_before += "" + arr[num1] + " ";
-					}
-					//System.out.println(title_beforeDate);
-					list.add(title_before);
-					list.add(arr[f]);//"word"
-					for(int num2 = f+1; num2<arr.length; num2++){
-						title_after +=arr[num2]+" ";
-					}
-					
-						list.add(title_after);
-					
-						
-					}
-
-				else if(arr[f].equals("date")){
-						for (int num1 = 1; num1 <= f - 1; num1++) {
-							title_beforeDate += "" + arr[num1] + " ";
-						}
-						//System.out.println(title_beforeDate);
-						list.add(title_beforeDate);
-						list.add(arr[f]);//"word"
-						for(int num2 = f+1; num2<arr.length; num2++){
-							title_afterDate +=arr[num2]+" ";
-						}
-						String editDate = formatDate(title_afterDate.trim());
-						list.add(editDate);
-				}
-			}
-			return list;
 			
+			list.add(firstWord);
+			list.addAll(editCommand(arr));
+			
+			return list;		
 		} else if (firstWord.equals("save")) {
+			
 			list.add(firstWord);
 			list.add(secWord);
+			
 			return list;
 		} else {
 			String title = new String();
@@ -195,6 +158,74 @@ public class TNotesParser {
 
 		return list;
 	}
+	
+	public static ArrayList<String> editCommand(String[] arr){
+		ArrayList<String> list = new ArrayList<String>();
+		String title_beforeDate = new String();
+		String title_afterDate = new String();
+		String title_before = new String();
+		String title_after = new String();
+		//System.out.println(arr[3]);
+		for (int  f= 1;  f< arr.length ; f++){
+			if (arr[f].equals("time") || arr[f].equals("details")) {
+				for (int num1 = 1; num1 <= f - 1; num1++) {
+					title_before += "" + arr[num1] + " ";
+				}
+				//System.out.println(title_beforeDate);
+				list.add(title_before);
+				list.add(arr[f]);//"word"
+				for(int num2 = f+1; num2<arr.length; num2++){
+					title_after +=arr[num2]+" ";
+				}
+				
+					list.add(title_after);
+				
+					
+				}
+
+			else if(arr[f].equals("date")){
+					for (int num1 = 1; num1 <= f - 1; num1++) {
+						title_beforeDate += "" + arr[num1] + " ";
+					}
+					//System.out.println(title_beforeDate);
+					list.add(title_beforeDate);
+					list.add(arr[f]);//"word"
+					for(int num2 = f+1; num2<arr.length; num2++){
+						title_afterDate +=arr[num2]+" ";
+					}
+					String editDate = formatDate(title_afterDate.trim());
+					list.add(editDate);
+			}
+		}
+		return list;
+	}
+	
+	public static ArrayList<String> addCommand(String[] arr){
+		String title = new String();
+		ArrayList<String> list = new ArrayList<String>();
+		for (int j = 0; j < arr.length; j++) {
+
+			if (arr[j].equals("due")) {
+				for (int num = 1; num <= j - 1; num++) {
+					title += "" + arr[num] + " ";
+				}
+				list.add(title);
+				String addDate = formatDate(arr[j + 1]);
+				list.add(addDate);
+			} else if (arr[j].equals("at")) {
+				list.add(arr[j + 1]);
+			} else if (arr[j].equals("every")) {
+				for (int num = 0; num <= j - 1; num++) {
+					title += "" + arr[num] + " ";
+				}
+				list.add(title);
+				list.add(arr[j + 1]);
+			}
+			
+		}
+		return list;
+	}
+	
 	public static String formatDate(String inputDate){
 	      LocalDate parsedDate = null;	
 	      String date = new String();

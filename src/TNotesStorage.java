@@ -42,6 +42,7 @@ public class TNotesStorage {
 
 	}
 
+
 	public static void main (String[] args){
 		TNotesStorage tNoteStore = new TNotesStorage();
 		TaskFile task1 = new TaskFile("add", "pie.txt", "02/09/16", "12:00");
@@ -64,7 +65,9 @@ public class TNotesStorage {
 		}
 		return false;
 
+
 	}
+
 
 	public boolean deleteTask(TaskFile task){
 		File fileToDelete = new File(directory, task.getEvent());
@@ -104,6 +107,7 @@ public class TNotesStorage {
 		for(String taskName: masterList){
 		bWriter.append(taskName);
 		bWriter.newLine();
+
 		}
 		bWriter.close();
 		fWriter.close();
@@ -114,6 +118,7 @@ public class TNotesStorage {
 		}
 	}
 	private boolean writeTaskToMasterFile(TaskFile task) {
+
 
 		try {
 			fWriter = new FileWriter(masterFile, true);
@@ -129,10 +134,13 @@ public class TNotesStorage {
 		} catch (IOException ioEx) {
 			System.err.println("Write fail");
 			return false;
+
 		}
 	}
 
+
 	public boolean createTaskFile(File directory, TaskFile task) {
+
 		try {
 			if (!directory.exists()) {
 				directory.mkdirs();
@@ -150,6 +158,7 @@ public class TNotesStorage {
 			return false;
 		}
 	}
+
 
 	public boolean writeToTaskFile(File newTask, TaskFile task) {
 
@@ -172,6 +181,7 @@ public class TNotesStorage {
 
 	}
 
+
 	public ArrayList<String> readFromMasterFile() {
 		try{
 		fReader = new FileReader(masterFile);
@@ -183,8 +193,10 @@ public class TNotesStorage {
 			while (textInFile != null) {
 				contentInFile.add(textInFile);
 				textInFile = bReader.readLine();
+
 			}
 		}
+
 		bReader.close();
 		
 		return contentInFile;
