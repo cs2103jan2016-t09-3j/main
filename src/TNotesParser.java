@@ -36,8 +36,8 @@ public class TNotesParser {
 	
 	public static void main(String[] args) {
 		String output = new String();
-		for (int i = 0; i < checkCommand("edit call mom date 2-2-2").size(); i++){
-			output = checkCommand("edit call mom date 2-2-2").get(i);// 24 hour cloc
+		for (int i = 0; i < checkCommand("save 2-2-2").size(); i++){
+			output = checkCommand("save 2-2-2").get(i);// 24 hour cloc
 			System.out.println(output);
 		}
 	}
@@ -75,6 +75,7 @@ public class TNotesParser {
 			}
 			return list;
 		} else if (firstWord.equals("viewtoday")) {
+			list.add(firstWord);
 			list.add(secWord);
 			return list;
 		} else if (firstWord.equals("saveddirectory")) {
