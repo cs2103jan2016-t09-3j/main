@@ -2,20 +2,16 @@ import java.util.ArrayList;
 
 public class TNotesLogic {
 	TNotesStorage storage = new TNotesStorage();
-	
 
-	private static final String MESSAGE_ADD ="%s successfully added";
+	private static final String MESSAGE_ADD = "%s successfully added";
 	private static final String MESSAGE_DISPLAY = "[DISPLAY MODE]\n";
-	
-	
-	private static final String MESSAGE_INVALIDCOMMAND_ERROR ="Invalid Command!\n";
-	private static final String MESSAGE_DISPLAY_ERROR ="%s is currently empty";
-	
-	
+
+	private static final String MESSAGE_INVALIDCOMMAND_ERROR = "Invalid Command!\n";
+	private static final String MESSAGE_DISPLAY_ERROR = "%s is currently empty";
+
 	// File name
-		private static  final String fileName = "MasterList.txt"; //Contains all events
-
-
+	private static final String fileName = "MasterList.txt"; // Contains all
+																// events
 
 	public boolean addTask(ArrayList<String> fromParser) {
 		TaskFile currentFile = new TaskFile(fromParser);
@@ -32,8 +28,25 @@ public class TNotesLogic {
 	}
 
 	public boolean editTask(ArrayList<String> fromParser) {
-		
-		return true;
+		String type = fromParser.get(2);
+		String title = fromParser.get(1);
+		TaskFile currentFile = storage.getTaskFileByName(title);
+		switch (type) {
+		case ("time"):
+			currentFile = storage.deleteTask(currentFile.get(2))
+			storage.addTask(currentFile);
+			return true;
+		case ("date"):
+			currentFile = storage.deleteTask(currentFile.get(1))
+			storage.addTask(currentFile);
+			return true;
+		case ("details"):
+			currentFile = storage.deleteTask(currentFile.get(0))
+			storage.addTask(currentFile);
+			return true;
+		default:
+			return false;
+		}
 	}
 
 	public boolean searchTask(String lineOfText) {
