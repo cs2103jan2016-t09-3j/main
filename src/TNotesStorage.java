@@ -48,7 +48,11 @@ public class TNotesStorage {
 	public TNotesStorage() {
 		list = new ArrayList<String>();
 	}
-
+	
+	public static ArrayList<String> getList(){
+		return list;
+	}
+	
 	// TESTING
 	public static void main(String[] args) {
 
