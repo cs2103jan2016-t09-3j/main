@@ -6,6 +6,7 @@ public class TNotesUI {
 	enum COMMAND_TYPE {
 		ADD_COMMAND, EDIT_COMMAND, DELETE_COMMAND, VIEW_COMMAND, INVALID, EXIT
 		}
+	
 	private static final String MESSAGE_WELCOME = "Welcome to TextBuddy. %s is ready for use\n";
 	private static final String MESSAGE_COMMAND = "command: \n";
 	private static final String MESSAGE_DISPLAYEMPTY = "%s is currently empty!\n";
@@ -45,15 +46,14 @@ public class TNotesUI {
 	public String getWelcomeMessage (){
 		return "Welcome to TNote. What would you like to do today?";
 	}
+	
 	protected String executeCommand(String userInput){
 		ArrayList<String> userCommandSplit = new ArrayList<String>();
 		userCommandSplit = TNotesParser.checkCommand(userInput);
 		commandString = getFirstWord(userCommandSplit);
 		taskName = getTaskName(userCommandSplit);
 		commandArguments = removeFirstWord(userCommandSplit);
-		
-		
-		
+			
 		COMMAND_TYPE command = determineCommandType(commandString);
 		
 		switch(command){
