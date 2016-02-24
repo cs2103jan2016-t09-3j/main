@@ -1,80 +1,69 @@
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class TaskFile {
-	private static String command;
-	private static String event;
-	private static String date; 
-	private static String time;	
-	private static String searchKeyword;
-	private static int indexToDelete;
-	
-	
+	private String command;
+	private String event;
+	private String date;
+	private String time;
+
 	// Constructor
-	public TaskFile(){
+	public TaskFile() {
 		setCommand("");
 		setEvent("");
 		setDate("");
 		setTime("");
-		setSearchKeyword("");
-		setIndexToDelete(0);
 	}
 	
-	public TaskFile (ArrayList<String> list){
+	public TaskFile(String command, String event, String date, String time){
+		setCommand(command);
+		setEvent(event);
+		setDate(date);
+		setTime(time);
+	}
+	
+	public TaskFile(ArrayList<String> list) {
 		setCommand(list.get(0));
 		setEvent(list.get(1));
 		setDate(list.get(2));
 		setTime(list.get(3));
 	}
-	
+
 	// Getters
-	public static String getCommand() {
+	public String getCommand() {
 		return command;
 	}
-	
-	public static String getEvent(){
+
+	public String getEvent() {
 		return event;
 	}
-	
-	public static String getTime(){
+
+	public String getTime() {
 		return time;
 	}
 
-	public static String getDate() {	
+	public String getDate() {
 		return date;
 	}
-	
-	public static String getSearchKeyword(){
-		return searchKeyword;
-	}
-	
-	public static int getIndexToDelete(){
-		return indexToDelete;
-	}
-	
+
 	// Setters
-	public static String setCommand(String input){
+	public String setCommand(String input) {
 		return command = input;
 	}
 
-	public static String setEvent(String input){
+	public String setEvent(String input) {
 		return event = input;
 	}
-	
-	public static String setDate(String input){
+
+	public String setDate(String input) {
 		return date = input;
 	}
-	
-	public static String setTime(String input){
+
+	public String setTime(String input) {
 		return time = input;
 	}
-	
-	public static String setSearchKeyword(String input){
-		return searchKeyword = input;
-	}
-	
-	public static int setIndexToDelete(int input){
-		return indexToDelete = input;
-	}
+
 
 }
