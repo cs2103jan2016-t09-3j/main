@@ -94,7 +94,7 @@ public class TNotesUI {
 			System.out.println("[SEARCH RESULT]");
 			for(int i=0; i<arrSearch.size(); i++) {
 				System.out.println("[" + arrSearch.get(i).getDate() + "] " +
-						arrSearch.get(i).getEvent() + " at " + arrSearch.get(i).getTime());
+						arrSearch.get(i).getTask() + " at " + arrSearch.get(i).getTime());
 			}
 			break;
 		case SORT_COMMAND:

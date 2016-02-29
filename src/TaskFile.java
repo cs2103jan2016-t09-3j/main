@@ -5,37 +5,42 @@ import java.util.ArrayList;
 
 public class TaskFile {
 	
-	private String event;
+	private String task;
 	private String date;
 	private String time;
+	private boolean isDone;
 
 	// Constructor
 	public TaskFile() {
 		
-		setEvent("");
+		setTask("");
 		setDate("");
 		setTime("");
+		setIsDone(false);
+		
 	}
 	
-	public TaskFile(String event, String date, String time){
+	public TaskFile(String task, String date, String time){
 		
-		setEvent(event);
+		setTask(task);
 		setDate(date);
 		setTime(time);
+		setIsDone(false);
 	}
 	
 	public TaskFile(ArrayList<String> list) {
 		
-		setEvent(list.get(0));
+		setTask(list.get(0));
 		setDate(list.get(1));
 		setTime(list.get(2));
+		setIsDone(false);
 	}
 
 	// Getters
 	
 
-	public String getEvent() {
-		return event;
+	public String getTask() {
+		return task;
 	}
 
 	public String getTime() {
@@ -45,19 +50,34 @@ public class TaskFile {
 	public String getDate() {
 		return date;
 	}
+	
+	public Boolean getIsDone() {
+		return isDone;
+	}
 
 	// Setters
 
-	public void setEvent(String input) {
-		this.event = input;
+	public void setTask(String task) {
+		this.task = task;
 	}
 
-	public void setDate(String input) {
-		this.date = input;
+	public void setDate(String date) {
+		this.date = date;
 	}
 
-	public void setTime(String input) {
-		this.time = input;
+	public void setTime(String time) {
+		this.time = time;
+	}
+	
+	public void setIsDone(Boolean status) {
+		isDone = status;
+	}
+	
+	@Override
+	public String toString(){
+		String taskFileInString = getTask() + "\n" + getDate() + "\n" + getTime() + "\n" + getIsDone().toString();
+		
+		return taskFileInString;
 	}
 
 }

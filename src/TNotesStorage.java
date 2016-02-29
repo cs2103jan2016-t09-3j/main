@@ -51,18 +51,27 @@ public class TNotesStorage {
 		}
 	}
 
+	public boolean changeDirectory(String newDirectory) {
+		File oldDirectory = directory;
+		
+		this.directory = new File(newDirectory);
+		
+		return true;
+	}
 
+	
+	
 	public boolean addTask(TaskFile task) {
 
-		if (!masterList.contains(task.getEvent())) {
-			masterList.add(task.getEvent());
+		if (!masterList.contains(task.getTask())) {
+			masterList.add(task.getTask());
 			if (writeTaskToMasterFile(task)) {
 				if (createTaskFile(directory, task)) {
 					return true;
 				}
 				return false;
 			}
-			masterList.remove(task.getEvent());
+			masterList.remove(task.getTask());
 			return false;
 		}
 		return false;
@@ -112,9 +121,10 @@ public class TNotesStorage {
 			}
 			bReader.close();
 			
-			taskFile.setEvent(taskFileInfoArray.get(0));
+			taskFile.setTask(taskFileInfoArray.get(0));
 			taskFile.setDate(taskFileInfoArray.get(1));
 			taskFile.setTime(taskFileInfoArray.get(2));
+			taskFile.setIsDone(Boolean.valueOf(taskFileInfoArray.get(3)));
 
 			return taskFile;
 		} catch (IOException ioEx) {
@@ -160,7 +170,7 @@ public class TNotesStorage {
 			fWriter = new FileWriter(masterFile, true);
 			bWriter = new BufferedWriter(fWriter);
 
-			bWriter.append(task.getEvent());
+			bWriter.append(task.getTask());
 			bWriter.newLine();
 
 			bWriter.close();
@@ -179,7 +189,7 @@ public class TNotesStorage {
 			if (!directory.exists()) {
 				directory.mkdirs();
 			}
-			File newTask = new File(directory, task.getEvent() + ".txt");
+			File newTask = new File(directory, task.getTask() + ".txt");
 
 			if (!newTask.exists()) {
 				newTask.createNewFile();
@@ -199,13 +209,8 @@ public class TNotesStorage {
 			fWriter = new FileWriter(newTask, true);
 
 			bWriter = new BufferedWriter(fWriter);
-			System.err.println(task.getEvent());
-			bWriter.append(task.getEvent());
-			bWriter.newLine();
-			bWriter.append(task.getDate());
-			bWriter.newLine();
-			bWriter.append(task.getTime());
-			bWriter.newLine();
+			System.err.println(task.getTask());
+			bWriter.append(task.toString());
 			bWriter.close();
 			System.err.println("writing");
 			return true;
