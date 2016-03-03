@@ -17,6 +17,13 @@ public class TNotesParser {
 	//date cannot be zero
 	//the first letter of the month must be capital 
 	//date cannot be separated by space
+	//comment
+	//add call mom due 2-2-2 at 12:00
+	//edit call mom date/details/time 2-2-2
+	//search call mom
+	//view 2-2-2
+	//view call mom 
+	//delete call mom
 	private static final List<String> DATE_POSSIBLE_FORMATE = Arrays.asList(
 			"d/M/y", "d/M/yyyy", "d/MM/yy","d/MMM/yy", "d/MMM/yyyy",
 			"dd/MM/yy","dd/M/yyyy", "dd/MM/yy", "dd/MMM/yyyy", 
