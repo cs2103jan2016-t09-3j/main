@@ -68,7 +68,7 @@ public class TNotesUI {
 			}
 			break;
 		case EDIT_COMMAND:
-			if(logic.editTask(commandArguments)){
+			if(logic.editTask(userCommandSplit)){
 				result = "successfully edited";
 			} else {
 				result = "edit failed";
