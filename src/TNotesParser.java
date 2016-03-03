@@ -40,8 +40,8 @@ public class TNotesParser {
 	//edit call mom date 2-2-2
 	public static void main(String[] args) {
 		String output = new String();
-		for (int i = 0; i < checkCommand("search call mom").size(); i++){
-			output = checkCommand("search call mom").get(i);// 24 hour cloc
+		for (int i = 0; i < checkCommand("edit call mom haha date 2-2-2").size(); i++){
+			output = checkCommand("edit call mom haha date 2-2-2").get(i);// 24 hour cloc
 			System.out.println(output);
 		}
 	}
@@ -55,6 +55,7 @@ public class TNotesParser {
 		String firstWord = arr[0].toLowerCase();
 		String secWord = arr[1];
 		// System.out.println(secWord);
+		//add call mom due 2-2-2 at 12:00
 		if (firstWord.equals("add")) {
 			
 			list.add(firstWord);
@@ -76,9 +77,10 @@ public class TNotesParser {
 		}else if (firstWord.equals("sort")) {
 			
 			list.add(firstWord);
-			list.add(secWord);
+			//list.add(secWord);
 			
 			return list;
+			//search call mom
 		} else if (firstWord.equals("search")) {
 			
 			list.add(firstWord);
@@ -91,7 +93,8 @@ public class TNotesParser {
 			
 			return list;
 		}
-
+		// view 2-2-2
+		//view call mom
 		else if (firstWord.equals("view")) {
 			if (isLetters(secWord.trim()) == 1) {
 				for (int i = 0; i < arr.length; i++) {
@@ -117,6 +120,7 @@ public class TNotesParser {
 				return list;
 				
 			}
+		//delete call mom
 		} else if (firstWord.equals("delete")) {
 			String title = new String();
 			list.add(firstWord);
@@ -125,6 +129,7 @@ public class TNotesParser {
 			}
 			list.add(title);
 			return list;
+		//edit call mom date/details/time string
 		} else if (firstWord.equals("edit")) {
 			
 			list.add(firstWord);
