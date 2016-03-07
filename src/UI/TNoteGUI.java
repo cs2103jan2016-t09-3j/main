@@ -1,3 +1,4 @@
+package UI;
 import javax.swing.JFrame;
 
 public class TNoteGUI extends JFrame {
