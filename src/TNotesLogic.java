@@ -35,11 +35,11 @@ public class TNotesLogic {
 			storage.deleteTask(title);
 			storage.addTask(currentFile);
 			return true;
-////		case ("details"):
-////			currentFile.setDetails(newText);
-////			storage.deleteTask(title);
-////			storage.addTask(currentFile);
-//			return true;
+		case ("details"):
+			currentFile.setDetails(newText);
+			storage.deleteTask(title);
+			storage.addTask(currentFile);
+			return true;
 		default:
 			return false;
 		}
