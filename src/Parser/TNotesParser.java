@@ -1,3 +1,4 @@
+package Parser;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -15,9 +16,9 @@ import java.time.DateTimeException;
 public class TNotesParser {
 	//private static ArrayList<String> list = new ArrayList<String>();
 	//date cannot be zero
-	//the first letter of the month must be capital 
+	//the first letter of the month must be a capital letter
 	//date cannot be separated by space
-	//comment
+	//comment:
 	//add call mom due 2-2-2 at 12:00
 	//edit call mom date/details/time 2-2-2
 	//search call mom
