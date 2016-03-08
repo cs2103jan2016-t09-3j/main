@@ -1,5 +1,10 @@
+package Logic;
+
 import java.util.ArrayList;
 import java.util.Collections;
+
+import Object.TaskFile;
+import Storage.TNotesStorage;
 
 public class TNotesLogic {
 	TNotesStorage storage = new TNotesStorage();

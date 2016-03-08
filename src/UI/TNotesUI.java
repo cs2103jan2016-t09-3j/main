@@ -1,5 +1,10 @@
+package UI;
 import java.util.ArrayList;
 import java.util.Scanner;
+
+import Logic.TNotesLogic;
+import Object.TaskFile;
+import Parser.TNotesParser;
 
 public class TNotesUI {
 

@@ -1,3 +1,4 @@
+package Storage;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -6,60 +7,96 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonStreamParser;
+
+import Object.TaskFile;
+
 
 public class TNotesStorage {
 
+	private static final String DEFAULT_FOLDER = "C:\\TNote";
 	/*
 	 * This program can create a file, write on it, display its contents, delete
 	 * , sort alphabetically, and search. The file saves after every command
 	 * that the user types.
 	 * 
+	 * To Add: Folder class, change master list to contain name + date to facilitate this
+	 * 
 	 */
-	ArrayList<String> masterList = new ArrayList<String>();
-	File directory;
-	String masterFileName = "masterfile.txt";
-	File masterFile;
+	private ArrayList<String> masterList = new ArrayList<String>();
+	private File directory;
+	private String masterFileName = "masterfile.txt";
+	private File masterFile;
 
-	BufferedWriter bWriter;
-	FileWriter fWriter;
-	BufferedReader bReader;
-	FileReader fReader;
+	private BufferedWriter bWriter;
+	private FileWriter fWriter;
+	private BufferedReader bReader;
+	private FileReader fReader;
+	private Gson gsonHelper;
 
 	// Constructor
 
 	public TNotesStorage(String directory) {
 		try {
 			this.directory = new File(directory);
+			createDirectory();
 			masterFile = new File(directory, masterFileName);
 			masterFile.createNewFile();
 			masterList = readFromMasterFile();
-
+			gsonHelper = new Gson();
 		} catch (IOException ioEx) {
 			System.err.println("Error creating master file");
 		}
 	}
 
 	public TNotesStorage() {
-		try {
-			this.directory = new File("C:\\TNote");
-			masterFile = new File(directory, masterFileName);
-			masterFile.createNewFile();
-			masterList = readFromMasterFile();
-
-		} catch (IOException ioEx) {
-
-		}
+			this(DEFAULT_FOLDER);	
 	}
 
-	public boolean changeDirectory(String newDirectory) {
-		File oldDirectory = directory;
+//	public boolean changeDirectory(String newDirectory) {
+//		File oldDirectory = directory;
+//		
+//		this.directory = new File(newDirectory);
+//		
+//		return true;
+//	}
+	
+	public boolean createDirectory() {
+		if(!directory.exists()) {
+			return directory.mkdirs();
+		}
 		
-		this.directory = new File(newDirectory);
+		return false;
+	}
+	
+	public boolean clearMasterDirectory() {
+		
+		if(clearFilesInFolder(directory) && directory.delete()){
+			return true;
+		}
+		
+		System.err.println("directory delete failed");
+		return false;
+	}
+	
+	public boolean clearFilesInFolder (File parentFile) {
+		
+		for(File file:parentFile.listFiles()) {
+			if(file.isDirectory()){
+				if(!clearFilesInFolder(file)) {
+					System.err.println("fail to delete recursively file");
+					return false;
+				}
+			}
+			if(!file.delete()) {
+				System.err.println("fail to delete parent direc" + file.getAbsolutePath());
+				return false;
+			}
+		}
 		
 		return true;
 	}
-
-	
 	
 	public boolean addTask(TaskFile task) {
 
@@ -107,27 +144,38 @@ public class TNotesStorage {
 	public TaskFile readTaskFile(File taskFileToBeFound) {
 		try {
 			fReader = new FileReader(taskFileToBeFound);
-			bReader = new BufferedReader(fReader);
-			ArrayList<String> taskFileInfoArray = new ArrayList<String>();
-			
+//			bReader = new BufferedReader(fReader);
 			TaskFile taskFile = new TaskFile();
-
-			if (bReader.ready()) {
-				String taskFileInfo = bReader.readLine();
-				while (taskFileInfo != null) {
-					taskFileInfoArray.add(taskFileInfo);
-					taskFileInfo = bReader.readLine();
-				}
-			}
-			bReader.close();
 			
-			taskFile.setTask(taskFileInfoArray.get(0));
-			taskFile.setDate(taskFileInfoArray.get(1));
-			taskFile.setTime(taskFileInfoArray.get(2));
-			taskFile.setIsDone(Boolean.valueOf(taskFileInfoArray.get(3)));
-
+			JsonStreamParser jParser = new JsonStreamParser(fReader);
+			
+			if(jParser.hasNext()) {
+				taskFile = gsonHelper.fromJson(jParser.next(), TaskFile.class);
+			}
+			
+//			ArrayList<String> taskFileInfoArray = new ArrayList<String>();
+//			
+//			
+//
+//			if (bReader.ready()) {
+//				String taskFileInfo = bReader.readLine();
+//				while (taskFileInfo != null) {
+//					taskFileInfoArray.add(taskFileInfo);
+//					taskFileInfo = bReader.readLine();
+//				}
+//			}
+//			bReader.close();
+//			
+//			taskFile.setTask(taskFileInfoArray.get(0));
+//			taskFile.setDate(taskFileInfoArray.get(1));
+//			taskFile.setTime(taskFileInfoArray.get(2));
+//			taskFile.setIsDone(Boolean.valueOf(taskFileInfoArray.get(3)));
+			
+			fReader.close();
+			
 			return taskFile;
 		} catch (IOException ioEx) {
+			System.err.println("IOException in readTaskFile");
 			return null;
 		}
 	}
@@ -206,13 +254,15 @@ public class TNotesStorage {
 	public boolean writeToTaskFile(File newTask, TaskFile task) {
 
 		try {
-			fWriter = new FileWriter(newTask, true);
+			fWriter = new FileWriter(newTask);
 
 			bWriter = new BufferedWriter(fWriter);
-			System.err.println(task.getTask());
-			bWriter.append(task.toString());
+			
+			
+			String jsonString = gsonHelper.toJson(task);
+			bWriter.write(jsonString);
 			bWriter.close();
-			System.err.println("writing");
+			
 			return true;
 			
 		} catch (IOException ioEx) {

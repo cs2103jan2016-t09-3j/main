@@ -1,5 +1,8 @@
+package Main;
 import java.util.ArrayList;
 import java.util.Scanner;
+
+import UI.TNotesUI;
 
 public class TNotesMain {
 	
