@@ -27,6 +27,15 @@ public class TNotesParser {
 	 *add call mom due 2-2-2 at 12:00 important
 	 *add call mom
 	 *add call mom important
+	 *add call mom from 2-2-2 at 12:00 to 3-3-3 at 13:00
+	 *add call mom from 2-2-2 at 12:00 to 3-3-3 at 13:00
+	 *add call mom from 2-2-2 at 12:00 to 3-3-3 at 13:00 details haha hahaha
+		call mom 
+		0002-02-02
+		12:00
+		0003-03-03
+		13:00
+		haha hahaha 
 	 *
 	 *still haven not do all possibilities for important and factoring
 	 */
@@ -69,8 +78,8 @@ public class TNotesParser {
 	 */
 	public static void main(String[] args) {
 		String output = new String();
-		for (int i = 0; i < checkCommand("add call mom due 2-2-2 at 12:00 important").size(); i++){
-			output = checkCommand("add call mom due 2-2-2 at 12:00 important").get(i);// 24 hour cloc
+		for (int i = 0; i < checkCommand("add call mom from 2-2-2 at 12:00 to 3-3-3 at 13:00").size(); i++){
+			output = checkCommand("add call mom from 2-2-2 at 12:00 to 3-3-3 at 13:00").get(i);// 24 hour cloc
 			System.out.println(output);
 		}
 	}
@@ -236,6 +245,7 @@ public class TNotesParser {
 	
 	public static ArrayList<String> addCommand(String[] arr){
 		String title = new String();
+		String details = new String();
 		ArrayList<String> list = new ArrayList<String>();
 		String titleOrig = new String();
 		if(arr[arr.length-1].equals("important")){
@@ -248,39 +258,6 @@ public class TNotesParser {
 				titleOrig += "" + arr[h] + " ";
 			}
 		}
-//		for(int y = 0; y < arr.length; y++){
-//			if (arr[y].equals("from")) {
-//				for (int num = 1; num <= y - 1; num++) {
-//					title += "" + arr[num] + " ";
-//				}
-//				list.add(title);
-//				String addDate = formatDate(arr[y + 1]);
-//				list.add(addDate);
-//			} else if (arr[y].equals("at")) {
-//				list.add(arr[y + 1]);
-//			}else if (arr[y].equals("from")) {
-//				for (int num = 1; num <= y - 1; num++) {
-//					title += "" + arr[num] + " ";
-//				}
-//				list.add(title);
-//				String addDate = formatDate(arr[y + 1]);
-//				list.add(addDate);
-//			} else if (arr[y].equals("at")) {
-//				list.add(arr[y + 1]);
-//			}
-//			} else if (arr[y].equals("to")) {
-//				if (arr[y].equals("from")) {
-//					for (int num = 1; num <= y - 1; num++) {
-//						title += "" + arr[num] + " ";
-//					}
-//					list.add(title);
-//					String addDate = formatDate(arr[y + 1]);
-//					list.add(addDate);
-//				} else if (arr[y].equals("at")) {
-//					list.add(arr[y + 1]);
-//				}
-//			}
-		//}
 		for (int j = 0; j < arr.length; j++) {
 
 			if (arr[j].equals("due")) {
@@ -298,6 +275,21 @@ public class TNotesParser {
 				}
 				list.add(title);
 				list.add(arr[j + 1]);
+			}else if(arr[j].equals("from")){
+				for (int num = 1; num <= j - 1; num++) {
+					title += "" + arr[num] + " ";
+				}
+				list.add(title);
+				String addDate = formatDate(arr[j + 1]);
+				list.add(addDate);
+			}else if(arr[j].equals("to")){
+				String addDate = formatDate(arr[j + 1]);
+				list.add(addDate);
+			}else if(arr[j].equals("details")){
+				for (int num = j+1; num < arr.length; num++) {
+					details += "" + arr[num] + " ";
+				}
+				list.add(details);
 			}
 			
 		}
