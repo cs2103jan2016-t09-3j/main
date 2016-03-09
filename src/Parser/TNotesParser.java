@@ -25,6 +25,7 @@ public class TNotesParser {
 	//view 2-2-2
 	//view call mom 
 	//delete call mom
+	//Add call mom due at important/must do/compulsory/die die must do/ (imp…all possible short form)
 	private static final List<String> DATE_POSSIBLE_FORMATE = Arrays.asList(
 			"d/M/y", "d/M/yyyy", "d/MM/yy","d/MMM/yy", "d/MMM/yyyy",
 			"dd/MM/yy","dd/M/yyyy", "dd/MM/yy", "dd/MMM/yyyy", 
