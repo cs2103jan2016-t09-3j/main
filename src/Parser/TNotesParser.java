@@ -14,18 +14,39 @@ import java.util.Arrays;
 import java.time.DateTimeException;
 
 public class TNotesParser {
-	//private static ArrayList<String> list = new ArrayList<String>();
 	//date cannot be zero
 	//the first letter of the month must be a capital letter
 	//date cannot be separated by space
-	//comment:
-	//add call mom due 2-2-2 at 12:00
-	//edit call mom date/details/time 2-2-2
-	//search call mom
-	//view 2-2-2
-	//view call mom 
-	//delete call mom
-	//Add call mom due at important/must do/compulsory/die die must do/ (imp…all possible short form)
+	
+	////////////////////////////////////////////////////////
+	
+	
+	/*command word: add
+	 *add call mom due 2-2-2 at 12:00
+	 *add call important mom due 2-2-2  at 12:00
+	 *add call mom due 2-2-2 at 12:00 important
+	 *add call mom
+	 *add call mom important
+	 *
+	 *still haven not do all possibilities for important and factoring
+	 */
+	
+	/*command word: edit
+	 * edit call mom date/details/time 2-2-2
+	 */
+	
+	/*command word: search
+	 * search call mom
+	 */
+	
+	/*command word: view
+	 * view 2-2-2
+	 * view call mom 
+	 */
+	
+	/*command word: delete
+	 * delete call mom
+	 */
 	private static final List<String> DATE_POSSIBLE_FORMATE = Arrays.asList(
 			"d/M/y", "d/M/yyyy", "d/MM/yy","d/MMM/yy", "d/MMM/yyyy",
 			"dd/MM/yy","dd/M/yyyy", "dd/MM/yy", "dd/MMM/yyyy", 
@@ -46,11 +67,10 @@ public class TNotesParser {
 	/* 
 	 * the main is for testing 
 	 */
-	//edit call mom date 2-2-2
 	public static void main(String[] args) {
 		String output = new String();
-		for (int i = 0; i < checkCommand("edit call mom haha date 2-2-2").size(); i++){
-			output = checkCommand("edit call mom haha date 2-2-2").get(i);// 24 hour cloc
+		for (int i = 0; i < checkCommand("add call mom due 2-2-2 at 12:00 important").size(); i++){
+			output = checkCommand("add call mom due 2-2-2 at 12:00 important").get(i);// 24 hour cloc
 			System.out.println(output);
 		}
 	}
@@ -64,7 +84,6 @@ public class TNotesParser {
 		String firstWord = arr[0].toLowerCase();
 		String secWord = arr[1];
 		// System.out.println(secWord);
-		//add call mom due 2-2-2 at 12:00
 		if (firstWord.equals("add")) {
 			
 			list.add(firstWord);
@@ -102,8 +121,6 @@ public class TNotesParser {
 			
 			return list;
 		}
-		// view 2-2-2
-		//view call mom
 		else if (firstWord.equals("view")) {
 			if (isLetters(secWord.trim()) == 1) {
 				for (int i = 0; i < arr.length; i++) {
@@ -129,7 +146,6 @@ public class TNotesParser {
 				return list;
 				
 			}
-		//delete call mom
 		} else if (firstWord.equals("delete")) {
 			String title = new String();
 			list.add(firstWord);
@@ -138,7 +154,6 @@ public class TNotesParser {
 			}
 			list.add(title);
 			return list;
-		//edit call mom date/details/time string
 		} else if (firstWord.equals("edit")) {
 			
 			list.add(firstWord);
@@ -222,6 +237,50 @@ public class TNotesParser {
 	public static ArrayList<String> addCommand(String[] arr){
 		String title = new String();
 		ArrayList<String> list = new ArrayList<String>();
+		String titleOrig = new String();
+		if(arr[arr.length-1].equals("important")){
+			for (int h = 1; h < arr.length-1; h++) {
+				titleOrig += "" + arr[h] + " ";
+			}
+		}
+		else{
+			for (int h = 1; h < arr.length; h++) {
+				titleOrig += "" + arr[h] + " ";
+			}
+		}
+//		for(int y = 0; y < arr.length; y++){
+//			if (arr[y].equals("from")) {
+//				for (int num = 1; num <= y - 1; num++) {
+//					title += "" + arr[num] + " ";
+//				}
+//				list.add(title);
+//				String addDate = formatDate(arr[y + 1]);
+//				list.add(addDate);
+//			} else if (arr[y].equals("at")) {
+//				list.add(arr[y + 1]);
+//			}else if (arr[y].equals("from")) {
+//				for (int num = 1; num <= y - 1; num++) {
+//					title += "" + arr[num] + " ";
+//				}
+//				list.add(title);
+//				String addDate = formatDate(arr[y + 1]);
+//				list.add(addDate);
+//			} else if (arr[y].equals("at")) {
+//				list.add(arr[y + 1]);
+//			}
+//			} else if (arr[y].equals("to")) {
+//				if (arr[y].equals("from")) {
+//					for (int num = 1; num <= y - 1; num++) {
+//						title += "" + arr[num] + " ";
+//					}
+//					list.add(title);
+//					String addDate = formatDate(arr[y + 1]);
+//					list.add(addDate);
+//				} else if (arr[y].equals("at")) {
+//					list.add(arr[y + 1]);
+//				}
+//			}
+		//}
 		for (int j = 0; j < arr.length; j++) {
 
 			if (arr[j].equals("due")) {
@@ -242,9 +301,25 @@ public class TNotesParser {
 			}
 			
 		}
-		return list;
+		
+	if(list.isEmpty()){	
+		
+		list.add(titleOrig);
 	}
 	
+	for (int i=0;i<arr.length;i++){
+		if(stringImpt(arr[i]) == "1"){
+			list.add("important");
+		}
+	}
+		return list;
+	}
+	public static String stringImpt(String input){
+		if(input.trim().equals("important")){
+			return "1";
+		}
+		return "0";
+	}
 	public static String formatDate(String inputDate){
 	      LocalDate parsedDate = null;	
 	      String date = new String();
