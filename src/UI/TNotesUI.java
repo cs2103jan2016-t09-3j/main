@@ -11,29 +11,29 @@ public class TNotesUI {
 	enum COMMAND_TYPE {
 		ADD_COMMAND, EDIT_COMMAND, DELETE_COMMAND, VIEW_COMMAND, INVALID, SEARCH_COMMAND, SORT_COMMAND, EXIT
 		}
-	
-	private static final String MESSAGE_WELCOME = "Welcome to TextBuddy. %s is ready for use\n";
-	private static final String MESSAGE_COMMAND = "command: \n";
-	private static final String MESSAGE_DISPLAYEMPTY = "%s is currently empty!\n";
-	private static final String MESSAGE_DISPLAY ="[DISPLAY MODE]\n";
-	private static final String MESSAGE_ADDED = "Successfully added to %s: \"%s\"\n";
-	private static final String MESSAGE_CLEAR = "%s cleared!\n";
-	private static final String MESSAGE_DELETE = "Successfully deleted from %s: \"%s\"\n";
-	private static final String MESSAGE_SORTED = "List sorted alphabetically!\n";
-	private static final String MESSAGE_FOUND = "Search results: \n%s";
-	
-	// Format Messages
-	private static final String MESSAGE_EVENT_FORMAT = "[%s] %s at %s"; 
-	
-	// Error Messages
-	private static final String MESSAGE_ERROR_EXISTS = "%s already exisits!\n";
-	private static final String MESSAGE_ERROR_NOFILENAME = "No file name entered!\n";
-	private static final String MESSAGE_ERROR_INVALIDCOMMAND = "Invalid command!\n";
-	private static final String MESSAGE_ERROR_NOTFOUND = "No results found!\n";
-	
-	// Exception Messages
-	private static final String MESSAGE_EXCEPTION_NOTCREATED = "%s cannot be created for some reason!\n";
-	private static final String MESSAGE_EXCEPTION_FILENOTFOUND = "%s cannot be found!\n";
+//	
+//	private static final String MESSAGE_WELCOME = "Welcome to TextBuddy. %s is ready for use\n";
+//	private static final String MESSAGE_COMMAND = "command: \n";
+//	private static final String MESSAGE_DISPLAYEMPTY = "%s is currently empty!\n";
+//	private static final String MESSAGE_DISPLAY ="[DISPLAY MODE]\n";
+//	private static final String MESSAGE_ADDED = "Successfully added to %s: \"%s\"\n";
+//	private static final String MESSAGE_CLEAR = "%s cleared!\n";
+//	private static final String MESSAGE_DELETE = "Successfully deleted from %s: \"%s\"\n";
+//	private static final String MESSAGE_SORTED = "List sorted alphabetically!\n";
+//	private static final String MESSAGE_FOUND = "Search results: \n%s";
+//	
+//	// Format Messages
+//	private static final String MESSAGE_EVENT_FORMAT = "[%s] %s at %s"; 
+//	
+//	// Error Messages
+//	private static final String MESSAGE_ERROR_EXISTS = "%s already exisits!\n";
+//	private static final String MESSAGE_ERROR_NOFILENAME = "No file name entered!\n";
+//	private static final String MESSAGE_ERROR_INVALIDCOMMAND = "Invalid command!\n";
+//	private static final String MESSAGE_ERROR_NOTFOUND = "No results found!\n";
+//	
+//	// Exception Messages
+//	private static final String MESSAGE_EXCEPTION_NOTCREATED = "%s cannot be created for some reason!\n";
+//	private static final String MESSAGE_EXCEPTION_FILENOTFOUND = "%s cannot be found!\n";
 
 	
 	TNotesParser parser;
