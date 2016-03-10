@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollBar?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8.0.65">
+   <children>
+      <TextArea layoutX="29.0" layoutY="39.0" prefHeight="294.0" prefWidth="547.0" AnchorPane.bottomAnchor="67.0" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="39.0" />
+      <TextField layoutX="17.0" layoutY="353.0" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="15.0" />
+      <Label layoutX="283.0" layoutY="14.0" text="T-Note" AnchorPane.leftAnchor="273.0" AnchorPane.rightAnchor="273.0" AnchorPane.topAnchor="14.0" />
+      <ScrollBar layoutX="568.0" layoutY="39.0" orientation="VERTICAL" prefHeight="294.0" prefWidth="17.0" AnchorPane.bottomAnchor="67.0" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="39.0" />
+   </children>
+</AnchorPane>

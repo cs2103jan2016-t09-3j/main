@@ -61,12 +61,15 @@ public class TNotesUI {
 			
 		COMMAND_TYPE command = determineCommandType(commandString);
 		
+		for(int i=0; i<userCommandSplit.size(); i++){
+			System.err.println(userCommandSplit.get(i));
+		}
 //		System.err.println(userInput);
 //		System.err.println(commandString);
 //		System.err.println(commandArguments);
 		switch(command){
 		case ADD_COMMAND:
-			if(logic.addTask(commandArguments)){
+			if(logic.addTask(userCommandSplit)){
 			result = "successfully added " + taskName;	
 			} else {
 				result = "addition failed";
