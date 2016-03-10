@@ -65,6 +65,9 @@ public class TaskFile implements Comparable<TaskFile> {
 	private boolean isRecurr;
 	private boolean isDone;
 	
+	private transient boolean isDeadline;
+	private transient boolean isTask;
+	private transient boolean isMeeting;
 	
 	private transient Calendar startCal;
 	
@@ -131,13 +134,14 @@ public class TaskFile implements Comparable<TaskFile> {
 		
 		setUpCal();
 		
+		setTypeOfTask();
 		
 		
 	}
 	
 	public TaskFile(ArrayList<String> list) {
 		
-		this(list.get(0),list.get(1), list.get(2), list.get(1),list.get(2), list.get(3), list.get(4), false);
+		this(list.get(0),list.get(1), list.get(2), list.get(1),list.get(2), "", "", false);
 	}
 
 	// Getters
@@ -178,6 +182,18 @@ public class TaskFile implements Comparable<TaskFile> {
 		return isDone;
 	}
 	
+	public boolean getIsDeadline() {
+		return isDeadline;
+	}
+	
+	public boolean getIsTask() {
+		return isTask;
+	}
+	
+	public boolean getIsMeeting() {
+		return isMeeting;
+	}
+	
 	public Calendar getStartCal() {
 		return startCal;
 	}
@@ -194,10 +210,18 @@ public class TaskFile implements Comparable<TaskFile> {
 
 	public void setStartDate(String startDate) {
 		this.startDate = startDate;
+		
+		if(isDeadline) {
+			setEndDate(startDate);
+		}
 	}
 
 	public void setStartTime(String startTime) {
 		this.startTime = startTime;
+		
+		if(isDeadline) {
+			setEndTime(startTime);
+		}
 	}
 	
 	public void setEndDate(String endDate) {
@@ -255,6 +279,25 @@ public class TaskFile implements Comparable<TaskFile> {
 			}catch(ParseException pEx){
 				System.err.println("incorrect date/time format for end cal");
 			}
+	}
+	
+	
+	public void setTypeOfTask() {
+		
+		initializeTaskTypes();
+		if (startDate.isEmpty()) {
+			isDeadline = true;
+		} else if (startCal.equals(endCal)) {
+			isDeadline = true;
+		} else {
+			isMeeting = true;
+		}
+	}
+	
+	public void initializeTaskTypes() {
+		isDeadline = false;
+		isTask = false;
+		isMeeting = false;
 	}
 
 	@Override

@@ -29,18 +29,24 @@ public class TNotesLogic {
 				// error.
 				if (currentFile.getStartTime().equals(newTask.getStartTime())) {
 					return false;
-				} else if (Integer.parseInt(currentFile.getStartTime()) < Integer.parseInt(newTask.getStartTime())) {
-					if (Integer.parseInt(currentFile.getEndTime()) <= Integer.parseInt(newTask.getStartTime())) {
-						break;
-					} else {
-						return false;
-					}
+				} else if (currentFile.getIsMeeting()) {
+					
+					//Adam this wont work btw 13:00 cannot be parsed into an integer. Lets just swap to date objects?
+					// or i create a compare date/time method.
+					if (Integer.parseInt(currentFile.getStartTime()) < Integer.parseInt(newTask.getStartTime())) {
+						if (Integer.parseInt(currentFile.getEndTime()) <= Integer.parseInt(newTask.getStartTime())) {
+							break;
+						} else {
+							return false;
+						}
 
-				} else if (Integer.parseInt(currentFile.getStartTime()) > Integer.parseInt(newTask.getStartTime())) {
-					if (Integer.parseInt(currentFile.getStartTime()) >= Integer.parseInt(newTask.getEndTime())) {
-						break;
-					}else{
-						return false;
+					} else if (Integer.parseInt(currentFile.getStartTime()) > Integer
+							.parseInt(newTask.getStartTime())) {
+						if (Integer.parseInt(currentFile.getStartTime()) >= Integer.parseInt(newTask.getEndTime())) {
+							break;
+						} else {
+							return false;
+						}
 					}
 				}
 			}
@@ -60,27 +66,31 @@ public class TNotesLogic {
 	// checks if any is done. returns new array list without done task/
 	public ArrayList<String> displayList() {
 		ArrayList<String> stringList = storage.readFromMasterFile();
+		ArrayList<TaskFile> taskToBeDisplayed = new ArrayList<TaskFile>();
 		for (String text : stringList) {
 			TaskFile currentFile = storage.getTaskFileByName(text);
 			if (!currentFile.getIsDone()) {
-				taskList.add(currentFile);
+				taskToBeDisplayed.add(currentFile);
 			}
 
 		}
-		for (TaskFile currentFile : taskList) {
+
+		ArrayList<String> listToBeDisplayed = new ArrayList<String>();
+		for (TaskFile currentFile : taskToBeDisplayed) {
 			String task = currentFile.getTask();
-			stringList.add(task);
+			listToBeDisplayed.add(task);
 		}
-		return stringList;
+		return listToBeDisplayed;
 	}
 
 	public boolean editTask(ArrayList<String> fromParser) {
+		//System.err.println(fromParser.toString());
 		String type = fromParser.get(2);
 		String title = fromParser.get(1);
 		String newText = fromParser.get(3);
 		TaskFile currentFile = storage.getTaskFileByName(title);
 		switch (type) {
-		case ("startTime"):
+		case ("time"):
 			currentFile.setStartTime(newText);
 			storage.deleteTask(title);
 			storage.addTask(currentFile);
@@ -90,7 +100,7 @@ public class TNotesLogic {
 			storage.deleteTask(title);
 			storage.addTask(currentFile);
 			return true;
-		case ("startdate"):
+		case ("date"):
 			currentFile.setStartDate(newText);
 			storage.deleteTask(title);
 			storage.addTask(currentFile);

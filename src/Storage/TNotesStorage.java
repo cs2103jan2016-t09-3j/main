@@ -116,9 +116,10 @@ public class TNotesStorage {
 
 	public boolean deleteTask(String task) {
 		File fileToDelete = new File(directory, task + ".txt");
-
+		
+		//System.err.println(fileToDelete.getName());
 		if (fileToDelete.delete()) {
-			System.err.println("delete");
+			//System.err.println("delete");
 			masterList.remove(task);
 			clearMasterFile();
 			writeListToMasterFile();
