@@ -2,8 +2,6 @@ package Parser;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Scanner;
-import java.io.*;
 import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -78,8 +76,8 @@ public class TNotesParser {
 	 */
 	public static void main(String[] args) {
 		String output = new String();
-		for (int i = 0; i < checkCommand("add call mom from 2-2-2 at 12:00 to 3-3-3 at 13:00").size(); i++){
-			output = checkCommand("add call mom from 2-2-2 at 12:00 to 3-3-3 at 13:00").get(i);// 24 hour cloc
+		for (int i = 0; i < checkCommand("sort haha").size(); i++){
+			output = checkCommand("sort haha").get(i);// 24 hour cloc
 			System.out.println(output);
 		}
 	}
@@ -114,7 +112,7 @@ public class TNotesParser {
 		}else if (firstWord.equals("sort")) {
 			
 			list.add(firstWord);
-			//list.add(secWord);
+			list.add(secWord);
 			
 			return list;
 			//search call mom
