@@ -52,15 +52,17 @@ public class TNotesUI {
 		return "Welcome to TNote. What would you like to do today?";
 	}
 	
-	protected String executeCommand(String userInput){
+	public String executeCommand(String userInput){
 		ArrayList<String> userCommandSplit = new ArrayList<String>();
 		userCommandSplit = TNotesParser.checkCommand(userInput);
+		ArrayList<String> fullCommand = (ArrayList<String>)userCommandSplit.clone();
 		commandString = getFirstWord(userCommandSplit);
 		taskName = getTaskName(userCommandSplit);
 		commandArguments = removeFirstWord(userCommandSplit);
 			
 		COMMAND_TYPE command = determineCommandType(commandString);
 		
+		result = "";
 //		System.err.println(userInput);
 //		System.err.println(commandString);
 //		System.err.println(commandArguments);
@@ -73,8 +75,8 @@ public class TNotesUI {
 			}
 			break;
 		case EDIT_COMMAND:
-			if(logic.editTask(userCommandSplit)){
-				result = "successfully edited";
+			if(logic.editTask(fullCommand)){
+				result = fullCommand.get(2) + " of " + taskName + "has been changed to " + fullCommand.get(3);
 			} else {
 				result = "edit failed";
 			}
@@ -90,7 +92,7 @@ public class TNotesUI {
 			arr = logic.displayList();
 			System.out.println("[TASK LIST]");
 			for(int i=0; i<arr.size(); i++) {
-				System.out.println(arr.get(i));
+				System.out.println(i+1 + ". " + arr.get(i));
 			}
 			break;
 		case SEARCH_COMMAND:
@@ -98,8 +100,8 @@ public class TNotesUI {
 			arrSearch = logic.searchTask(commandArguments.get(0));
 			System.out.println("[SEARCH RESULT]");
 			for(int i=0; i<arrSearch.size(); i++) {
-				System.out.println("[" + arrSearch.get(i).getDate() + "] " +
-						arrSearch.get(i).getTask() + " at " + arrSearch.get(i).getTime());
+				System.out.println("[" + arrSearch.get(i).getStartDate() + "] " +
+						arrSearch.get(i).getTask() + " at " + arrSearch.get(i).getStartTime());
 			}
 			break;
 		case SORT_COMMAND:
