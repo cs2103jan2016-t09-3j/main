@@ -1,7 +1,9 @@
 package Logic;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 
 import Object.TaskFile;
 import Storage.TNotesStorage;
@@ -10,48 +12,112 @@ public class TNotesLogic {
 	TNotesStorage storage = new TNotesStorage();
 	ArrayList<TaskFile> taskList = new ArrayList<TaskFile>();
 
+	// compare calender to compare timings for various taskfiles.
 	// for blocking out timings, need to check if the timing for task to be
 	// added is available.
 	// got deadline task, means do by 4pm
 	public boolean addTask(ArrayList<String> fromParser) {
-		fromParser.remove(0);
-		TaskFile currentFile = new TaskFile(fromParser);
 		ArrayList<String> stringList = storage.readFromMasterFile();
-		for (String text : stringList) {
-			TaskFile filesFromStorage = storage.getTaskFileByName(text);
-			if (!currentFile.getIsDone()) {
-				taskList.add(filesFromStorage);
+		TaskFile currentFile = new TaskFile();
+		switch (fromParser.size()) {
+		case 1:
+		case 2:
+			currentFile.setTask(fromParser.get(1));
+			break;
+		case 3:
+			currentFile.setTask(fromParser.get(1));
+			if(fromParser.get(2).equals("important")){
+				currentFile.setImportance(fromParser.get(2));
 			}
-		}
-		for (TaskFile newTask : taskList) {
-			// check for same date
-			if (currentFile.getStartDate().equals(newTask.getStartDate())) {
-				// check if same start time, else check end time, then return
-				// error.
-				if (currentFile.getStartTime().equals(newTask.getStartTime())) {
-					return false;
-				} else if (currentFile.getIsMeeting()) {
-					
-					//Adam this wont work btw 13:00 cannot be parsed into an integer. Lets just swap to date objects?
-					// or i create a compare date/time method.
-					if (Integer.parseInt(currentFile.getStartTime()) < Integer.parseInt(newTask.getStartTime())) {
-						if (Integer.parseInt(currentFile.getEndTime()) <= Integer.parseInt(newTask.getStartTime())) {
-							break;
-						} else {
-							return false;
-						}
-
-					} else if (Integer.parseInt(currentFile.getStartTime()) > Integer
-							.parseInt(newTask.getStartTime())) {
-						if (Integer.parseInt(currentFile.getStartTime()) >= Integer.parseInt(newTask.getEndTime())) {
-							break;
-						} else {
-							return false;
-						}
-					}
+			if(fromParser.get(2).contains("-")){
+				currentFile.setStartDate(fromParser.get(2));
+				currentFile.setEndDate(fromParser.get(2));
+			}
+			if(fromParser.get(2).contains(":")){
+				currentFile.setStartTime(fromParser.get(2));
+				currentFile.setEndTime(fromParser.get(2));
+			}
+			if(fromParser.get(2).contains("details")){
+				currentFile.setDetails(fromParser.get(2));
+			}
+			break;
+		case 4:
+			currentFile.setTask(fromParser.get(1));
+			if(fromParser.get(2).contains("-")){
+				currentFile.setStartDate(fromParser.get(2));
+				if(fromParser.get(3).contains(":")){
+					currentFile.setStartTime(fromParser.get(3));
+				}
+				if(fromParser.get(3).contains("-")){
+					currentFile.setEndDate(fromParser.get(3));
+				}
+				if(fromParser.get(3).equals("important")){
+					currentFile.setImportance(fromParser.get(3));
+				}
+				if(fromParser.get(3).equals("every")){
+					currentFile.setIsRecurr(true);
+				}
+				if(fromParser.get(3).contains("details")){
+					currentFile.setDetails(fromParser.get(3));
+				}
+			}
+			if(fromParser.get(2).contains(":")){
+				currentFile.setStartTime(fromParser.get(2));
+				if(fromParser.get(3).contains(":")){
+					currentFile.setEndTime(fromParser.get(3));
+				}
+				if(fromParser.get(3).contains("-")){
+					currentFile.setStartDate(fromParser.get(3));
+					currentFile.setEndDate(fromParser.get(3));
+				}
+				if(fromParser.get(3).equals("important")){
+					currentFile.setImportance(fromParser.get(3));
+				}
+				if(fromParser.get(3).equals("every")){
+					currentFile.setIsRecurr(true);
+				}
+				if(fromParser.get(3).contains("details")){
+					currentFile.setDetails(fromParser.get(3));
 				}
 			}
 		}
+		// TaskFile currentFile = new TaskFile(fromParser.get(1));
+		// currentFile.setTask(fromParser.get(1));
+		// String punctuation = ":"
+		// if (fromUI.getTime.contain(punctaions)
+		// for (TaskFile newTask : taskList) {
+		// // check for same date
+		// if (currentFile.getStartDate().equals(newTask.getStartDate())) {
+		// // check if same start time, else check end time, then return
+		// // error.
+		// if (currentFile.getStartTime().equals(newTask.getStartTime())) {
+		// return false;
+		// } else if (currentFile.getIsMeeting()) {// throw to top of if loop
+		//
+		// //Adam this wont work btw 13:00 cannot be parsed into an integer.
+		// Lets just swap to date objects?
+		// // or i create a compare date/time method.
+		// if (Integer.parseInt(currentFile.getStartTime()) <
+		// Integer.parseInt(newTask.getStartTime())) {
+		// if (Integer.parseInt(currentFile.getEndTime()) <=
+		// Integer.parseInt(newTask.getStartTime())) {
+		// break;
+		// } else {
+		// return false;
+		// }
+		//
+		// } else if (Integer.parseInt(currentFile.getStartTime()) > Integer
+		// .parseInt(newTask.getStartTime())) {
+		// if (Integer.parseInt(currentFile.getStartTime()) >=
+		// Integer.parseInt(newTask.getEndTime())) {
+		// break;
+		// } else {
+		// return false;
+		// }
+		// }
+		// }
+		// }
+		// }
 		return storage.addTask(currentFile);
 	}
 
@@ -83,9 +149,37 @@ public class TNotesLogic {
 		}
 		return listToBeDisplayed;
 	}
+	// Show the details of a single task
+	// will take in the name of the task,
+	// public ArrayList<String> displayDetailsList(String taskToBeDisplayed){
+	// ArrayList<String> stringList = storage.readFromMasterFile();
+	// ArrayList<String> taskListToBeDisplayed = new ArrayList<String>();
+	// for(String text : stringList){
+	// TaskFile currentFile = storage.getTaskFileByName(text);
+	// if(currentFile.getTask().equals(taskToBeDisplayed)){
+	// taskListToBeDisplayed.add(currentFile.getTask());
+	// taskListToBeDisplayed.add(currentFile.getDetails());
+	// }
+	// }
+	// return taskListToBeDisplayed;
+	// }
+
+	// show the task by date
+	// take in a date string?
+	// public ArrayList<String> displayDateList(String date){
+	// ArrayList<String> stringList = storage.readFromMasterFile();
+	// ArrayList<String> taskListToBeDisplayed = new ArrayList<String>();
+	// for(String text : stringList){
+	// TaskFile currentFile = storage.getTaskFileByName(text);
+	// if(currentFile.getStartDate().equals(date)){
+	// taskListToBeDisplayed.add(currentFile.getTask());
+	// }
+	// }
+	// return taskListToBeDisplayed;
+	// }
 
 	public boolean editTask(ArrayList<String> fromParser) {
-		//System.err.println(fromParser.toString());
+		// System.err.println(fromParser.toString());
 		String type = fromParser.get(2);
 		String title = fromParser.get(1);
 		String newText = fromParser.get(3);
@@ -133,7 +227,7 @@ public class TNotesLogic {
 		return taskList;
 	}
 
-	// alphabetical sort
+	// importance sort
 	// assumption, importance always placed first , regardless of sort.
 	public ArrayList<String> sortTask() {
 		ArrayList<String> masterList = storage.readFromMasterFile();
@@ -157,11 +251,44 @@ public class TNotesLogic {
 		}
 		Collections.sort(nonImportList);
 		masterList.addAll(nonImportList);
+		taskList.clear();
 		return masterList;
 	}
+	// Sort name
+	// public ArrayList<String> sortTask(){
+	// ArrayList<String> masterList = storage.readFromMasterFile();
+	// for (String text : masterList) {
+	// TaskFile currentFile = storage.getTaskFileByName(text);
+	// if (!currentFile.getIsDone()) {
+	// taskList.add(currentFile);
+	// }
+	// }
+	// masterList.clear();
+	// for (TaskFile newFile : taskList) {
+	// masterList.add(newFile.getTask());
+	// }
+	// Collections.sort(masterList);
+	// taskList.clear();
+	// return masterList;
+	// }
+
+	// sort date
+	// public ArrayList<String> sortTask(){
+	// ArrayList<String> masterList = storage.readFromMasterFile();
+	// ArrayList<String> dateList = new ArrayList<String>();
+	// for (String text : masterList) {
+	// TaskFile currentFile = storage.getTaskFileByName(text);
+	// if (currentFile.getStartDate().equals() {
+	// taskList.add(currentFile);
+	// }
+	// }
 
 	public void showToUser(String lineOfText) {
 		System.out.println(lineOfText);
 	}
-
+//	private todayDate(){
+//		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
+//		Date date = new Date();
+//		return date;
+//	}
 }
