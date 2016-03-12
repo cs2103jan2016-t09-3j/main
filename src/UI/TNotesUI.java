@@ -62,22 +62,21 @@ public class TNotesUI {
 			
 		COMMAND_TYPE command = determineCommandType(commandString);
 		
-
+		System.err.println("Checking Paser String output:\n");
+		
 		for(int i=0; i<userCommandSplit.size(); i++){
 			System.err.println(userCommandSplit.get(i));
 		}
 
 		result = "";
 
-//		System.err.println(userInput);
-//		System.err.println(commandString);
-//		System.err.println(commandArguments);
 		switch(command){
 		case ADD_COMMAND:
 			if(logic.addTask(userCommandSplit)){
 			result = "successfully added " + taskName;	
 			} else {
-				result = "addition failed";
+				result = "Unsuccessful"; // need to add a error messages that says if the 
+										// file already exits or not, that's why it failed.
 			}
 			break;
 		case EDIT_COMMAND:
@@ -90,32 +89,32 @@ public class TNotesUI {
 			break;
 		case DELETE_COMMAND:
 			if(logic.deleteTask(taskName)){
-			result = "deleted" + taskName;
+			result = "Deleted " + taskName;
 			} 
 			break;
 		case VIEW_COMMAND:
 			ArrayList<String> arr = new ArrayList<String>();
 			arr = logic.displayList();
-			System.out.println("[TASK LIST]");
+			result = "[TASK LIST]\n";
 			for(int i=0; i<arr.size(); i++) {
-				System.out.println(i+1 + ". " + arr.get(i));
+				result+=i+1 + ". " + arr.get(i)+"\n";
 			}
 			break;
 		case SEARCH_COMMAND:
 			ArrayList<TaskFile> arrSearch = new ArrayList<TaskFile>();
 			arrSearch = logic.searchTask(commandArguments.get(0));
-			System.out.println("[SEARCH RESULT]");
+			result = "[SEARCH RESULT]\n";
 			for(int i=0; i<arrSearch.size(); i++) {
-				System.out.println("[" + arrSearch.get(i).getStartDate() + "] " +
-						arrSearch.get(i).getTask() + " at " + arrSearch.get(i).getStartTime());
+				result +="[" + arrSearch.get(i).getStartDate() + "] " +
+						arrSearch.get(i).getTask() + " at " + arrSearch.get(i).getStartTime() + "\n";
 			}
 			break;
 		case SORT_COMMAND:
 			ArrayList<String> arrSort = new ArrayList<String>();
 			arrSort = logic.sortTask();
-			System.out.println("[SORT RESULT]");
+			result= "[SORT RESULT]\n";
 			for(int i=0; i<arrSort.size(); i++) {
-				System.out.println(arrSort.get(i));
+				result+=arrSort.get(i)+"\n";
 			}
 			break;
 		case INVALID:
