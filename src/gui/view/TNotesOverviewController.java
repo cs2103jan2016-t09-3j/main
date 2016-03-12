@@ -74,6 +74,7 @@ public class TNotesOverviewController {
     private void handleUserInput(){
     	String output = tNote.executeCommand(userInput.getText());
     	displayScreen.setText(output);
+    	userInput.clear();
 //    	 userInput.setOnAction(new EventHandler<ActionEvent>() {
 // 			
 // 			@Override

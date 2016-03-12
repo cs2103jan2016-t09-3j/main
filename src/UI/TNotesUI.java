@@ -22,8 +22,9 @@ public class TNotesUI {
 //	private static final String MESSAGE_SORTED = "List sorted alphabetically!\n";
 //	private static final String MESSAGE_FOUND = "Search results: \n%s";
 //	
-//	// Format Messages
-//	private static final String MESSAGE_EVENT_FORMAT = "[%s] %s at %s"; 
+	// ADD Messages
+	// I have added "Call Mum" from [date] at [time] to [date] at [time] to your schedule!
+	private static final String MESSAGE_ADD_DATE_TIME_DATE_TIME = "I have added \"%s\" from [%s] at [%s] to [%s] at [%s] to your schedule!\n"; 
 //	
 //	// Error Messages
 //	private static final String MESSAGE_ERROR_EXISTS = "%s already exisits!\n";
@@ -33,8 +34,7 @@ public class TNotesUI {
 //	
 //	// Exception Messages
 //	private static final String MESSAGE_EXCEPTION_NOTCREATED = "%s cannot be created for some reason!\n";
-//	private static final String MESSAGE_EXCEPTION_FILENOTFOUND = "%s cannot be found!\n";
-
+//	private static final String MESSAGE_EXCEPTION_FILENOTFOUND = "%s cannot be found!\n";	
 	
 	TNotesParser parser;
 	TNotesLogic logic;
@@ -48,17 +48,13 @@ public class TNotesUI {
 		logic = new TNotesLogic();
 	}
 	
-	public String getWelcomeMessage (){
-		return "Welcome to TNote. What would you like to do today?";
-	}
-	
 	public String executeCommand(String userInput){
 		ArrayList<String> userCommandSplit = new ArrayList<String>();
 		userCommandSplit = TNotesParser.checkCommand(userInput);
-		ArrayList<String> fullCommand = (ArrayList<String>)userCommandSplit.clone();
+	//	ArrayList<String> fullCommand = (ArrayList<String>)userCommandSplit.clone();
 		commandString = getFirstWord(userCommandSplit);
-		taskName = getTaskName(userCommandSplit);
-		commandArguments = removeFirstWord(userCommandSplit);
+		//taskName = getTaskName(userCommandSplit);
+		//commandArguments = removeFirstWord(userCommandSplit);
 			
 		COMMAND_TYPE command = determineCommandType(commandString);
 		
@@ -73,15 +69,23 @@ public class TNotesUI {
 		switch(command){
 		case ADD_COMMAND:
 			if(logic.addTask(userCommandSplit)){
-			result = "successfully added " + taskName;	
+			result =  String.format(MESSAGE_ADD_DATE_TIME_DATE_TIME, userCommandSplit.get(0),
+					userCommandSplit.get(1),userCommandSplit.get(2),userCommandSplit.get(3),
+					userCommandSplit.get(4));	
+// Check				
+//				for(int i=0; i<userCommandSplit.size(); i++){
+//					result+=userCommandSplit.get(i);
+//				}
+//				
+			
 			} else {
 				result = "Unsuccessful"; // need to add a error messages that says if the 
 										// file already exits or not, that's why it failed.
 			}
 			break;
 		case EDIT_COMMAND:
-			if(logic.editTask(fullCommand)){
-				result = fullCommand.get(2) + " of " + taskName + "has been changed to " + fullCommand.get(3);
+			if(logic.editTask(userCommandSplit)){
+				result = userCommandSplit.get(2) + " of " + taskName + "has been changed to " + userCommandSplit.get(3);
 			} else {
 				result = "edit failed";
 			}
@@ -155,11 +159,11 @@ public class TNotesUI {
 		return userCommandArrayList.get(0);
 	}
 	
-	private ArrayList<String> removeFirstWord(ArrayList<String> userCommandArrayList){
-		userCommandArrayList.remove(0);
-		
-		return userCommandArrayList;
-	}
+//	private ArrayList<String> removeFirstWord(ArrayList<String> userCommandArrayList){
+//		userCommandArrayList.remove(0);
+//		
+//		return userCommandArrayList;
+//	}
 	
 	private String getTaskName(ArrayList<String> userCommandArrayList){
 		return userCommandArrayList.get(1);

@@ -14,6 +14,7 @@ public class TNotesLogic {
 	// added is available.
 	// got deadline task, means do by 4pm
 	public boolean addTask(ArrayList<String> fromParser) {
+		fromParser.remove(0);
 		TaskFile currentFile = new TaskFile(fromParser);
 		ArrayList<String> stringList = storage.readFromMasterFile();
 		for (String text : stringList) {
