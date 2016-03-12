@@ -7,11 +7,12 @@ import java.util.Date;
 
 import Object.TaskFile;
 import Storage.TNotesStorage;
+import UI.TNotesUI;
 
 public class TNotesLogic {
 	TNotesStorage storage = new TNotesStorage();
 	ArrayList<TaskFile> taskList = new ArrayList<TaskFile>();
-
+	
 	// compare calender to compare timings for various taskfiles.
 	// for blocking out timings, need to check if the timing for task to be
 	// added is available.
@@ -291,4 +292,23 @@ public class TNotesLogic {
 //		Date date = new Date();
 //		return date;
 //	}
+	
+	// TEST
+	public static void main(String[] args) {
+		TNotesLogic tNote = new TNotesLogic();
+		ArrayList<String> list = new ArrayList<String>();
+		
+		list.add("add");
+		list.add("call lalala");
+		list.add("12-3-2016");
+		list.add("1:00");
+		list.add("12-4-2016");
+		list.add("1:00");
+		if(tNote.addTask(list)){
+			System.out.println("yes");
+		}
+		else{
+			System.out.println("no");
+		}
+	}
 }

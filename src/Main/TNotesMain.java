@@ -14,8 +14,8 @@ public class TNotesMain {
 	
 	public static void main(String[] args) {
 		TNotesUI tNote = new TNotesUI();
-		String welcomeMessage = tNote.getWelcomeMessage();
-		showToUser(welcomeMessage);
+		//String welcomeMessage = tNote.getWelcomeMessage();
+		//showToUser(welcomeMessage);
 		
 		while(true){
 		String userInput = sc.nextLine();
