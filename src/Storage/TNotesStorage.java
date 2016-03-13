@@ -5,6 +5,8 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.FileSystems;
+import java.nio.file.Path;
 import java.util.ArrayList;
 
 import com.google.gson.Gson;
@@ -15,7 +17,7 @@ import Object.TaskFile;
 
 public class TNotesStorage {
 
-	private static final String DEFAULT_FOLDER = "C:\\TNote";
+	private static final String DEFAULT_FOLDER = "\\TNote";
 	/*
 	 * This program can create a file, write on it, display its contents, delete
 	 * , sort alphabetically, and search. The file saves after every command
@@ -28,7 +30,8 @@ public class TNotesStorage {
 	private File directory;
 	private String masterFileName = "masterfile.txt";
 	private File masterFile;
-
+	private Path parentPath;
+	
 	private BufferedWriter bWriter;
 	private FileWriter fWriter;
 	private BufferedReader bReader;
@@ -37,17 +40,25 @@ public class TNotesStorage {
 
 	// Constructor
 
-	public TNotesStorage(String directory) {
+	public TNotesStorage(String directoryString) {
 		try {
-			this.directory = new File(directory);
-			createDirectory();
-			masterFile = new File(directory, masterFileName);
-			masterFile.createNewFile();
-			masterList = readFromMasterFile();
+			parentPath = FileSystems.getDefault().getPath(directoryString);
+			this.directory = parentPath.toFile();
+			createDirectory();		
+			setUpMasterFile();
+			
 			gsonHelper = new Gson();
+			
 		} catch (IOException ioEx) {
 			System.err.println("Error creating master file");
 		}
+	}
+
+	public void setUpMasterFile() throws IOException {
+		
+		masterFile = new File(directory, masterFileName);
+		masterFile.createNewFile();
+		masterList = readFromMasterFile();
 	}
 
 	public TNotesStorage() {
