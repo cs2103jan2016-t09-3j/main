@@ -209,7 +209,7 @@ public class TNotesLogic {
 		
 		default:
 			assertEquals(0, fromParser.size());
-d
+
 		}
 		
 		currentFile.setUpTaskFile();
