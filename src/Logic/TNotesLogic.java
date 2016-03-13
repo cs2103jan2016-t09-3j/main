@@ -47,7 +47,7 @@ public class TNotesLogic {
 				fromParser.remove(details);
 			}
 		}
-		
+		System.err.println(fromParser.toString());
 		switch (fromParser.size()) {
 		case 1:
 			
@@ -116,10 +116,10 @@ public class TNotesLogic {
 		case 4:
 			
 			assertTrue(fromParser.get(0).contains("-"));
-			currentFile.setStartDate(fromParser.get(1));
+			currentFile.setStartDate(fromParser.get(0));
 			
 			assertTrue(fromParser.get(1).contains(":"));
-			currentFile.setEndTime(fromParser.get(1));
+			currentFile.setStartTime(fromParser.get(1));
 				
 			assertTrue(fromParser.get(2).contains("-"));
 			currentFile.setEndDate(fromParser.get(2));
@@ -359,11 +359,11 @@ public class TNotesLogic {
 		TNotesLogic tNote = new TNotesLogic();
 		ArrayList<String> list = new ArrayList<String>();
 
-		list.add("add");
+		//list.add("add");
 		list.add("call lalala");
-		list.add("12-3-2016");
+		list.add("2016-3-19");
 		list.add("1:00");
-		list.add("12-4-2016");
+		list.add("2016-4-10");
 		list.add("1:00");
 		if (tNote.addTask(list)) {
 			System.out.println("yes");

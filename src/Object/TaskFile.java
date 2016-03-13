@@ -269,7 +269,9 @@ public class TaskFile implements Comparable<TaskFile> {
 		try{
 		String dateTimeStringStart = combineDateTime(startDate, startTime);
 		//System.err.println(dateTimeStringStart);
+		System.err.println(dateTimeStringStart);
 		Date date = stringToDateFormat.parse(dateTimeStringStart);
+		
 		startCal.setTime(date);
 		}catch(ParseException pEx){
 			System.err.println("incorrect date/time format for start cal");
