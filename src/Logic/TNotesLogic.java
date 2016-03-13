@@ -50,17 +50,38 @@ public class TNotesLogic {
 		System.err.println(fromParser.toString());
 		switch (fromParser.size()) {
 		case 1:
+
+//		// case 2:	
+//		// Floating task : add call mum 
+//		case 2:
+//			currentFile.setTask(fromParser.get(1));
+//			fromParser.add("floating");
+//			break;
+//		// case 3:	
+//		// add call mum important / add call mum due 11-3-2016 / add call mum at 3:00	
+//		// add call mum details tell her to buy apples	
+//		case 3:
+//			currentFile.setTask(fromParser.get(1));
+//			if(fromParser.get(2).equals("important")){
+//				currentFile.setImportance(fromParser.get(2));
+//				fromParser.add("size2 important");
+
 			
 			if (fromParser.get(0).contains("-")) {
 				currentFile.setStartDate(fromParser.get(0));
 			} else {
 				assertTrue(fromParser.get(0).contains(":"));
 				currentFile.setStartTime(fromParser.get(0));
+
 			}
 			break;
 		case 2:
 			if (fromParser.get(0).contains("-")) {
 				currentFile.setStartDate(fromParser.get(2));
+//<<<<<<< HEAD
+//				currentFile.setEndDate(fromParser.get(2));
+//				fromParser.add("size2 date");
+//=======
 				
 				if (fromParser.get(1).contains("-")) {
 					currentFile.setEndDate(fromParser.get(1));
@@ -78,6 +99,7 @@ public class TNotesLogic {
 					assertTrue(fromParser.get(1).contains(":"));
 					currentFile.setStartTime(fromParser.get(1));
 				} 
+
 			}
 			break;
 		case 3:
@@ -109,11 +131,67 @@ public class TNotesLogic {
 					
 				assertTrue(fromParser.get(2).contains(":"));
 				currentFile.setEndTime(fromParser.get(2));
-			
-
+//<<<<<<< HEAD
+//				fromParser.add("size2 time");
+//			}
+//			if(fromParser.get(2).contains("details")){
+//				currentFile.setDetails(fromParser.get(2));
+//				fromParser.add("size2 details");
+//=======
+//			
+//
+//>>>>>>> a6498a163862d8c80e9a7f84070a26a7c93383bd
 			}
-			break;
+			break;			
+			
 		case 4:
+//<<<<<<< HEAD
+//			currentFile.setTask(fromParser.get(1));
+//			// add call mum due 11-3-2016 at 3:00 /12-3-2-16/important/every/details			
+//			if(fromParser.get(2).contains("-")){
+//				currentFile.setStartDate(fromParser.get(2));
+//				if(fromParser.get(3).contains(":")){
+//					currentFile.setStartTime(fromParser.get(3));
+//					fromParser.add("size3 date time");
+//				}
+//				if(fromParser.get(3).contains("-")){
+//					currentFile.setEndDate(fromParser.get(3));
+//					fromParser.add("size3 date date");
+//				}
+//				if(fromParser.get(3).equals("important")){
+//					currentFile.setImportance(fromParser.get(3));
+//					fromParser.add("size3 date important");
+//				}
+//				if(fromParser.get(3).equals("every")){
+//					currentFile.setIsRecurr(true);
+//					fromParser.add("size3 date recur");
+//				}
+//				if(fromParser.get(3).contains("details")){
+//					currentFile.setDetails(fromParser.get(3));
+//					fromParser.add("size3 date details");
+//				}
+//			}
+//			// add call mum from 3:00 to 4:00/11-3-2016/important/every/details
+//			if(fromParser.get(2).contains(":")){
+//				currentFile.setStartTime(fromParser.get(2));
+//				if(fromParser.get(3).contains(":")){
+//					currentFile.setEndTime(fromParser.get(3));
+//				}
+//				if(fromParser.get(3).contains("-")){
+//					currentFile.setStartDate(fromParser.get(3));
+//					currentFile.setEndDate(fromParser.get(3));
+//				}
+//				if(fromParser.get(3).equals("important")){
+//					currentFile.setImportance(fromParser.get(3));
+//				}
+//				if(fromParser.get(3).equals("every")){
+//					currentFile.setIsRecurr(true);
+//				}
+//				if(fromParser.get(3).contains("details")){
+//					currentFile.setDetails(fromParser.get(3));
+//				}
+//			}
+//=======
 			
 			assertTrue(fromParser.get(0).contains("-"));
 			currentFile.setStartDate(fromParser.get(0));
@@ -131,6 +209,7 @@ public class TNotesLogic {
 		
 		default:
 			assertEquals(0, fromParser.size());
+d
 		}
 		
 		currentFile.setUpTaskFile();
@@ -354,7 +433,6 @@ public class TNotesLogic {
 	// }
 
 
-	// TEST
 	public static void main(String[] args) {
 		TNotesLogic tNote = new TNotesLogic();
 		ArrayList<String> list = new ArrayList<String>();
@@ -371,4 +449,5 @@ public class TNotesLogic {
 			System.out.println("no");
 		}
 	}
+
 }

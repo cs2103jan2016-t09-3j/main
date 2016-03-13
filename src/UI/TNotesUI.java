@@ -11,30 +11,21 @@ public class TNotesUI {
 	enum COMMAND_TYPE {
 		ADD_COMMAND, EDIT_COMMAND, DELETE_COMMAND, VIEW_COMMAND, INVALID, SEARCH_COMMAND, SORT_COMMAND, EXIT
 		}
-//	
-//	private static final String MESSAGE_WELCOME = "Welcome to TextBuddy. %s is ready for use\n";
-//	private static final String MESSAGE_COMMAND = "command: \n";
-//	private static final String MESSAGE_DISPLAYEMPTY = "%s is currently empty!\n";
-//	private static final String MESSAGE_DISPLAY ="[DISPLAY MODE]\n";
-//	private static final String MESSAGE_ADDED = "Successfully added to %s: \"%s\"\n";
-//	private static final String MESSAGE_CLEAR = "%s cleared!\n";
-//	private static final String MESSAGE_DELETE = "Successfully deleted from %s: \"%s\"\n";
-//	private static final String MESSAGE_SORTED = "List sorted alphabetically!\n";
-//	private static final String MESSAGE_FOUND = "Search results: \n%s";
-//	
+
 	// ADD Messages
 	// I have added "Call Mum" from [date] at [time] to [date] at [time] to your schedule!
 	private static final String MESSAGE_ADD_DATE_TIME_DATE_TIME = "I have added \"%s\" from [%s] at [%s] to [%s] at [%s] to your schedule!\n"; 
-//	
-//	// Error Messages
-//	private static final String MESSAGE_ERROR_EXISTS = "%s already exisits!\n";
-//	private static final String MESSAGE_ERROR_NOFILENAME = "No file name entered!\n";
-//	private static final String MESSAGE_ERROR_INVALIDCOMMAND = "Invalid command!\n";
-//	private static final String MESSAGE_ERROR_NOTFOUND = "No results found!\n";
-//	
-//	// Exception Messages
-//	private static final String MESSAGE_EXCEPTION_NOTCREATED = "%s cannot be created for some reason!\n";
-//	private static final String MESSAGE_EXCEPTION_FILENOTFOUND = "%s cannot be found!\n";	
+	private static final String MESSAGE_ADD_FLOAT = "I have added \"%s\" to your schedule!";
+	private static final String MESSAGE_ADD_IMPORTANT = "I have added a very important task \"%s\" to your schedule!";
+	private static final String MESSAGE_ADD_DATE = "I have added \"%s\" on [%s] to your schedule!";
+	private static final String MESSAGE_ADD_TIME = "I have added \"%s\" at [%s] on [Today's date] to your schedule!"; 
+	// need to get laptop's current date . Maybe create a class that everyone can share?
+//	private static final String MESSAGE_ADD_DETAILS = "I have added \"%s\" to your schedule!\n Things to note: %s";
+//	private static final String MESSAGE_ADD_DATE_TIME
+//	private static final String MESSAGE_ADD_DATE_DATE
+//	private static final String MESSAGE_ADD_DATE_IMPORTANT
+//	private static final String MESSAGE_ADD_DATE_
+//	private static final String MESSAGE_ADD_DATE_
 	
 	TNotesParser parser;
 	TNotesLogic logic;
@@ -69,10 +60,56 @@ public class TNotesUI {
 		switch(command){
 		case ADD_COMMAND:
 			if(logic.addTask(userCommandSplit)){
-			result =  String.format(MESSAGE_ADD_DATE_TIME_DATE_TIME, userCommandSplit.get(0),
-					userCommandSplit.get(1),userCommandSplit.get(2),userCommandSplit.get(3),
-					userCommandSplit.get(4));	
-// Check				
+		
+				String checkType = userCommandSplit.get(userCommandSplit.size()-1);
+				//	To check for the type of message to be printed
+				//	System.out.println(checkType);
+				// refactoring methods should be adopted
+				// can be broken down from array size
+				// Default - all messages will contatin the taskname?
+				// taskName = userCommandSplit.get(1);
+				// if arraysize is 2, then 3, then 4
+				// information = userCommandSplit.get(2);
+				if(checkType.equals("floating")){
+					result = String.format(MESSAGE_ADD_FLOAT, userCommandSplit.get(1).trim());
+				}
+				// =========SIZE 2========
+				else if(checkType.equals("size2 important")){
+					result = String.format(MESSAGE_ADD_IMPORTANT, userCommandSplit.get(1));
+				}
+				else if(checkType.equals("size2 date")){
+					// Still need to add Today's date
+					result = String.format(MESSAGE_ADD_DATE, userCommandSplit.get(1));
+				}
+				else if(checkType.equals("size2 time")){
+					result = String.format(MESSAGE_ADD_TIME, userCommandSplit.get(1), userCommandSplit.get(2));
+				}
+				else if(checkType.equals("size2 details")){
+		//			result = String.format(MESSAGE_ADD_DETAILS,userCommandSplit.get(1), userCommandSplit.get(2));
+				}
+				// ========SIZE 3==========
+				else if(checkType.equals("size3 date important")){
+					result = String.format(MESSAGE_ADD_IMPORTANT, userCommandSplit.get(1));
+				}
+				else if(checkType.equals("size3 date date")){
+					// Still need to add Today's date
+					result = String.format(MESSAGE_ADD_DATE, userCommandSplit.get(1));
+				}
+				else if(checkType.equals("size3 date time")){
+					result = String.format(MESSAGE_ADD_TIME, userCommandSplit.get(1), userCommandSplit.get(2));
+				}
+				else if(checkType.equals("size3 date details")){
+		//			result = String.format(MESSAGE_ADD_DETAILS,userCommandSplit.get(1), userCommandSplit.get(2));
+				}
+				else if(checkType.equals("size3 date recur")){
+		//			result = String.format(MESSAGE_ADD_DETAILS,userCommandSplit.get(1), userCommandSplit.get(2));
+				}
+				
+				
+//				result =  String.format(MESSAGE_ADD_DATE_TIME_DATE_TIME, userCommandSplit.get(0),
+//					userCommandSplit.get(1),userCommandSplit.get(2),userCommandSplit.get(3),
+//					userCommandSplit.get(4));	
+// 				Check				
 //				for(int i=0; i<userCommandSplit.size(); i++){
 //					result+=userCommandSplit.get(i);
 //				}
