@@ -57,7 +57,7 @@ public class TNotesOverviewController {
         // Initialize the person table with the two columns.
 //        firstNameColumn.setCellValueFactory(cellData -> cellData.getValue().firstNameProperty());
 //        lastNameColumn.setCellValueFactory(cellData -> cellData.getValue().lastNameProperty());
-       displayScreen.setText("Welcome to T-Note. How may I help you?");
+     //  displayScreen.setText("Welcome to T-Note. How may I help you?");
        displayScreen.setEditable(false);
     	// Clear person details.
 //        showPersonDetails(null);

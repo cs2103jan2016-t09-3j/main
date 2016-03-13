@@ -1,0 +1,6 @@
+call lalala
+call hahha
+call mum 
+call someone 
+run 
+do work 

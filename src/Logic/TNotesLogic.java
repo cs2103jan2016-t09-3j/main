@@ -22,46 +22,64 @@ public class TNotesLogic {
 		TaskFile currentFile = new TaskFile();
 		switch (fromParser.size()) {
 		case 1:
+		// case 2:	
+		// Floating task : add call mum 
 		case 2:
 			currentFile.setTask(fromParser.get(1));
+			fromParser.add("floating");
 			break;
+		// case 3:	
+		// add call mum important / add call mum due 11-3-2016 / add call mum at 3:00	
+		// add call mum details tell her to buy apples	
 		case 3:
 			currentFile.setTask(fromParser.get(1));
 			if(fromParser.get(2).equals("important")){
 				currentFile.setImportance(fromParser.get(2));
+				fromParser.add("size2 important");
 			}
 			if(fromParser.get(2).contains("-")){
 				currentFile.setStartDate(fromParser.get(2));
 				currentFile.setEndDate(fromParser.get(2));
+				fromParser.add("size2 date");
 			}
 			if(fromParser.get(2).contains(":")){
 				currentFile.setStartTime(fromParser.get(2));
 				currentFile.setEndTime(fromParser.get(2));
+				fromParser.add("size2 time");
 			}
 			if(fromParser.get(2).contains("details")){
 				currentFile.setDetails(fromParser.get(2));
+				fromParser.add("size2 details");
 			}
-			break;
+			break;			
+			
 		case 4:
 			currentFile.setTask(fromParser.get(1));
+			// add call mum due 11-3-2016 at 3:00 /12-3-2-16/important/every/details			
 			if(fromParser.get(2).contains("-")){
 				currentFile.setStartDate(fromParser.get(2));
 				if(fromParser.get(3).contains(":")){
 					currentFile.setStartTime(fromParser.get(3));
+					fromParser.add("size3 date time");
 				}
 				if(fromParser.get(3).contains("-")){
 					currentFile.setEndDate(fromParser.get(3));
+					fromParser.add("size3 date date");
 				}
 				if(fromParser.get(3).equals("important")){
 					currentFile.setImportance(fromParser.get(3));
+					fromParser.add("size3 date important");
 				}
 				if(fromParser.get(3).equals("every")){
 					currentFile.setIsRecurr(true);
+					fromParser.add("size3 date recur");
 				}
 				if(fromParser.get(3).contains("details")){
 					currentFile.setDetails(fromParser.get(3));
+					fromParser.add("size3 date details");
 				}
 			}
+			// add call mum from 3:00 to 4:00/11-3-2016/important/every/details
 			if(fromParser.get(2).contains(":")){
 				currentFile.setStartTime(fromParser.get(2));
 				if(fromParser.get(3).contains(":")){
@@ -294,21 +312,21 @@ public class TNotesLogic {
 //	}
 	
 	// TEST
-	public static void main(String[] args) {
-		TNotesLogic tNote = new TNotesLogic();
-		ArrayList<String> list = new ArrayList<String>();
-		
-		list.add("add");
-		list.add("call lalala");
-		list.add("12-3-2016");
-		list.add("1:00");
-		list.add("12-4-2016");
-		list.add("1:00");
-		if(tNote.addTask(list)){
-			System.out.println("yes");
-		}
-		else{
-			System.out.println("no");
-		}
-	}
+//	public static void main(String[] args) {
+//		TNotesLogic tNote = new TNotesLogic();
+//		ArrayList<String> list = new ArrayList<String>();
+//		
+//		list.add("add");
+//		list.add("call hahha");
+//		list.add("12-3-2016");
+//	//	list.add("1:00");
+//	//	list.add("12-4-2016");
+//	//	list.add("1:00");
+//		if(tNote.addTask(list)){
+//			System.out.println("yes");
+//		}
+//		else{
+//			System.out.println("no");
+//		}
+//	}
 }
