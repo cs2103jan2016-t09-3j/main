@@ -312,6 +312,10 @@ public class TNotesLogic {
 			storage.deleteTask(title);
 			storage.addTask(currentFile);
 			return true;
+		case("status"):
+			currentFile.setIsDone(true);
+			storage.deleteTask(title);
+			storage.addTask(currentFile);
 		default:
 			return false;
 		}

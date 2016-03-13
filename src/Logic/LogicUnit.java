@@ -13,13 +13,17 @@ public class LogicUnit {
 
 	public void callCommand(ArrayList<String> fromParser) {
 		LogicCommand newtask = new LogicCommand(fromParser.get(0));
-		String commandChecker = fromParser.remove(0);
 		currTaskName = fromParser;
-		switch (commandChecker) {
-		case ("add"):
-			logic.addTask(fromParser);
-			break;
-		}
+		String commandChecker = fromParser.remove(0);
+//		switch (commandChecker) {
+//		case ("add"):
+//			logic.addTask(fromParser);
+//			break;
+//		case ("delete"):
+//			logic.deleteTask(fromParser.get(0));
+//			break;
+//		case("edit"):
+//		}
 		doCommand.push(newtask);
 	}
 
@@ -29,9 +33,16 @@ public class LogicUnit {
 		else {
 			LogicCommand currentTask = doCommand.pop();
 			String currentCommand = currentTask.getCommandType();
+			undoCommand.push(currentTask);
 			switch (currentCommand) {
-			case("add"):logic.deleteTask(currTaskName.get(1));
-			case("delete"):
+			case ("add"):
+				logic.deleteTask(currTaskName.get(1));
+				break;
+			case ("delete"):
+				logic.addTask(currTaskName);
+				break;
+			case ("edit"):
+				break;
 			}
 		}
 	}
