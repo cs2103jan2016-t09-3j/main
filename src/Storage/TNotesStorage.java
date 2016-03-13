@@ -13,6 +13,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonStreamParser;
 
 import Object.TaskFile;
+import Object.TaskFileOverview;
 
 
 public class TNotesStorage {
@@ -27,6 +28,7 @@ public class TNotesStorage {
 	 * 
 	 */
 	private ArrayList<String> masterList = new ArrayList<String>();
+	private ArrayList<TaskFileOverview> masterOverviewList = new ArrayList<TaskFileOverview>();
 	private File directory;
 	private String masterFileName = "masterfile.txt";
 	private File masterFile;
@@ -110,7 +112,19 @@ public class TNotesStorage {
 	}
 	
 	public boolean addTask(TaskFile task) {
-
+		
+		
+		
+		TaskFileOverview taskOverview = task;
+		
+		for(TaskFileOverview currentFile: masterOverviewList){
+			if(taskOverview.getName().equals(currentFile.getName())) {
+				//throw a util class error
+				return false;
+			}
+		}
+		
+		masterOverviewList.add(task);
 		if (!masterList.contains(task.getName())) {
 			masterList.add(task.getName());
 			if (writeTaskToMasterFile(task)) {
@@ -232,7 +246,10 @@ public class TNotesStorage {
 
 			bWriter.append(task.getName());
 			bWriter.newLine();
-
+			
+//			String jsonString = gsonHelper.toJson(task);
+//			bWriter.append(jsonString);
+			
 			bWriter.close();
 
 			return true;

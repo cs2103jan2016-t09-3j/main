@@ -51,18 +51,17 @@ import java.util.Date;
  * 
  * All task names must be unique
 */
-public class TaskFile implements Comparable<TaskFile> {
+public class TaskFile extends TaskFileOverview implements Comparable<TaskFile> {
 
 	private static final String IMPORTANCE_ZERO = "0";
 	private transient SimpleDateFormat stringToDateFormat; 
-	private String name;
-	private String startDate;
-	private String startTime;
+	
+	
 	private String endDate;
 	private String endTime;
 	private String details;
 	private String importance;
-	private boolean isRecurr;
+	
 	private boolean isDone;
 	
 	private transient boolean isDeadline;
@@ -76,23 +75,20 @@ public class TaskFile implements Comparable<TaskFile> {
 	// Constructor
 	public TaskFile() {
 
-		setName("");
-		setStartDate("");
-		setStartTime("");
-		
+		super();
 		setEndDate("");
 		setEndTime("");
 	
 		setDetails("");
 		setImportance(IMPORTANCE_ZERO);
-		setIsRecurr(false);
+		
 		setIsDone(false);
 		stringToDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm");
 		initializeTaskTypes();
 	}
 
-	public TaskFile(String task) {
-		this(task, "", "", "", "", "",IMPORTANCE_ZERO, false);
+	public TaskFile(String name) {
+		this(name, "", "", "", "", "",IMPORTANCE_ZERO, false);
 	}
 
 //	public TaskFile(String name, String importance) {
@@ -108,22 +104,22 @@ public class TaskFile implements Comparable<TaskFile> {
 
 
 	
-	public TaskFile(String task, String date, String time, String details, boolean isRecurr) {
-		this(task, date, time, date, time, details, IMPORTANCE_ZERO, isRecurr);
+	public TaskFile(String name, String date, String time, String details, boolean isRecurr) {
+		this(name, date, time, date, time, details, IMPORTANCE_ZERO, isRecurr);
 		
 	}
 	
-	public TaskFile(String task, String date, String time, String details, String importance, boolean isRecurr) {
+	public TaskFile(String name, String date, String time, String details, String importance, boolean isRecurr) {
 		
-		this(task, date, time, date, time, details, importance, isRecurr);
+		this(name, date, time, date, time, details, importance, isRecurr);
 	}
 	
-	public TaskFile(String task, String startDate, String startTime, String endDate, String endTime, String details, 
+	public TaskFile(String name, String startDate, String startTime, String endDate, String endTime, String details, 
 			String importance, boolean isRecurr) {
+		
+		super(name, startDate, startTime, isRecurr);
 		stringToDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm");
-		setName(task);
-		setStartDate(startDate);
-		setStartTime(startTime);
+		
 		
 		setEndDate(endDate);
 		setEndTime(endTime);
@@ -133,10 +129,7 @@ public class TaskFile implements Comparable<TaskFile> {
 		setIsRecurr(isRecurr);
 		setIsDone(false);
 		initializeTaskTypes();
-		setUpCal();
-		
-		setTypeOfTask();
-		
+		setUpTaskFile();
 		
 	}
 	
@@ -144,17 +137,7 @@ public class TaskFile implements Comparable<TaskFile> {
 
 	// Getters
 
-	public String getName() {
-		return name;
-	}
-
-	public String getStartTime() {
-		return startTime;
-	}
-
-	public String getStartDate() {
-		return startDate;
-	}
+	
 	
 	public String getEndTime() {
 		return endTime;
@@ -172,9 +155,7 @@ public class TaskFile implements Comparable<TaskFile> {
 		return importance;
 	}
 
-	public boolean getIsRecurring() {
-		return isRecurr;
-	}
+	
 
 	public boolean getIsDone() {
 		return isDone;
@@ -202,25 +183,7 @@ public class TaskFile implements Comparable<TaskFile> {
 	
 	// Setters
 
-	public void setName(String task) {
-		this.name = task;
-	}
-
-	public void setStartDate(String startDate) {
-		this.startDate = startDate;
-		
-		if(isDeadline) {
-			setEndDate(startDate);
-		}
-	}
-
-	public void setStartTime(String startTime) {
-		this.startTime = startTime;
-		
-		if(isDeadline) {
-			setEndTime(startTime);
-		}
-	}
+	
 	
 	public void setEndDate(String endDate) {
 		this.endDate = endDate;
@@ -238,10 +201,7 @@ public class TaskFile implements Comparable<TaskFile> {
 		this.importance = importance;
 	}
 
-	public void setIsRecurr(boolean isRecurr) {
-		this.isRecurr = isRecurr;
-	}
-
+	
 	public void setIsDone(boolean status) {
 		isDone = status;
 	}
