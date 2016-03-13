@@ -2,13 +2,12 @@ package Object;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
 
 /*
- * Calendar objects let use recur the task. Can just calendar object.add(Calendar.WEEK_OF_YEAR, 1) to add 1 week
+ * Calendar objects let use recur the name. Can just calendar object.add(Calendar.WEEK_OF_YEAR, 1) to add 1 week
  * startCal.add(Calendar.DATE, 1) add 1 day
  * startCal.add(Calendar.YEAR, 1) add 1 year
  * startCal.add(Calendar.MONTH, 1) add 1 month
@@ -27,7 +26,7 @@ import java.util.Date;
  * Or change them to Date instead of Strings?
  * Or remove entirely.
  * 
- * If only calendar object used, may not be able to check if task has a date / time. Calendar objects always
+ * If only calendar object used, may not be able to check if name has a date / time. Calendar objects always
  * have both. Change both date and time Strings into Date?
  * 
  * Do we want to default no date => today? how to handle the multiple constructors. need to discuss
@@ -50,12 +49,13 @@ import java.util.Date;
  * 
  * Maybe split this into multiple files?
  * 
+ * All task names must be unique
 */
 public class TaskFile implements Comparable<TaskFile> {
 
 	private static final String IMPORTANCE_ZERO = "0";
 	private transient SimpleDateFormat stringToDateFormat; 
-	private String task;
+	private String name;
 	private String startDate;
 	private String startTime;
 	private String endDate;
@@ -76,7 +76,7 @@ public class TaskFile implements Comparable<TaskFile> {
 	// Constructor
 	public TaskFile() {
 
-		setTask("");
+		setName("");
 		setStartDate("");
 		setStartTime("");
 		
@@ -88,15 +88,16 @@ public class TaskFile implements Comparable<TaskFile> {
 		setIsRecurr(false);
 		setIsDone(false);
 		stringToDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm");
+		initializeTaskTypes();
 	}
 
 	public TaskFile(String task) {
 		this(task, "", "", "", "", "",IMPORTANCE_ZERO, false);
 	}
 
-//	public TaskFile(String task, String importance) {
+//	public TaskFile(String name, String importance) {
 //		
-//		setTask(task);
+//		setTask(name);
 //		setDate("");
 //		setTime("");
 //		setDetails("");
@@ -120,7 +121,7 @@ public class TaskFile implements Comparable<TaskFile> {
 	public TaskFile(String task, String startDate, String startTime, String endDate, String endTime, String details, 
 			String importance, boolean isRecurr) {
 		stringToDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm");
-		setTask(task);
+		setName(task);
 		setStartDate(startDate);
 		setStartTime(startTime);
 		
@@ -131,7 +132,7 @@ public class TaskFile implements Comparable<TaskFile> {
 		setImportance(importance);
 		setIsRecurr(isRecurr);
 		setIsDone(false);
-		
+		initializeTaskTypes();
 		setUpCal();
 		
 		setTypeOfTask();
@@ -139,15 +140,12 @@ public class TaskFile implements Comparable<TaskFile> {
 		
 	}
 	
-	public TaskFile(ArrayList<String> list) {
-		
-		this(list.get(0),list.get(1), list.get(2), list.get(1),list.get(2), "", "", false);
-	}
+	
 
 	// Getters
 
-	public String getTask() {
-		return task;
+	public String getName() {
+		return name;
 	}
 
 	public String getStartTime() {
@@ -204,8 +202,8 @@ public class TaskFile implements Comparable<TaskFile> {
 	
 	// Setters
 
-	public void setTask(String task) {
-		this.task = task;
+	public void setName(String task) {
+		this.name = task;
 	}
 
 	public void setStartDate(String startDate) {
@@ -248,22 +246,54 @@ public class TaskFile implements Comparable<TaskFile> {
 		isDone = status;
 	}
 	
-	public void setUpCal(){
-		if(!startDate.isEmpty()){
+	public void setUpTaskFile() {
+		
+		setUpDates();
+		
+		setUpCal();
+		
+		setTypeOfTask(); 
+				
+	}
+	
+	private void setUpDates() {
+		String currentDateString = getCurrentDate();
+		
+		if(startDate.isEmpty() && !startTime.isEmpty()) {
+			setStartDate(currentDateString);
+		}
+		
+		if(endDate.isEmpty() && !endTime.isEmpty()) {
+			setEndDate(currentDateString);
+		}
+	}
+
+	public String getCurrentDate() {
+		SimpleDateFormat currentDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		Date currentDate = new Date();
+		String currentDateString = currentDateFormat.format(currentDate);
+		return currentDateString;
+	}
+	
+	
+	private void setUpCal(){
+		if(!startDate.isEmpty() && !startTime.isEmpty()){
 			startCal = Calendar.getInstance();
 			setStartCal();
-			if(!endDate.isEmpty()){
+			if(!endDate.isEmpty() && !startTime.isEmpty()){
 				endCal = Calendar.getInstance();
 				setEndCal();
 			}
 		}
 	}
 	
-	public void setStartCal() {
+	private void setStartCal() {
 		try{
 		String dateTimeStringStart = combineDateTime(startDate, startTime);
 		//System.err.println(dateTimeStringStart);
+		System.err.println(dateTimeStringStart);
 		Date date = stringToDateFormat.parse(dateTimeStringStart);
+		
 		startCal.setTime(date);
 		}catch(ParseException pEx){
 			System.err.println("incorrect date/time format for start cal");
@@ -271,7 +301,7 @@ public class TaskFile implements Comparable<TaskFile> {
 		
 	}
 	
-	public void setEndCal() {
+	private void setEndCal() {
 		try{
 			String dateTimeStringEnd = combineDateTime(endDate, endTime);
 			Date date = stringToDateFormat.parse(dateTimeStringEnd);
@@ -282,11 +312,11 @@ public class TaskFile implements Comparable<TaskFile> {
 	}
 	
 	
-	public void setTypeOfTask() {
+	private void setTypeOfTask() {
 		
-		initializeTaskTypes();
+		
 		if (startDate.isEmpty()) {
-			isDeadline = true;
+			isTask = true;
 		} else if (startCal.equals(endCal)) {
 			isDeadline = true;
 		} else {
@@ -294,7 +324,7 @@ public class TaskFile implements Comparable<TaskFile> {
 		}
 	}
 	
-	public void initializeTaskTypes() {
+	private void initializeTaskTypes() {
 		isDeadline = false;
 		isTask = false;
 		isMeeting = false;
@@ -302,7 +332,7 @@ public class TaskFile implements Comparable<TaskFile> {
 
 	@Override
 	public String toString() {
-		String taskFileInString = "Task: " + task + ", Start Date: " + startDate + ", Start Time: " + startTime + ", End Date: " 
+		String taskFileInString = "Task: " + name + ", Start Date: " + startDate + ", Start Time: " + startTime + ", End Date: " 
 				+ endDate + ", End Time: " + endTime + ", Details: " + details + ", Importance: " + importance + ", IsRecurring: " 
 				+ isRecurr + ", IsDone: " + isDone;
 		
@@ -315,6 +345,6 @@ public class TaskFile implements Comparable<TaskFile> {
 	
 	@Override
 	public int compareTo(TaskFile taskFile){
-		return this.getTask().compareTo(taskFile.getTask());
+		return this.getName().compareTo(taskFile.getName());
 	}
 }

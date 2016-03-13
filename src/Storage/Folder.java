@@ -7,12 +7,14 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 public class Folder {
+	private String name;
 	
-	// Default constructor
-	public Folder() {
 	
+	public Folder(String name) {
+		this.name = name;
 		
 	}
+	
 	
 	// Testing 
 	public static void main(String[] args) {

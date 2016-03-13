@@ -4,102 +4,217 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
 
 import Object.TaskFile;
 import Storage.TNotesStorage;
-import UI.TNotesUI;
 
 public class TNotesLogic {
 	TNotesStorage storage = new TNotesStorage();
 	ArrayList<TaskFile> taskList = new ArrayList<TaskFile>();
-	
+
 	// compare calender to compare timings for various taskfiles.
 	// for blocking out timings, need to check if the timing for task to be
 	// added is available.
 	// got deadline task, means do by 4pm
+	// adam u gonna remove fromParser[0] in the end cos of ur extra classes. so i code for that.
 	public boolean addTask(ArrayList<String> fromParser) {
+		try{
+		
 		ArrayList<String> stringList = storage.readFromMasterFile();
 		TaskFile currentFile = new TaskFile();
+		boolean isRecurr = false;
+		String importance = new String();
+		
+		//assert size != 0
+		currentFile.setName(fromParser.remove(0));
+		
+		if(fromParser.contains("important")) {
+			importance = fromParser.remove(fromParser.indexOf("importance"));
+			currentFile.setImportance(importance);
+		}
+		
+		if(fromParser.contains("every")) {
+			fromParser.remove("every");
+			currentFile.setIsRecurr(true);
+		}
+		
+		
+		for(String details: fromParser) {
+			if(!details.contains(":") && !details.contains("-")) {
+				currentFile.setDetails(details);
+				fromParser.remove(details);
+			}
+		}
+		System.err.println(fromParser.toString());
 		switch (fromParser.size()) {
 		case 1:
-		// case 2:	
-		// Floating task : add call mum 
-		case 2:
-			currentFile.setTask(fromParser.get(1));
-			fromParser.add("floating");
+
+//		// case 2:	
+//		// Floating task : add call mum 
+//		case 2:
+//			currentFile.setTask(fromParser.get(1));
+//			fromParser.add("floating");
+//			break;
+//		// case 3:	
+//		// add call mum important / add call mum due 11-3-2016 / add call mum at 3:00	
+//		// add call mum details tell her to buy apples	
+//		case 3:
+//			currentFile.setTask(fromParser.get(1));
+//			if(fromParser.get(2).equals("important")){
+//				currentFile.setImportance(fromParser.get(2));
+//				fromParser.add("size2 important");
+
+			
+			if (fromParser.get(0).contains("-")) {
+				currentFile.setStartDate(fromParser.get(0));
+			} else {
+				assertTrue(fromParser.get(0).contains(":"));
+				currentFile.setStartTime(fromParser.get(0));
+
+			}
 			break;
-		// case 3:	
-		// add call mum important / add call mum due 11-3-2016 / add call mum at 3:00	
-		// add call mum details tell her to buy apples	
-		case 3:
-			currentFile.setTask(fromParser.get(1));
-			if(fromParser.get(2).equals("important")){
-				currentFile.setImportance(fromParser.get(2));
-				fromParser.add("size2 important");
-			}
-			if(fromParser.get(2).contains("-")){
+		case 2:
+			if (fromParser.get(0).contains("-")) {
 				currentFile.setStartDate(fromParser.get(2));
-				currentFile.setEndDate(fromParser.get(2));
-				fromParser.add("size2 date");
+//<<<<<<< HEAD
+//				currentFile.setEndDate(fromParser.get(2));
+//				fromParser.add("size2 date");
+//=======
+				
+				if (fromParser.get(1).contains("-")) {
+					currentFile.setEndDate(fromParser.get(1));
+				} else { 
+					assertTrue(fromParser.get(1).contains(":"));
+					currentFile.setStartTime(fromParser.get(1));
+				} 
+				
+			} else if (fromParser.get(0).contains(":")) {
+				currentFile.setStartTime(fromParser.get(0));
+				
+				if (fromParser.get(1).contains("-")) {
+					currentFile.setEndDate(fromParser.get(1));
+				} else { 
+					assertTrue(fromParser.get(1).contains(":"));
+					currentFile.setStartTime(fromParser.get(1));
+				} 
+
 			}
-			if(fromParser.get(2).contains(":")){
-				currentFile.setStartTime(fromParser.get(2));
+			break;
+		case 3:
+			if (fromParser.get(0).contains("-")) {
+				currentFile.setStartDate(fromParser.get(0));
+				
+				if (fromParser.get(1).contains(":")) {
+					currentFile.setStartTime(fromParser.get(1));
+					
+					if (fromParser.get(2).contains("-")) {
+						currentFile.setEndDate(fromParser.get(2));
+					} else { 
+						assertTrue(fromParser.get(2).contains(":"));
+						currentFile.setStartTime(fromParser.get(2));
+					} 
+					
+				} else if (fromParser.get(1).contains("-")) {
+					currentFile.setEndDate(fromParser.get(1));
+					
+					assertTrue(fromParser.get(2).contains(":"));
+					currentFile.setEndTime(fromParser.get(2));
+				}
+				
+			} else if (fromParser.get(0).contains(":")) {
+				currentFile.setStartTime(fromParser.get(0));
+				
+				assertTrue(fromParser.get(1).contains("-"));
+				currentFile.setEndDate(fromParser.get(1));
+					
+				assertTrue(fromParser.get(2).contains(":"));
 				currentFile.setEndTime(fromParser.get(2));
-				fromParser.add("size2 time");
-			}
-			if(fromParser.get(2).contains("details")){
-				currentFile.setDetails(fromParser.get(2));
-				fromParser.add("size2 details");
+//<<<<<<< HEAD
+//				fromParser.add("size2 time");
+//			}
+//			if(fromParser.get(2).contains("details")){
+//				currentFile.setDetails(fromParser.get(2));
+//				fromParser.add("size2 details");
+//=======
+//			
+//
+//>>>>>>> a6498a163862d8c80e9a7f84070a26a7c93383bd
 			}
 			break;			
 			
 		case 4:
-			currentFile.setTask(fromParser.get(1));
-			// add call mum due 11-3-2016 at 3:00 /12-3-2-16/important/every/details			
-			if(fromParser.get(2).contains("-")){
-				currentFile.setStartDate(fromParser.get(2));
-				if(fromParser.get(3).contains(":")){
-					currentFile.setStartTime(fromParser.get(3));
-					fromParser.add("size3 date time");
-				}
-				if(fromParser.get(3).contains("-")){
-					currentFile.setEndDate(fromParser.get(3));
-					fromParser.add("size3 date date");
-				}
-				if(fromParser.get(3).equals("important")){
-					currentFile.setImportance(fromParser.get(3));
-					fromParser.add("size3 date important");
-				}
-				if(fromParser.get(3).equals("every")){
-					currentFile.setIsRecurr(true);
-					fromParser.add("size3 date recur");
-				}
-				if(fromParser.get(3).contains("details")){
-					currentFile.setDetails(fromParser.get(3));
-					fromParser.add("size3 date details");
-				}
-			}
-			// add call mum from 3:00 to 4:00/11-3-2016/important/every/details
-			if(fromParser.get(2).contains(":")){
-				currentFile.setStartTime(fromParser.get(2));
-				if(fromParser.get(3).contains(":")){
-					currentFile.setEndTime(fromParser.get(3));
-				}
-				if(fromParser.get(3).contains("-")){
-					currentFile.setStartDate(fromParser.get(3));
-					currentFile.setEndDate(fromParser.get(3));
-				}
-				if(fromParser.get(3).equals("important")){
-					currentFile.setImportance(fromParser.get(3));
-				}
-				if(fromParser.get(3).equals("every")){
-					currentFile.setIsRecurr(true);
-				}
-				if(fromParser.get(3).contains("details")){
-					currentFile.setDetails(fromParser.get(3));
-				}
-			}
+//<<<<<<< HEAD
+//			currentFile.setTask(fromParser.get(1));
+//			// add call mum due 11-3-2016 at 3:00 /12-3-2-16/important/every/details			
+//			if(fromParser.get(2).contains("-")){
+//				currentFile.setStartDate(fromParser.get(2));
+//				if(fromParser.get(3).contains(":")){
+//					currentFile.setStartTime(fromParser.get(3));
+//					fromParser.add("size3 date time");
+//				}
+//				if(fromParser.get(3).contains("-")){
+//					currentFile.setEndDate(fromParser.get(3));
+//					fromParser.add("size3 date date");
+//				}
+//				if(fromParser.get(3).equals("important")){
+//					currentFile.setImportance(fromParser.get(3));
+//					fromParser.add("size3 date important");
+//				}
+//				if(fromParser.get(3).equals("every")){
+//					currentFile.setIsRecurr(true);
+//					fromParser.add("size3 date recur");
+//				}
+//				if(fromParser.get(3).contains("details")){
+//					currentFile.setDetails(fromParser.get(3));
+//					fromParser.add("size3 date details");
+//				}
+//			}
+//			// add call mum from 3:00 to 4:00/11-3-2016/important/every/details
+//			if(fromParser.get(2).contains(":")){
+//				currentFile.setStartTime(fromParser.get(2));
+//				if(fromParser.get(3).contains(":")){
+//					currentFile.setEndTime(fromParser.get(3));
+//				}
+//				if(fromParser.get(3).contains("-")){
+//					currentFile.setStartDate(fromParser.get(3));
+//					currentFile.setEndDate(fromParser.get(3));
+//				}
+//				if(fromParser.get(3).equals("important")){
+//					currentFile.setImportance(fromParser.get(3));
+//				}
+//				if(fromParser.get(3).equals("every")){
+//					currentFile.setIsRecurr(true);
+//				}
+//				if(fromParser.get(3).contains("details")){
+//					currentFile.setDetails(fromParser.get(3));
+//				}
+//			}
+//=======
+			
+			assertTrue(fromParser.get(0).contains("-"));
+			currentFile.setStartDate(fromParser.get(0));
+			
+			assertTrue(fromParser.get(1).contains(":"));
+			currentFile.setStartTime(fromParser.get(1));
+				
+			assertTrue(fromParser.get(2).contains("-"));
+			currentFile.setEndDate(fromParser.get(2));
+			
+			assertTrue(fromParser.get(3).contains(":"));
+			currentFile.setEndTime(fromParser.get(3));
+		
+		break;
+		
+		default:
+			assertEquals(0, fromParser.size());
+d
 		}
+		
+		currentFile.setUpTaskFile();
+		return storage.addTask(currentFile);
+	
 		// TaskFile currentFile = new TaskFile(fromParser.get(1));
 		// currentFile.setTask(fromParser.get(1));
 		// String punctuation = ":"
@@ -137,7 +252,12 @@ public class TNotesLogic {
 		// }
 		// }
 		// }
-		return storage.addTask(currentFile);
+		
+		} catch (AssertionError aE) {
+			//means the switch statement got invalid arguments
+			//throw instead of return
+			return false;
+		}
 	}
 
 	// currently has issue, need to make a new object, compare it, then remove
@@ -163,7 +283,7 @@ public class TNotesLogic {
 
 		ArrayList<String> listToBeDisplayed = new ArrayList<String>();
 		for (TaskFile currentFile : taskToBeDisplayed) {
-			String task = currentFile.getTask();
+			String task = currentFile.getName();
 			listToBeDisplayed.add(task);
 		}
 		return listToBeDisplayed;
@@ -260,13 +380,13 @@ public class TNotesLogic {
 		masterList.clear();
 		for (TaskFile newFile : taskList) {
 			if (newFile.getImportance().equals("1")) {
-				masterList.add(newFile.getTask());
+				masterList.add(newFile.getName());
 				taskList.remove(newFile);
 			}
 		}
 		Collections.sort(masterList);
 		for (TaskFile newFile : taskList) {
-			nonImportList.add(newFile.getTask());
+			nonImportList.add(newFile.getName());
 		}
 		Collections.sort(nonImportList);
 		masterList.addAll(nonImportList);
@@ -305,28 +425,29 @@ public class TNotesLogic {
 	public void showToUser(String lineOfText) {
 		System.out.println(lineOfText);
 	}
-//	private todayDate(){
-//		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
-//		Date date = new Date();
-//		return date;
-//	}
-	
-	// TEST
-//	public static void main(String[] args) {
-//		TNotesLogic tNote = new TNotesLogic();
-//		ArrayList<String> list = new ArrayList<String>();
-//		
-//		list.add("add");
-//		list.add("call hahha");
-//		list.add("12-3-2016");
-//	//	list.add("1:00");
-//	//	list.add("12-4-2016");
-//	//	list.add("1:00");
-//		if(tNote.addTask(list)){
-//			System.out.println("yes");
-//		}
-//		else{
-//			System.out.println("no");
-//		}
-//	}
+
+	// private todayDate(){
+	// SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
+	// Date date = new Date();
+	// return date;
+	// }
+
+
+	public static void main(String[] args) {
+		TNotesLogic tNote = new TNotesLogic();
+		ArrayList<String> list = new ArrayList<String>();
+
+		//list.add("add");
+		list.add("call lalala");
+		list.add("2016-3-19");
+		list.add("1:00");
+		list.add("2016-4-10");
+		list.add("1:00");
+		if (tNote.addTask(list)) {
+			System.out.println("yes");
+		} else {
+			System.out.println("no");
+		}
+	}
+
 }
