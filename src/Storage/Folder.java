@@ -7,6 +7,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 public class Folder {
+	private String folderName;
 	
 	// Default constructor
 	public Folder() {

@@ -4,6 +4,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
 
 import Object.TaskFile;
 import Storage.TNotesStorage;
@@ -16,161 +18,124 @@ public class TNotesLogic {
 	// for blocking out timings, need to check if the timing for task to be
 	// added is available.
 	// got deadline task, means do by 4pm
+	// adam u gonna remove fromParser[0] in the end cos of ur extra classes. so i code for that.
 	public boolean addTask(ArrayList<String> fromParser) {
+		try{
+		
 		ArrayList<String> stringList = storage.readFromMasterFile();
 		TaskFile currentFile = new TaskFile();
+		boolean isRecurr = false;
+		String importance = new String();
+		
+		//assert size != 0
+		currentFile.setName(fromParser.remove(0));
+		
+		if(fromParser.contains("important")) {
+			importance = fromParser.remove(fromParser.indexOf("importance"));
+			currentFile.setImportance(importance);
+		}
+		
+		if(fromParser.contains("every")) {
+			fromParser.remove("every");
+			currentFile.setIsRecurr(true);
+		}
+		
+		
+		for(String details: fromParser) {
+			if(!details.contains(":") && !details.contains("-")) {
+				currentFile.setDetails(details);
+				fromParser.remove(details);
+			}
+		}
+		
 		switch (fromParser.size()) {
 		case 1:
+			
+			if (fromParser.get(0).contains("-")) {
+				currentFile.setStartDate(fromParser.get(0));
+			} else {
+				assertTrue(fromParser.get(0).contains(":"));
+				currentFile.setStartTime(fromParser.get(0));
+			}
+			break;
 		case 2:
-			currentFile.setTask(fromParser.get(1));
+			if (fromParser.get(0).contains("-")) {
+				currentFile.setStartDate(fromParser.get(2));
+				
+				if (fromParser.get(1).contains("-")) {
+					currentFile.setEndDate(fromParser.get(1));
+				} else { 
+					assertTrue(fromParser.get(1).contains(":"));
+					currentFile.setStartTime(fromParser.get(1));
+				} 
+				
+			} else if (fromParser.get(0).contains(":")) {
+				currentFile.setStartTime(fromParser.get(0));
+				
+				if (fromParser.get(1).contains("-")) {
+					currentFile.setEndDate(fromParser.get(1));
+				} else { 
+					assertTrue(fromParser.get(1).contains(":"));
+					currentFile.setStartTime(fromParser.get(1));
+				} 
+			}
 			break;
 		case 3:
-			currentFile.setTask(fromParser.get(1));
-			if (fromParser.get(2).equals("important")) {
-				currentFile.setImportance(fromParser.get(2));
-			}
-			if (fromParser.get(2).contains("-")) {
-				currentFile.setStartDate(fromParser.get(2));
-				currentFile.setEndDate(fromParser.get(2));
-			}
-			if (fromParser.get(2).contains(":")) {
-				currentFile.setStartTime(fromParser.get(2));
+			if (fromParser.get(0).contains("-")) {
+				currentFile.setStartDate(fromParser.get(0));
+				
+				if (fromParser.get(1).contains(":")) {
+					currentFile.setStartTime(fromParser.get(1));
+					
+					if (fromParser.get(2).contains("-")) {
+						currentFile.setEndDate(fromParser.get(2));
+					} else { 
+						assertTrue(fromParser.get(2).contains(":"));
+						currentFile.setStartTime(fromParser.get(2));
+					} 
+					
+				} else if (fromParser.get(1).contains("-")) {
+					currentFile.setEndDate(fromParser.get(1));
+					
+					assertTrue(fromParser.get(2).contains(":"));
+					currentFile.setEndTime(fromParser.get(2));
+				}
+				
+			} else if (fromParser.get(0).contains(":")) {
+				currentFile.setStartTime(fromParser.get(0));
+				
+				assertTrue(fromParser.get(1).contains("-"));
+				currentFile.setEndDate(fromParser.get(1));
+					
+				assertTrue(fromParser.get(2).contains(":"));
 				currentFile.setEndTime(fromParser.get(2));
-			}
-			if (fromParser.get(2).contains("details")) {
-				currentFile.setDetails(fromParser.get(2));
+			
+
 			}
 			break;
 		case 4:
-			currentFile.setTask(fromParser.get(1));
-			if (fromParser.get(2).contains("-")) {
-				currentFile.setStartDate(fromParser.get(2));
-				if (fromParser.get(3).contains(":")) {
-					currentFile.setStartTime(fromParser.get(3));
-				}
-				if (fromParser.get(3).contains("-")) {
-					currentFile.setEndDate(fromParser.get(3));
-				}
-				if (fromParser.get(3).equals("important")) {
-					currentFile.setImportance(fromParser.get(3));
-				}
-				if (fromParser.get(3).equals("every")) {
-					currentFile.setIsRecurr(true);
-				}
-				if (fromParser.get(3).contains("details")) {
-					currentFile.setDetails(fromParser.get(3));
-				}
-			}
-			if (fromParser.get(2).contains(":")) {
-				currentFile.setStartTime(fromParser.get(2));
-				if (fromParser.get(3).contains(":")) {
-					currentFile.setEndTime(fromParser.get(3));
-				}
-				if (fromParser.get(3).contains("-")) {
-					currentFile.setStartDate(fromParser.get(3));
-					currentFile.setEndDate(fromParser.get(3));
-				}
-				if (fromParser.get(3).equals("important")) {
-					currentFile.setImportance(fromParser.get(3));
-				}
-				if (fromParser.get(3).equals("every")) {
-					currentFile.setIsRecurr(true);
-				}
-				if (fromParser.get(3).contains("details")) {
-					currentFile.setDetails(fromParser.get(3));
-				}
-			}
-		case 5:
-			currentFile.setTask(fromParser.get(1));
-			if (fromParser.get(2).contains("-")) {
-				currentFile.setStartDate(fromParser.get(2));
-				if (fromParser.get(3).contains(":")) {
-					currentFile.setStartTime(fromParser.get(3));
-					if (fromParser.get(4).equals("details")) {
-						currentFile.setDetails(fromParser.get(4));
-					}
-					if (fromParser.get(4).equals("important")) {
-						currentFile.setImportance(fromParser.get(4));
-					}
-					if (fromParser.get(4).equals("every")) {
-						currentFile.setIsRecurr(true);
-					}
-				}
-				if (fromParser.get(3).contains("-")) {
-					currentFile.setEndDate(fromParser.get(3));
-					if (fromParser.get(4).equals("details")) {
-						currentFile.setDetails(fromParser.get(4));
-					}
-					if (fromParser.get(4).equals("important")) {
-						currentFile.setImportance(fromParser.get(4));
-					}
-					if (fromParser.get(4).equals("every")) {
-						currentFile.setIsRecurr(true);
-					}
-				}
-			}
-			if (fromParser.get(2).contains(":")) {
-				currentFile.setStartTime(fromParser.get(2));
-				if (fromParser.get(3).contains(":")) {
-					currentFile.setEndTime(fromParser.get(3));
-					if (fromParser.get(4).equals("details")) {
-						currentFile.setDetails(fromParser.get(4));
-					}
-					if (fromParser.get(4).equals("important")) {
-						currentFile.setImportance(fromParser.get(4));
-					}
-					if (fromParser.get(4).equals("every")) {
-						currentFile.setIsRecurr(true);
-					}
-				}
-			}
-		case 6:
-			currentFile.setTask(fromParser.get(1));
-			if (fromParser.get(2).contains("-")) {
-				currentFile.setStartDate(fromParser.get(2));
-				if (fromParser.get(3).contains(":")) {
-					currentFile.setStartTime(fromParser.get(3));
-					if (fromParser.get(4).equals("details")) {
-						currentFile.setDetails(fromParser.get(4));
-						if (fromParser.get(5).equals("important")) {
-							currentFile.setImportance(fromParser.get(5));
-						}
-						if (fromParser.get(5).equals("every")) {
-							currentFile.setIsRecurr(true);
-						}
-
-					}
-				}
-				if (fromParser.get(3).contains("-")) {
-					currentFile.setStartTime(fromParser.get(3));
-					if (fromParser.get(4).equals("details")) {
-						currentFile.setDetails(fromParser.get(4));
-						if (fromParser.get(5).equals("important")) {
-							currentFile.setImportance(fromParser.get(5));
-						}
-						if (fromParser.get(5).equals("every")) {
-							currentFile.setIsRecurr(true);
-						}
-					}
-				}
-			}
-			if (fromParser.get(2).contains(":")) {
-				currentFile.setStartTime(fromParser.get(2));
-				if (fromParser.get(3).contains(":")) {
-					currentFile.setEndTime(fromParser.get(3));
-					if (fromParser.get(4).equals("details")) {
-						currentFile.setDetails(fromParser.get(4));
-						if (fromParser.get(5).equals("important")) {
-							currentFile.setImportance(fromParser.get(5));
-						}
-						if (fromParser.get(5).equals("every")) {
-							currentFile.setIsRecurr(true);
-						}
-
-					}
-				}
-			}
+			
+			assertTrue(fromParser.get(0).contains("-"));
+			currentFile.setStartDate(fromParser.get(1));
+			
+			assertTrue(fromParser.get(1).contains(":"));
+			currentFile.setEndTime(fromParser.get(1));
+				
+			assertTrue(fromParser.get(2).contains("-"));
+			currentFile.setEndDate(fromParser.get(2));
+			
+			assertTrue(fromParser.get(3).contains(":"));
+			currentFile.setEndTime(fromParser.get(3));
+		
+		break;
+		
+		default:
+			assertEquals(0, fromParser.size());
 		}
+		
+		currentFile.setUpTaskFile();
+		return storage.addTask(currentFile);
+	
 		// TaskFile currentFile = new TaskFile(fromParser.get(1));
 		// currentFile.setTask(fromParser.get(1));
 		// String punctuation = ":"
@@ -208,7 +173,12 @@ public class TNotesLogic {
 		// }
 		// }
 		// }
-		return storage.addTask(currentFile);
+		
+		} catch (AssertionError aE) {
+			//means the switch statement got invalid arguments
+			//throw instead of return
+			return false;
+		}
 	}
 
 	// currently has issue, need to make a new object, compare it, then remove
@@ -234,7 +204,7 @@ public class TNotesLogic {
 
 		ArrayList<String> listToBeDisplayed = new ArrayList<String>();
 		for (TaskFile currentFile : taskToBeDisplayed) {
-			String task = currentFile.getTask();
+			String task = currentFile.getName();
 			listToBeDisplayed.add(task);
 		}
 		return listToBeDisplayed;
@@ -331,13 +301,13 @@ public class TNotesLogic {
 		masterList.clear();
 		for (TaskFile newFile : taskList) {
 			if (newFile.getImportance().equals("1")) {
-				masterList.add(newFile.getTask());
+				masterList.add(newFile.getName());
 				taskList.remove(newFile);
 			}
 		}
 		Collections.sort(masterList);
 		for (TaskFile newFile : taskList) {
-			nonImportList.add(newFile.getTask());
+			nonImportList.add(newFile.getName());
 		}
 		Collections.sort(nonImportList);
 		masterList.addAll(nonImportList);

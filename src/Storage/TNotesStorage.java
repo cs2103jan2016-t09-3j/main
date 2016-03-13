@@ -100,15 +100,15 @@ public class TNotesStorage {
 	
 	public boolean addTask(TaskFile task) {
 
-		if (!masterList.contains(task.getTask())) {
-			masterList.add(task.getTask());
+		if (!masterList.contains(task.getName())) {
+			masterList.add(task.getName());
 			if (writeTaskToMasterFile(task)) {
 				if (createTaskFile(directory, task)) {
 					return true;
 				}
 				return false;
 			}
-			masterList.remove(task.getTask());
+			masterList.remove(task.getName());
 			return false;
 		}
 		return false;
@@ -219,7 +219,7 @@ public class TNotesStorage {
 			fWriter = new FileWriter(masterFile, true);
 			bWriter = new BufferedWriter(fWriter);
 
-			bWriter.append(task.getTask());
+			bWriter.append(task.getName());
 			bWriter.newLine();
 
 			bWriter.close();
@@ -238,7 +238,7 @@ public class TNotesStorage {
 			if (!directory.exists()) {
 				directory.mkdirs();
 			}
-			File newTask = new File(directory, task.getTask() + ".txt");
+			File newTask = new File(directory, task.getName() + ".txt");
 
 			if (!newTask.exists()) {
 				newTask.createNewFile();
