@@ -49,6 +49,7 @@ import java.util.Date;
  * 
  * Maybe split this into multiple files?
  * 
+ * All task names must be unique
 */
 public class TaskFile implements Comparable<TaskFile> {
 
@@ -247,18 +248,39 @@ public class TaskFile implements Comparable<TaskFile> {
 	
 	public void setUpTaskFile() {
 		
+		setUpDates();
+		
 		setUpCal();
 		
 		setTypeOfTask(); 
 				
 	}
 	
+	private void setUpDates() {
+		String currentDateString = getCurrentDate();
+		
+		if(startDate.isEmpty() && !startTime.isEmpty()) {
+			setStartDate(currentDateString);
+		}
+		
+		if(endDate.isEmpty() && !endTime.isEmpty()) {
+			setEndDate(currentDateString);
+		}
+	}
+
+	public String getCurrentDate() {
+		SimpleDateFormat currentDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		Date currentDate = new Date();
+		String currentDateString = currentDateFormat.format(currentDate);
+		return currentDateString;
+	}
+	
 	
 	private void setUpCal(){
-		if(!startDate.isEmpty()){
+		if(!startDate.isEmpty() && !startTime.isEmpty()){
 			startCal = Calendar.getInstance();
 			setStartCal();
-			if(!endDate.isEmpty()){
+			if(!endDate.isEmpty() && !startTime.isEmpty()){
 				endCal = Calendar.getInstance();
 				setEndCal();
 			}
