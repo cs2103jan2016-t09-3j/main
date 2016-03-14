@@ -51,12 +51,15 @@ import java.util.Date;
  * 
  * All task names must be unique
 */
-public class TaskFile extends TaskFileOverview implements Comparable<TaskFile> {
+public class TaskFile implements Comparable<TaskFile> {
 
 	private static final String IMPORTANCE_ZERO = "0";
 	private transient SimpleDateFormat stringToDateFormat; 
 	
-	
+	protected String name;
+	protected String startDate;
+	protected String startTime;
+	protected boolean isRecurr;
 	private String endDate;
 	private String endTime;
 	private String details;
@@ -75,7 +78,10 @@ public class TaskFile extends TaskFileOverview implements Comparable<TaskFile> {
 	// Constructor
 	public TaskFile() {
 
-		super();
+		setName("");
+		setStartDate("");
+		setStartTime("");
+		setIsRecurr(false);
 		setEndDate("");
 		setEndTime("");
 	
@@ -117,10 +123,11 @@ public class TaskFile extends TaskFileOverview implements Comparable<TaskFile> {
 	public TaskFile(String name, String startDate, String startTime, String endDate, String endTime, String details, 
 			String importance, boolean isRecurr) {
 		
-		super(name, startDate, startTime, isRecurr);
 		stringToDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm");
 		
-		
+		setName(name);
+		setStartDate(startDate);
+		setStartTime(startTime);
 		setEndDate(endDate);
 		setEndTime(endTime);
 		
@@ -181,9 +188,41 @@ public class TaskFile extends TaskFileOverview implements Comparable<TaskFile> {
 		return endCal;
 	}
 	
+	
+	public String getName() {
+		return name;
+	}
+
+	public String getStartTime() {
+		return startTime;
+	}
+
+	public String getStartDate() {
+		return startDate;
+	}
+	
+	public boolean getIsRecurring() {
+		return isRecurr;
+	}
 	// Setters
 
+	public void setName(String task) {
+		this.name = task;
+	}
+
+	public void setStartDate(String startDate) {
+		this.startDate = startDate;
+		
+	}
+
+	public void setStartTime(String startTime) {
+		this.startTime = startTime;
+		
+	}
 	
+	public void setIsRecurr(boolean isRecurr) {
+		this.isRecurr = isRecurr;
+	}
 	
 	public void setEndDate(String endDate) {
 		this.endDate = endDate;

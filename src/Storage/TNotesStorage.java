@@ -114,7 +114,6 @@ public class TNotesStorage {
 	public boolean addTask(TaskFile task) {
 		
 		
-		
 		TaskFileOverview taskOverview = task;
 		
 		for(TaskFileOverview currentFile: masterOverviewList){
