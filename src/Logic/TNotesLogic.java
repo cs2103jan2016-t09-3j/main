@@ -35,7 +35,10 @@ public class TNotesLogic {
 			currentFile.setImportance(importance);
 		}
 		
+		
 		if(fromParser.contains("every")) {
+			int indexOfRecurKeyWord = fromParser.indexOf("every");
+			String recurArgument = fromParser.remove(indexOfRecurKeyWord+1);
 			fromParser.remove("every");
 			currentFile.setIsRecurr(true);
 		}
@@ -78,10 +81,6 @@ public class TNotesLogic {
 		case 2:
 			if (fromParser.get(0).contains("-")) {
 				currentFile.setStartDate(fromParser.get(2));
-//<<<<<<< HEAD
-//				currentFile.setEndDate(fromParser.get(2));
-//				fromParser.add("size2 date");
-//=======
 				
 				if (fromParser.get(1).contains("-")) {
 					currentFile.setEndDate(fromParser.get(1));
