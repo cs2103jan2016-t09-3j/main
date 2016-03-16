@@ -11,7 +11,7 @@ public class LogicUnit {
 	TaskFile infoFile;
 	ArrayList<String> currTaskName;
 
-	public void callCommand(ArrayList<String> fromParser) {
+	public void logicFunction(ArrayList<String> fromParser) {
 		LogicCommand newtask = new LogicCommand(fromParser.get(0));
 		currTaskName = fromParser;
 		String commandChecker = fromParser.remove(0);

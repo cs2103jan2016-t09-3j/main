@@ -1,5 +1,5 @@
 package Logic;
 
-public class CommandDelete extends LogicCommand{
+public class CommandDelete{
 
 }
