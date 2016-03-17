@@ -64,8 +64,8 @@ public class TNotesParser {
 	 */
 	
 	/*command word: search
-	 * search call mom
-	 * search ey words
+	 * search for call mom
+	 * search for ey words
 	 */
 	
 	/*command word: sort
@@ -94,13 +94,16 @@ public class TNotesParser {
 	/* 
 	 * the main is for testing 
 	 */
-	public static void main(String[] args) {
+	public static void main(String[] args) throws Exception {
 		String output = new String();
 		String input = new String();
-		input = "search by importance";
+		input = "search for call mom";
 		for (int i = 0; i < checkCommand(input).size(); i++){
 			output = checkCommand(input).get(i);// 24 hour cloc
 			System.out.println(output);
+		}
+		if (output == null){
+			throw new Error("case 1 failed");
 		}
 	}
 	
@@ -111,8 +114,9 @@ public class TNotesParser {
 		//String errorMessage = "invalid command";
 		String arr[] = inputString.split(" ");
 		String firstWord = arr[0].toLowerCase();
-		String secWord = arr[1];
+		//String secWord = arr[1];
 		// System.out.println(secWord);
+		//try{
 		switch(firstWord){
 			case "add" :
 
@@ -139,9 +143,7 @@ public class TNotesParser {
 				return list;
 			case "search" :
 				list.add(firstWord);
-				//list.add(secWord);
-				//String searchStr = new String();
-				for(int i=1; i<arr.length; i++){
+				for(int i=2; i<arr.length; i++){
 					list.add(arr[i]);
 				}
 				
