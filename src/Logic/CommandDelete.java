@@ -1,5 +1,5 @@
 package Logic;
 
-public class CommandDelete{
+public class CommandDelete extends TNotesLogic{
 
 }
