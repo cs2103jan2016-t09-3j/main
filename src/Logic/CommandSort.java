@@ -1,5 +1,5 @@
 package Logic;
 
-public class CommandSort extends LogicCommand{
+public class CommandSort extends TNotesLogic{
 
 }

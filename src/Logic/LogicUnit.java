@@ -15,16 +15,28 @@ public class LogicUnit {
 		LogicCommand newtask = new LogicCommand(fromParser.get(0));
 		currTaskName = fromParser;
 		String commandChecker = fromParser.remove(0);
-//		switch (commandChecker) {
-//		case ("add"):
-//			logic.addTask(fromParser);
-//			break;
-//		case ("delete"):
-//			logic.deleteTask(fromParser.get(0));
-//			break;
-//		case("edit"):
-//		}
+		if(commandChecker.equals("add")){
+			CommandAdd(fromParser);
+		}
+		else if(commandChecker.equals("delete")){
+			CommandDelete(fromParser);
+		}
+		else if(commandChecker.equals("edit")){
+			CommandEdit(fromParser);
+		}
+		else if(commandChecker.equals("sort")){
+			sortTask();
+		}
+		else if(commandChecker.equals("search")){
+			searchTask(string)
+		}
+		else{
+			System.out.println("task did not pass thru checker");
+		}
 		doCommand.push(newtask);
+		while(!undoCommand.isEmpty()){
+				undoCommand.pop();
+		}
 	}
 
 	public void undoCall() {
@@ -45,5 +57,8 @@ public class LogicUnit {
 				break;
 			}
 		}
+	}
+	public void redoCall(){
+		if(redoCommand)
 	}
 }

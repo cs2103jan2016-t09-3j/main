@@ -260,7 +260,7 @@ public class TNotesLogic {
 
 	// currently gets a array list String, converts to array list taskFile, then
 	// checks if any is done. returns new array list without done task/
-	public ArrayList<String> displayList() {
+	public ArrayList<TaskFile> displayList() {
 		ArrayList<String> stringList = storage.readFromMasterFile();
 		ArrayList<TaskFile> taskToBeDisplayed = new ArrayList<TaskFile>();
 		for (String text : stringList) {
@@ -270,14 +270,14 @@ public class TNotesLogic {
 			}
 
 		}
-
-		ArrayList<String> listToBeDisplayed = new ArrayList<String>();
-		for (TaskFile currentFile : taskToBeDisplayed) {
-			String task = currentFile.getName();
-			listToBeDisplayed.add(task);
-		}
-		return listToBeDisplayed;
+		return taskToBeDisplayed;
 	}
+	
+//	ArrayList<String> listToBeDisplayed = new ArrayList<String>();
+//	for (TaskFile currentFile : taskToBeDisplayed) {
+//		String task = currentFile.getName();
+//		listToBeDisplayed.add(task);
+//	}
 	// Show the details of a single task
 	// will take in the name of the task,
 	// public ArrayList<String> displayDetailsList(String taskToBeDisplayed){

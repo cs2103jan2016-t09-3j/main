@@ -8,7 +8,7 @@ import java.util.Calendar;
 
 import Object.TaskFile;
 
-public class CommandAdd {
+public class CommandAdd extends TNotesLogic {
 
 	public void whichTask(ArrayList<String> fromParser){
 		if(fromParser.contains("every")){
