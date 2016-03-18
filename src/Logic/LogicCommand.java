@@ -1,31 +1,36 @@
 package Logic;
 
+import java.util.ArrayList;
+
 import Object.TaskFile;
 
 public class LogicCommand {
 	private String commandType;
-	private TaskFile task;
+	private ArrayList<String> taskDetails;
 
 	
-	public LogicCommand(String command){
-		this.commandType = command;
-		TaskFile task;
+	public LogicCommand(String command, ArrayList<String> fromParser){
+		commandType = command;
+		taskDetails = fromParser;
 	}
 	
+	public ArrayList<String> getTaskDetails() {
+		return taskDetails;
+	}
+
+	public void setTaskDetails(ArrayList<String> taskDetails) {
+		this.taskDetails = taskDetails;
+	}
+
 	public String getCommandType() {
 		return commandType;
 	}
 
-	public TaskFile getTask() {
-		return task;
-	}
 
 	public void setCommandType(String commandType) {
 		this.commandType = commandType;
 	}
 
-	public void setTask(TaskFile task) {
-		this.task = task;
-	}
+	
 	
 }

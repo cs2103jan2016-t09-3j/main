@@ -249,9 +249,18 @@ public class TNotesLogic {
 	// currently has issue, need to make a new object, compare it, then remove
 	// it
 	// if i want to hold the main Array list
-	public boolean deleteTask(String fromParser) {
-		return storage.deleteTask(fromParser);
-
+	public TaskFile deleteTask(ArrayList<String> fromParser) {
+//		ArrayList<String> stringList = storage.readFromMasterFile();
+//		TaskFile deletedTask = new TaskFile();
+//		for (String text : stringList) {
+//			TaskFile currentFile = storage.getTaskFileByName(text);
+//			if (currentFile.getName().equals(fromParser.get(0))) {
+//				deletedTask = currentFile;
+//				storage.deleteTask(fromParser.get(0));
+//			}
+//
+//		}
+		return storage.deleteTask(fromParser.get(0));
 	}
 
 	// currently gets a array list String, converts to array list taskFile, then
@@ -394,46 +403,27 @@ public class TNotesLogic {
 	}
 
 	// sort date
-	public ArrayList<TaskFile> sortTask(String date){
-	 ArrayList<String> masterList = storage.readFromMasterFile();
-	 for(String text : masterList){
-		 TaskFile currentFile = storage.getTaskFileByName(text);
-		 	if(!currentFile.getIsDone()){
-		 		taskList.add(currentFile);
-		 	}
-	 }
-		 	masterList.clear();
-	 for(TaskFile newFile : taskList) {
-		 TaskFile currentFile = newFile;
-		 if (currentFile.getStartDate().equals(date)) {
-			 taskList.add(currentFile);
-		 }
-	 }
-		 
-	 	return taskList;
-}
-	
+	public ArrayList<TaskFile> sortTask(String date) {
+		ArrayList<String> masterList = storage.readFromMasterFile();
+		for (String text : masterList) {
+			TaskFile currentFile = storage.getTaskFileByName(text);
+			if (!currentFile.getIsDone()) {
+				taskList.add(currentFile);
+			}
+		}
+		masterList.clear();
+		for (TaskFile newFile : taskList) {
+			TaskFile currentFile = newFile;
+			if (currentFile.getStartDate().equals(date)) {
+				taskList.add(currentFile);
+			}
+		}
+
+		return taskList;
+	}
 
 	public void showToUser(String lineOfText) {
 		System.out.println(lineOfText);
 	}
 
-
-	public static void main(String[] args) {
-		TNotesLogic tNote = new TNotesLogic();
-		ArrayList<String> list = new ArrayList<String>();
-
-		// list.add("add");
-		list.add("call lalala");
-		list.add("2016-3-19");
-		list.add("1:00");
-		list.add("2016-4-10");
-		list.add("1:00");
-		if (tNote.addTask(list)) {
-			System.out.println("yes");
-		} else {
-			System.out.println("no");
-		}
-	}
-
-}}
+}
