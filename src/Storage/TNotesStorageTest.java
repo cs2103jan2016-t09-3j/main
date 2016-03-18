@@ -15,7 +15,7 @@ public class TNotesStorageTest {
 	
 	@Before
 	public void setUp() throws Exception {
-		storage = new TNotesStorage();
+		storage = TNotesStorage.getInstance();
 	}
 
 	@After

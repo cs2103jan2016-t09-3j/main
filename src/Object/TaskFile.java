@@ -54,7 +54,6 @@ import java.util.Date;
 public class TaskFile implements Comparable<TaskFile> {
 
 	private static final String IMPORTANCE_ZERO = "0";
-	private transient SimpleDateFormat stringToDateFormat; 
 	
 	protected String name;
 	protected String startDate;
@@ -89,7 +88,7 @@ public class TaskFile implements Comparable<TaskFile> {
 		setImportance(IMPORTANCE_ZERO);
 		
 		setIsDone(false);
-		stringToDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm");
+		
 		initializeTaskTypes();
 	}
 
@@ -123,7 +122,7 @@ public class TaskFile implements Comparable<TaskFile> {
 	public TaskFile(String name, String startDate, String startTime, String endDate, String endTime, String details, 
 			String importance, boolean isRecurr) {
 		
-		stringToDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm");
+		
 		
 		setName(name);
 		setStartDate(startDate);
@@ -267,7 +266,7 @@ public class TaskFile implements Comparable<TaskFile> {
 		}
 	}
 
-	public String getCurrentDate() {
+	private String getCurrentDate() {
 		SimpleDateFormat currentDateFormat = new SimpleDateFormat("yyyy-MM-dd");
 		Date currentDate = new Date();
 		String currentDateString = currentDateFormat.format(currentDate);
@@ -276,10 +275,10 @@ public class TaskFile implements Comparable<TaskFile> {
 	
 	
 	private void setUpCal(){
-		if(!startDate.isEmpty() && !startTime.isEmpty()){
+		if(!startDate.isEmpty()){
 			startCal = Calendar.getInstance();
 			setStartCal();
-			if(!endDate.isEmpty() && !startTime.isEmpty()){
+			if(!endDate.isEmpty()){
 				endCal = Calendar.getInstance();
 				setEndCal();
 			}
@@ -288,27 +287,45 @@ public class TaskFile implements Comparable<TaskFile> {
 	
 	private void setStartCal() {
 		try{
-		String dateTimeStringStart = combineDateTime(startDate, startTime);
-		//System.err.println(dateTimeStringStart);
-		System.err.println(dateTimeStringStart);
-		Date date = stringToDateFormat.parse(dateTimeStringStart);
-		
-		startCal.setTime(date);
+			Date date;
+			date = convertStringToDate(startDate,startTime);
+			startCal.setTime(date);
 		}catch(ParseException pEx){
 			System.err.println("incorrect date/time format for start cal");
 		}
 		
 	}
-	
+
+
 	private void setEndCal() {
 		try{
-			String dateTimeStringEnd = combineDateTime(endDate, endTime);
-			Date date = stringToDateFormat.parse(dateTimeStringEnd);
+			Date date = convertStringToDate(endDate, endTime);
 			endCal.setTime(date);
 			}catch(ParseException pEx){
 				System.err.println("incorrect date/time format for end cal");
 			}
 	}
+	
+	private Date convertStringToDate(String dateString, String timeString) throws ParseException {
+		String dateTimeStringStart;
+		Date date;
+		SimpleDateFormat stringToDateFormat;;
+		
+		
+		if(timeString.isEmpty()) {
+			stringToDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm");
+			
+			date = stringToDateFormat.parse(startDate);
+		} else {
+			stringToDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+			
+			dateTimeStringStart = combineDateTime(dateString, timeString);
+			date = stringToDateFormat.parse(dateTimeStringStart);
+		}
+		
+		return date;
+	}
+	
 	
 	
 	private void setTypeOfTask() {
