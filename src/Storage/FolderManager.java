@@ -6,11 +6,11 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-public class Folder {
+public class FolderManager {
 	private String name;
 	
 	
-	public Folder(String name) {
+	public FolderManager(String name) {
 		this.name = name;
 		
 	}

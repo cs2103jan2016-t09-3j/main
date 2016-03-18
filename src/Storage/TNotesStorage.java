@@ -24,7 +24,7 @@ public class TNotesStorage {
 	 * , sort alphabetically, and search. The file saves after every command
 	 * that the user types.
 	 * 
-	 * To Add: Folder class, change master list to contain name + date to facilitate this
+	 * To Add: FolderManager class, change master list to contain name + date to facilitate this
 	 * 
 	 */
 	private ArrayList<String> masterList = new ArrayList<String>();
