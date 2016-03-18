@@ -4,10 +4,12 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertEquals;
 
+import Object.NameComparator;
 import Object.TaskFile;
 import Storage.TNotesStorage;
 
@@ -241,7 +243,6 @@ public class TNotesLogic {
 		{
 			// means the switch statement got invalid arguments
 			// throw instead of return
-			return false;
 		}
 
 	}
@@ -312,56 +313,60 @@ public class TNotesLogic {
 		String type = fromParser.get(1);
 		String title = fromParser.get(0);
 		String newText = fromParser.get(2);
-		TaskFile currentFile = new TaskFile();
-		TaskFile changedFile = new TaskFile();
-			if (type.equals("time")) {
-				currentFile = storage.deleteTask(title);
-				currentFile.setStartTime(newText);
-				changedFile = storage.addTask(currentFile);
-				return changedFile;
-			} else if (type.equals("endtime")) {
-				currentFile = storage.deleteTask(title);
-				currentFile.setEndTime(newText);
-				changedFile = storage.addTask(currentFile);
-				return changedFile;
-			} else if (type.equals("date")) {
-				currentFile = storage.deleteTask(title);
-				currentFile.setStartDate(newText);
-				changedFile = storage.addTask(currentFile);
-				return changedFile;
-			} else if (type.equals("enddate")) {
-				currentFile = storage.deleteTask(title);
-				currentFile.setEndDate(newText);
-				changedFile = storage.addTask(currentFile);
-				return changedFile;
-			} else if (type.equals("details")) {
-				currentFile = storage.deleteTask(title);
-				currentFile.setDetails(newText);
-				changedFile = storage.addTask(currentFile);
-				return changedFile;
-			} else
-				System.out.println("did not edit");
-				return changedFile;
-		}
+		TaskFile currentFile = storage.getTaskFileByName(title);
+		if (type.equals("time")) {
+			storage.deleteTask(title);
+			currentFile.setStartTime(newText);
+			if(storage.addTask(currentFile)){
+					return currentFile;
+			}
+			else{
+				System.out.println("did not manage to add to storage");
+			}
+		} else if (type.equals("endtime")) {
+			currentFile = storage.deleteTask(title);
+			currentFile.setEndTime(newText);
+			changedFile = storage.addTask(currentFile);
+			return changedFile;
+		} else if (type.equals("date")) {
+			currentFile = storage.deleteTask(title);
+			currentFile.setStartDate(newText);
+			changedFile = storage.addTask(currentFile);
+			return changedFile;
+		} else if (type.equals("enddate")) {
+			currentFile = storage.deleteTask(title);
+			currentFile.setEndDate(newText);
+			changedFile = storage.addTask(currentFile);
+			return changedFile;
+		} else if (type.equals("details")) {
+			currentFile = storage.deleteTask(title);
+			currentFile.setDetails(newText);
+			changedFile = storage.addTask(currentFile);
+			return changedFile;
+		} else
+			System.out.println("did not edit");
+		return changedFile;
 	}
+
+	
 
 	// searches for a word or phrase within the storage, returns array list of
 	// taskfile
 	public ArrayList<TaskFile> searchTask(String lineOfText) {
-		ArrayList<TaskFile> taskList = new ArrayList<TaskFile>();
+		ArrayList<TaskFile> searchtaskList = new ArrayList<TaskFile>();
 		ArrayList<String> masterList = storage.readFromMasterFile();
 		for (String text : masterList) {
 			if (text.contains(lineOfText))
-				taskList.add(storage.getTaskFileByName(text));
+				searchtaskList.add(storage.getTaskFileByName(text));
 		}
-		return taskList;
+		return searchtaskList;
 	}
 
 	// importance sort
 	// assumption, importance always placed first , regardless of sort.
-	public ArrayList<String> sortImportTask() {
+	public ArrayList<TaskFile> sortImportTask() {
 		ArrayList<String> masterList = storage.readFromMasterFile();
-		ArrayList<String> nonImportList = new ArrayList<String>();
+		ArrayList<TaskFile> importList = new ArrayList<TaskFile>();
 		for (String text : masterList) {
 			TaskFile currentFile = storage.getTaskFileByName(text);
 			if (!currentFile.getIsDone()) {
@@ -371,56 +376,45 @@ public class TNotesLogic {
 		masterList.clear();
 		for (TaskFile newFile : taskList) {
 			if (newFile.getImportance().equals("importance")) {
-				masterList.add(newFile.getName());
+				importList.add(newFile);
 				taskList.remove(newFile);
 			}
 		}
-		Collections.sort(masterList);
-		for (TaskFile newFile : taskList) {
-			nonImportList.add(newFile.getName());
-		}
-		Collections.sort(nonImportList);
-		masterList.addAll(nonImportList);
+		Collections.sort(taskList, new NameComparator());
+		Collections.sort(importList, new NameComparator());
+		importList.addAll(taskList);
 		taskList.clear();
-		return masterList;
+		return importList;
 	}
 
 	// Sort name
-	public ArrayList<String> sortTask() {
+	public ArrayList<TaskFile> sortTask() {
 		ArrayList<String> masterList = storage.readFromMasterFile();
+		ArrayList<TaskFile> allTaskList = new ArrayList<TaskFile>();
 		for (String text : masterList) {
 			TaskFile currentFile = storage.getTaskFileByName(text);
 			if (!currentFile.getIsDone()) {
-				taskList.add(currentFile);
+				allTaskList.add(currentFile);
 			}
 		}
-		masterList.clear();
-		for (TaskFile newFile : taskList) {
-			masterList.add(newFile.getName());
-		}
-		Collections.sort(masterList);
+		Collections.sort(allTaskList, TaskFile.NameComparator);
 		taskList.clear();
-		return masterList;
+		return allTaskList;
 	}
 
 	// sort date
-	public ArrayList<TaskFile> sortDateTask(String date) {
+	public ArrayList<TaskFile> sortDateTask() {
 		ArrayList<String> masterList = storage.readFromMasterFile();
+		ArrayList<TaskFile> dateList = new ArrayList<TaskFile>();
 		for (String text : masterList) {
 			TaskFile currentFile = storage.getTaskFileByName(text);
 			if (!currentFile.getIsDone()) {
-				taskList.add(currentFile);
+				dateList.add(currentFile);
 			}
 		}
-		masterList.clear();
-		for (TaskFile newFile : taskList) {
-			TaskFile currentFile = newFile;
-			if (currentFile.getStartDate().equals(date)) {
-				taskList.add(currentFile);
-			}
-		}
+		Collecions.sort(dateList, TaskFile.NameComparator)
 
-		return taskList;
+		return dateList;
 	}
 
 	public void showToUser(String lineOfText) {

@@ -6,31 +6,27 @@ import Object.TaskFile;
 
 public class LogicCommand {
 	private String commandType;
-	private ArrayList<String> taskDetails;
+	private TaskFile task;
 
-	
-	public LogicCommand(String command, ArrayList<String> fromParser){
+	public LogicCommand(String command) {
 		commandType = command;
-		taskDetails = fromParser;
-	}
-	
-	public ArrayList<String> getTaskDetails() {
-		return taskDetails;
+		this.task = new TaskFile();
 	}
 
-	public void setTaskDetails(ArrayList<String> taskDetails) {
-		this.taskDetails = taskDetails;
+	public TaskFile getTask() {
+		return task;
+	}
+
+	public void setTask(TaskFile task) {
+		this.task = task;
 	}
 
 	public String getCommandType() {
 		return commandType;
 	}
 
-
 	public void setCommandType(String commandType) {
 		this.commandType = commandType;
 	}
 
-	
-	
 }

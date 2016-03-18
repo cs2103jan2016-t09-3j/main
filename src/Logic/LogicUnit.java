@@ -10,10 +10,11 @@ public class LogicUnit {
 	Stack<LogicCommand> redoCommand = new Stack<LogicCommand>();
 	TNotesLogic logic;
 	TaskFile infoFile;
+	ArrayList<String> taskDetails = new ArrayList<String>();
 
 	public void logicFunction(ArrayList<String> fromParser) {
 		String commandChecker = fromParser.remove(0);
-		LogicCommand newTask = new LogicCommand(fromParser.get(0),fromParser);
+		LogicCommand newTask = new LogicCommand(fromParser.get(0));
 		if(commandChecker.equals("add")){
 			newTask.setTask(CommandAdd(fromParser));
 		}
@@ -42,17 +43,17 @@ public class LogicUnit {
 		if (doCommand.isEmpty())
 			System.out.println("No task in List");
 		else {
-			LogicCommand currentTask = doCommand.pop();
-			String currentCommand = currentTask.getCommandType();
-			ArrayList<String> details = currentTask.getTaskDetails();
-			if(currentCommand.equals("add")){
-				currentTask.setTask(CommandAdd(details));
+			LogicCommand currentCommand = doCommand.pop();
+			String commandType = currentCommand.getCommandType();
+			ArrayList<String> details = currentCommand.getTaskDetails();
+			if(commandType.equals("add")){
+				currentCommand.setTask(CommandDelete(details));
 			}
-			else if(currentCommand.equals("delete")){
-				currentTask.setTask(CommandDelete(details));
+			else if(commandType.equals("delete")){
+				currentCommand.setTask(CommandAdd(details));
 			}
-			else if(currentCommand.equals("edit")){
-				currentTask.setTask(CommandEdit(details));
+			else if(commandType.equals("edit")){
+				currentCommand.setTask(CommandEdit(details));
 			}
 			else{
 				System.out.println("task did not pass thru checker");
