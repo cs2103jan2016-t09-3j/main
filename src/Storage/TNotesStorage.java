@@ -8,12 +8,12 @@ import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonStreamParser;
 
 import Object.TaskFile;
-import Object.TaskFileOverview;
 
 
 public class TNotesStorage {
@@ -28,11 +28,11 @@ public class TNotesStorage {
 	 * 
 	 */
 	private ArrayList<String> masterList = new ArrayList<String>();
-	private ArrayList<TaskFileOverview> masterOverviewList = new ArrayList<TaskFileOverview>();
 	private File directory;
 	private String masterFileName = "masterfile.txt";
 	private File masterFile;
 	private Path parentPath;
+	private HashMap<String, String> masterNameDateMap;
 	
 	private BufferedWriter bWriter;
 	private FileWriter fWriter;
@@ -50,6 +50,7 @@ public class TNotesStorage {
 			setUpMasterFile();
 			
 			gsonHelper = new Gson();
+			masterNameDateMap = new HashMap<String, String>();
 			
 		} catch (IOException ioEx) {
 			System.err.println("Error creating master file");
@@ -114,16 +115,6 @@ public class TNotesStorage {
 	public boolean addTask(TaskFile task) {
 		
 		
-		TaskFileOverview taskOverview = task;
-		
-		for(TaskFileOverview currentFile: masterOverviewList){
-			if(taskOverview.getName().equals(currentFile.getName())) {
-				//throw a util class error
-				return false;
-			}
-		}
-		
-		masterOverviewList.add(task);
 		if (!masterList.contains(task.getName())) {
 			masterList.add(task.getName());
 			if (writeTaskToMasterFile(task)) {
@@ -138,18 +129,18 @@ public class TNotesStorage {
 		return false;
 	}
 
-	public boolean deleteTask(String task) {
+	public TaskFile deleteTask(String task) {
 		File fileToDelete = new File(directory, task + ".txt");
-		
+		TaskFile deletedTask = getTaskFileByName(task);
 		//System.err.println(fileToDelete.getName());
 		if (fileToDelete.delete()) {
 			//System.err.println("delete");
 			masterList.remove(task);
 			clearMasterFile();
 			writeListToMasterFile();
-			return true;
+			return deletedTask;
 		}
-		return false;
+		return null;
 	}
 
 	public TaskFile getTaskFileByName(String taskName) {
