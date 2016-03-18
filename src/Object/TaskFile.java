@@ -51,7 +51,7 @@ import java.util.Date;
  * 
  * All task names must be unique
 */
-public class TaskFile implements Comparable<TaskFile> {
+public class TaskFile implements Comparable<TaskFile>, Cloneable {
 
 	private static final String IMPORTANCE_ZERO = "0";
 	
@@ -307,7 +307,7 @@ public class TaskFile implements Comparable<TaskFile> {
 	}
 	
 	private Date convertStringToDate(String dateString, String timeString) throws ParseException {
-		String dateTimeStringStart;
+		String dateTimeString;
 		Date date;
 		SimpleDateFormat stringToDateFormat;;
 		
@@ -319,8 +319,8 @@ public class TaskFile implements Comparable<TaskFile> {
 		} else {
 			stringToDateFormat = new SimpleDateFormat("yyyy-MM-dd");
 			
-			dateTimeStringStart = combineDateTime(dateString, timeString);
-			date = stringToDateFormat.parse(dateTimeStringStart);
+			dateTimeString = combineDateTime(dateString, timeString);
+			date = stringToDateFormat.parse(dateTimeString);
 		}
 		
 		return date;
@@ -362,5 +362,10 @@ public class TaskFile implements Comparable<TaskFile> {
 	@Override
 	public int compareTo(TaskFile taskFile){
 		return this.getName().compareTo(taskFile.getName());
+	}
+	
+	@Override
+	protected Object clone() throws CloneNotSupportedException{
+		return super.clone();
 	}
 }
