@@ -158,8 +158,7 @@ public class TNotesLogic {
 				Calendar endRecurDate = currentFile.getEndCal();
 				if (recurArgument.equals("day")) {
 					for (int i = 0; i < 10; i++) {
-						TaskFile test = 
-						firstRecurDate.add(Calendar.DATE, 1);
+						TaskFile test = firstRecurDate.add(Calendar.DATE, 1);
 						currentFile.setStartCal();
 						endRecurDate.add(Calendar.DATE, 1);
 						currentFile.setEndCal();
@@ -173,31 +172,28 @@ public class TNotesLogic {
 						currentFile.setEndCal();
 					}
 					storage.addRecurTask(currentFile);
-				}else if (recurArgument.equals("month")){
-					for(int i = 0; i<4;i++){
-						firstRecurDate.add(Calendar.MONTH,1);
+				} else if (recurArgument.equals("month")) {
+					for (int i = 0; i < 4; i++) {
+						firstRecurDate.add(Calendar.MONTH, 1);
 						currentFile.setStartCal(firstRecurDate);
-						endRecurDate.add(Calendar.MONTH,1 );
+						endRecurDate.add(Calendar.MONTH, 1);
 						currentFile.setEndCal();
 					}
 					storage.addRecurTask(currentFile);
-				}
-				else if(recurArgument.equals("year")){
-					for(int i = 0; i < 1;i++){
+				} else if (recurArgument.equals("year")) {
+					for (int i = 0; i < 1; i++) {
 						firstRecurDate.add(Calendar.YEAR, 1);
 						currentFile.setStartCal();
 						endRecurDate.add(Calendar.YEAR, 1);
 					}
-					storage.addRecurTask(currentFile);					
-				}
-				else{
+					storage.addRecurTask(currentFile);
+				} else {
 					System.out.println("Error");
 				}
 			}
-			if(storage.addTask(currentFile)){
+			if (storage.addTask(currentFile)) {
 				return currentFile;
 			}
-
 
 			// TaskFile currentFile = new TaskFile(fromParser.get(1));
 			// currentFile.setTask(fromParser.get(1));
@@ -238,15 +234,15 @@ public class TNotesLogic {
 			// }
 			// }
 
-		}catch(
+		} catch (
 
-	AssertionError aE)
+		AssertionError aE)
 
-	{
-		// means the switch statement got invalid arguments
-		// throw instead of return
-		return false;
-	}
+		{
+			// means the switch statement got invalid arguments
+			// throw instead of return
+			return false;
+		}
 
 	}
 
@@ -272,40 +268,35 @@ public class TNotesLogic {
 		}
 		return taskToBeDisplayed;
 	}
-	
-//	ArrayList<String> listToBeDisplayed = new ArrayList<String>();
-//	for (TaskFile currentFile : taskToBeDisplayed) {
-//		String task = currentFile.getName();
-//		listToBeDisplayed.add(task);
-//	}
+
 	// Show the details of a single task
 	// will take in the name of the task,
-	// public ArrayList<String> displayDetailsList(String taskToBeDisplayed){
-	// ArrayList<String> stringList = storage.readFromMasterFile();
-	// ArrayList<String> taskListToBeDisplayed = new ArrayList<String>();
-	// for(String text : stringList){
-	// TaskFile currentFile = storage.getTaskFileByName(text);
-	// if(currentFile.getTask().equals(taskToBeDisplayed)){
-	// taskListToBeDisplayed.add(currentFile.getTask());
-	// taskListToBeDisplayed.add(currentFile.getDetails());
-	// }
-	// }
-	// return taskListToBeDisplayed;
-	// }
+	public TaskFile displayDetailsList(String taskToBeDisplayed) {
+		ArrayList<String> stringList = storage.readFromMasterFile();
+		TaskFile detailFile = new TaskFile();
+		for (String text : stringList) {
+			TaskFile currentFile = storage.getTaskFileByName(text);
+			if (currentFile.getName().equals(taskToBeDisplayed)) {
+				detailFile = currentFile;
+				break;
+			}
+		}
+		return detailFile;
+	}
 
 	// show the task by date
 	// take in a date string?
-	// public ArrayList<String> displayDateList(String date){
-	// ArrayList<String> stringList = storage.readFromMasterFile();
-	// ArrayList<String> taskListToBeDisplayed = new ArrayList<String>();
-	// for(String text : stringList){
-	// TaskFile currentFile = storage.getTaskFileByName(text);
-	// if(currentFile.getStartDate().equals(date)){
-	// taskListToBeDisplayed.add(currentFile.getTask());
-	// }
-	// }
-	// return taskListToBeDisplayed;
-	// }
+	public ArrayList<TaskFile> displayDateList(String date) {
+		ArrayList<String> stringList = storage.readFromMasterFile();
+		ArrayList<TaskFile> taskListToBeDisplayed = new ArrayList<TaskFile>();
+		for (String text : stringList) {
+			TaskFile currentFile = storage.getTaskFileByName(text);
+			if (currentFile.getStartDate().equals(date)) {
+				taskListToBeDisplayed.add(currentFile);
+			}
+		}
+		return taskListToBeDisplayed;
+	}
 
 	public boolean editTask(ArrayList<String> fromParser) {
 		// System.err.println(fromParser.toString());
@@ -358,7 +349,7 @@ public class TNotesLogic {
 
 	// importance sort
 	// assumption, importance always placed first , regardless of sort.
-	public ArrayList<String> sortTask() {
+	public ArrayList<String> sortImportTask() {
 		ArrayList<String> masterList = storage.readFromMasterFile();
 		ArrayList<String> nonImportList = new ArrayList<String>();
 		for (String text : masterList) {
@@ -369,7 +360,7 @@ public class TNotesLogic {
 		}
 		masterList.clear();
 		for (TaskFile newFile : taskList) {
-			if (newFile.getImportance().equals("1")) {
+			if (newFile.getImportance().equals("importance")) {
 				masterList.add(newFile.getName());
 				taskList.remove(newFile);
 			}
@@ -383,44 +374,50 @@ public class TNotesLogic {
 		taskList.clear();
 		return masterList;
 	}
+
 	// Sort name
-	// public ArrayList<String> sortTask(){
-	// ArrayList<String> masterList = storage.readFromMasterFile();
-	// for (String text : masterList) {
-	// TaskFile currentFile = storage.getTaskFileByName(text);
-	// if (!currentFile.getIsDone()) {
-	// taskList.add(currentFile);
-	// }
-	// }
-	// masterList.clear();
-	// for (TaskFile newFile : taskList) {
-	// masterList.add(newFile.getTask());
-	// }
-	// Collections.sort(masterList);
-	// taskList.clear();
-	// return masterList;
-	// }
+	public ArrayList<String> sortTask() {
+		ArrayList<String> masterList = storage.readFromMasterFile();
+		for (String text : masterList) {
+			TaskFile currentFile = storage.getTaskFileByName(text);
+			if (!currentFile.getIsDone()) {
+				taskList.add(currentFile);
+			}
+		}
+		masterList.clear();
+		for (TaskFile newFile : taskList) {
+			masterList.add(newFile.getName());
+		}
+		Collections.sort(masterList);
+		taskList.clear();
+		return masterList;
+	}
 
 	// sort date
-	// public ArrayList<String> sortTask(){
-	// ArrayList<String> masterList = storage.readFromMasterFile();
-	// ArrayList<String> dateList = new ArrayList<String>();
-	// for (String text : masterList) {
-	// TaskFile currentFile = storage.getTaskFileByName(text);
-	// if (currentFile.getStartDate().equals() {
-	// taskList.add(currentFile);
-	// }
-	// }
+	public ArrayList<TaskFile> sortTask(String date){
+	 ArrayList<String> masterList = storage.readFromMasterFile();
+	 for(String text : masterList){
+		 TaskFile currentFile = storage.getTaskFileByName(text);
+		 	if(!currentFile.getIsDone()){
+		 		taskList.add(currentFile);
+		 	}
+	 }
+		 	masterList.clear();
+	 for(TaskFile newFile : taskList) {
+		 TaskFile currentFile = newFile;
+		 if (currentFile.getStartDate().equals(date)) {
+			 taskList.add(currentFile);
+		 }
+	 }
+		 
+	 	return taskList;
+}
+	
 
 	public void showToUser(String lineOfText) {
 		System.out.println(lineOfText);
 	}
 
-	// private todayDate(){
-	// SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
-	// Date date = new Date();
-	// return date;
-	// }
 
 	public static void main(String[] args) {
 		TNotesLogic tNote = new TNotesLogic();
