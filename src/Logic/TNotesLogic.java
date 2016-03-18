@@ -250,16 +250,16 @@ public class TNotesLogic {
 	// it
 	// if i want to hold the main Array list
 	public TaskFile deleteTask(ArrayList<String> fromParser) {
-//		ArrayList<String> stringList = storage.readFromMasterFile();
-//		TaskFile deletedTask = new TaskFile();
-//		for (String text : stringList) {
-//			TaskFile currentFile = storage.getTaskFileByName(text);
-//			if (currentFile.getName().equals(fromParser.get(0))) {
-//				deletedTask = currentFile;
-//				storage.deleteTask(fromParser.get(0));
-//			}
-//
-//		}
+		// ArrayList<String> stringList = storage.readFromMasterFile();
+		// TaskFile deletedTask = new TaskFile();
+		// for (String text : stringList) {
+		// TaskFile currentFile = storage.getTaskFileByName(text);
+		// if (currentFile.getName().equals(fromParser.get(0))) {
+		// deletedTask = currentFile;
+		// storage.deleteTask(fromParser.get(0));
+		// }
+		//
+		// }
 		return storage.deleteTask(fromParser.get(0));
 	}
 
@@ -307,40 +307,41 @@ public class TNotesLogic {
 		return taskListToBeDisplayed;
 	}
 
-	public boolean editTask(ArrayList<String> fromParser) {
+	public TaskFile editTask(ArrayList<String> fromParser) {
 		// System.err.println(fromParser.toString());
-		String type = fromParser.get(2);
-		String title = fromParser.get(1);
-		String newText = fromParser.get(3);
-		TaskFile currentFile = storage.getTaskFileByName(title);
-		switch (type) {
-		case ("time"):
-			currentFile.setStartTime(newText);
-			storage.deleteTask(title);
-			storage.addTask(currentFile);
-			return true;
-		case ("endTime"):
-			currentFile.setEndTime(newText);
-			storage.deleteTask(title);
-			storage.addTask(currentFile);
-			return true;
-		case ("date"):
-			currentFile.setStartDate(newText);
-			storage.deleteTask(title);
-			storage.addTask(currentFile);
-			return true;
-		case ("endDate"):
-			currentFile.setEndDate(newText);
-			storage.deleteTask(title);
-			storage.addTask(currentFile);
-			return true;
-		case ("details"):
-			currentFile.setDetails(newText);
-			storage.deleteTask(title);
-			storage.addTask(currentFile);
-			return true;
-		default:
-			return false;
+		String type = fromParser.get(1);
+		String title = fromParser.get(0);
+		String newText = fromParser.get(2);
+		TaskFile currentFile = new TaskFile();
+		TaskFile changedFile = new TaskFile();
+			if (type.equals("time")) {
+				currentFile = storage.deleteTask(title);
+				currentFile.setStartTime(newText);
+				changedFile = storage.addTask(currentFile);
+				return changedFile;
+			} else if (type.equals("endtime")) {
+				currentFile = storage.deleteTask(title);
+				currentFile.setEndTime(newText);
+				changedFile = storage.addTask(currentFile);
+				return changedFile;
+			} else if (type.equals("date")) {
+				currentFile = storage.deleteTask(title);
+				currentFile.setStartDate(newText);
+				changedFile = storage.addTask(currentFile);
+				return changedFile;
+			} else if (type.equals("enddate")) {
+				currentFile = storage.deleteTask(title);
+				currentFile.setEndDate(newText);
+				changedFile = storage.addTask(currentFile);
+				return changedFile;
+			} else if (type.equals("details")) {
+				currentFile = storage.deleteTask(title);
+				currentFile.setDetails(newText);
+				changedFile = storage.addTask(currentFile);
+				return changedFile;
+			} else
+				System.out.println("did not edit");
+				return changedFile;
 		}
 	}
 
@@ -403,7 +404,7 @@ public class TNotesLogic {
 	}
 
 	// sort date
-	public ArrayList<TaskFile> sortTask(String date) {
+	public ArrayList<TaskFile> sortDateTask(String date) {
 		ArrayList<String> masterList = storage.readFromMasterFile();
 		for (String text : masterList) {
 			TaskFile currentFile = storage.getTaskFileByName(text);
