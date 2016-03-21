@@ -24,8 +24,13 @@ public class TNotesUI {
 	public TNotesUI(){
 		parser = new TNotesParser();
 		logic = new TNotesLogic();
-	}
+		}
 	
+	public String getWelcomeMessage(){
+		String welcomeMsg = "Hello, welcome to T-Note. How many I help you?";
+		return welcomeMsg; 
+	}
+		
 	public String executeCommand(String userInput){
 		ArrayList<String> userCommandSplit = new ArrayList<String>();
 		userCommandSplit = TNotesParser.checkCommand(userInput);
@@ -34,11 +39,11 @@ public class TNotesUI {
 		
 		COMMAND_TYPE command = determineCommandType(commandString);
 		
-		System.err.println("Checking Paser String output:\n");
-		
-		for(int i=0; i<userCommandSplit.size(); i++){
-			System.err.println(userCommandSplit.get(i));
-		}
+//		System.err.println("Checking Paser String output:\n");
+//		
+//		for(int i=0; i<userCommandSplit.size(); i++){
+//			System.err.println(userCommandSplit.get(i));
+//		}
 
 		result = "";
 		
@@ -69,6 +74,14 @@ public class TNotesUI {
 			if(taskFile.getImportance().equals("true")){
 				result+="Note: Task was noted as important";
 			}
+			
+			// Tasks with dates and without time given
+			// Example "add task due this week"
+			// Require  flag to check
+			// if(checkFlag){
+			//result+= "I have added \"%s\" due %s to your schedule!\n" + taskFile.getName() + taskFile.get(?? this week);
+			// }
+			
 			
 			break;
 			
