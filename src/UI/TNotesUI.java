@@ -77,11 +77,16 @@ public class TNotesUI {
 			
 			// Tasks with dates and without time given
 			// Example "add task due this week"
-			// Require  flag to check
+			// Require  flag to check that the given input is in "this week" kind of format
 			// if(checkFlag){
 			//result+= "I have added \"%s\" due %s to your schedule!\n" + taskFile.getName() + taskFile.get(?? this week);
 			// }
 			
+//			Require flag to check that there are details to take note
+//			if(task have details){
+//				result+="Things to note: \"%s\"\n";
+//			}
+//	
 			
 			break;
 			
