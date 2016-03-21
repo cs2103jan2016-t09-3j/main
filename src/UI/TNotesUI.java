@@ -58,6 +58,11 @@ public class TNotesUI {
 				result+="I have added \"%s\" to your schedule!\n"+taskFile.getName();			
 			}
 			
+			// Recurring tasks
+			// if(taskRECURS) {
+			// 	result+="I have added \"%s\" every %s to your schedule!";
+			//	}
+			
 			// Tasks with only 1 date
 			if(taskFile.getIsDeadline()){
 				result+="I have added \"%s\" at [%s] on [%s] to your schedule!\n"+taskFile.getName()+taskFile.getStartTime()
