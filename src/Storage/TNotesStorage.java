@@ -1,22 +1,15 @@
 package Storage;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
+
+
+import static org.junit.Assert.assertTrue;
+
 import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.lang.reflect.Type;
-import java.nio.file.FileSystems;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
-
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 
 import Object.TaskFile;
 
@@ -24,6 +17,7 @@ import Object.TaskFile;
 public class TNotesStorage {
 
 	
+	private static final String FILE_TYPE_TXT_FILE = ".txt";
 	private static final String MASTER_FILE_NAME = "masterfile.txt";
 	private static final String MAPPING_FILE_NAME = "FileToFolderMapping.txt";
 	private static String OVERVIEW_FILES_FOLDER_NAME = "overview";
@@ -46,11 +40,6 @@ public class TNotesStorage {
 	private File overviewFolder;
 	private Map<String, String> masterNameDateMap;
 	
-	private BufferedWriter bWriter;
-	private FileWriter fWriter;
-	private BufferedReader bReader;
-	private FileReader fReader;
-	private Gson gsonHelper; 
 
 	// Constructor
 
@@ -62,7 +51,6 @@ public class TNotesStorage {
 			
 			setUpMasterFile();
 			
-			gsonHelper = new Gson();
 			masterNameDateMap = new HashMap<String, String>();
 			setUpMap();
 		} catch (IOException ioEx) {
@@ -84,27 +72,22 @@ public class TNotesStorage {
 	
 	private void setUpMasterFile() throws IOException {
 		
-		masterFile = fManager.appendFolderToFile(overviewFolder, MASTER_FILE_NAME);
-		
-		createMasterFile();
+		masterFile = createAnOverviewFile(MASTER_FILE_NAME);
 		
 		masterList = readFromMasterFile();
 	}
 
 
-
-
-	private void createMasterFile() throws IOException {
-		fManager.createFile(masterFile);
+	private File createAnOverviewFile(String name) throws IOException {
+		return fManager.createFile(overviewFolder, name);
+		
 	}
 	
 	
 	public void setUpMap() {
 		try {
 			
-			mapFile = fManager.appendFolderToFile(overviewFolder, MAPPING_FILE_NAME);
-		
-			createMapFile();
+			mapFile = createAnOverviewFile(MAPPING_FILE_NAME);
 		
 			masterNameDateMap = readFromMapFile();
 		
@@ -114,31 +97,9 @@ public class TNotesStorage {
 		}
 	}
 
-
-
-
-	private void createMapFile() throws IOException {
-		fManager.createFile(mapFile);
-	}
 	
 	public Map<String, String> readFromMapFile() throws IOException {
-		
-		fReader = new FileReader(mapFile);//	
-		bReader = new BufferedReader(fReader);
-		Map<String, String> mapFromFile = new HashMap<String, String>();
-		
-		if(bReader.ready()) {
-			String mapString = bReader.readLine();
-			
-			if(mapString != null) {
-				Type typeOfMap = new TypeToken<Map<String, String>>() {}.getType();
-				mapFromFile = gsonHelper.fromJson(mapString, typeOfMap);
-			}
-		}
-		
-		bReader.close();
-		fReader.close();
-		return mapFromFile;
+		return fManager.readFromMapFile(mapFile);
 	}
 	
 	public boolean addTask(TaskFile task) {
@@ -167,8 +128,6 @@ public class TNotesStorage {
 	}
 
 
-
-
 	private String getTaskMonth(TaskFile task) {
 		SimpleDateFormat monthStringFormat = new SimpleDateFormat("MMMM");
 		Calendar taskDate = task.getStartCal();
@@ -177,13 +136,13 @@ public class TNotesStorage {
 	}
 
 	public TaskFile deleteTask(String task) {
-		File fileToDelete = new File(directory, task + ".txt");
+		
 		TaskFile deletedTask = getTaskFileByName(task);
-		//System.err.println(fileToDelete.getName());
-		if (fileToDelete.delete()) {
-			//System.err.println("delete");
+		
+		File fileToDelete = getTaskFilePath(task);
+		
+		if (fManager.deleteFile(fileToDelete)) {
 			masterList.remove(task);
-			clearMasterFile();
 			writeListToMasterFile();
 			return deletedTask;
 		}
@@ -191,187 +150,93 @@ public class TNotesStorage {
 	}
 
 	public TaskFile getTaskFileByName(String taskName) {
+		
 		if (!masterList.contains(taskName)) {
 			return null;
 		}
+		
+		File FileToBeFound = getTaskFilePath(taskName);
 
-		File taskFileToBeFound = new File(directory, taskName + ".txt");
-
-		TaskFile taskFile = readTaskFile(taskFileToBeFound);
+		TaskFile taskFile = readTaskFile(FileToBeFound);
 
 		// System.err.println(taskFile.getDate());
 		return taskFile;
 
 	}
 
+
+
+
+	private File getTaskFilePath(String taskName) {
+		
+		String folderName = masterNameDateMap.get(taskName);
+		
+		//Check if folderName = recurr / floating
+		File folder = fManager.appendParentDirectory(folderName);
+		
+		File fileToBeFound = fManager.getPathToFile(folder, taskName+ FILE_TYPE_TXT_FILE);
+		
+		return fileToBeFound;
+	}
+
 	public TaskFile readTaskFile(File taskFileToBeFound) {
-		try {
-			fReader = new FileReader(taskFileToBeFound);
-			bReader = new BufferedReader(fReader);
-			TaskFile taskFile = new TaskFile();
-			
-			
-			
-			if(bReader.ready() ) {
-				String taskFileString = bReader.readLine();
-				if(taskFileString != null) {
-					taskFile = gsonHelper.fromJson(taskFileString, TaskFile.class);
-				}
-			}
-			
-//			ArrayList<String> taskFileInfoArray = new ArrayList<String>();
-//			
-//			
-//
-//			if (bReader.ready()) {
-//				String taskFileInfo = bReader.readLine();
-//				while (taskFileInfo != null) {
-//					taskFileInfoArray.add(taskFileInfo);
-//					taskFileInfo = bReader.readLine();
-//				}
-//			}
-//			bReader.close();
-//			
-//			taskFile.setTask(taskFileInfoArray.get(0));
-//			taskFile.setDate(taskFileInfoArray.get(1));
-//			taskFile.setTime(taskFileInfoArray.get(2));
-//			taskFile.setIsDone(Boolean.valueOf(taskFileInfoArray.get(3)));
-			
-			fReader.close();
-			
-			return taskFile;
-		} catch (IOException ioEx) {
-			System.err.println("IOException in readTaskFile");
-			return null;
-		}
+		return fManager.readTaskFile(taskFileToBeFound);
 	}
 
+	public boolean clearAnOverviewFile(File fileToClear) {
+		return fManager.clearAnOverviewFile(fileToClear);
+	}
+	
 	public boolean clearMasterFile() {
-		try {
-			fWriter = new FileWriter(masterFile);
-			bWriter = new BufferedWriter(fWriter);
-
-			bWriter.write("");
-			bWriter.close();
-			return true;
-		} catch (IOException ioEx) {
-			return false;
-		}
+		return clearAnOverviewFile(masterFile);
 	}
-
 	public boolean writeListToMasterFile() {
-		try {
-			fWriter = new FileWriter(masterFile, true);
-			bWriter = new BufferedWriter(fWriter);
-
-			for (String taskName : masterList) {
-				bWriter.append(taskName);
-				bWriter.newLine();
-
-			}
-			bWriter.close();
-			fWriter.close();
-
-			return true;
-		} catch (IOException ioEx) {
-			return false;
+		if(clearMasterFile()) {
+			return fManager.writeListToMasterFile(masterFile, masterList);
 		}
+		
+		return false;
 	}
 
 	private boolean writeTaskToMasterFile(TaskFile task) {
 
-		try {
-			fWriter = new FileWriter(masterFile, true);
-			bWriter = new BufferedWriter(fWriter);
-
-			bWriter.append(task.getName());
-			bWriter.newLine();
-			
-//			String jsonString = gsonHelper.toJson(task);
-//			bWriter.append(jsonString);
-			
-			bWriter.close();
-
-			return true;
-		} catch (IOException ioEx) {
-			System.err.println("Write fail");
-			return false;
-
-		}
+		String taskName = task.getName();
+		return fManager.writeTaskNameToMasterList(masterFile, taskName);
 	}
 
 	public boolean createTaskFile(String directory, TaskFile task) {
 
 		try {
-			File folder = fManager.appendParentDirectory(directory);
-			fManager.createDirectory(folder);
+			File folder = fManager.createDirectory(directory);
 			
-			File newTask = fManager.appendFolderToFile(folder, task.getName() + ".txt");
+			File newTask = fManager.createFile(folder, task.getName() + FILE_TYPE_TXT_FILE);
 
-			writeToTaskFile(newTask, task);
-			return true;
+			return fManager.writeToTaskFile(newTask, task);
+			
+			
 		} catch (IOException ioEx) {
 			System.err.println("file could not be created");
 			return false;
 		}
 	}
 
-	public boolean writeToTaskFile(File newTask, TaskFile task) throws IOException {
-			fWriter = new FileWriter(newTask);
-
-			bWriter = new BufferedWriter(fWriter);
-			
-			
-			String jsonString = gsonHelper.toJson(task);
-			bWriter.write(jsonString);
-			bWriter.close();
-			
-			return true;
-
-	}
+	
 
 	public ArrayList<String> readFromMasterFile() {
-		try {
-			System.err.println("before freader");
-			fReader = new FileReader(masterFile);
-			System.err.println("beforebReader");
-			bReader = new BufferedReader(fReader);
-			ArrayList<String> contentInFile = new ArrayList<String>();
-			System.err.println("hello");
-			if (bReader.ready()) {
-				String textInFile = bReader.readLine();
-				while (textInFile != null) {
-					contentInFile.add(textInFile);
-					textInFile = bReader.readLine();
-
-				}
-			}
-
-			bReader.close();
-
-			return contentInFile;
-		} catch (IOException ioEx) {
-			System.err.println("hello2");
-			return null;
-		}
+		return fManager.readFromMasterFile(masterFile);
 	}
 
+	public boolean clearMapFile() {
+		return clearAnOverviewFile(mapFile);
+	}
 	public boolean writeToMapFile(Map<String, String> map) {
-		try {
-		fWriter = new FileWriter(mapFile);
-		bWriter = new BufferedWriter(fWriter);
-		
-		String mapString = gsonHelper.toJson(map);
-		
-		bWriter.write(mapString);
-		
-		bWriter.close();
-		return true;
-		} catch(IOException ioEx) {
-			System.err.println("Write to map problem");
-			return false;
+		if(clearMapFile()) {
+			return fManager.writeToMapFile(mapFile, map);
 		}
-		
-		
+		return false;
+	}
+	
+	public boolean clearMasterDirectory() {
+		return fManager.clearMasterDirectory();
 	}
 }
