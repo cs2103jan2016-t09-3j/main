@@ -20,11 +20,16 @@ public class TNotesParser {
 	
 	/*command word: add
 	 *add call mom due 2-2-2 at 12:00
+	 *add call mom due 2-2-2 at 300pm
+	 *add call mom due 2-2-2 at 300 pm
 	 *add call important mom due 2-2-2  at 12:00
+	 *add call important mom due 2-2-2  at 300 pm
 	 *add call mom due 2-2-2 at 12:00 important
 	 *add call mom due 2-2-2 at 12:00 details say hello
+	 *add call mom due 2-2-2 at 300 pm details say hello
 	 *add call mom details buy apple
 	 *add call mom due every tuesday at 12:00 important
+	 *add call mom due every tuesday at 300 pm important
 	 *add call mom due every tue
 	 *add call mom
 	 *add ,d,fdgv,,,gdr//gdr, fshsbsuh,fsrgr
@@ -37,6 +42,8 @@ public class TNotesParser {
 	 *add call mom due 2-2-2
 	 *Add call mom from 2-2-2 to 3-3-3
 	 *Add call mom from 12:00 to 13:00
+	 *Add call mom from 3:00 pm to 3:00 pm
+	 *havent debug chec time
 	 *Add call mom on Tuesday
 	 *Add call mom today
 	 *Add 2(any index)
@@ -128,7 +135,7 @@ public class TNotesParser {
 	public static void main(String[] args) throws Exception {
 		String output = new String();
 		String input = new String();
-		input = "add call mom due 2-2-2 at 300 PM";
+		input = "Add call mom from 3:00 pm to 3:00 pm";
 		for (int i = 0; i < checkCommand(input).size(); i++){
 			output = checkCommand(input).get(i);// 24 hour cloc
 			System.out.println(output);
@@ -411,9 +418,9 @@ public class TNotesParser {
 						title +=arr[i]+" ";
 					}
 					list.add(title);
-					if(arr.length >= j+1){
+					if(arr.length >= j+3){
 						atTimePMAM = arr[j+2];
-						String temp = arr[j + 1] +" "+ afterTime(atTimePMAM);
+						String temp = arr[j + 1] +" "+ timeAMPM(atTimePMAM);
 						//System.out.println(temp);
 						list.add(formatTime(temp).toString());
 					}
@@ -422,9 +429,9 @@ public class TNotesParser {
 					}
 				}
 				else{
-					if(arr.length >= j+2){
+					if(arr.length >= j+3){
 						atTimePMAM = arr[j+2];
-						String temp = arr[j + 1] +" "+ afterTime(atTimePMAM);
+						String temp = arr[j + 1] +" "+ timeAMPM(atTimePMAM);
 						//System.out.println(atTimePMAM);
 						list.add(formatTime(temp.trim()).toString());
 					}
@@ -443,14 +450,32 @@ public class TNotesParser {
 					list.add(formatDate(arr[j + 1]));
 				}
 				else{
-					list.add(arr[j+1]);
+					if(arr.length >= j+3){
+						atTimePMAM = arr[j+2];
+						String temp = arr[j + 1] +" "+ timeAMPM(atTimePMAM);
+						//System.out.println(atTimePMAM);
+						list.add(formatTime(temp.trim()).toString());
+					}
+					else{
+						list.add(formatTime(arr[j + 1]).toString());
+					}
+					//list.add(arr[j+1]);
 				}
 			}else if(arr[j].equals("to")){
 				if(checkTime(arr[j+1])==0){
 					list.add(formatDate(arr[j + 1]));
 				}
 				else{
-					list.add(arr[j+1]);
+					if(arr.length >= j+3){
+						atTimePMAM = arr[j+2];
+						String temp = arr[j + 1] +" "+ timeAMPM(atTimePMAM);
+						//System.out.println(atTimePMAM);
+						list.add(formatTime(temp.trim()).toString());
+					}
+					else{
+						list.add(formatTime(arr[j + 1]).toString());
+					}
+					//list.add(arr[j+1]);
 				}
 			}else if(arr[j].equals("details")){
 				if(onlyKeyDetails(arr) == 1){
@@ -572,7 +597,7 @@ public class TNotesParser {
 	
 	}
 	
-	public static String afterTime(String atDatePMAM){
+	public static String timeAMPM(String atDatePMAM){
 		switch(atDatePMAM){
 			case "am" :
 				return "am";
