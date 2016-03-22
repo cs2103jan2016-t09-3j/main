@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.time.DateTimeException;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Arrays;
@@ -38,9 +39,11 @@ public class TNotesParser {
 	 *Add call mom from 12:00 to 13:00
 	 *Add call mom on Tuesday
 	 *Add call mom today
+	 *Add 2(any index)
 	 *
 	 *
 	 *rmb to do timing 7pm
+	 *rmb to add different forms
 	 */
 	
 	/*command word: edit
@@ -74,7 +77,7 @@ public class TNotesParser {
 	 * 
 	 */
 	
-	private static final List<String> DATE_POSSIBLE_FORMATE = Arrays.asList(
+	private static final List<String> DATE_POSSIBLE_FORMAT = Arrays.asList(
 			"d/M/y", "d/M/yyyy", "d/MM/yy","d/MMM/yy", "d/MMM/yyyy",
 			"dd/MM/yy","dd/M/yyyy", "dd/MM/yy", "dd/MMM/yyyy", 
 			"dd/MMMM/yy","d/MMMM/yyyy", "dd/MMMM/yyyy",
@@ -91,13 +94,32 @@ public class TNotesParser {
 			"dd MM yy","dd M yyyy", "dd MM yy", "dd MMM yyyy", 
 			"dd MMMM yy","d MMMM yyyy", "dd MMMM yyyy"
     		);
-	/* 
-	 * the main is for testing 
-	 */
+	private static final List<String> TIME_FORMATS = Arrays.asList(
+			"h:mm", "hh:m", "hh:mm",
+			"H:MM", "HH:M", "HH:MM",
+			"h:mma", "hh:ma", "hh:mma",
+			"H:MMA", "HH:MA", "HH:MMA",
+			"H:mma", "HH:ma", "HH:ma",
+			
+			"hmm", "hhm", "hhmm",
+			"HMM", "HHM", "HHMM",
+			"hmma", "hhma", "hhmma",
+			"HMMA", "HHMA", "HHMMA",
+			"Hmma", "HHma", "HHma",
+			
+			 
+			"h.mm", "hh.m", "hh.mm",
+			"H.MM", "HH.M", "HH.MM",
+			"h.mma", "hh.ma", "hh.mma",
+			"H.MMA", "HH.MA", "HH.MMA",
+			"H.mma", "HH.ma", "HH.ma");
+	
+	public static ArrayList<String> timeList = new ArrayList<String>();
+	
 	public static void main(String[] args) throws Exception {
 		String output = new String();
 		String input = new String();
-		input = "search for call mom";
+		input = "add call mom due 2-2-2 at 300PM";
 		for (int i = 0; i < checkCommand(input).size(); i++){
 			output = checkCommand(input).get(i);// 24 hour cloc
 			System.out.println(output);
@@ -158,6 +180,10 @@ public class TNotesParser {
 
 		return list;
 	}
+///////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////SORT//////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////
+	
 	public static ArrayList <String> sortCommand(String[] arr){
 		ArrayList<String> list = new ArrayList<String>();
 		String title = new String();
@@ -167,6 +193,10 @@ public class TNotesParser {
 		list.add(title);
 		return list;
 	}
+
+///////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////VIEW//////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////
 	
 	public static ArrayList <String> viewCommand(String[] arr){
 		ArrayList<String> list = new ArrayList<String>();
@@ -180,9 +210,6 @@ public class TNotesParser {
 					list.add(arr[i]);
 					list.add(arr[i+1]);
 				}
-				//else{		
-					//list.add(taskName);
-				//}
 			}
 			
 		} else if (isLetters(arr[1].trim()) == 0 && checkViewTo(arr) == 0) {
@@ -199,7 +226,9 @@ public class TNotesParser {
 		}
 		return list;
 	}
-
+///////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////VIEW TO//////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////
 	public static int checkViewTo(String[] arr) {
 		int arrLength = arr.length;
 		if(arrLength >=3){
@@ -215,7 +244,9 @@ public class TNotesParser {
 		}
 	}
 
-
+///////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////EDIT//////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////
 	public static ArrayList<String> editCommand(String[] arr){
 		ArrayList<String> list = new ArrayList<String>();
 		String title = new String();
@@ -263,6 +294,9 @@ public class TNotesParser {
 		}
 		return list;
 	}
+///////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////onlyKey//////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////
 	public static int onlyKeyAt(String[] arr) {
 		for(int i=0;i<arr.length;i++){
 			if(arr[i].equals("due") || arr[i].equals("from")){
@@ -312,6 +346,10 @@ public class TNotesParser {
 		}
 		return list;
 	}
+	
+///////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////ADDCOMMAND//////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////	
 	
 	public static ArrayList<String> addCommand(String[] arr){
 		String title = new String();
@@ -363,10 +401,10 @@ public class TNotesParser {
 						title +=arr[i]+" ";
 					}
 					list.add(title);
-					list.add(arr[j + 1]);
+					list.add(formatTime(arr[j + 1]).toString());
 				}
 				else{
-					list.add(arr[j + 1]);
+					list.add(formatTime(arr[j + 1]).toString());
 				}
 				
 			} else if(arr[j].equals("from")){
@@ -432,6 +470,9 @@ public class TNotesParser {
 		
 		
 	}
+///////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////OTHERS//////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////
 	
 	if(findImpt(arr) == 1){
 		list.add("important");
@@ -457,7 +498,7 @@ public class TNotesParser {
 	      String date = new String();
 	      date = inputDate.trim();
 
-	      for (String pattern : DATE_POSSIBLE_FORMATE) {
+	      for (String pattern : DATE_POSSIBLE_FORMAT) {
 	    	  try {
 	  			DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern);
 	  			parsedDate = LocalDate.parse(date, formatter);
@@ -470,6 +511,40 @@ public class TNotesParser {
 			}
 		return "the date is invalid";
 	}
+	
+	public static LocalTime formatTime(String time) {
+		
+		assert time != null : "not a time";
+		time = time.toUpperCase();
+		
+		timeList.addAll(TIME_FORMATS);
+		LocalTime parsedTime = null;
+		assert parsedTime != null: "not a time2333";
+		
+		for (String timeFormat : timeList) {
+			parsedTime = compareTimeFormat(time, timeFormat);
+			if (parsedTime != null) {
+				return parsedTime;
+			}
+		}
+	
+		return null;
+	}
+	
+	private static LocalTime compareTimeFormat(String timeString, String pattern) {
+		assert pattern != null : "no such pattern";
+		LocalTime time = null;
+		try {
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern);
+			time = LocalTime.parse(timeString, formatter);
+			return time;
+		} catch (DateTimeException e) {
+			return null;
+		}
+	
+	}
+	
+	
 	public static int isLetters(String theRest) {
 		if (theRest.matches("[a-zA-Z]+")) {
 			return 1;
