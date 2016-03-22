@@ -33,6 +33,7 @@ public class FolderManager {
 	private Gson gsonHelper;
 
 	private FolderManager() {
+		gsonHelper = new Gson();
 		parentPath = FileSystems.getDefault().getPath(DEFAULT_FOLDER);
 		this.parentDirectory = parentPath.toFile();
 		createMasterDirectory();
@@ -109,12 +110,10 @@ public class FolderManager {
 
 	public boolean writeToMapFile(File mapFile, Map<String, String> map) {
 		try {
-			System.out.println(mapFile);
+			
 			fWriter = new FileWriter(mapFile);
 			bWriter = new BufferedWriter(fWriter);
 			
-			System.out.println(map.toString());
-			System.out.println(map==null);
 			String mapString = gsonHelper.toJson(map);
 
 			bWriter.write(mapString);
