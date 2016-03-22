@@ -94,32 +94,41 @@ public class TNotesParser {
 			"dd MM yy","dd M yyyy", "dd MM yy", "dd MMM yyyy", 
 			"dd MMMM yy","d MMMM yyyy", "dd MMMM yyyy"
     		);
-	private static final List<String> TIME_FORMATS = Arrays.asList(
+	private static final List<String> TIME_POSSIBLE_FORMAT = Arrays.asList(
 			"h:mm", "hh:m", "hh:mm",
 			"H:MM", "HH:M", "HH:MM",
 			"h:mma", "hh:ma", "hh:mma",
 			"H:MMA", "HH:MA", "HH:MMA",
 			"H:mma", "HH:ma", "HH:ma",
+			"h:mm a", "hh:m a", "hh:mm a",
+			"H:MM A", "HH:M A", "HH:MM A",
+			"H:mm a", "HH:m a", "HH:m a",
 			
 			"hmm", "hhm", "hhmm",
 			"HMM", "HHM", "HHMM",
 			"hmma", "hhma", "hhmma",
 			"HMMA", "HHMA", "HHMMA",
 			"Hmma", "HHma", "HHma",
+			"hmm a", "hhm a", "hhmm a",
+			"HMM A", "HHM A", "HHMM A",
+			"Hmm a", "HHm a", "HHm a",
 			
 			 
 			"h.mm", "hh.m", "hh.mm",
 			"H.MM", "HH.M", "HH.MM",
 			"h.mma", "hh.ma", "hh.mma",
 			"H.MMA", "HH.MA", "HH.MMA",
-			"H.mma", "HH.ma", "HH.ma");
+			"H.mma", "HH.ma", "HH.ma",
+			"h.mm a", "hh.m a", "hh.mm a",
+			"H.MM A", "HH.M A", "HH.MM A",
+			"H.mm a", "HH.m a", "HH.m a");
 	
 	public static ArrayList<String> timeList = new ArrayList<String>();
 	
 	public static void main(String[] args) throws Exception {
 		String output = new String();
 		String input = new String();
-		input = "add call mom due 2-2-2 at 300PM";
+		input = "add call mom due 2-2-2 at 300 PM";
 		for (int i = 0; i < checkCommand(input).size(); i++){
 			output = checkCommand(input).get(i);// 24 hour cloc
 			System.out.println(output);
@@ -357,6 +366,7 @@ public class TNotesParser {
 		ArrayList<String> list = new ArrayList<String>();
 		String titleOrig = new String();
 		String thisString = new String();
+		String atTimePMAM = new String();
 		
 		if(arr[arr.length-1].equals("important")){
 			for (int h = 1; h < arr.length-1; h++) {
@@ -401,10 +411,26 @@ public class TNotesParser {
 						title +=arr[i]+" ";
 					}
 					list.add(title);
-					list.add(formatTime(arr[j + 1]).toString());
+					if(arr.length >= j+1){
+						atTimePMAM = arr[j+2];
+						String temp = arr[j + 1] +" "+ afterTime(atTimePMAM);
+						//System.out.println(temp);
+						list.add(formatTime(temp).toString());
+					}
+					else{
+						list.add(formatTime(arr[j + 1]).toString());
+					}
 				}
 				else{
-					list.add(formatTime(arr[j + 1]).toString());
+					if(arr.length >= j+2){
+						atTimePMAM = arr[j+2];
+						String temp = arr[j + 1] +" "+ afterTime(atTimePMAM);
+						//System.out.println(atTimePMAM);
+						list.add(formatTime(temp.trim()).toString());
+					}
+					else{
+						list.add(formatTime(arr[j + 1]).toString());
+					}
 				}
 				
 			} else if(arr[j].equals("from")){
@@ -517,12 +543,14 @@ public class TNotesParser {
 		assert time != null : "not a time";
 		time = time.toUpperCase();
 		
-		timeList.addAll(TIME_FORMATS);
+		timeList.addAll(TIME_POSSIBLE_FORMAT);
 		LocalTime parsedTime = null;
 		assert parsedTime != null: "not a time2333";
 		
 		for (String timeFormat : timeList) {
+			
 			parsedTime = compareTimeFormat(time, timeFormat);
+			
 			if (parsedTime != null) {
 				return parsedTime;
 			}
@@ -544,9 +572,22 @@ public class TNotesParser {
 	
 	}
 	
-	
-	public static int isLetters(String theRest) {
-		if (theRest.matches("[a-zA-Z]+")) {
+	public static String afterTime(String atDatePMAM){
+		switch(atDatePMAM){
+			case "am" :
+				return "am";
+			case "pm" :
+				return "pm";
+			case "AM" :
+				return "AM";
+			case "PM" :
+				return "PM";
+			default   :
+				return "";
+		}	
+	}
+	public static int isLetters(String nextString) {
+		if (nextString.matches("[a-zA-Z]+")) {
 			return 1;
 		} else {
 			return 0;
