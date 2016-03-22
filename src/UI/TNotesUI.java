@@ -40,16 +40,13 @@ public class TNotesUI {
 		
 		COMMAND_TYPE command = determineCommandType(commandString);
 		
-//		System.err.println("Checking Paser String output:\n");
-//		
+//		System.err.println("Checking Parser String output:\n");		
 //		for(int i=0; i<userCommandSplit.size(); i++){
 //			System.err.println(userCommandSplit.get(i));
 //		}
 
 		result = "";
 		
-		// recurring put on hold first
-		// check for flags, adam will return me tasksFiles.
 		switch(command){
 		case ADD_COMMAND:
 			taskFile = logic.addTask(userCommandSplit);
@@ -92,8 +89,7 @@ public class TNotesUI {
 //			if(task have details){
 //				result+="Things to note: \"%s\"\n";
 //			}
-//	
-			
+//		
 			break;
 			
 		case EDIT_COMMAND:
@@ -171,6 +167,8 @@ public class TNotesUI {
 			for(int i=0; i<arr.size(); i++) {
 				result+=i+1 + ". " +"[" + arr.get(i).getStartTime()+"] " + arr.get(i).getName()+"\n";
 			}
+			//}
+			
 			// list of floating tasks
 			 if(viewFloatingList exists) {
 				 arrF = logic.viewFloatingList
@@ -180,52 +178,64 @@ public class TNotesUI {
 					result+=i+1 + ". " + arr.get(i)+"\n";
 					}
 			 	}
-			 }
+			 
 			
 			 if(isViewTask){
-			 taskFile = logic.viewTask();
-			 result = "Displaying the task \"%s\":\n\n" + taskFile.getName();
-			 if(taskFile.getIsTask()){
-			 result+= "Date: -\n";
-			 result+= "Time: -\n";
-			 }
-			if(taskFile.getIsDeadline()){
-				result+="Date: %s\n" + taskFile.getStartDate();
-				result+="Time: %s to %s";
+				 taskFile = logic.viewTask();
+				 result = "Displaying the task \"%s\":\n\n" + taskFile.getName();
+				 	if(taskFile.getIsTask()){
+				 		result+= "Date: -\n";
+				 		result+= "Time: -\n";
+				 	}
+				 	if(taskFile.getIsDeadline()){
+				 		result+="Date: %s\n" + taskFile.getStartDate();
+				 		result+="Time: %s to %s";
+				 	}
+				 	if(taskFile.getIsMeeting()){
+				 		result+="Date: %s to %s\n" + taskFile.getStartDate() + taskFile.getEndDate();
+				 		result+="Time: %s to %s";
+				 	}
+				 	if(taskFile.isDetails){
+				 		result+= "Details: %s\n"+taskFile.getDetails();
+				 	}
+				 	if(!taskFile.isDetails){
+				 		result+= "Details: -\n";
+				 	}
+				 	if(taskFile.getIsDone()){
+				 		result+="Status: Completed\n";
+				 	}
+				 	if(!taskFile.getIsDone()){
+				 		result+="Status: Incomplete\n";
+				 	}
+				 	if(taskFile.getImportance().equals("0")){
+				 		result+="Importance: -\n";
+				 	}
+				 	if(taskFile.getImportance().equals("1")){
+				 		result+= "Importance: highly important\n";
+				 	}
 			}
-			if(taskFile.getIsMeeting()){
-				result+="Date: %s to %s\n" + taskFile.getStartDate() + taskFile.getEndDate();
-				result+="Time: %s to %s";
-			}
-			if(taskFile.isDetails){
-				result+= "Details: %s\n"+taskFile.getDetails();
-			}
-			if(!taskFile.isDetails){
-				result+= "Details: -\n";
-			}
-			if(taskFile.getIsDone()){
-				result+="Status: Completed\n";
-			}
-			if(!taskFile.getIsDone()){
-				result+="Status: Incomplete\n";
-			}
-			if(taskFile.getImportance().equals("0")){
-				result+="Importance: -\n";
-			}
-			if(taskFile.getImportance().equals("1")){
-				result+= "Importance: highly important\n";
-			}
+			 
+			break;
 			
-			break;
 		case SEARCH_COMMAND:
-			ArrayList<TaskFile> arrSearch = new ArrayList<TaskFile>();
-			arrSearch = logic.searchTask(commandArguments.get(0));
-			result = "[SEARCH RESULT]\n";
-			for(int i=0; i<arrSearch.size(); i++) {
-				result +="[" + arrSearch.get(i).getStartDate() + "] " +
-						arrSearch.get(i).getName() + " at " + arrSearch.get(i).getStartTime() + "\n";
+			// might have a problem when details becomes too long, either add newline char or set some
+			// sort of limitation in gui
+			
+			try{
+				ArrayList<TaskFile> arrSearch = new ArrayList<TaskFile>();
+				arrSearch = logic.searchTask(userCommandSplit);
+				result = "Searching for \"%s\" ... This is what I've found:\n";
+				for(int i=0; i<arrSearch.size(); i++) {
+					result+= i+1 + ". " + "[%s] [%s] %s, %s\n"
+							+ arrSearch.get(i).getStartDate() + arrSearch.get(i).getStartTime() + arrSearch.get(i).getName()
+							+ arrSearch.get(i).getDetails();
+				}
+			}catch (IOException ioe) {
+				result = "Search has failed for some reason";
+				System.out.println(ioe);
 			}
 			break;
+			
 		case SORT_COMMAND:
 			ArrayList<String> arrSort = new ArrayList<String>();
 			arrSort = logic.sortTask();
@@ -234,14 +244,16 @@ public class TNotesUI {
 				result+=arrSort.get(i)+"\n";
 			}
 			break;
+			
 		case INVALID:
 			result = "Invalid Input";
 			break;
+			
 		default:
 			result = "Error!";				
-		}
 		
-		return result;
+		}
+	return result;
 	}
 
 	private COMMAND_TYPE determineCommandType(String commandString) {
