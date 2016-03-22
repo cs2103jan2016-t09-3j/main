@@ -114,12 +114,59 @@ public class TNotesUI {
 			
 			// for display, ask adam to throw me taskfile again
 		case VIEW_COMMAND:
-			ArrayList<String> arr = new ArrayList<String>();
-			arr = logic.displayList();
-			result = "[TASK LIST]\n";
+			ArrayList<TaskFile> arr = new ArrayList<TaskFile>();
+			arr = logic.viewDateList();
+			
+			// if(isViewDateList) {
+			result = "Your schedule for %s:\n"+userCommandSplit.get(1);
 			for(int i=0; i<arr.size(); i++) {
-				result+=i+1 + ". " + arr.get(i)+"\n";
+				result+=i+1 + ". " +"[" + arr.get(i).getStartTime()+"] " + arr.get(i).getName()+"\n";
 			}
+			// list of floating tasks
+			 if(viewFloatingList exists) {
+				 arrF = logic.viewFloatingList
+				 result+="\n";
+				 result+="Notes:";
+				for(int i=0; i<arrF.size(); i++){
+					result+=i+1 + ". " + arr.get(i)+"\n";
+					}
+			 	}
+			 }
+			
+			 if(isViewTask){
+			 taskFile = logic.viewTask();
+			 result = "Displaying the task \"%s\":\n\n" + taskFile.getName();
+			 if(taskFile.getIsTask()){
+			 result+= "Date: -\n";
+			 result+= "Time: -\n";
+			 }
+			if(taskFile.getIsDeadline()){
+				result+="Date: %s\n" + taskFile.getStartDate();
+				result+="Time: %s to %s";
+			}
+			if(taskFile.getIsMeeting()){
+				result+="Date: %s to %s\n" + taskFile.getStartDate() + taskFile.getEndDate();
+				result+="Time: %s to %s";
+			}
+			if(taskFile.isDetails){
+				result+= "Details: %s\n"+taskFile.getDetails();
+			}
+			if(!taskFile.isDetails){
+				result+= "Details: -\n";
+			}
+			if(taskFile.getIsDone()){
+				result+="Status: Completed\n";
+			}
+			if(!taskFile.getIsDone()){
+				result+="Status: Incomplete\n";
+			}
+			if(taskFile.getImportance().equals("0")){
+				result+="Importance: -\n";
+			}
+			if(taskFile.getImportance().equals("1")){
+				result+= "Importance: highly important\n";
+			}
+			
 			break;
 		case SEARCH_COMMAND:
 			ArrayList<TaskFile> arrSearch = new ArrayList<TaskFile>();
