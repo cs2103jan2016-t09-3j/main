@@ -16,7 +16,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonStreamParser;
 import com.google.gson.reflect.TypeToken;
 
 import Object.TaskFile;
@@ -24,9 +23,11 @@ import Object.TaskFile;
 
 public class TNotesStorage {
 
-	private static final String DEFAULT_FOLDER = "\\TNote";
+	
 	private static final String MASTER_FILE_NAME = "masterfile.txt";
 	private static final String MAPPING_FILE_NAME = "FileToFolderMapping.txt";
+	private static String OVERVIEW_FILES_FOLDER_NAME = "overview";
+
 	/*
 	 * This program can create a file, write on it, display its contents, delete
 	 * , sort alphabetically, and search. The file saves after every command
@@ -40,31 +41,30 @@ public class TNotesStorage {
 	
 	private FolderManager fManager;
 	private ArrayList<String> masterList;
-	private File directory;
 	private File masterFile;
-	private Path parentPath;
+	private File mapFile;
+	private File overviewFolder;
 	private Map<String, String> masterNameDateMap;
 	
 	private BufferedWriter bWriter;
 	private FileWriter fWriter;
 	private BufferedReader bReader;
 	private FileReader fReader;
-	private Gson gsonHelper;
-	private JsonStreamParser jParser; 
+	private Gson gsonHelper; 
 
 	// Constructor
 
 	private TNotesStorage() {
 		try {
-			parentPath = FileSystems.getDefault().getPath(DEFAULT_FOLDER);
-			this.directory = parentPath.toFile();
-			fManager = FolderManager.getInstance();
-			fManager.createDirectory(directory);		
+			
+			fManager = FolderManager.getInstance();		
+			overviewFolder = fManager.createDirectory(OVERVIEW_FILES_FOLDER_NAME);
+			
 			setUpMasterFile();
 			
 			gsonHelper = new Gson();
 			masterNameDateMap = new HashMap<String, String>();
-			setUpHashMap();
+			setUpMap();
 		} catch (IOException ioEx) {
 			System.err.println("Error creating master file");
 		}
@@ -84,57 +84,32 @@ public class TNotesStorage {
 	
 	private void setUpMasterFile() throws IOException {
 		
-		masterFile = new File(directory, MASTER_FILE_NAME);
-		if(masterFile.exists()) {
-			masterFile.createNewFile();
-		}
+		masterFile = fManager.appendFolderToFile(overviewFolder, MASTER_FILE_NAME);
+		
+		createMasterFile();
+		
 		masterList = readFromMasterFile();
 	}
-	
-	public boolean setNewDirectory(String newDirectoryString) {
-		parentPath = Paths.get(newDirectoryString);
-		this.directory = parentPath.toFile();
-		return true;
-		
+
+
+
+
+	private void createMasterFile() throws IOException {
+		fManager.createFile(masterFile);
 	}
 	
-	public boolean clearMasterDirectory() {
-		
-		if(deleteAllFilesAndFolders(directory) && directory.delete()){
-			return true;
-		}
-		
-		System.err.println("directory delete failed");
-		return false;
-	}
 	
-	public boolean deleteAllFilesAndFolders (File parentFile) {
-		
-		for(File file:parentFile.listFiles()) {
-			if(file.isDirectory()){
-				if(!deleteAllFilesAndFolders(file)) {
-					System.err.println("fail to delete recursively file");
-					return false;
-				}
-			}
-			if(!file.delete()) {
-				System.err.println("fail to delete parent direc" + file.getAbsolutePath());
-				return false;
-			}
-		}
-		
-		return true;
-	}
-	
-	public void setUpHashMap() {
+	public void setUpMap() {
 		try {
-			File mapFile = new File(directory, MAPPING_FILE_NAME);
+			
+			mapFile = fManager.appendFolderToFile(overviewFolder, MAPPING_FILE_NAME);
 		
-			createHashMapFile(mapFile);
+			createMapFile();
 		
-			readFromHashMapFile();
+			masterNameDateMap = readFromMapFile();
 		
 		} catch (IOException ioEx) {
+			ioEx.printStackTrace();
 			System.err.println("HashMap error");
 		}
 	}
@@ -142,22 +117,28 @@ public class TNotesStorage {
 
 
 
-	private void createHashMapFile(File mapFile) throws IOException {
-		if(!mapFile.exists()) {
-			mapFile.createNewFile();
-		}
+	private void createMapFile() throws IOException {
+		fManager.createFile(mapFile);
 	}
 	
-	public void readFromHashMapFile() throws IOException {
-		File mapFile = new File(directory, MAPPING_FILE_NAME);
+	public Map<String, String> readFromMapFile() throws IOException {
+		
 		fReader = new FileReader(mapFile);//	
+		bReader = new BufferedReader(fReader);
+		Map<String, String> mapFromFile = new HashMap<String, String>();
 		
-		jParser = new JsonStreamParser(fReader);
+		if(bReader.ready()) {
+			String mapString = bReader.readLine();
+			
+			if(mapString != null) {
+				Type typeOfMap = new TypeToken<Map<String, String>>() {}.getType();
+				mapFromFile = gsonHelper.fromJson(mapString, typeOfMap);
+			}
+		}
 		
-		if(jParser.hasNext()) {
-			Type typeOfMap = new TypeToken<Map<String, String>>() {}.getType();
-			masterNameDateMap = gsonHelper.fromJson(jParser.next(), typeOfMap);
-		}		
+		bReader.close();
+		fReader.close();
+		return mapFromFile;
 	}
 	
 	public boolean addTask(TaskFile task) {
@@ -165,22 +146,34 @@ public class TNotesStorage {
 		if (!masterList.contains(task.getName())) {
 			masterList.add(task.getName());
 			
-			SimpleDateFormat monthStringFormat = new SimpleDateFormat("MMMM");
-			Calendar taskDate = task.getStartCal();
-			String monthFolder = monthStringFormat.format(taskDate.getTime());
+			String monthFolder = getTaskMonth(task);
 			
 			masterNameDateMap.put(task.getName(), monthFolder);
 			
-			if (writeTaskToMasterFile(task)) {
-				if (createTaskFile(directory, task)) {
+			if (writeTaskToMasterFile(task) && writeToMapFile(masterNameDateMap)) {
+				if (createTaskFile(monthFolder, task)) {
 					return true;
 				}
+				masterList.remove(task.getName());
+				writeListToMasterFile();
+				masterNameDateMap.remove(task.getName());
+				writeToMapFile(masterNameDateMap);
 				return false;
 			}
 			masterList.remove(task.getName());
 			return false;
 		}
 		return false;
+	}
+
+
+
+
+	private String getTaskMonth(TaskFile task) {
+		SimpleDateFormat monthStringFormat = new SimpleDateFormat("MMMM");
+		Calendar taskDate = task.getStartCal();
+		String monthFolder = monthStringFormat.format(taskDate.getTime());
+		return monthFolder;
 	}
 
 	public TaskFile deleteTask(String task) {
@@ -214,13 +207,16 @@ public class TNotesStorage {
 	public TaskFile readTaskFile(File taskFileToBeFound) {
 		try {
 			fReader = new FileReader(taskFileToBeFound);
-//			bReader = new BufferedReader(fReader);
+			bReader = new BufferedReader(fReader);
 			TaskFile taskFile = new TaskFile();
 			
-			jParser = new JsonStreamParser(fReader);
 			
-			if(jParser.hasNext()) {
-				taskFile = gsonHelper.fromJson(jParser.next(), TaskFile.class);
+			
+			if(bReader.ready() ) {
+				String taskFileString = bReader.readLine();
+				if(taskFileString != null) {
+					taskFile = gsonHelper.fromJson(taskFileString, TaskFile.class);
+				}
 			}
 			
 //			ArrayList<String> taskFileInfoArray = new ArrayList<String>();
@@ -304,15 +300,13 @@ public class TNotesStorage {
 		}
 	}
 
-	public boolean createTaskFile(File directory, TaskFile task) {
+	public boolean createTaskFile(String directory, TaskFile task) {
 
 		try {
-			if (!directory.exists()) {
-				directory.mkdirs();
-			}
-			File newTask = new File(directory, task.getName() + ".txt");
-
-			createHashMapFile(newTask);
+			File folder = fManager.appendParentDirectory(directory);
+			fManager.createDirectory(folder);
+			
+			File newTask = fManager.appendFolderToFile(folder, task.getName() + ".txt");
 
 			writeToTaskFile(newTask, task);
 			return true;
@@ -322,9 +316,7 @@ public class TNotesStorage {
 		}
 	}
 
-	public boolean writeToTaskFile(File newTask, TaskFile task) {
-
-		try {
+	public boolean writeToTaskFile(File newTask, TaskFile task) throws IOException {
 			fWriter = new FileWriter(newTask);
 
 			bWriter = new BufferedWriter(fWriter);
@@ -335,19 +327,17 @@ public class TNotesStorage {
 			bWriter.close();
 			
 			return true;
-			
-		} catch (IOException ioEx) {
-			return false;
-		}
 
 	}
 
 	public ArrayList<String> readFromMasterFile() {
 		try {
+			System.err.println("before freader");
 			fReader = new FileReader(masterFile);
+			System.err.println("beforebReader");
 			bReader = new BufferedReader(fReader);
 			ArrayList<String> contentInFile = new ArrayList<String>();
-
+			System.err.println("hello");
 			if (bReader.ready()) {
 				String textInFile = bReader.readLine();
 				while (textInFile != null) {
@@ -361,8 +351,27 @@ public class TNotesStorage {
 
 			return contentInFile;
 		} catch (IOException ioEx) {
+			System.err.println("hello2");
 			return null;
 		}
 	}
 
+	public boolean writeToMapFile(Map<String, String> map) {
+		try {
+		fWriter = new FileWriter(mapFile);
+		bWriter = new BufferedWriter(fWriter);
+		
+		String mapString = gsonHelper.toJson(map);
+		
+		bWriter.write(mapString);
+		
+		bWriter.close();
+		return true;
+		} catch(IOException ioEx) {
+			System.err.println("Write to map problem");
+			return false;
+		}
+		
+		
+	}
 }
