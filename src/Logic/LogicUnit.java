@@ -3,6 +3,7 @@ package Logic;
 import java.util.*;
 
 import Object.TaskFile;
+import Storage.TNotesStorage;
 
 public class LogicUnit {
 	Stack<LogicCommand> doCommand = new Stack<LogicCommand>();
@@ -11,6 +12,9 @@ public class LogicUnit {
 	TNotesLogic logic;
 	TaskFile infoFile;
 	ArrayList<String> taskDetails = new ArrayList<String>();
+	CommandDelete comDelete =  new CommandDelete();
+	TNotesStorage storage = TNotesStorage.getInstance();
+	
 
 	public void logicFunction(ArrayList<String> fromParser) {
 		String commandChecker = fromParser.remove(0);
@@ -19,7 +23,7 @@ public class LogicUnit {
 			newTask.setTask(CommandAdd(fromParser));
 		}
 		else if(commandChecker.equals("delete")){
-			newTask.setTask(CommandDelete(fromParser));
+			newTask.setTask(comDelete.deleteTask(fromParser));
 		}
 		else if(commandChecker.equals("edit")){
 			newTask.setTask(CommandEdit(fromParser));

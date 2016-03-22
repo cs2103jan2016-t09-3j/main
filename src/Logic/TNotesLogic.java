@@ -10,11 +10,12 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertEquals;
 
 import Object.NameComparator;
+import Object.RecurringTaskFile;
 import Object.TaskFile;
 import Storage.TNotesStorage;
 
 public class TNotesLogic {
-	TNotesStorage storage = new TNotesStorage();
+	TNotesStorage storage = TNotesStorage.getInstance();
 	ArrayList<TaskFile> taskList = new ArrayList<TaskFile>();
 
 	// compare calender to compare timings for various taskfiles.
@@ -317,38 +318,47 @@ public class TNotesLogic {
 		if (type.equals("time")) {
 			storage.deleteTask(title);
 			currentFile.setStartTime(newText);
-			if(storage.addTask(currentFile)){
-					return currentFile;
-			}
-			else{
+			if (storage.addTask(currentFile)) {
+				return currentFile;
+			} else {
 				System.out.println("did not manage to add to storage");
 			}
 		} else if (type.equals("endtime")) {
-			currentFile = storage.deleteTask(title);
+			storage.deleteTask(title);
 			currentFile.setEndTime(newText);
-			changedFile = storage.addTask(currentFile);
-			return changedFile;
+			if (storage.addTask(currentFile)) {
+				return currentFile;
+			} else {
+				System.out.println("did not manage to add to storage");
+			}
 		} else if (type.equals("date")) {
-			currentFile = storage.deleteTask(title);
+			storage.deleteTask(title);
 			currentFile.setStartDate(newText);
-			changedFile = storage.addTask(currentFile);
-			return changedFile;
+			if (storage.addTask(currentFile)) {
+				return currentFile;
+			} else {
+				System.out.println("did not manage to add to storage");
+			}
 		} else if (type.equals("enddate")) {
-			currentFile = storage.deleteTask(title);
+			storage.deleteTask(title);
 			currentFile.setEndDate(newText);
-			changedFile = storage.addTask(currentFile);
-			return changedFile;
+			if (storage.addTask(currentFile)) {
+				return currentFile;
+			} else {
+				System.out.println("did not manage to add to storage");
+			}
 		} else if (type.equals("details")) {
-			currentFile = storage.deleteTask(title);
+			storage.deleteTask(title);
 			currentFile.setDetails(newText);
-			changedFile = storage.addTask(currentFile);
-			return changedFile;
+			if (storage.addTask(currentFile)) {
+				return currentFile;
+			} else {
+				System.out.println("did not manage to add to storage");
+			}
 		} else
 			System.out.println("did not edit");
-		return changedFile;
+		return currentFile;
 	}
-
-	
 
 	// searches for a word or phrase within the storage, returns array list of
 	// taskfile
@@ -397,7 +407,7 @@ public class TNotesLogic {
 				allTaskList.add(currentFile);
 			}
 		}
-		Collections.sort(allTaskList, TaskFile.NameComparator);
+		Collections.sort(allTaskList, new NameComparator());
 		taskList.clear();
 		return allTaskList;
 	}
@@ -412,7 +422,7 @@ public class TNotesLogic {
 				dateList.add(currentFile);
 			}
 		}
-		Collecions.sort(dateList, TaskFile.NameComparator)
+		Collections.sort(dateList, new NameComparator());
 
 		return dateList;
 	}
@@ -420,5 +430,37 @@ public class TNotesLogic {
 	public void showToUser(String lineOfText) {
 		System.out.println(lineOfText);
 	}
+
+	public String changeDirectory(String directoryName) {
+		if(storage.setNewDirectory(directoryName)){
+			storage.clearMasterDirectory();
+		}
+		return ("Directory changed");
+	}
+	
+	public boolean deleteDirectory(){
+		if(storage.clearMasterDirectory()){
+			return true;
+		}
+		else{
+			return false;
+		}
+	}
+	//whats the parser arraylist for the recurring task, like the format of inputs.
+	public TaskFile addRecurringTask(ArrayList<String> parserOutput){
+		
+		
+		return null;
+		
+	}
+
+	public TaskFile editRecurringTask(ArrayList<String> parserOutput){
+		return null;
+	}
+
+	public TaskFile deleteRecurringTask(ArrayList<String> parserOutput){
+		return null;
+	}
+
 
 }
