@@ -98,35 +98,46 @@ public class TNotesUI {
 			
 		case EDIT_COMMAND:
 			try{
+				TaskFile oldTaskFile = new TaskFile();
+				oldTaskFile = logic.searchTask(userCommandSplit.get(1));
+				
 				taskFile = logic.editTask(userCommandSplit);
 				if(userCommandSplit.get(2).equals("task name")){
-					
+					result = "You have changed the task name from \"%s\" to \"%s\"!\n"
+							+ oldTaskFile.getName() + taskFile.getName();
 				}
 				if(userCommandSplit.get(2).equals("StartTime")){
-					result = "You have changed the start time in \"%s\" from [%s] to [%s]!/n" +
-				taskFile.getName() + userCommandSplit.get(3) + taskFile.getStartDate();
+					result = "You have changed the start time in \"%s\" from [%s] to [%s]!\n"
+							+ taskFile.getName() + oldTaskFile.getStartTime() + taskFile.getStartTime();
 				}
 				if(userCommandSplit.get(2).equals("EndTime")){
-	
+					result = "You have chaned the end time in \"%s\" from [%s] to [%s]!\n"
+							+ taskFile.getName() + oldTaskFile.getEndTime() + taskFile.getEndTime();
 				}
 				if(userCommandSplit.get(2).equals("StartDate")){
-					
+					result = "You have changed the start date in \"%s\" from [%s] to [%s]!\n"
+							+ taskFile.getName() + oldTaskFile.getStartDate() + taskFile.getStartDate();
 				}
 				if(userCommandSplit.get(2).equals("EndDate")){
-					
+					result = "You have changed the end date in \"%s\" from [%s] to [%s]!\n"
+							+ taskFile.getName() + oldTaskFile.getEndDate() + taskFile.getEndDate();
 				}
 				if(userCommandSplit.get(2).equals("details")){
-					
+					result = "You have changed the details in \"%s\" from [%s] to [%s]!\n"
+							+ taskFile.getName() + oldTaskFile.getDetails() + taskFile.getDetails();
 				}
 				if(userCommandSplit.get(2).equals("Status")){
-					
+					result = "You have changed the status in \"%s\" from [%s] to [%s]!\n"
+							+ taskFile.getName() + oldTaskFile.getStatus() + taskFile.getStatus();
 				}
 				if(userCommandSplit.get(2).equals("Reccuring")){
-					
+					result = "You have set recurring in \"%s\" from [%s] to [%s]!\n"
+							+ taskFile.getName() + oldTaskFile.getIsRecurring() + taskFile.getIsRecurring();
 				}
 			} catch(IOException ioe) {
 				result = "Edit has failed for some reason";
 				System.out.println(ioe);
+				// we can expand more error messages if necessary
 			}		
 		
 			break;
@@ -150,7 +161,7 @@ public class TNotesUI {
 			}
 			break;
 			
-			// for display, ask adam to throw me taskfile again
+			
 		case VIEW_COMMAND:
 			ArrayList<TaskFile> arr = new ArrayList<TaskFile>();
 			arr = logic.viewDateList();
