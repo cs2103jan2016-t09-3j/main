@@ -1,4 +1,5 @@
 package UI;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -11,27 +12,26 @@ public class TNotesUI {
 
 	enum COMMAND_TYPE {
 		ADD_COMMAND, EDIT_COMMAND, DELETE_COMMAND, VIEW_COMMAND, INVALID, SEARCH_COMMAND, SORT_COMMAND, EXIT
-		}
+	}
 
-		
 	TNotesParser parser;
 	TNotesLogic logic;
 	ArrayList<String> commandArguments;
 	String commandString;
-	String result="";
+	String result = "";
 	String taskName;
 	TaskFile taskFile;
-	
-	public TNotesUI(){
+
+	public TNotesUI() {
 		parser = new TNotesParser();
 		logic = new TNotesLogic();
-		}
-	
-	public String getWelcomeMessage(){
-		String welcomeMsg = "Hello, welcome to T-Note. How many I help you?";
-		return welcomeMsg; 
 	}
-		
+
+	public String getWelcomeMessage() {
+		String welcomeMsg = "Hello, welcome to T-Note. How many I help you?";
+		return welcomeMsg;
+	}
+
 	public String executeCommand(String userInput){
 		ArrayList<String> userCommandSplit = new ArrayList<String>();
 		userCommandSplit = TNotesParser.checkCommand(userInput);
@@ -97,11 +97,38 @@ public class TNotesUI {
 			break;
 			
 		case EDIT_COMMAND:
-			if(logic.editTask(userCommandSplit)){
-				result = userCommandSplit.get(2) + " of " + taskName + "has been changed to " + userCommandSplit.get(3);
-			} else {
+			try{
+				taskFile = logic.editTask(userCommandSplit);
+				if(userCommandSplit.get(2).equals("task name")){
+					
+				}
+				if(userCommandSplit.get(2).equals("StartTime")){
+					result = "You have changed the start time in \"%s\" from [%s] to [%s]!/n" +
+				taskFile.getName() + userCommandSplit.get(3) + taskFile.getStartDate();
+				}
+				if(userCommandSplit.get(2).equals("EndTime")){
+	
+				}
+				if(userCommandSplit.get(2).equals("StartDate")){
+					
+				}
+				if(userCommandSplit.get(2).equals("EndDate")){
+					
+				}
+				if(userCommandSplit.get(2).equals("details")){
+					
+				}
+				if(userCommandSplit.get(2).equals("Status")){
+					
+				}
+				if(userCommandSplit.get(2).equals("Reccuring")){
+					
+				}
+			} catch(IOException ioe) {
 				result = "Edit has failed for some reason";
+				System.out.println(ioe);
 			}		
+		
 			break;
 			
 		case DELETE_COMMAND:
@@ -116,8 +143,8 @@ public class TNotesUI {
 					result+=i+1 + ". " +"[" + arrN.get(i).getStartTime()+"] " + arrN.get(i).getName()+"\n";
 				}	
 				
-			}catch(IOException ioe)
-				{	
+			} catch(IOException ioe) {
+					
 				result = "Deletion has failed for some reason.";
 				System.out.println(ioe);
 			}
@@ -126,7 +153,7 @@ public class TNotesUI {
 			// for display, ask adam to throw me taskfile again
 		case VIEW_COMMAND:
 			ArrayList<TaskFile> arr = new ArrayList<TaskFile>();
-			arr; = logic.viewDateList();
+			arr = logic.viewDateList();
 			
 			// if(isViewDateList) {
 			result = "Your schedule for %s:\n"+userCommandSplit.get(1);
@@ -205,42 +232,43 @@ public class TNotesUI {
 		
 		return result;
 	}
-	
-	private COMMAND_TYPE determineCommandType(String commandString){
-		if(checkCommand(commandString, "add")){
+
+	private COMMAND_TYPE determineCommandType(String commandString) {
+		if (checkCommand(commandString, "add")) {
 			return COMMAND_TYPE.ADD_COMMAND;
-		} else if (checkCommand(commandString, "edit")){
+		} else if (checkCommand(commandString, "edit")) {
 			return COMMAND_TYPE.EDIT_COMMAND;
-		} else if(checkCommand(commandString, "delete")){
+		} else if (checkCommand(commandString, "delete")) {
 			System.err.println("deletecommandentered");
 			return COMMAND_TYPE.DELETE_COMMAND;
-		} else if(checkCommand(commandString, "view")){
-			return COMMAND_TYPE.VIEW_COMMAND;	
-		} else if(checkCommand(commandString, "search")){
+		} else if (checkCommand(commandString, "view")) {
+			return COMMAND_TYPE.VIEW_COMMAND;
+		} else if (checkCommand(commandString, "search")) {
 			return COMMAND_TYPE.SEARCH_COMMAND;
-		} else if(checkCommand(commandString, "sort")){
+		} else if (checkCommand(commandString, "sort")) {
 			return COMMAND_TYPE.SORT_COMMAND;
 		} else {
 			return COMMAND_TYPE.INVALID;
 		}
-		
+
 	}
-	
-	private boolean checkCommand(String commandString, String typeOfCommand){
+
+	private boolean checkCommand(String commandString, String typeOfCommand) {
 		return commandString.equals(typeOfCommand);
 	}
-	
-	private String getFirstWord(ArrayList<String> userCommandArrayList ){
+
+	private String getFirstWord(ArrayList<String> userCommandArrayList) {
 		return userCommandArrayList.get(0);
 	}
-	
-//	private ArrayList<String> removeFirstWord(ArrayList<String> userCommandArrayList){
-//		userCommandArrayList.remove(0);
-//		
-//		return userCommandArrayList;
-//	}
-	
-	private String getTaskName(ArrayList<String> userCommandArrayList){
+
+	// private ArrayList<String> removeFirstWord(ArrayList<String>
+	// userCommandArrayList){
+	// userCommandArrayList.remove(0);
+	//
+	// return userCommandArrayList;
+	// }
+
+	private String getTaskName(ArrayList<String> userCommandArrayList) {
 		return userCommandArrayList.get(1);
 	}
 }

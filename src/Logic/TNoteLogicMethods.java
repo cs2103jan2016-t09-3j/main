@@ -24,6 +24,9 @@ public interface TNoteLogicMethods {
 	// this might be hard, may face further problems. tell you all next time
 	public ArrayList<TaskFile> sortTaskList(ArrayList<String> parserOutput);
 
+	/*NEW*/
+	public TaskFile searchTask(String taskname);
+	
 	public ArrayList<TaskFile> searchTask(ArrayList<String> parserOutput);
 
 	// joelle u need both new and old directories?
