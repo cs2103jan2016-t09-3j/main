@@ -1,4 +1,5 @@
 package UI;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -104,18 +105,28 @@ public class TNotesUI {
 			break;
 			
 		case DELETE_COMMAND:
-			if(logic.deleteTask(taskName)){
-			result = "I have deleted \"%s\" from your schedule for you!" + taskName;
-			} 
-			else {
+			try{
+				taskFile = logic.deleteTask(userCommandSplit);
+				result = "I have deleted \"%s\" from your schedule for you!\n\n" + taskName;
+				ArrayList<TaskFile> arrN = new ArrayList<TaskFile>();
+				arrN = logic.viewDateList(taskFile.getStartDate());
+				
+				result = "Your NEW schedule for %s:\n"+ taskFile.getStartDate();
+				for(int i=0; i<arrN.size(); i++) {
+					result+=i+1 + ". " +"[" + arrN.get(i).getStartTime()+"] " + arrN.get(i).getName()+"\n";
+				}	
+				
+			}catch(IOException ioe)
+				{	
 				result = "Deletion has failed for some reason.";
+				System.out.println(ioe);
 			}
 			break;
 			
 			// for display, ask adam to throw me taskfile again
 		case VIEW_COMMAND:
 			ArrayList<TaskFile> arr = new ArrayList<TaskFile>();
-			arr = logic.viewDateList();
+			arr; = logic.viewDateList();
 			
 			// if(isViewDateList) {
 			result = "Your schedule for %s:\n"+userCommandSplit.get(1);
