@@ -383,7 +383,15 @@ public class TNotesLogic {
 		taskList.clear();
 		return importList;
 	}
-
+	public boolean viewFloatingLIst(ArrayList<String> floatingList){
+		if(floatingList.isEmpty()){
+			return false;
+		}
+		else{
+			return true;
+		}
+	}
+	
 	// Sort name
 	public ArrayList<TaskFile> sortTaskList() {
 		ArrayList<String> masterList = storage.readFromMasterFile();

@@ -31,7 +31,11 @@ public interface TNoteLogicMethods {
 
 	// this might be hard, may face further problems. tell you all next time
 	public ArrayList<TaskFile> sortTaskList(ArrayList<String> parserOutput);
-
+	
+	public ArrayList<TaskFile> sortDateTask() ;
+	
+	public ArrayList<TaskFile> sortImportTask() ;
+	
 	public TaskFile searchTask(String taskname);
 	
 	
