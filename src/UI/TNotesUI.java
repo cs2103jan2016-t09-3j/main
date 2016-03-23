@@ -160,10 +160,9 @@ public class TNotesUI {
 			
 		case VIEW_COMMAND:
 		 	
-		ArrayList<String> viewType= logic.sortViewType(userCommandSplit);
+		ArrayList<String> viewType= logic.sortViewTypes(userCommandSplit);
 	
-		// viewType.get(0).equals("isViewDateList")
-			 if(isViewDateList) {
+		if(viewType.get(0).equals("isViewDateList")) {
 				 String date = userCommandSplit.get(1);
 				ArrayList<TaskFile> arrView = new ArrayList<TaskFile>();
 				 arrView = logic.viewDateList(date);
@@ -179,7 +178,6 @@ public class TNotesUI {
 			
 			// list of floating tasks
 			 if(viewFloatingList exists) {
-				 ArrayList<TaskFile> arrF = new ArrayList<TaskFile>();
 				 arrF = logic.viewFloatingList();
 				 result+="\n";
 				 result+="Notes:";
@@ -188,8 +186,8 @@ public class TNotesUI {
 					}
 			 	}
 			 
-			// viewType.get(1).equals("isViewTask")
-			 if(isViewTask){
+			
+			 if(viewType.get(1).equals("isViewTask")){
 				 taskFile = logic.viewTask();
 				 result = "Displaying the task \"%s\":\n\n" + taskFile.getName();
 				 	if(taskFile.getIsTask()){
