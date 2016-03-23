@@ -5,7 +5,6 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-
 /*
  * Calendar objects let use recur the name. Can just calendar object.add(Calendar.WEEK_OF_YEAR, 1) to add 1 week
  * startCal.add(Calendar.DATE, 1) add 1 day
@@ -54,7 +53,7 @@ import java.util.Date;
 public class TaskFile implements Comparable<TaskFile>, Cloneable {
 
 	private static final String IMPORTANCE_ZERO = "0";
-	
+
 	protected String name;
 	protected String startDate;
 	protected String startTime;
@@ -63,15 +62,15 @@ public class TaskFile implements Comparable<TaskFile>, Cloneable {
 	private String endTime;
 	private String details;
 	private String importance;
-	
+
 	private boolean isDone;
-	
+
 	private transient boolean isDeadline;
 	private transient boolean isTask;
 	private transient boolean isMeeting;
-	
+
 	private transient Calendar startCal;
-	
+
 	private transient Calendar endCal;
 
 	// Constructor
@@ -83,77 +82,77 @@ public class TaskFile implements Comparable<TaskFile>, Cloneable {
 		setIsRecurr(false);
 		setEndDate("");
 		setEndTime("");
-	
+
 		setDetails("");
 		setImportance(IMPORTANCE_ZERO);
-		
+
 		setIsDone(false);
-		
+
 		initializeTaskTypes();
 	}
 
 	public TaskFile(String name) {
-		this(name, "", "", "", "", "",IMPORTANCE_ZERO, false);
+		this(name, "", "", "", "", "", IMPORTANCE_ZERO, false);
 	}
 
-//	public TaskFile(String name, String importance) {
-//		
-//		setTask(name);
-//		setDate("");
-//		setTime("");
-//		setDetails("");
-//		setImportance(importance);
-//		setIsRecurr(false);
-//		setIsDone(false);
-//	}
+	// public TaskFile(String name, String importance) {
+	//
+	// setTask(name);
+	// setDate("");
+	// setTime("");
+	// setDetails("");
+	// setImportance(importance);
+	// setIsRecurr(false);
+	// setIsDone(false);
+	// }
 
-
-	
 	public TaskFile(String name, String date, String time, String details, boolean isRecurr) {
 		this(name, date, time, date, time, details, IMPORTANCE_ZERO, isRecurr);
-		
+
 	}
-	
+
 	public TaskFile(String name, String date, String time, String details, String importance, boolean isRecurr) {
-		
+
 		this(name, date, time, date, time, details, importance, isRecurr);
 	}
-	
-	public TaskFile(String name, String startDate, String startTime, String endDate, String endTime, String details, 
+
+	public TaskFile(String name, String startDate, String startTime, String endDate, String endTime, String details,
 			String importance, boolean isRecurr) {
-		
-		
-		
+
 		setName(name);
 		setStartDate(startDate);
 		setStartTime(startTime);
 		setEndDate(endDate);
 		setEndTime(endTime);
-		
+
 		setDetails(details);
 		setImportance(importance);
 		setIsRecurr(isRecurr);
 		setIsDone(false);
 		initializeTaskTypes();
 		setUpTaskFile();
-		
+
 	}
-	
-	
+
+	public boolean hasDetails() {
+		if (this.getDetails().equals(" ")) {
+			return false;
+		} else {
+			return true;
+		}
+	}
 
 	// Getters
 
-	
-	
 	public String getEndTime() {
 		return endTime;
 	}
-	
+
 	public String getEndDate() {
 		return endDate;
 	}
-	
-	public String getDetails(){
+
+	public String getDetails() {
 		return details;
 	}
 
@@ -161,33 +160,30 @@ public class TaskFile implements Comparable<TaskFile>, Cloneable {
 		return importance;
 	}
 
-	
-
 	public boolean getIsDone() {
 		return isDone;
 	}
-	
+
 	public boolean getIsDeadline() {
 		return isDeadline;
 	}
-	
+
 	public boolean getIsTask() {
 		return isTask;
 	}
-	
+
 	public boolean getIsMeeting() {
 		return isMeeting;
 	}
-	
+
 	public Calendar getStartCal() {
 		return startCal;
 	}
-	
+
 	public Calendar getEndCal() {
 		return endCal;
 	}
-	
-	
+
 	public String getName() {
 		return name;
 	}
@@ -199,7 +195,7 @@ public class TaskFile implements Comparable<TaskFile>, Cloneable {
 	public String getStartDate() {
 		return startDate;
 	}
-	
+
 	public boolean getIsRecurring() {
 		return isRecurr;
 	}
@@ -211,27 +207,27 @@ public class TaskFile implements Comparable<TaskFile>, Cloneable {
 
 	public void setStartDate(String startDate) {
 		this.startDate = startDate;
-		
+
 	}
 
 	public void setStartTime(String startTime) {
 		this.startTime = startTime;
-		
+
 	}
-	
+
 	public void setIsRecurr(boolean isRecurr) {
 		this.isRecurr = isRecurr;
 	}
-	
+
 	public void setEndDate(String endDate) {
 		this.endDate = endDate;
 	}
-	
+
 	public void setEndTime(String endTime) {
 		this.endTime = endTime;
 	}
-	
-	public void setDetails(String details){
+
+	public void setDetails(String details) {
 		this.details = details;
 	}
 
@@ -239,29 +235,28 @@ public class TaskFile implements Comparable<TaskFile>, Cloneable {
 		this.importance = importance;
 	}
 
-	
 	public void setIsDone(boolean status) {
 		isDone = status;
 	}
-	
+
 	public void setUpTaskFile() {
-		
+
 		setUpDates();
-		
+
 		setUpCal();
-		
-		setTypeOfTask(); 
-				
+
+		setTypeOfTask();
+
 	}
-	
+
 	private void setUpDates() {
 		String currentDateString = getCurrentDate();
-		
-		if(startDate.isEmpty() && !startTime.isEmpty()) {
+
+		if (startDate.isEmpty() && !startTime.isEmpty()) {
 			setStartDate(currentDateString);
 		}
-		
-		if(endDate.isEmpty() && !endTime.isEmpty()) {
+
+		if (endDate.isEmpty() && !endTime.isEmpty()) {
 			setEndDate(currentDateString);
 		}
 	}
@@ -272,64 +267,59 @@ public class TaskFile implements Comparable<TaskFile>, Cloneable {
 		String currentDateString = currentDateFormat.format(currentDate);
 		return currentDateString;
 	}
-	
-	
-	private void setUpCal(){
-		if(!startDate.isEmpty()){
+
+	private void setUpCal() {
+		if (!startDate.isEmpty()) {
 			startCal = Calendar.getInstance();
 			setStartCal();
-			if(!endDate.isEmpty()){
+			if (!endDate.isEmpty()) {
 				endCal = Calendar.getInstance();
 				setEndCal();
 			}
 		}
 	}
-	
+
 	private void setStartCal() {
-		try{
-			Date date = convertStringToDate(startDate,startTime);
+		try {
+			Date date = convertStringToDate(startDate, startTime);
 			startCal.setTime(date);
-		}catch(ParseException pEx){
+		} catch (ParseException pEx) {
 			System.err.println("incorrect date/time format for start cal");
 		}
-		
-	}
 
+	}
 
 	private void setEndCal() {
-		try{
+		try {
 			Date date = convertStringToDate(endDate, endTime);
 			endCal.setTime(date);
-			}catch(ParseException pEx){
-				System.err.println("incorrect date/time format for end cal");
-			}
+		} catch (ParseException pEx) {
+			System.err.println("incorrect date/time format for end cal");
+		}
 	}
-	
+
 	private Date convertStringToDate(String dateString, String timeString) throws ParseException {
 		String dateTimeString;
 		Date date;
-		SimpleDateFormat stringToDateFormat;;
-		
-		
-		if(timeString.isEmpty()) {
+		SimpleDateFormat stringToDateFormat;
+		;
+
+		if (timeString.isEmpty()) {
 			stringToDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm");
-			
+
 			date = stringToDateFormat.parse(startDate);
 		} else {
 			stringToDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-			
+
 			dateTimeString = combineDateTime(dateString, timeString);
 			date = stringToDateFormat.parse(dateTimeString);
 		}
-		
+
 		return date;
 	}
-	
-	
-	
+
 	private void setTypeOfTask() {
-		
-		
+
 		if (startDate.isEmpty()) {
 			isTask = true;
 		} else if (startCal.equals(endCal)) {
@@ -338,7 +328,7 @@ public class TaskFile implements Comparable<TaskFile>, Cloneable {
 			isMeeting = true;
 		}
 	}
-	
+
 	private void initializeTaskTypes() {
 		isDeadline = false;
 		isTask = false;
@@ -347,24 +337,24 @@ public class TaskFile implements Comparable<TaskFile>, Cloneable {
 
 	@Override
 	public String toString() {
-		String taskFileInString = "Task: " + name + ", Start Date: " + startDate + ", Start Time: " + startTime + ", End Date: " 
-				+ endDate + ", End Time: " + endTime + ", Details: " + details + ", Importance: " + importance + ", IsRecurring: " 
-				+ isRecurr + ", IsDone: " + isDone;
-		
+		String taskFileInString = "Task: " + name + ", Start Date: " + startDate + ", Start Time: " + startTime
+				+ ", End Date: " + endDate + ", End Time: " + endTime + ", Details: " + details + ", Importance: "
+				+ importance + ", IsRecurring: " + isRecurr + ", IsDone: " + isDone;
+
 		return taskFileInString;
 	}
-	
-	private String combineDateTime(String date, String time){
+
+	private String combineDateTime(String date, String time) {
 		return String.format("%s %s", date, time);
 	}
-	
+
 	@Override
-	public int compareTo(TaskFile taskFile){
+	public int compareTo(TaskFile taskFile) {
 		return this.getName().compareTo(taskFile.getName());
 	}
-	
+
 	@Override
-	protected Object clone() throws CloneNotSupportedException{
+	protected Object clone() throws CloneNotSupportedException {
 		return super.clone();
 	}
 }

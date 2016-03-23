@@ -243,7 +243,17 @@ public class TNotesLogic {
 		}
 		return taskToBeDisplayed;
 	}
-
+	public ArrayList<String> sortViewTypes(ArrayList<String> fromParser) {
+		ArrayList<String> stringList = new ArrayList<String>();
+		String viewType = fromParser.get(1);
+			if(viewType.contains("-")){
+				stringList.add("isViewDateList");
+			}
+			else{
+				stringList.add("isViewTask");
+			}
+			return stringList;
+		}
 	
 	// Show the details of a single task
 	// will take in the name of the task,
@@ -326,7 +336,17 @@ public class TNotesLogic {
 			System.out.println("did not edit");
 		return currentFile;
 	}
-
+	
+	public TaskFile searchSingleTask(String lineOfText){
+		ArrayList<String> masterList = storage.readFromMasterFile();
+		TaskFile oldTask = new TaskFile();
+		for(String text: masterList){
+			if(text.equals(lineOfText)){
+				oldTask = storage.getTaskFileByName(text);
+			}
+		}
+		return oldTask;
+	}
 	// searches for a word or phrase within the storage, returns array list of
 	// taskfile
 	public ArrayList<TaskFile> searchTask(String lineOfText) {
