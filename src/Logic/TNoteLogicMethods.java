@@ -18,10 +18,12 @@ public interface TNoteLogicMethods {
 	//done
 	public TaskFile viewTask(ArrayList<String> parserOutput);
 	
-	//IF you passing us just the date string, this metohd not needed?
-	public ArrayList<TaskFile> viewDateList(ArrayList<String> parserOutput);
+	/*NEW*/ //method return if isViewDateList or isViewTask // dk if u have a better idea?
+	public ArrayList<String> sortViewTypes(ArrayList<String> parserOutput);
 	
-	/*NEW*/ //done
+	//IF you passing us just the date string, this metohd not needed? // ok
+	//public ArrayList<TaskFile> viewDateList(ArrayList<String> parserOutput);
+	
 	public ArrayList<TaskFile> viewDateList(String date);
 	
 	/*NEW*/ // KIV
@@ -30,7 +32,6 @@ public interface TNoteLogicMethods {
 	// this might be hard, may face further problems. tell you all next time
 	public ArrayList<TaskFile> sortTaskList(ArrayList<String> parserOutput);
 
-	/*NEW*/ //done
 	public TaskFile searchTask(String taskname);
 	
 	

@@ -159,27 +159,35 @@ public class TNotesUI {
 			
 			
 		case VIEW_COMMAND:
-			ArrayList<TaskFile> arr = new ArrayList<TaskFile>();
-			arr = logic.viewDateList();
-			
-			// if(isViewDateList) {
-			result = "Your schedule for %s:\n"+userCommandSplit.get(1);
-			for(int i=0; i<arr.size(); i++) {
-				result+=i+1 + ". " +"[" + arr.get(i).getStartTime()+"] " + arr.get(i).getName()+"\n";
+		 	
+		ArrayList<String> viewType= logic.sortViewType(userCommandSplit);
+	
+		// viewType.get(0).equals("isViewDateList")
+			 if(isViewDateList) {
+				 String date = userCommandSplit.get(1);
+				ArrayList<TaskFile> arrView = new ArrayList<TaskFile>();
+				 arrView = logic.viewDateList(date);
+				 result = "Your schedule for %s:\n"+userCommandSplit.get(1);
+				 for(int i=0; i<arrView.size(); i++) {
+					 result+=i+1 +". " + "[%s] "+ arrView.get(i).getStartTime() ;
+					 	if(arrView.get(i).getImportance().equals("1")){
+					 		result+="[IMPORTANT] ";
+					 	}
+					 	result+="[%s]\n"+arrView.get(i).getName();
+				 }
 			}
-			//}
 			
 			// list of floating tasks
 			 if(viewFloatingList exists) {
-				 arrF = logic.viewFloatingList
+				 arrF = logic.viewFloatingList();
 				 result+="\n";
 				 result+="Notes:";
 				for(int i=0; i<arrF.size(); i++){
-					result+=i+1 + ". " + arr.get(i)+"\n";
+					result+=i+1 + ". " + arrF.get(i)+"\n";
 					}
 			 	}
 			 
-			
+			// viewType.get(1).equals("isViewTask")
 			 if(isViewTask){
 				 taskFile = logic.viewTask();
 				 result = "Displaying the task \"%s\":\n\n" + taskFile.getName();
@@ -223,8 +231,8 @@ public class TNotesUI {
 			
 			try{
 				ArrayList<TaskFile> arrSearch = new ArrayList<TaskFile>();
-				arrSearch = logic.searchTask(userCommandSplit);
-				result = "Searching for \"%s\" ... This is what I've found:\n";
+				arrSearch = logic.searchTask(taskName);
+				result = "Searching for \"%s\" ... This is what I've found:\n"+taskName;
 				for(int i=0; i<arrSearch.size(); i++) {
 					result+= i+1 + ". " + "[%s] [%s] %s, %s\n"
 							+ arrSearch.get(i).getStartDate() + arrSearch.get(i).getStartTime() + arrSearch.get(i).getName()
