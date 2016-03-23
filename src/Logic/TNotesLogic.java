@@ -67,7 +67,7 @@ public class TNotesLogic {
 				break;
 			case 2:
 				if (fromParser.get(0).contains("-")) {
-					currentFile.setStartDate(fromParser.get(2));
+					currentFile.setStartDate(fromParser.get(1));
 
 					if (fromParser.get(1).contains("-")) {
 						currentFile.setEndDate(fromParser.get(1));
