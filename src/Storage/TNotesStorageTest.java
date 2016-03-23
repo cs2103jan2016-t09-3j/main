@@ -30,8 +30,9 @@ public class TNotesStorageTest {
 		
 		TaskFile task1 = new TaskFile("call mom", "2016-02-02", "12:00", "abc", false);
 		TaskFile task2 = new TaskFile("call dad");
-		storage.addTask(task1);
-		storage.addTask(task2);
+		
+		assertTrue(storage.addTask(task1));
+		assertTrue(storage.addTask(task2));
 		
 		ArrayList<String> masterFileAL = new ArrayList<String>();
 		
@@ -48,6 +49,13 @@ public class TNotesStorageTest {
 		//assertEquals("read individual task files_obj2", task1, storage.getTaskFileByName("call mom"));
 		assertEquals("read individual task files_1", task1String, storage.getTaskFileByName("call mom").toString());
 		assertEquals("read individual task files_2", task2String, storage.getTaskFileByName("call dad").toString());
+		
+		assertNull(storage.deleteTask(""));
+		assertNull(storage.deleteTask("nonexistent"));
+		
+		TaskFile task3 = new TaskFile("abcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabc");
+		
+		assertFalse(storage.addTask(task3));
 	}
 
 }

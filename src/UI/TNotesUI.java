@@ -256,7 +256,7 @@ public class TNotesUI {
 			
 			for(int i=0; i<arrSort.size(); i++) {
 				result+=i+1 +". " + "["+ arrSort.get(i).getStartTime()+"] " ;
-				if(arrSort.get(i).getImportance().equals("1")){
+				if(arrSort.get(i).getImportance().equals("important")){
 					result+="[IMPORTANT] ";
 				}
 				result+="["+arrSort.get(i).getName()+"]\n";
