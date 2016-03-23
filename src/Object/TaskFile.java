@@ -135,7 +135,7 @@ public class TaskFile implements Comparable<TaskFile>, Cloneable {
 	}
 
 	public boolean hasDetails() {
-		if (this.getDetails().equals(" ")) {
+		if (this.getDetails().equals("")) {
 			return false;
 		} else {
 			return true;
