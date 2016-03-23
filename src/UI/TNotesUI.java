@@ -261,7 +261,7 @@ public class TNotesUI {
 			break;
 			
 		case INVALID:
-			result = "Invalid Input";
+			result = "The command you have just entered is not recognised.\n";
 			break;
 			
 		default:
