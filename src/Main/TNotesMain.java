@@ -7,7 +7,7 @@ import UI.TNotesUI;
 public class TNotesMain {
 	
 	
-	
+
 	//Define Display Messages 
 	
 	private static Scanner sc = new Scanner(System.in);

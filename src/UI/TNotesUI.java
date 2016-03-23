@@ -39,41 +39,42 @@ public class TNotesUI {
 		
 		COMMAND_TYPE command = determineCommandType(commandString);
 		
-		System.err.println("Checking Parser String output:\n");		
-		for(int i=0; i<userCommandSplit.size(); i++){
-			System.err.println(userCommandSplit.get(i));
-		}
+//		System.err.println("Checking Parser String output:\n");		
+//		for(int i=0; i<userCommandSplit.size(); i++){
+//			System.err.println(userCommandSplit.get(i));
+//		}
 
 		result = "";
 		
 		switch(command){
 		case ADD_COMMAND:
+			userCommandSplit.remove(0);
 			taskFile = logic.addTask(userCommandSplit);
-			System.out.println("pass");
+			
 			// Floating task case
 			if(taskFile.getIsTask()){
-				result+="I have added \"%s\" to your schedule!\n"+taskFile.getName();			
+				result+=String.format("I have added \"%s\" to your schedule!\n", taskFile.getName().trim());			
 			}
 			
 			 if(taskFile.getIsRecurring()) {
-			 	result+="I have added \"%s\" every %s to your schedule!";
+			 	result+=String.format("I have added \"%s\" every %s to your schedule!",taskFile.getName(),taskFile.getStartDate());
 				}
 			
 			// Tasks with only 1 date
 			if(taskFile.getIsDeadline()){
-				result+="I have added \"%s\" at [%s] on [%s] to your schedule!\n"+taskFile.getName()+taskFile.getStartTime()
-				+taskFile.getStartDate();
+				result+=String.format("I have added \"%s\" at [%s] on [%s] to your schedule!\n",taskFile.getName(),taskFile.getStartTime()
+				,taskFile.getStartDate());
 			}
 			
 			// Tasks with 2 dates
 			if(taskFile.getIsMeeting()){
-				result+="I have added \"%s\" from [%s] at [%s] to [%s] at [%s] to your schedule!\n"+
-						taskFile.getName()+taskFile.getStartDate()+taskFile.getStartTime()+taskFile.getEndDate()
-						+taskFile.getEndDate();
+				result+=String.format("I have added \"%s\" from [%s] at [%s] to [%s] at [%s] to your schedule!\n",
+						taskFile.getName(),taskFile.getStartDate(),taskFile.getStartTime(),taskFile.getEndDate()
+						,taskFile.getEndDate());
 			}
 			
 			if(taskFile.getImportance().equals("true")){
-				result+="Note: Task was noted as important";
+				result+=String.format("Note: Task was noted as important");
 			}
 			
 			// Tasks with dates and without time given
@@ -84,7 +85,8 @@ public class TNotesUI {
 			// }
 			
 			if(taskFile.hasDetails()){
-				result+="Things to note: \"%s\"\n"+taskFile.getDetails();
+				System.out.print("details");
+				result+=String.format("Things to note: \"%s\"\n",taskFile.getDetails());
 			}
 		
 			break;
