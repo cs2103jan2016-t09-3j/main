@@ -30,11 +30,11 @@ public interface TNoteLogicMethods {
 	public ArrayList<String> viewFloatingList(ArrayList<String> parserOutput);
 
 	// this might be hard, may face further problems. tell you all next time
-	public ArrayList<TaskFile> sortTaskList(ArrayList<String> parserOutput);
+	public ArrayList<TaskFile> sortTaskByName(ArrayList<String> parserOutput);
 	
-	public ArrayList<TaskFile> sortDateTask() ;
+	public ArrayList<TaskFile> sortTaskByImportance() ;
 	
-	public ArrayList<TaskFile> sortImportTask() ;
+	public ArrayList<TaskFile> sortTaskByDate() ;
 	
 	public TaskFile searchTask(String taskname);
 	

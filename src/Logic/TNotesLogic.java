@@ -383,8 +383,9 @@ public class TNotesLogic {
 		taskList.clear();
 		return importList;
 	}
-	public boolean viewFloatingLIst(ArrayList<String> floatingList){
-		if(floatingList.isEmpty()){
+	public boolean hasFloatingList(){
+		ArrayList<String> list = storage.readFromFloatingListFile();
+		if(list.isEmpty()){
 			return false;
 		}
 		else{
