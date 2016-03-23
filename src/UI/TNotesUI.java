@@ -179,6 +179,7 @@ public class TNotesUI {
 			
 			// list of floating tasks
 			 if(viewFloatingList exists) {
+				 ArrayList<TaskFile> arrF = new ArrayList<TaskFile>();
 				 arrF = logic.viewFloatingList();
 				 result+="\n";
 				 result+="Notes:";
