@@ -283,7 +283,10 @@ public class TNotesLogic {
 		}
 		return taskListToBeDisplayed;
 	}
-	
+	public ArrayList<String> viewFloatingList(){
+		ArrayList<String> stringList = storage.readFromFloatingListFile();
+		return stringList;
+	}
 	
 	
 	public TaskFile editTask(ArrayList<String> fromParser) {
