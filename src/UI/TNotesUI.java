@@ -56,10 +56,9 @@ public class TNotesUI {
 				result+="I have added \"%s\" to your schedule!\n"+taskFile.getName();			
 			}
 			
-			// Recurring tasks
-			// if(taskRECURS) {
-			// 	result+="I have added \"%s\" every %s to your schedule!";
-			//	}
+			 if(taskFile.getIsRecurring()) {
+			 	result+="I have added \"%s\" every %s to your schedule!";
+				}
 			
 			// Tasks with only 1 date
 			if(taskFile.getIsDeadline()){
@@ -85,11 +84,10 @@ public class TNotesUI {
 			//result+= "I have added \"%s\" due %s to your schedule!\n" + taskFile.getName() + taskFile.get(?? this week);
 			// }
 			
-//			Require flag to check that there are details to take note
-//			if(task have details){
-//				result+="Things to note: \"%s\"\n";
-//			}
-//		
+			if(taskFile.hasDetails()){
+				result+="Things to note: \"%s\"\n"+taskFile.getDetails();
+			}
+		
 			break;
 			
 		case EDIT_COMMAND:
@@ -178,7 +176,7 @@ public class TNotesUI {
 			
 			// list of floating tasks
 			 if(logic.hasFloatingList()) {
-				 ArrayList<TaskFile> arrF = new ArrayList<TaskFile>();
+				 ArrayList<String> arrF = new ArrayList<String>();
 				 arrF = logic.viewFloatingList();
 				 result+="\n";
 				 result+="Notes:";
