@@ -6,6 +6,8 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.Iterator;
+
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
@@ -26,7 +28,9 @@ public class TNotesLogic {
 
 	public TaskFile addTask(ArrayList<String> fromParser) {
 		try {
-
+			System.out.println("addcheck " + fromParser.toString());
+			
+			
 			ArrayList<String> stringList = storage.readFromMasterFile();
 			TaskFile currentFile = new TaskFile();
 			String importance = new String();
@@ -46,13 +50,17 @@ public class TNotesLogic {
 				fromParser.remove("every");
 				currentFile.setIsRecurr(true);
 			}
-
-			for (String details : fromParser) {
+			
+			System.out.println("adcheck 2" + fromParser.toString());
+			Iterator<String> aListIterator = fromParser.iterator();
+			while (aListIterator.hasNext()) {
+				String details = aListIterator.next();
 				if (!details.contains(":") && !details.contains("-")) {
 					currentFile.setDetails(details);
-					fromParser.remove(details);
+					aListIterator.remove();
 				}
 			}
+			
 			System.err.println(fromParser.toString());
 			switch (fromParser.size()) {
 			case 1:
@@ -67,7 +75,7 @@ public class TNotesLogic {
 				break;
 			case 2:
 				if (fromParser.get(0).contains("-")) {
-					currentFile.setStartDate(fromParser.get(1));
+					currentFile.setStartDate(fromParser.get(0));
 
 					if (fromParser.get(1).contains("-")) {
 						currentFile.setEndDate(fromParser.get(1));

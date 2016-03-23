@@ -281,7 +281,9 @@ public class TaskFile implements Comparable<TaskFile>, Cloneable {
 
 	private void setStartCal() {
 		try {
+			System.out.println("1. " + startDate + " " + startTime);
 			Date date = convertStringToDate(startDate, startTime);
+			
 			startCal.setTime(date);
 		} catch (ParseException pEx) {
 			System.err.println("incorrect date/time format for start cal");
@@ -302,16 +304,18 @@ public class TaskFile implements Comparable<TaskFile>, Cloneable {
 		String dateTimeString;
 		Date date;
 		SimpleDateFormat stringToDateFormat;
-		;
-
+		
+		
 		if (timeString.isEmpty()) {
-			stringToDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm");
+			stringToDateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
 			date = stringToDateFormat.parse(startDate);
 		} else {
-			stringToDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+			stringToDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm");
 
 			dateTimeString = combineDateTime(dateString, timeString);
+			
+			System.out.println(dateTimeString);
 			date = stringToDateFormat.parse(dateTimeString);
 		}
 
@@ -322,7 +326,7 @@ public class TaskFile implements Comparable<TaskFile>, Cloneable {
 
 		if (startDate.isEmpty()) {
 			isTask = true;
-		} else if (startCal.equals(endCal)) {
+		} else if (endDate.isEmpty()) {
 			isDeadline = true;
 		} else {
 			isMeeting = true;

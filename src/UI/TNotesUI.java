@@ -33,7 +33,7 @@ public class TNotesUI {
 
 	public String executeCommand(String userInput) {
 		ArrayList<String> userCommandSplit = new ArrayList<String>();
-		userCommandSplit = TNotesParser.checkCommand(userInput);
+		userCommandSplit = parser.checkCommand(userInput);
 		commandString = getFirstWord(userCommandSplit);
 		taskName = getTaskName(userCommandSplit);
 		
