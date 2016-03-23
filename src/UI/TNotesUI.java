@@ -33,7 +33,7 @@ public class TNotesUI {
 
 	public String executeCommand(String userInput) {
 		ArrayList<String> userCommandSplit = new ArrayList<String>();
-		userCommandSplit = parser.checkCommand(userInput);
+		userCommandSplit = TNotesParser.checkCommand(userInput);
 		commandString = getFirstWord(userCommandSplit);
 		taskName = getTaskName(userCommandSplit);
 		
@@ -70,7 +70,7 @@ public class TNotesUI {
 			if(taskFile.getIsMeeting()){
 				result+=String.format("I have added \"%s\" from [%s] at [%s] to [%s] at [%s] to your schedule!\n",
 						taskFile.getName(),taskFile.getStartDate(),taskFile.getStartTime(),taskFile.getEndDate()
-						,taskFile.getEndDate());
+						,taskFile.getEndTime());
 			}
 			
 			if(taskFile.getImportance().equals("true")){
@@ -164,10 +164,10 @@ public class TNotesUI {
 				 result = String.format("Your schedule for %s:\n",userCommandSplit.get(1));
 				 for(int i=0; i<arrView.size(); i++) {
 					 result+=i+1 +". " + "["+ arrView.get(i).getStartTime()+"]" ;
-					 	if(arrView.get(i).getImportance().equals("1")){
+					 	if(arrView.get(i).getImportance().equals("important")){
 					 		result+="[IMPORTANT] ";
 					 	}
-					 	result+="[%s]\n"+arrView.get(i).getName();
+					 	result+="[%s]"+arrView.get(i).getName() + "\n";
 				 }
 			}
 			
@@ -183,7 +183,7 @@ public class TNotesUI {
 			 	}
 			 
 			
-			 if(viewType.get(1).equals("isViewTask")){
+			 if(viewType.get(0).equals("isViewTask")){
 				 taskFile = logic.viewTask(userCommandSplit.get(1));
 				 result = String.format("Displaying the task \"%s\":\n\n",taskFile.getName());
 				 	if(taskFile.getIsTask()){
@@ -192,7 +192,7 @@ public class TNotesUI {
 				 	}
 				 	if(taskFile.getIsDeadline()){
 				 		result+=String.format("Date: %s\n",taskFile.getStartDate());
-				 		result+=String.format("Time: %s\n"+ taskFile.getStartTime());
+				 		result+=String.format("Time: %s\n", taskFile.getStartTime());
 				 	}
 				 	if(taskFile.getIsMeeting()){
 				 		result+=String.format("Date: %s to %s\n", taskFile.getStartDate(),taskFile.getEndDate());
@@ -239,7 +239,7 @@ public class TNotesUI {
 			
 		case SORT_COMMAND:
 			ArrayList<TaskFile> arrSort = new ArrayList<TaskFile>();
-			String sortType = userCommandSplit.get(2);
+			String sortType = userCommandSplit.get(2).trim();
 			
 			if(sortType.equals("importance")){
 				result = "I have sorted everything by importance for you. Do first things first!\n\n";
@@ -280,7 +280,6 @@ public class TNotesUI {
 		} else if (checkCommand(commandString, "edit")) {
 			return COMMAND_TYPE.EDIT_COMMAND;
 		} else if (checkCommand(commandString, "delete")) {
-			System.err.println("deletecommandentered");
 			return COMMAND_TYPE.DELETE_COMMAND;
 		} else if (checkCommand(commandString, "view")) {
 			return COMMAND_TYPE.VIEW_COMMAND;

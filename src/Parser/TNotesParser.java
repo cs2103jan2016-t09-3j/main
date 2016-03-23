@@ -192,7 +192,7 @@ public class TNotesParser {
 				return list;
 			case "search" :
 				list.add(firstWord);
-				for(int i=2; i<arr.length; i++){
+				for(int i=1; i<arr.length; i++){
 					list.add(arr[i]);
 				}
 				

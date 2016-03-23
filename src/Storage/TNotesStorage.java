@@ -121,11 +121,14 @@ public class TNotesStorage {
 				monthFolder = "floating";
 				floatingList.add(task.getName());
 				writeTaskToFloatingListFile(task);
+				
+				
 			} else {
 				monthFolder = getTaskMonth(task);
-			
-				masterNameDateMap.put(task.getName(), monthFolder);
 			}
+			
+			masterNameDateMap.put(task.getName(), monthFolder);
+			
 			
 			if (writeTaskToMasterFile(task) && writeToMapFile(masterNameDateMap)) {
 				if (createTaskFile(monthFolder, task)) {
@@ -155,16 +158,18 @@ public class TNotesStorage {
 
 	public TaskFile deleteTask(String task) {
 		
-		TaskFile deletedTask = getTaskFileByName(task);
+		TaskFile deletedTask = getTaskFileByName(task.trim());
 		
-		File fileToDelete = getTaskFilePath(task);
+		File fileToDelete = getTaskFilePath(task.trim());
 		
 		if (fManager.deleteFile(fileToDelete)) {
-			masterList.remove(task);
+			masterList.remove(task.trim());
 			writeListToMasterFile();
+			masterNameDateMap.remove(task.trim());
+			writeToMapFile(masterNameDateMap);
 			
 			if(deletedTask.getIsTask()) {
-				floatingList.remove(task);
+				floatingList.remove(task.trim());
 				writeListToFloatingListFile();
 			}
 			return deletedTask;
@@ -174,15 +179,16 @@ public class TNotesStorage {
 
 	public TaskFile getTaskFileByName(String taskName) {
 		
-		if (!masterList.contains(taskName)) {
+		if (!masterList.contains(taskName.trim())) {
 			return null;
 		}
 		
-		File FileToBeFound = getTaskFilePath(taskName);
-
-		TaskFile taskFile = readTaskFile(FileToBeFound);
-
-		// System.err.println(taskFile.getDate());
+		File fileToBeFound = getTaskFilePath(taskName.trim());
+		
+		TaskFile taskFile = readTaskFile(fileToBeFound);
+		
+		taskFile.setUpTaskFile();
+		
 		return taskFile;
 
 	}
@@ -192,12 +198,14 @@ public class TNotesStorage {
 
 	private File getTaskFilePath(String taskName) {
 		
-		String folderName = masterNameDateMap.get(taskName);
+
+		String folderName = masterNameDateMap.get(taskName.trim());
 		
+		//System.out.println(folderName + "3.");
 		//Check if folderName = recurr / floating
 		File folder = fManager.appendParentDirectory(folderName);
 		
-		File fileToBeFound = fManager.getPathToFile(folder, taskName+ FILE_TYPE_TXT_FILE);
+		File fileToBeFound = fManager.getPathToFile(folder, taskName.trim()+ FILE_TYPE_TXT_FILE);
 		
 		return fileToBeFound;
 	}
@@ -247,7 +255,7 @@ public class TNotesStorage {
 	public boolean createTaskFile(String directory, TaskFile task) {
 
 		try {
-			File folder = fManager.createDirectory(directory);
+			File folder = fManager.createDirectory(directory.trim());
 			
 			File newTask = fManager.createFile(folder, task.getName() + FILE_TYPE_TXT_FILE);
 

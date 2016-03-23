@@ -257,6 +257,7 @@ public class FolderManager {
 			return taskFile;
 		} catch (IOException ioEx) {
 			System.err.println("IOException in readTaskFile");
+			ioEx.printStackTrace();
 			return null;
 		}
 	}

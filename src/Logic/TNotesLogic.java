@@ -28,7 +28,7 @@ public class TNotesLogic {
 
 	public TaskFile addTask(ArrayList<String> fromParser) {
 		try {
-			System.out.println("addcheck " + fromParser.toString());
+//			System.out.println("addcheck " + fromParser.toString());
 			
 			
 			ArrayList<String> stringList = storage.readFromMasterFile();
@@ -37,7 +37,7 @@ public class TNotesLogic {
 			String recurArgument = new String();
 			
 			assertNotEquals(0,fromParser.size());
-			currentFile.setName(fromParser.remove(0));
+			currentFile.setName(fromParser.remove(0).trim());
 
 			if (fromParser.contains("important")) {
 				importance = fromParser.remove(fromParser.indexOf("important"));
@@ -51,7 +51,7 @@ public class TNotesLogic {
 				currentFile.setIsRecurr(true);
 			}
 			
-			System.out.println("adcheck 2" + fromParser.toString());
+//			System.out.println("adcheck 2" + fromParser.toString());
 			Iterator<String> aListIterator = fromParser.iterator();
 			while (aListIterator.hasNext()) {
 				String details = aListIterator.next();
@@ -156,6 +156,7 @@ public class TNotesLogic {
 			// only check if the task is a meeting
 			if(currentFile.getIsMeeting()) {
 				for(String savedTaskName: stringList) {
+//					System.out.println("2." + savedTaskName);
 					TaskFile savedTask = storage.getTaskFileByName(savedTaskName);
 					if(savedTask.getIsMeeting()) {
 						if(hasTimingClash(currentFile, savedTask)) {
@@ -269,8 +270,11 @@ public class TNotesLogic {
 		ArrayList<String> stringList = storage.readFromMasterFile();
 		
 		for (String text : stringList) {
+		
 			TaskFile currentFile = storage.getTaskFileByName(text);
-			if (currentFile.getName().equals(taskToBeDisplayed)) {
+		
+			if (currentFile.getName().equals(taskToBeDisplayed.trim())) {
+		
 				return currentFile;
 			}
 		}
@@ -298,14 +302,17 @@ public class TNotesLogic {
 	
 	
 	public TaskFile editTask(ArrayList<String> fromParser) {
-		// System.err.println(fromParser.toString());
-		String type = fromParser.get(1);
-		String title = fromParser.get(0);
-		String newText = fromParser.get(2);
+		
+		String type = fromParser.get(1).trim();
+		String title = fromParser.get(0).trim();
+		String newText = fromParser.get(2).trim();
 		TaskFile currentFile = storage.getTaskFileByName(title);
+		
+		System.err.println(currentFile.getStartDate() + " " + currentFile.getStartTime());
 		if (type.equals("time")) {
 			storage.deleteTask(title);
 			currentFile.setStartTime(newText);
+			
 			if (storage.addTask(currentFile)) {
 				return currentFile;
 			} else {
@@ -383,7 +390,7 @@ public class TNotesLogic {
 		}
 		masterList.clear();
 		for (TaskFile newFile : taskList) {
-			if (newFile.getImportance().equals("importance")) {
+			if (newFile.getImportance().equals("important")) {
 				importList.add(newFile);
 				taskList.remove(newFile);
 			}

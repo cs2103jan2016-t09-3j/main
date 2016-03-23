@@ -281,7 +281,7 @@ public class TaskFile implements Comparable<TaskFile>, Cloneable {
 
 	private void setStartCal() {
 		try {
-			System.out.println("1. " + startDate + " " + startTime);
+
 			Date date = convertStringToDate(startDate, startTime);
 			
 			startCal.setTime(date);
@@ -315,7 +315,6 @@ public class TaskFile implements Comparable<TaskFile>, Cloneable {
 
 			dateTimeString = combineDateTime(dateString, timeString);
 			
-			System.out.println(dateTimeString);
 			date = stringToDateFormat.parse(dateTimeString);
 		}
 
