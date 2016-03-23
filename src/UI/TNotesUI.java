@@ -237,11 +237,26 @@ public class TNotesUI {
 			break;
 			
 		case SORT_COMMAND:
-			ArrayList<String> arrSort = new ArrayList<String>();
-			arrSort = logic.sortTask();
-			result= "[SORT RESULT]\n";
+			ArrayList<TaskFile> arrSort = new ArrayList<TaskFile>();
+			arrSort = logic.sortTaskList(userCommandSplit);
+			String sortType = userCommandSplit.get(2);
+			
+			if(sortType.equals("importance")){
+				result = "I have sorted everything by importance for you. Do first things first!\n\n";
+			}
+			
+			if(sortType.equals("name")){
+				result = "I have sorted everything by name for you! I'm so amazing, what would you do without me!";
+			}
+			
+			result+="You new schedule for %s: \n\n" + userCommandSplit.get(1);
+			
 			for(int i=0; i<arrSort.size(); i++) {
-				result+=arrSort.get(i)+"\n";
+				result+=i+1 +". " + "[%s] "+ arrSort.get(i).getStartTime() ;
+				if(arrSort.get(i).getImportance().equals("1")){
+					result+="[IMPORTANT] ";
+				}
+				result+="[%s]\n"+arrSort.get(i).getName();
 			}
 			break;
 			
