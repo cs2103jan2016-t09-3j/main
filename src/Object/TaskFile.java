@@ -287,8 +287,7 @@ public class TaskFile implements Comparable<TaskFile>, Cloneable {
 	
 	private void setStartCal() {
 		try{
-			Date date;
-			date = convertStringToDate(startDate,startTime);
+			Date date = convertStringToDate(startDate,startTime);
 			startCal.setTime(date);
 		}catch(ParseException pEx){
 			System.err.println("incorrect date/time format for start cal");

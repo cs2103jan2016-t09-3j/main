@@ -5,28 +5,36 @@ import java.util.ArrayList;
 import Object.TaskFile;
 
 public interface TNoteLogicMethods {
+	
+	//done
 	public TaskFile addTask(ArrayList<String> parserOutput);
 
+	//done
 	public TaskFile deleteTask(ArrayList<String> parserOutput);
 
+	//done
 	public TaskFile editTask(ArrayList<String> parserOutput);
 	
+	//done
 	public TaskFile viewTask(ArrayList<String> parserOutput);
 	
+	//IF you passing us just the date string, this metohd not needed?
 	public ArrayList<TaskFile> viewDateList(ArrayList<String> parserOutput);
 	
-	/*NEW*/
+	/*NEW*/ //done
 	public ArrayList<TaskFile> viewDateList(String date);
 	
-	/*NEW*/
+	/*NEW*/ // KIV
 	public ArrayList<String> viewFloatingList(ArrayList<String> parserOutput);
 
 	// this might be hard, may face further problems. tell you all next time
 	public ArrayList<TaskFile> sortTaskList(ArrayList<String> parserOutput);
 
-	/*NEW*/
+	/*NEW*/ //done
 	public TaskFile searchTask(String taskname);
 	
+	
+	//same if abv method implemented, this dont need?
 	public ArrayList<TaskFile> searchTask(ArrayList<String> parserOutput);
 
 	// joelle u need both new and old directories?
@@ -38,7 +46,7 @@ public interface TNoteLogicMethods {
 
 	public String deleteDirectory(ArrayList<String> parserOutput);
 
-	// Adam return return joelle ur logic command object so she knows what
+	// Adam return joelle ur logic command object so she knows what
 	// action was performed.
 	public LogicCommand undoCommand(ArrayList<String> parserOutput);
 

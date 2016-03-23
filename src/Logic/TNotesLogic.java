@@ -8,6 +8,7 @@ import java.util.Comparator;
 import java.util.Date;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 
 import Object.NameComparator;
 import Object.RecurringTaskFile;
@@ -21,18 +22,17 @@ public class TNotesLogic {
 	// compare calender to compare timings for various taskfiles.
 	// for blocking out timings, need to check if the timing for task to be
 	// added is available.
-	// got deadline task, means do by 4pm
-	// adam u gonna remove fromParser[0] in the end cos of ur extra classes. so
-	// i code for that.
+
+
 	public TaskFile addTask(ArrayList<String> fromParser) {
 		try {
 
 			ArrayList<String> stringList = storage.readFromMasterFile();
 			TaskFile currentFile = new TaskFile();
-			boolean isRecurr = false;
 			String importance = new String();
 			String recurArgument = new String();
-			// assert size != 0
+			
+			assertNotEquals(0,fromParser.size());
 			currentFile.setName(fromParser.remove(0));
 
 			if (fromParser.contains("important")) {
@@ -56,22 +56,6 @@ public class TNotesLogic {
 			System.err.println(fromParser.toString());
 			switch (fromParser.size()) {
 			case 1:
-
-				// // case 2:
-				// // Floating task : add call mum
-				// case 2:
-				// currentFile.setTask(fromParser.get(1));
-				// fromParser.add("floating");
-				// break;
-				// // case 3:
-				// // add call mum important / add call mum due 11-3-2016 / add
-				// call mum at 3:00
-				// // add call mum details tell her to buy apples
-				// case 3:
-				// currentFile.setTask(fromParser.get(1));
-				// if(fromParser.get(2).equals("important")){
-				// currentFile.setImportance(fromParser.get(2));
-				// fromParser.add("size2 important");
 
 				if (fromParser.get(0).contains("-")) {
 					currentFile.setStartDate(fromParser.get(0));
@@ -118,14 +102,18 @@ public class TNotesLogic {
 							currentFile.setStartTime(fromParser.get(2));
 						}
 
-					} else if (fromParser.get(1).contains("-")) {
+					} else {
+						
+						assertTrue(fromParser.get(1).contains("-"));
 						currentFile.setEndDate(fromParser.get(1));
 
 						assertTrue(fromParser.get(2).contains(":"));
 						currentFile.setEndTime(fromParser.get(2));
 					}
 
-				} else if (fromParser.get(0).contains(":")) {
+				} else { 
+					
+					assertTrue(fromParser.get(0).contains(":"));
 					currentFile.setStartTime(fromParser.get(0));
 
 					assertTrue(fromParser.get(1).contains("-"));
@@ -156,112 +144,87 @@ public class TNotesLogic {
 				assertEquals(0, fromParser.size());
 			}
 			currentFile.setUpTaskFile();
-			if (currentFile.getIsRecurring()) {
-				Calendar firstRecurDate = currentFile.getStartCal();
-				Calendar endRecurDate = currentFile.getEndCal();
-				if (recurArgument.equals("day")) {
-					for (int i = 0; i < 10; i++) {
-						TaskFile test = firstRecurDate.add(Calendar.DATE, 1);
-						currentFile.setStartCal();
-						endRecurDate.add(Calendar.DATE, 1);
-						currentFile.setEndCal();
-						storage.addRecurTask(currentFile);
+			
+			// only check if the task is a meeting
+			if(currentFile.getIsMeeting()) {
+				for(String savedTaskName: stringList) {
+					TaskFile savedTask = storage.getTaskFileByName(savedTaskName);
+					if(savedTask.getIsMeeting()) {
+						if(hasTimingClash(currentFile, savedTask)) {
+							//task clashes, should not add
+							return null;
+						}
 					}
-				} else if (recurArgument.equals("week")) {
-					for (int i = 0; i < 3; i++) {
-						firstRecurDate.add(Calendar.DATE, 7);
-						currentFile.setStartCal();
-						endRecurDate.add(Calendar.DATE, 7);
-						currentFile.setEndCal();
-					}
-					storage.addRecurTask(currentFile);
-				} else if (recurArgument.equals("month")) {
-					for (int i = 0; i < 4; i++) {
-						firstRecurDate.add(Calendar.MONTH, 1);
-						currentFile.setStartCal(firstRecurDate);
-						endRecurDate.add(Calendar.MONTH, 1);
-						currentFile.setEndCal();
-					}
-					storage.addRecurTask(currentFile);
-				} else if (recurArgument.equals("year")) {
-					for (int i = 0; i < 1; i++) {
-						firstRecurDate.add(Calendar.YEAR, 1);
-						currentFile.setStartCal();
-						endRecurDate.add(Calendar.YEAR, 1);
-					}
-					storage.addRecurTask(currentFile);
-				} else {
-					System.out.println("Error");
 				}
 			}
+//			if (currentFile.getIsRecurring()) {
+	//          Calendar firstRecurDate = currentFile.getStartCal();
+	//          Calendar endRecurDate = currentFile.getEndCal();
+	//          if (recurArgument.equals("day")) {
+	//              for (int i = 0; i < 10; i++) {
+	//                  TaskFile test = firstRecurDate.add(Calendar.DATE, 1);
+	//                  currentFile.setStartCal();
+	//                  endRecurDate.add(Calendar.DATE, 1);
+	//                  currentFile.setEndCal();
+	//                  storage.addRecurTask(currentFile);
+	//              }
+	//          } else if (recurArgument.equals("week")) {
+	//              for (int i = 0; i < 3; i++) {
+	//                  firstRecurDate.add(Calendar.DATE, 7);
+	//                  currentFile.setStartCal();
+	//                  endRecurDate.add(Calendar.DATE, 7);
+	//                  currentFile.setEndCal();
+	//              }
+	//              storage.addRecurTask(currentFile);
+	//          } else if (recurArgument.equals("month")) {
+	//              for (int i = 0; i < 4; i++) {
+	//                  firstRecurDate.add(Calendar.MONTH, 1);
+	//                  currentFile.setStartCal(firstRecurDate);
+	//                  endRecurDate.add(Calendar.MONTH, 1);
+	//                  currentFile.setEndCal();
+	//              }
+	//              storage.addRecurTask(currentFile);
+	//          } else if (recurArgument.equals("year")) {
+	//              for (int i = 0; i < 1; i++) {
+	//                  firstRecurDate.add(Calendar.YEAR, 1);
+	//                  currentFile.setStartCal();
+	//                  endRecurDate.add(Calendar.YEAR, 1);
+	//		                      storage.addRecurTask(currentFile);
+//          } else {
+//              System.out.println("Error");
+
 			if (storage.addTask(currentFile)) {
 				return currentFile;
+			} else {
+				return null;
 			}
 
-			// TaskFile currentFile = new TaskFile(fromParser.get(1));
-			// currentFile.setTask(fromParser.get(1));
-			// String punctuation = ":"
-			// if (fromUI.getTime.contain(punctaions)
-			// for (TaskFile newTask : taskList) {
-			// // check for same date
-			// if (currentFile.getStartDate().equals(newTask.getStartDate())) {
-			// // check if same start time, else check end time, then return
-			// // error.
-			// if (currentFile.getStartTime().equals(newTask.getStartTime())) {
-			// return false;
-			// } else if (currentFile.getIsMeeting()) {// throw to top of if
-			// loop
-			//
-			// //Adam this wont work btw 13:00 cannot be parsed into an integer.
-			// Lets just swap to date objects?
-			// // or i create a compare date/time method.
-			// if (Integer.parseInt(currentFile.getStartTime()) <
-			// Integer.parseInt(newTask.getStartTime())) {
-			// if (Integer.parseInt(currentFile.getEndTime()) <=
-			// Integer.parseInt(newTask.getStartTime())) {
-			// break;
-			// } else {
-			// return false;
-			// }
-			//
-			// } else if (Integer.parseInt(currentFile.getStartTime()) > Integer
-			// .parseInt(newTask.getStartTime())) {
-			// if (Integer.parseInt(currentFile.getStartTime()) >=
-			// Integer.parseInt(newTask.getEndTime())) {
-			// break;
-			// } else {
-			// return false;
-			// }
-			// }
-			// }
-			// }
-			// }
+			
 
-		} catch (
-
-		AssertionError aE)
-
-		{
+		} catch (AssertionError aE) {
 			// means the switch statement got invalid arguments
 			// throw instead of return
+			return null;
 		}
 
 	}
+
+	private boolean hasTimingClash(TaskFile currentFile, TaskFile savedTask) {
+		return ((currentFile.getStartCal().before(savedTask.getEndCal()) 
+						&& currentFile.getEndCal().after(savedTask.getEndCal())) 
+				|| (currentFile.getStartCal().after(savedTask.getStartCal()) 
+						&& currentFile.getEndCal().before(savedTask.getEndCal())) 
+				|| (currentFile.getStartCal().after(savedTask.getStartCal()) 
+						&& currentFile.getStartCal().before(savedTask.getEndCal())) 
+				|| (currentFile.getEndCal().after(savedTask.getStartCal())	
+						&& currentFile.getEndCal().before(savedTask.getEndCal())));
+		}
 
 	// currently has issue, need to make a new object, compare it, then remove
 	// it
 	// if i want to hold the main Array list
 	public TaskFile deleteTask(ArrayList<String> fromParser) {
-		// ArrayList<String> stringList = storage.readFromMasterFile();
-		// TaskFile deletedTask = new TaskFile();
-		// for (String text : stringList) {
-		// TaskFile currentFile = storage.getTaskFileByName(text);
-		// if (currentFile.getName().equals(fromParser.get(0))) {
-		// deletedTask = currentFile;
-		// storage.deleteTask(fromParser.get(0));
-		// }
-		//
-		// }
+		assertNotEquals(0, fromParser.size());
 		return storage.deleteTask(fromParser.get(0));
 	}
 
@@ -270,6 +233,7 @@ public class TNotesLogic {
 	public ArrayList<TaskFile> displayList() {
 		ArrayList<String> stringList = storage.readFromMasterFile();
 		ArrayList<TaskFile> taskToBeDisplayed = new ArrayList<TaskFile>();
+		
 		for (String text : stringList) {
 			TaskFile currentFile = storage.getTaskFileByName(text);
 			if (!currentFile.getIsDone()) {
@@ -280,24 +244,25 @@ public class TNotesLogic {
 		return taskToBeDisplayed;
 	}
 
+	
 	// Show the details of a single task
 	// will take in the name of the task,
-	public TaskFile displayDetailsList(String taskToBeDisplayed) {
+	public TaskFile viewTask(String taskToBeDisplayed) {
 		ArrayList<String> stringList = storage.readFromMasterFile();
-		TaskFile detailFile = new TaskFile();
+		
 		for (String text : stringList) {
 			TaskFile currentFile = storage.getTaskFileByName(text);
 			if (currentFile.getName().equals(taskToBeDisplayed)) {
-				detailFile = currentFile;
-				break;
+				return currentFile;
 			}
 		}
-		return detailFile;
+		//taskFile not found
+		return null;
 	}
 
 	// show the task by date
 	// take in a date string?
-	public ArrayList<TaskFile> displayDateList(String date) {
+	public ArrayList<TaskFile> viewDateList(String date) {
 		ArrayList<String> stringList = storage.readFromMasterFile();
 		ArrayList<TaskFile> taskListToBeDisplayed = new ArrayList<TaskFile>();
 		for (String text : stringList) {
@@ -308,7 +273,9 @@ public class TNotesLogic {
 		}
 		return taskListToBeDisplayed;
 	}
-
+	
+	
+	
 	public TaskFile editTask(ArrayList<String> fromParser) {
 		// System.err.println(fromParser.toString());
 		String type = fromParser.get(1);
@@ -431,12 +398,12 @@ public class TNotesLogic {
 		System.out.println(lineOfText);
 	}
 
-	public String changeDirectory(String directoryName) {
-		if(storage.setNewDirectory(directoryName)){
-			storage.clearMasterDirectory();
-		}
-		return ("Directory changed");
-	}
+//	public String changeDirectory(String directoryName) {
+//		if(storage.setNewDirectory(directoryName)){
+//			storage.clearMasterDirectory();
+//		}
+//		return ("Directory changed");
+//	}
 	
 	public boolean deleteDirectory(){
 		if(storage.clearMasterDirectory()){
@@ -446,21 +413,21 @@ public class TNotesLogic {
 			return false;
 		}
 	}
-	//whats the parser arraylist for the recurring task, like the format of inputs.
-	public TaskFile addRecurringTask(ArrayList<String> parserOutput){
-		
-		
-		return null;
-		
-	}
-
-	public TaskFile editRecurringTask(ArrayList<String> parserOutput){
-		return null;
-	}
-
-	public TaskFile deleteRecurringTask(ArrayList<String> parserOutput){
-		return null;
-	}
+//	//whats the parser arraylist for the recurring task, like the format of inputs.
+//	public TaskFile addRecurringTask(ArrayList<String> parserOutput){
+//		
+//		
+//		return null;
+//		
+//	}
+//
+//	public TaskFile editRecurringTask(ArrayList<String> parserOutput){
+//		return null;
+//	}
+//
+//	public TaskFile deleteRecurringTask(ArrayList<String> parserOutput){
+//		return null;
+//	}
 
 
 }

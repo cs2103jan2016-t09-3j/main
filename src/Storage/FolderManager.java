@@ -193,7 +193,7 @@ public class FolderManager {
 		return true;
 	}
 
-	public ArrayList<String> readFromMasterFile(File masterFile) {
+	public ArrayList<String> readFromListFile(File masterFile) {
 		try {
 
 			fReader = new FileReader(masterFile);

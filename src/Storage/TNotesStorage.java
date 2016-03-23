@@ -35,6 +35,7 @@ public class TNotesStorage {
 	
 	private FolderManager fManager;
 	private ArrayList<String> masterList;
+	private ArrayList<String> floatingList;
 	private File masterFile;
 	private File mapFile;
 	private File overviewFolder;
@@ -131,6 +132,10 @@ public class TNotesStorage {
 	private String getTaskMonth(TaskFile task) {
 		SimpleDateFormat monthStringFormat = new SimpleDateFormat("MMMM");
 		Calendar taskDate = task.getStartCal();
+		if(taskDate == null) {
+			return "floating";
+		}
+		
 		String monthFolder = monthStringFormat.format(taskDate.getTime());
 		return monthFolder;
 	}
@@ -223,7 +228,7 @@ public class TNotesStorage {
 	
 
 	public ArrayList<String> readFromMasterFile() {
-		return fManager.readFromMasterFile(masterFile);
+		return fManager.readFromListFile(masterFile);
 	}
 
 	public boolean clearMapFile() {
