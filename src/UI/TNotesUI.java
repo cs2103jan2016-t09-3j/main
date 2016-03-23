@@ -161,9 +161,9 @@ public class TNotesUI {
 				 String date = userCommandSplit.get(1);
 				ArrayList<TaskFile> arrView = new ArrayList<TaskFile>();
 				 arrView = logic.viewDateList(date);
-				 result = "Your schedule for %s:\n"+userCommandSplit.get(1);
+				 result = String.format("Your schedule for %s:\n",userCommandSplit.get(1));
 				 for(int i=0; i<arrView.size(); i++) {
-					 result+=i+1 +". " + "[%s] "+ arrView.get(i).getStartTime() ;
+					 result+=i+1 +". " + "["+ arrView.get(i).getStartTime()+"]" ;
 					 	if(arrView.get(i).getImportance().equals("1")){
 					 		result+="[IMPORTANT] ";
 					 	}
@@ -185,21 +185,21 @@ public class TNotesUI {
 			
 			 if(viewType.get(1).equals("isViewTask")){
 				 taskFile = logic.viewTask(userCommandSplit.get(1));
-				 result = "Displaying the task \"%s\":\n\n" + taskFile.getName();
+				 result = String.format("Displaying the task \"%s\":\n\n",taskFile.getName());
 				 	if(taskFile.getIsTask()){
 				 		result+= "Date: -\n";
 				 		result+= "Time: -\n";
 				 	}
 				 	if(taskFile.getIsDeadline()){
-				 		result+="Date: %s\n" + taskFile.getStartDate();
-				 		result+="Time: %s\n"+ taskFile.getStartTime();
+				 		result+=String.format("Date: %s\n",taskFile.getStartDate());
+				 		result+=String.format("Time: %s\n"+ taskFile.getStartTime());
 				 	}
 				 	if(taskFile.getIsMeeting()){
-				 		result+="Date: %s to %s\n" + taskFile.getStartDate() + taskFile.getEndDate();
-				 		result+="Time: %s to %s\n"+taskFile.getStartTime()+taskFile.getEndTime();
+				 		result+=String.format("Date: %s to %s\n", taskFile.getStartDate(),taskFile.getEndDate());
+				 		result+=String.format("Time: %s to %s\n",taskFile.getStartTime(),taskFile.getEndTime());
 				 	}
 				 	if(taskFile.hasDetails()){
-				 		result+= "Details: %s\n"+taskFile.getDetails();
+				 		result+= String.format("Details: %s\n",taskFile.getDetails());
 				 	}
 				 	else {
 				 		result+= "Details: -\n";
@@ -226,11 +226,11 @@ public class TNotesUI {
 			
 				ArrayList<TaskFile> arrSearch = new ArrayList<TaskFile>();
 				arrSearch = logic.searchTask(taskName);
-				result = "Searching for \"%s\" ... This is what I've found:\n"+taskName;
+				result = String.format("Searching for \"%s\" ... This is what I've found:\n",taskName);
 				for(int i=0; i<arrSearch.size(); i++) {
-					result+= i+1 + ". " + "[%s] [%s] %s, %s\n"
-							+ arrSearch.get(i).getStartDate() + arrSearch.get(i).getStartTime() + arrSearch.get(i).getName()
-							+ arrSearch.get(i).getDetails();
+					result+= i+1 + ". " + String.format("[%s] [%s] %s, %s\n",
+							 arrSearch.get(i).getStartDate(),arrSearch.get(i).getStartTime(),arrSearch.get(i).getName()
+							, arrSearch.get(i).getDetails());
 				}
 			
 			//	result = "Search has failed for some reason";
@@ -252,14 +252,14 @@ public class TNotesUI {
 				arrSort = logic.sortDateTask(); // change name
 			}
 			
-			result+="You new schedule for %s: \n\n" + userCommandSplit.get(1);
+			result+=String.format("You new schedule for %s: \n\n",userCommandSplit.get(1));
 			
 			for(int i=0; i<arrSort.size(); i++) {
-				result+=i+1 +". " + "[%s] "+ arrSort.get(i).getStartTime() ;
+				result+=i+1 +". " + "["+ arrSort.get(i).getStartTime()+"] " ;
 				if(arrSort.get(i).getImportance().equals("1")){
 					result+="[IMPORTANT] ";
 				}
-				result+="[%s]\n"+arrSort.get(i).getName();
+				result+="["+arrSort.get(i).getName()+"]\n";
 			}
 			break;
 			
