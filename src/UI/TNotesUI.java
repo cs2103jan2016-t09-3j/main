@@ -2,7 +2,6 @@ package UI;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Scanner;
 
 import Logic.TNotesLogic;
 import Object.TaskFile;
@@ -32,7 +31,7 @@ public class TNotesUI {
 		return welcomeMsg;
 	}
 
-	public String executeCommand(String userInput){
+	public String executeCommand(String userInput) {
 		ArrayList<String> userCommandSplit = new ArrayList<String>();
 		userCommandSplit = TNotesParser.checkCommand(userInput);
 		commandString = getFirstWord(userCommandSplit);
@@ -40,17 +39,17 @@ public class TNotesUI {
 		
 		COMMAND_TYPE command = determineCommandType(commandString);
 		
-//		System.err.println("Checking Parser String output:\n");		
-//		for(int i=0; i<userCommandSplit.size(); i++){
-//			System.err.println(userCommandSplit.get(i));
-//		}
+		System.err.println("Checking Parser String output:\n");		
+		for(int i=0; i<userCommandSplit.size(); i++){
+			System.err.println(userCommandSplit.get(i));
+		}
 
 		result = "";
 		
 		switch(command){
 		case ADD_COMMAND:
 			taskFile = logic.addTask(userCommandSplit);
-		 
+			System.out.println("pass");
 			// Floating task case
 			if(taskFile.getIsTask()){
 				result+="I have added \"%s\" to your schedule!\n"+taskFile.getName();			
@@ -91,7 +90,7 @@ public class TNotesUI {
 			break;
 			
 		case EDIT_COMMAND:
-			try{
+		
 				TaskFile oldTaskFile = new TaskFile();
 				oldTaskFile = logic.searchSingleTask(userCommandSplit.get(1));
 				
@@ -128,16 +127,13 @@ public class TNotesUI {
 					result = "You have set recurring in \"%s\" from [%s] to [%s]!\n"
 							+ taskFile.getName() + oldTaskFile.getIsRecurring() + taskFile.getIsRecurring();
 				}
-			} catch(IOException ioe) {
-				result = "Edit has failed for some reason";
-				System.out.println(ioe);
-				// we can expand more error messages if necessary
-			}		
-		
+			
+				//result = "Edit has failed for some reason";
+			
 			break;
 			
 		case DELETE_COMMAND:
-			try{
+			
 				taskFile = logic.deleteTask(userCommandSplit);
 				result = "I have deleted \"%s\" from your schedule for you!\n\n" + taskName;
 				ArrayList<TaskFile> arrN = new ArrayList<TaskFile>();
@@ -147,12 +143,9 @@ public class TNotesUI {
 				for(int i=0; i<arrN.size(); i++) {
 					result+=i+1 + ". " +"[" + arrN.get(i).getStartTime()+"] " + arrN.get(i).getName()+"\n";
 				}	
-				
-			} catch(IOException ioe) {
 					
-				result = "Deletion has failed for some reason.";
-				System.out.println(ioe);
-			}
+				//result = "Deletion has failed for some reason.";
+		
 			break;
 			
 			
@@ -227,7 +220,6 @@ public class TNotesUI {
 			// might have a problem when details becomes too long, either add newline char or set some
 			// sort of limitation in gui
 			
-			try{
 				ArrayList<TaskFile> arrSearch = new ArrayList<TaskFile>();
 				arrSearch = logic.searchTask(taskName);
 				result = "Searching for \"%s\" ... This is what I've found:\n"+taskName;
@@ -236,10 +228,9 @@ public class TNotesUI {
 							+ arrSearch.get(i).getStartDate() + arrSearch.get(i).getStartTime() + arrSearch.get(i).getName()
 							+ arrSearch.get(i).getDetails();
 				}
-			}catch (IOException ioe) {
-				result = "Search has failed for some reason";
-				System.out.println(ioe);
-			}
+			
+			//	result = "Search has failed for some reason";
+			
 			break;
 			
 		case SORT_COMMAND:
