@@ -95,7 +95,7 @@ public class TNotesUI {
 		case EDIT_COMMAND:
 			try{
 				TaskFile oldTaskFile = new TaskFile();
-				oldTaskFile = logic.searchTask(userCommandSplit.get(1));
+				oldTaskFile = logic.searchSingleTask(userCommandSplit.get(1));
 				
 				taskFile = logic.editTask(userCommandSplit);
 				if(userCommandSplit.get(2).equals("task name")){
@@ -124,7 +124,7 @@ public class TNotesUI {
 				}
 				if(userCommandSplit.get(2).equals("Status")){
 					result = "You have changed the status in \"%s\" from [%s] to [%s]!\n"
-							+ taskFile.getName() + oldTaskFile.getStatus() + taskFile.getStatus();
+							+ taskFile.getName() + oldTaskFile.getIsDone() + taskFile.getIsDone();
 				}
 				if(userCommandSplit.get(2).equals("Reccuring")){
 					result = "You have set recurring in \"%s\" from [%s] to [%s]!\n"
@@ -160,7 +160,7 @@ public class TNotesUI {
 			
 		case VIEW_COMMAND:
 		 	
-		ArrayList<String> viewType= logic.sortViewTypes(userCommandSplit);
+		ArrayList<String> viewType = logic.sortViewTypes(userCommandSplit);
 	
 		if(viewType.get(0).equals("isViewDateList")) {
 				 String date = userCommandSplit.get(1);
@@ -177,7 +177,8 @@ public class TNotesUI {
 			}
 			
 			// list of floating tasks
-			 if(viewFloatingList exists) {
+			 if(logic.hasFloatingList()) {
+				 ArrayList<TaskFile> arrF = new ArrayList<TaskFile>();
 				 arrF = logic.viewFloatingList();
 				 result+="\n";
 				 result+="Notes:";
@@ -188,7 +189,7 @@ public class TNotesUI {
 			 
 			
 			 if(viewType.get(1).equals("isViewTask")){
-				 taskFile = logic.viewTask();
+				 taskFile = logic.viewTask(userCommandSplit.get(1));
 				 result = "Displaying the task \"%s\":\n\n" + taskFile.getName();
 				 	if(taskFile.getIsTask()){
 				 		result+= "Date: -\n";
@@ -196,16 +197,16 @@ public class TNotesUI {
 				 	}
 				 	if(taskFile.getIsDeadline()){
 				 		result+="Date: %s\n" + taskFile.getStartDate();
-				 		result+="Time: %s to %s";
+				 		result+="Time: %s\n"+ taskFile.getStartTime();
 				 	}
 				 	if(taskFile.getIsMeeting()){
 				 		result+="Date: %s to %s\n" + taskFile.getStartDate() + taskFile.getEndDate();
-				 		result+="Time: %s to %s";
+				 		result+="Time: %s to %s\n"+taskFile.getStartTime()+taskFile.getEndTime();
 				 	}
-				 	if(taskFile.isDetails){
+				 	if(taskFile.hasDetails()){
 				 		result+= "Details: %s\n"+taskFile.getDetails();
 				 	}
-				 	if(!taskFile.isDetails){
+				 	else {
 				 		result+= "Details: -\n";
 				 	}
 				 	if(taskFile.getIsDone()){
@@ -245,15 +246,17 @@ public class TNotesUI {
 			
 		case SORT_COMMAND:
 			ArrayList<TaskFile> arrSort = new ArrayList<TaskFile>();
-			arrSort = logic.sortTaskList(userCommandSplit);
 			String sortType = userCommandSplit.get(2);
 			
 			if(sortType.equals("importance")){
 				result = "I have sorted everything by importance for you. Do first things first!\n\n";
+				
+				arrSort = logic.sortImportTask();
 			}
 			
 			if(sortType.equals("name")){
 				result = "I have sorted everything by name for you! I'm so amazing, what would you do without me!";
+				arrSort = logic.sortDateTask(); // change name
 			}
 			
 			result+="You new schedule for %s: \n\n" + userCommandSplit.get(1);
