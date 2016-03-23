@@ -385,7 +385,7 @@ public class TNotesLogic {
 	}
 
 	// Sort name
-	public ArrayList<TaskFile> sortTask() {
+	public ArrayList<TaskFile> sortTaskList() {
 		ArrayList<String> masterList = storage.readFromMasterFile();
 		ArrayList<TaskFile> allTaskList = new ArrayList<TaskFile>();
 		for (String text : masterList) {
