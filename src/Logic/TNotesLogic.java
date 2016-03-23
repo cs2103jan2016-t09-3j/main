@@ -36,7 +36,7 @@ public class TNotesLogic {
 			currentFile.setName(fromParser.remove(0));
 
 			if (fromParser.contains("important")) {
-				importance = fromParser.remove(fromParser.indexOf("importance"));
+				importance = fromParser.remove(fromParser.indexOf("important"));
 				currentFile.setImportance(importance);
 			}
 
