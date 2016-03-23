@@ -27,7 +27,7 @@ public class TNotesUI {
 	}
 
 	public String getWelcomeMessage() {
-		String welcomeMsg = "Hello, welcome to T-Note. How many I help you?";
+		String welcomeMsg = "Hello, welcome to T-Note. How may I help you?";
 		return welcomeMsg;
 	}
 
@@ -50,7 +50,7 @@ public class TNotesUI {
 		case ADD_COMMAND:
 			userCommandSplit.remove(0);
 			taskFile = logic.addTask(userCommandSplit);
-			
+			System.out.println("works");
 			// Floating task case
 			if(taskFile.getIsTask()){
 				result+=String.format("I have added \"%s\" to your schedule!\n", taskFile.getName().trim());			
@@ -95,39 +95,41 @@ public class TNotesUI {
 		
 				TaskFile oldTaskFile = new TaskFile();
 				oldTaskFile = logic.searchSingleTask(userCommandSplit.get(1));
-				
+				System.out.println("oldTaskFile");
+				userCommandSplit.remove(0);
 				taskFile = logic.editTask(userCommandSplit);
+				System.out.println("newTaskFile");
 				if(userCommandSplit.get(2).equals("task name")){
-					result = "You have changed the task name from \"%s\" to \"%s\"!\n"
-							+ oldTaskFile.getName() + taskFile.getName();
+					result = String.format("You have changed the task name from \"%s\" to \"%s\"!\n",
+							oldTaskFile.getName(),taskFile.getName());
 				}
 				if(userCommandSplit.get(2).equals("StartTime")){
-					result = "You have changed the start time in \"%s\" from [%s] to [%s]!\n"
-							+ taskFile.getName() + oldTaskFile.getStartTime() + taskFile.getStartTime();
+					result = String.format("You have changed the start time in \"%s\" from [%s] to [%s]!\n",
+							taskFile.getName(),oldTaskFile.getStartTime(),taskFile.getStartTime());
 				}
 				if(userCommandSplit.get(2).equals("EndTime")){
-					result = "You have chaned the end time in \"%s\" from [%s] to [%s]!\n"
-							+ taskFile.getName() + oldTaskFile.getEndTime() + taskFile.getEndTime();
+					result = String.format("You have chaned the end time in \"%s\" from [%s] to [%s]!\n",
+							 taskFile.getName(), oldTaskFile.getEndTime(), taskFile.getEndTime());
 				}
 				if(userCommandSplit.get(2).equals("StartDate")){
-					result = "You have changed the start date in \"%s\" from [%s] to [%s]!\n"
-							+ taskFile.getName() + oldTaskFile.getStartDate() + taskFile.getStartDate();
+					result = String.format("You have changed the start date in \"%s\" from [%s] to [%s]!\n",
+							 taskFile.getName(), oldTaskFile.getStartDate(), taskFile.getStartDate());
 				}
 				if(userCommandSplit.get(2).equals("EndDate")){
-					result = "You have changed the end date in \"%s\" from [%s] to [%s]!\n"
-							+ taskFile.getName() + oldTaskFile.getEndDate() + taskFile.getEndDate();
+					result = String.format("You have changed the end date in \"%s\" from [%s] to [%s]!\n",
+							taskFile.getName(), oldTaskFile.getEndDate(), taskFile.getEndDate());
 				}
 				if(userCommandSplit.get(2).equals("details")){
-					result = "You have changed the details in \"%s\" from [%s] to [%s]!\n"
-							+ taskFile.getName() + oldTaskFile.getDetails() + taskFile.getDetails();
+					result = String.format("You have changed the details in \"%s\" from [%s] to [%s]!\n"
+							, taskFile.getName(), oldTaskFile.getDetails(), taskFile.getDetails());
 				}
 				if(userCommandSplit.get(2).equals("Status")){
-					result = "You have changed the status in \"%s\" from [%s] to [%s]!\n"
-							+ taskFile.getName() + oldTaskFile.getIsDone() + taskFile.getIsDone();
+					result = String.format("You have changed the status in \"%s\" from [%s] to [%s]!\n",
+							 taskFile.getName(), oldTaskFile.getIsDone(), taskFile.getIsDone());
 				}
 				if(userCommandSplit.get(2).equals("Reccuring")){
-					result = "You have set recurring in \"%s\" from [%s] to [%s]!\n"
-							+ taskFile.getName() + oldTaskFile.getIsRecurring() + taskFile.getIsRecurring();
+					result = String.format("You have set recurring in \"%s\" from [%s] to [%s]!\n",
+							 taskFile.getName(), oldTaskFile.getIsRecurring(), taskFile.getIsRecurring());
 				}
 			
 				//result = "Edit has failed for some reason";
@@ -135,13 +137,13 @@ public class TNotesUI {
 			break;
 			
 		case DELETE_COMMAND:
-			
+				userCommandSplit.remove(0);
 				taskFile = logic.deleteTask(userCommandSplit);
-				result = "I have deleted \"%s\" from your schedule for you!\n\n" + taskName;
+				result = String.format("I have deleted \"%s\" from your schedule for you!\n\n", taskName);
 				ArrayList<TaskFile> arrN = new ArrayList<TaskFile>();
 				arrN = logic.viewDateList(taskFile.getStartDate());
 				
-				result = "Your NEW schedule for %s:\n"+ taskFile.getStartDate();
+				result += String.format("Your NEW schedule for %s:\n", taskFile.getStartDate());
 				for(int i=0; i<arrN.size(); i++) {
 					result+=i+1 + ". " +"[" + arrN.get(i).getStartTime()+"] " + arrN.get(i).getName()+"\n";
 				}	
