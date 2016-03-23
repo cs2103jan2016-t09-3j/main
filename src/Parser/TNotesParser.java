@@ -13,7 +13,7 @@ import java.time.DateTimeException;
 public class TNotesParser {
 	//date cannot be zero
 	//the first letter of the month must be a capital letter
-	//date cannot be separated by space
+	//date cannot be separated by space(will be changed)
 	
 	////////////////////////////////////////////////////////
 	
@@ -43,7 +43,9 @@ public class TNotesParser {
 	 *Add call mom from 2-2-2 to 3-3-3
 	 *Add call mom from 12:00 to 13:00
 	 *Add call mom from 3:00 pm to 3:00 pm
+	 *Add call mom from 1000 pm to 1000 pm
 	 *havent debug chec time
+	 *havent do different variations for important
 	 *Add call mom on Tuesday
 	 *Add call mom today
 	 *Add 2(any index)
@@ -51,6 +53,7 @@ public class TNotesParser {
 	 *
 	 *rmb to do timing 7pm
 	 *rmb to add different forms
+	 *rmb to add the word details
 	 */
 	
 	/*command word: edit
@@ -67,6 +70,8 @@ public class TNotesParser {
 	 * view feb to march
 	 * view today
 	 * view next year/month
+	 * havent do view time
+	 * havent format month
 	 */
 	
 	/*command word: delete
@@ -101,6 +106,9 @@ public class TNotesParser {
 			"dd MM yy","dd M yyyy", "dd MM yy", "dd MMM yyyy", 
 			"dd MMMM yy","d MMMM yyyy", "dd MMMM yyyy"
     		);
+	/**
+	 * 
+	 */
 	private static final List<String> TIME_POSSIBLE_FORMAT = Arrays.asList(
 			"h:mm", "hh:m", "hh:mm",
 			"H:MM", "HH:M", "HH:MM",
@@ -128,14 +136,15 @@ public class TNotesParser {
 			"H.mma", "HH.ma", "HH.ma",
 			"h.mm a", "hh.m a", "hh.mm a",
 			"H.MM A", "HH.M A", "HH.MM A",
-			"H.mm a", "HH.m a", "HH.m a");
+			"H.mm a", "HH.m a", "HH.m a"
+			);
 	
 	public static ArrayList<String> timeList = new ArrayList<String>();
 	
 	public static void main(String[] args) throws Exception {
 		String output = new String();
 		String input = new String();
-		input = "Add call mom from 3:00 pm to 3:00 pm";
+		input = "sort 3:00pm by importance";
 		for (int i = 0; i < checkCommand(input).size(); i++){
 			output = checkCommand(input).get(i);// 24 hour cloc
 			System.out.println(output);
@@ -203,7 +212,16 @@ public class TNotesParser {
 	public static ArrayList <String> sortCommand(String[] arr){
 		ArrayList<String> list = new ArrayList<String>();
 		String title = new String();
-		for(int i=2;i<arr.length;i++){
+		if (isLetters(arr[1]) ==0 && checkTime(arr[1]) ==0 ){
+			list.add(formatDate(arr[1]));
+		}
+		else if(isLetters(arr[1]) !=0 && checkTime(arr[1]) ==1 ){
+			list.add(formatTime(arr[1]).toString());
+		}
+		else{
+			list.add(arr[1]);
+		}
+		for(int i=3;i<arr.length;i++){
 			title += arr[i] + " ";
 		}
 		list.add(title);
@@ -333,7 +351,7 @@ public class TNotesParser {
 	public static int checkTime(String input) {
 		int inputCharLength = input.trim().length();
 		for(int i =0; i<inputCharLength; i++){
-			if(input.charAt(i) == ':'){
+			if(input.charAt(i) == ':' || inputCharLength <= 4){
 				return 1;//if the input is time
 			}
 		}
@@ -521,15 +539,15 @@ public class TNotesParser {
 		
 		
 	}
-///////////////////////////////////////////////////////////////////////////////////////
-/////////////////////////////////OTHERS//////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////////////
 	
 	if(findImpt(arr) == 1){
 		list.add("important");
 	}
 		return list;
 	}
+///////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////OTHERS//////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////
 	public static int findImpt(String[] arr){
 		for (int i=0;i<arr.length;i++){
 			if(arr[i].equals("important")){
