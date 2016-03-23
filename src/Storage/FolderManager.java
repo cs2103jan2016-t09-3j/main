@@ -78,9 +78,9 @@ public class FolderManager {
 		return fileToCreate;
 	}
 
-	protected boolean writeTaskNameToMasterList(File masterFile, String taskName) {
+	protected boolean writeTaskNameToListFile(File file, String taskName) {
 		try {
-			fWriter = new FileWriter(masterFile, true);
+			fWriter = new FileWriter(file, true);
 			bWriter = new BufferedWriter(fWriter);
 
 			bWriter.append(taskName);
@@ -90,7 +90,7 @@ public class FolderManager {
 			fWriter.close();
 			return true;
 		} catch (IOException ioEx) {
-			System.err.println("Write to master fail");
+			System.err.println("Write to " + file.toString() + " fail");
 			return false;
 
 		}
@@ -130,12 +130,12 @@ public class FolderManager {
 		}
 	}
 
-	public boolean writeListToMasterFile(File masterFile, ArrayList<String> masterList) {
+	public boolean writeListToFile(File file, ArrayList<String> list) {
 		try {
-			fWriter = new FileWriter(masterFile, true);
+			fWriter = new FileWriter(file, true);
 			bWriter = new BufferedWriter(fWriter);
 
-			for (String taskName : masterList) {
+			for (String taskName : list) {
 				bWriter.append(taskName);
 				bWriter.newLine();
 
@@ -193,10 +193,10 @@ public class FolderManager {
 		return true;
 	}
 
-	public ArrayList<String> readFromListFile(File masterFile) {
+	public ArrayList<String> readFromListFile(File listFile) {
 		try {
 
-			fReader = new FileReader(masterFile);
+			fReader = new FileReader(listFile);
 
 			bReader = new BufferedReader(fReader);
 			ArrayList<String> contentInFile = new ArrayList<String>();

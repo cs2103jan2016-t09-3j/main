@@ -2,6 +2,7 @@ package Storage;
 
 
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertNotNull;
 
 import java.io.File;
 import java.io.IOException;
@@ -20,7 +21,8 @@ public class TNotesStorage {
 	private static final String FILE_TYPE_TXT_FILE = ".txt";
 	private static final String MASTER_FILE_NAME = "masterfile.txt";
 	private static final String MAPPING_FILE_NAME = "FileToFolderMapping.txt";
-	private static String OVERVIEW_FILES_FOLDER_NAME = "overview";
+	private static final String OVERVIEW_FILES_FOLDER_NAME = "overview";
+	private static final String FLOATING_LIST_FILE_NAME = "floatingtasks.txt";
 
 	/*
 	 * This program can create a file, write on it, display its contents, delete
@@ -38,6 +40,7 @@ public class TNotesStorage {
 	private ArrayList<String> floatingList;
 	private File masterFile;
 	private File mapFile;
+	private File floatingListFile;
 	private File overviewFolder;
 	private Map<String, String> masterNameDateMap;
 	
@@ -51,7 +54,7 @@ public class TNotesStorage {
 			overviewFolder = fManager.createDirectory(OVERVIEW_FILES_FOLDER_NAME);
 			
 			setUpMasterFile();
-			
+			setUpFloatingTaskFileList();
 			masterNameDateMap = new HashMap<String, String>();
 			setUpMap();
 		} catch (IOException ioEx) {
@@ -78,7 +81,12 @@ public class TNotesStorage {
 		masterList = readFromMasterFile();
 	}
 
-
+	private void setUpFloatingTaskFileList() throws IOException {
+		floatingListFile = createAnOverviewFile(FLOATING_LIST_FILE_NAME);
+		
+		floatingList = readFromFloatingListFile();
+	}
+	
 	private File createAnOverviewFile(String name) throws IOException {
 		return fManager.createFile(overviewFolder, name);
 		
@@ -107,10 +115,17 @@ public class TNotesStorage {
 		
 		if (!masterList.contains(task.getName())) {
 			masterList.add(task.getName());
+			String monthFolder;
 			
-			String monthFolder = getTaskMonth(task);
+			if(task.getIsTask()) {
+				monthFolder = "floating";
+				floatingList.add(task.getName());
+				writeTaskToFloatingListFile(task);
+			} else {
+				monthFolder = getTaskMonth(task);
 			
-			masterNameDateMap.put(task.getName(), monthFolder);
+				masterNameDateMap.put(task.getName(), monthFolder);
+			}
 			
 			if (writeTaskToMasterFile(task) && writeToMapFile(masterNameDateMap)) {
 				if (createTaskFile(monthFolder, task)) {
@@ -132,9 +147,7 @@ public class TNotesStorage {
 	private String getTaskMonth(TaskFile task) {
 		SimpleDateFormat monthStringFormat = new SimpleDateFormat("MMMM");
 		Calendar taskDate = task.getStartCal();
-		if(taskDate == null) {
-			return "floating";
-		}
+		assertNotNull(taskDate);
 		
 		String monthFolder = monthStringFormat.format(taskDate.getTime());
 		return monthFolder;
@@ -149,6 +162,11 @@ public class TNotesStorage {
 		if (fManager.deleteFile(fileToDelete)) {
 			masterList.remove(task);
 			writeListToMasterFile();
+			
+			if(deletedTask.getIsTask()) {
+				floatingList.remove(task);
+				writeListToFloatingListFile();
+			}
 			return deletedTask;
 		}
 		return null;
@@ -195,9 +213,21 @@ public class TNotesStorage {
 	public boolean clearMasterFile() {
 		return clearAnOverviewFile(masterFile);
 	}
+
+	public boolean clearFloatingListFile() {
+		return clearAnOverviewFile(floatingListFile);
+	}
+	public boolean writeListToFloatingListFile() {
+		if(clearFloatingListFile()) {
+			return fManager.writeListToFile(floatingListFile, floatingList);
+		}
+		
+		return false;
+	}
+	
 	public boolean writeListToMasterFile() {
 		if(clearMasterFile()) {
-			return fManager.writeListToMasterFile(masterFile, masterList);
+			return fManager.writeListToFile(masterFile, masterList);
 		}
 		
 		return false;
@@ -206,9 +236,14 @@ public class TNotesStorage {
 	private boolean writeTaskToMasterFile(TaskFile task) {
 
 		String taskName = task.getName();
-		return fManager.writeTaskNameToMasterList(masterFile, taskName);
+		return fManager.writeTaskNameToListFile(masterFile, taskName);
 	}
-
+	
+	private boolean writeTaskToFloatingListFile(TaskFile task) {
+		String taskName = task.getName();
+		return fManager.writeTaskNameToListFile(floatingListFile, taskName);
+	}
+	
 	public boolean createTaskFile(String directory, TaskFile task) {
 
 		try {
@@ -229,6 +264,10 @@ public class TNotesStorage {
 
 	public ArrayList<String> readFromMasterFile() {
 		return fManager.readFromListFile(masterFile);
+	}
+	
+	public ArrayList<String> readFromFloatingListFile() {
+		return fManager.readFromListFile(floatingListFile);
 	}
 
 	public boolean clearMapFile() {

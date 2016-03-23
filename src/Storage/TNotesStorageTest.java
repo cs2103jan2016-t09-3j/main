@@ -29,7 +29,7 @@ public class TNotesStorageTest {
 	public void test() {
 		
 		TaskFile task1 = new TaskFile("call mom", "2016-02-02", "12:00", "abc", false);
-		TaskFile task2 = new TaskFile("call dad", "2015-03-03", "13:00", "abcd", false);
+		TaskFile task2 = new TaskFile("call dad");
 		storage.addTask(task1);
 		storage.addTask(task2);
 		
@@ -42,7 +42,7 @@ public class TNotesStorageTest {
 		
 		String task1String = "Task: call mom, Start Date: 2016-02-02, Start Time: 12:00, End Date: 2016-02-02, End Time: 12:00, Details: abc"
 				+ ", Importance: 0, IsRecurring: false, IsDone: false";
-		String task2String = "Task: call dad, Start Date: 2015-03-03, Start Time: 13:00, End Date: 2015-03-03, End Time: 13:00, Details: abcd"
+		String task2String = "Task: call dad, Start Date: , Start Time: , End Date: , End Time: , Details: " 
 				+ ", Importance: 0, IsRecurring: false, IsDone: false";
 		//assertEquals("read individual task files_obj1", task1, storage.getTaskFileByName("call mom"));
 		//assertEquals("read individual task files_obj2", task1, storage.getTaskFileByName("call mom"));
