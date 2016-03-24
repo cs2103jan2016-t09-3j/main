@@ -103,7 +103,7 @@ public class TNotesUI {
 					result = String.format("You have changed the task name from \"%s\" to \"%s\"!\n",
 							oldTaskFile.getName(),taskFile.getName());
 				}
-				if(userCommandSplit.get(2).equals("StartTime")){
+				if(userCommandSplit.get(1).equals("time")){
 					result = String.format("You have changed the start time in \"%s\" from [%s] to [%s]!\n",
 							taskFile.getName(),oldTaskFile.getStartTime(),taskFile.getStartTime());
 				}
@@ -111,7 +111,7 @@ public class TNotesUI {
 					result = String.format("You have chaned the end time in \"%s\" from [%s] to [%s]!\n",
 							 taskFile.getName(), oldTaskFile.getEndTime(), taskFile.getEndTime());
 				}
-				if(userCommandSplit.get(2).equals("StartDate")){
+				if(userCommandSplit.get(1).equals("date")){
 					result = String.format("You have changed the start date in \"%s\" from [%s] to [%s]!\n",
 							 taskFile.getName(), oldTaskFile.getStartDate(), taskFile.getStartDate());
 				}
