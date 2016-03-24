@@ -14,6 +14,27 @@ import java.util.Map;
 
 import Object.TaskFile;
 
+
+/**
+ * This class manages how tasks are saved in T-Note.
+ * 
+ * It maintains a master list of all tasks saved,
+ * a list of folders in which each task is stored,
+ * a list for tasks without timings (floating tasks),
+ * and a list for recurring tasks. 
+ * 
+ * It retrieves the necessary information about
+ * tasks and returns it to the Logic class
+ * 
+ * Tasks can be saved or deleted, and tasks with similar
+ * names cannot be added.
+ * 
+ * Changing the directory of the saved location is 
+ * supported as well.
+ * 
+ *  
+ * 
+ */
 public class TNotesStorage {
 
 	private static final String FILE_TYPE_TXT_FILE = ".txt";
@@ -22,15 +43,7 @@ public class TNotesStorage {
 	private static final String OVERVIEW_FILES_FOLDER_NAME = "overview";
 	private static final String FLOATING_LIST_FILE_NAME = "floatingtasks.txt";
 
-	/*
-	 * This program can create a file, write on it, display its contents, delete
-	 * , sort alphabetically, and search. The file saves after every command
-	 * that the user types.
-	 * 
-	 * To Add: FolderManager class, change master list to contain name + date to
-	 * facilitate this
-	 * 
-	 */
+	
 
 	private static TNotesStorage instance;
 
@@ -43,7 +56,15 @@ public class TNotesStorage {
 	private File overviewFolder;
 	private Map<String, String> masterNameDateMap;
 
-	// Constructor
+	/**
+	 * The constructor for TNotesStorage. Initializes 
+	 * necessary variables and creates default files.
+	 * 
+	 * @param Nothing.
+	 * @return Nothing.
+	 * @throws IOException - if error is encountered while creating default files.
+	 * @see IOException
+	 */
 
 	private TNotesStorage() {
 		try {
@@ -101,7 +122,14 @@ public class TNotesStorage {
 	public Map<String, String> readFromMapFile() throws IOException {
 		return fManager.readFromMapFile(mapFile);
 	}
-
+	
+	
+	/**
+	 * Saves the specified task. 
+	 * @param task - new task to save
+	 * @return true if task is successfully saved to the drive.
+	 * @throws TaskExistsException - if task already exists in the drive 
+	 */
 	public boolean addTask(TaskFile task) {
 
 		if (task.getName().length() > 260) {
@@ -148,6 +176,13 @@ public class TNotesStorage {
 		return monthFolder;
 	}
 
+	
+	/**
+	 * Deletes the specified task from the drive
+	 * @param task - task to be deleted
+	 * @return the task which was deleted
+	 * @throws FileNotFoundException - if specified task cannot be found in the drive
+	 */
 	public TaskFile deleteTask(String task) {
 
 		try {
