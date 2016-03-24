@@ -367,12 +367,35 @@ public class TNotesLogic {
 	}
 	// searches for a word or phrase within the storage, returns array list of
 	// taskfile
-	public ArrayList<TaskFile> searchTask(String lineOfText) {
+	public ArrayList<TaskFile> searchTask(ArrayList<String> lineOfText) {
 		ArrayList<TaskFile> searchtaskList = new ArrayList<TaskFile>();
 		ArrayList<String> masterList = storage.readFromMasterFile();
-		for (String text : masterList) {
-			if (text.contains(lineOfText))
-				searchtaskList.add(storage.getTaskFileByName(text));
+		if(lineOfText.size()< 1){
+			System.out.println("you are searching null");
+		}
+		else if (lineOfText.size() == 1){
+			for (String text : masterList) {
+				if (text.contains(lineOfText.get(0))){
+					searchtaskList.add(storage.getTaskFileByName(text));
+				}
+			}
+		}
+		else{
+			for(String text : lineOfText){
+				if(text.length()==1){
+					for(String taskNames: masterList){
+						if (taskNames.contains(lineOfText.get(0))){
+							searchtaskList.add(storage.getTaskFileByName(taskNames));
+						}
+					}
+				}else{
+					for(String taskNames: masterList){
+						if (taskNames.startsWith(lineOfText.get(0))){
+							searchtaskList.add(storage.getTaskFileByName(taskNames));
+						}
+					}	
+				}
+			}
 		}
 		return searchtaskList;
 	}
