@@ -10,11 +10,13 @@ import Parser.TNotesParser;
 public class TNotesUI {
 
 	enum COMMAND_TYPE {
-		ADD_COMMAND, EDIT_COMMAND, DELETE_COMMAND, VIEW_COMMAND, INVALID, SEARCH_COMMAND, SORT_COMMAND, EXIT
+		ADD_COMMAND, EDIT_COMMAND, DELETE_COMMAND, VIEW_COMMAND, INVALID, SEARCH_COMMAND, SORT_COMMAND, 
+		HELP_COMMAND,EXIT
 	}
 
 	TNotesParser parser;
 	TNotesLogic logic;
+	TNotesMessages msg;
 	ArrayList<String> commandArguments;
 	String commandString;
 	String result = "";
@@ -24,6 +26,7 @@ public class TNotesUI {
 	public TNotesUI() {
 		parser = new TNotesParser();
 		logic = new TNotesLogic();
+		msg = new TNotesMessages();
 	}
 
 	public String getWelcomeMessage() {
@@ -86,7 +89,7 @@ public class TNotesUI {
 			
 			if(taskFile.hasDetails()){
 				System.out.print("details");
-				result+=String.format("Things to note: \"%s\"\n",taskFile.getDetails());
+				result+=String.format("Things to note: \"%s\"\n",taskFile.getDetails().trim());
 			}
 		
 			break;
@@ -225,7 +228,7 @@ public class TNotesUI {
 			// sort of limitation in gui
 			
 				ArrayList<TaskFile> arrSearch = new ArrayList<TaskFile>();
-				arrSearch = logic.searchTask(taskName);
+				arrSearch = logic.searchTask(userCommandSplit);
 				result = String.format("Searching for \"%s\" ... This is what I've found:\n",taskName);
 				for(int i=0; i<arrSearch.size(); i++) {
 					result+= i+1 + ". " + String.format("[%s] [%s] %s, %s\n",
@@ -264,9 +267,14 @@ public class TNotesUI {
 			break;
 			
 		case INVALID:
-			result = "The command you have just entered is not recognised.\n";
+			result = "Invalid command entered.\n";
+			result+="Please enter \"Help\" to show a list of available commands.\n";
 			break;
 			
+		case HELP_COMMAND:
+			result = "List of available commands:\n\n";
+			result += "Note: words in [] should be modified to your needs.\n\n";
+			result += msg.printHelpArray();	
 		default:
 			result = "Error!";				
 		
@@ -287,6 +295,8 @@ public class TNotesUI {
 			return COMMAND_TYPE.SEARCH_COMMAND;
 		} else if (checkCommand(commandString, "sort")) {
 			return COMMAND_TYPE.SORT_COMMAND;
+		} else if(checkCommand(commandString, "help")) {
+			return COMMAND_TYPE.HELP_COMMAND;
 		} else {
 			return COMMAND_TYPE.INVALID;
 		}
