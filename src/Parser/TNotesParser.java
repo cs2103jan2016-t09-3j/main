@@ -112,7 +112,7 @@ public class TNotesParser {
 	 * 
 	 */
 	private static final List<String> TIME_POSSIBLE_FORMAT = Arrays.asList(
-			"h:mm", "hh:m", "hh:mm",
+			"h:mm", "hh:m", "hh:mm","HH:mm",
 			"H:MM", "HH:M", "HH:MM",
 			"h:mma", "hh:ma", "hh:mma",
 			"H:MMA", "HH:MA", "HH:MMA",
@@ -146,7 +146,7 @@ public class TNotesParser {
 	public static void main(String[] args) throws Exception {
 		String output = new String();
 		String input = new String();
-		input = "view 3:00pm";
+		input = "help";
 		for (int i = 0; i < checkCommand(input).size(); i++){
 			output = checkCommand(input).get(i);// 24 hour clock
 			System.out.println(output);
@@ -200,6 +200,10 @@ public class TNotesParser {
 			case "sort" :
 				list.add(firstWord);
 				list.addAll(sortCommand(arr));
+				
+				return list;
+			case "help" :
+				list.add(firstWord);
 				
 				return list;
 				
