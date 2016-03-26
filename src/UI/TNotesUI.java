@@ -275,6 +275,12 @@ public class TNotesUI {
 			result = "List of available commands:\n\n";
 			result += "Note: words in [] should be modified to your needs.\n\n";
 			result += msg.printHelpArray();	
+			break;
+		
+		case EXIT:
+			result = "exit";
+			break;
+			
 		default:
 			result = "Error!";				
 		
@@ -297,7 +303,11 @@ public class TNotesUI {
 			return COMMAND_TYPE.SORT_COMMAND;
 		} else if(checkCommand(commandString, "help")) {
 			return COMMAND_TYPE.HELP_COMMAND;
-		} else {
+		} else if(checkCommand(commandString, "exit")) {
+			return COMMAND_TYPE.EXIT;
+		}
+		
+		else {
 			return COMMAND_TYPE.INVALID;
 		}
 
@@ -310,13 +320,6 @@ public class TNotesUI {
 	private String getFirstWord(ArrayList<String> userCommandArrayList) {
 		return userCommandArrayList.get(0);
 	}
-
-	// private ArrayList<String> removeFirstWord(ArrayList<String>
-	// userCommandArrayList){
-	// userCommandArrayList.remove(0);
-	//
-	// return userCommandArrayList;
-	// }
 
 	private String getTaskName(ArrayList<String> userCommandArrayList) {
 		return userCommandArrayList.get(1);
