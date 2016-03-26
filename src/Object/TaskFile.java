@@ -116,8 +116,8 @@ public class TaskFile implements Comparable<TaskFile>, Cloneable {
 		this(name, date, time, date, time, details, importance, isRecurr);
 	}
 
-	public TaskFile(String name, String startDate, String startTime, String endDate, String endTime, String details,
-			String importance, boolean isRecurr) {
+	public TaskFile(String name, String startDate, String startTime, String endDate, String endTime, 
+			String details,	String importance, boolean isRecurr) {
 
 		setName(name);
 		setStartDate(startDate);
@@ -133,7 +133,11 @@ public class TaskFile implements Comparable<TaskFile>, Cloneable {
 		setUpTaskFile();
 
 	}
-
+	
+	public TaskFile(TaskFile task) {
+		this(task.getName(), task.getStartDate(), task.getStartTime(), task.getEndDate(), task.getEndTime(),
+				task.getDetails(), task.getImportance(), task.getIsRecurring());
+	}
 	public boolean hasDetails() {
 		if (this.getDetails().equals("")) {
 			return false;

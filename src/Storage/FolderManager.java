@@ -3,14 +3,17 @@ package Storage;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Type;
+import java.nio.file.DirectoryNotEmptyException;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -76,7 +79,7 @@ public class FolderManager {
 		}
 	}
 
-	protected boolean writeTaskNameToListFile(File file, String taskName) {
+	protected boolean writeTaskNameToListFile(File file, String taskName) throws IOException {
 		try {
 			fWriter = new FileWriter(file, true);
 			bWriter = new BufferedWriter(fWriter);
@@ -88,27 +91,28 @@ public class FolderManager {
 			fWriter.close();
 			return true;
 		} catch (IOException ioEx) {
-			System.err.println("Write to " + file.toString() + " fail");
-			return false;
-
+			throw new IOException("There is an error saving " + taskName + " to " + file.getAbsolutePath(), ioEx);
 		}
 	}
 
 	public boolean writeToTaskFile(File newTask, TaskFile task) throws IOException {
-		fWriter = new FileWriter(newTask);
+		try {
+			fWriter = new FileWriter(newTask);
 
-		bWriter = new BufferedWriter(fWriter);
+			bWriter = new BufferedWriter(fWriter);
 
-		String jsonString = gsonHelper.toJson(task);
-		bWriter.write(jsonString);
-		bWriter.close();
-		fWriter.close();
-		return true;
+			String jsonString = gsonHelper.toJson(task);
+			bWriter.write(jsonString);
+			bWriter.close();
+			fWriter.close();
+			return true;
+		} catch (IOException ioEx) {
+			throw new IOException(task.getName() + " cannot be saved.", ioEx);
+		}
 	}
 
-	public boolean writeToMapFile(File mapFile, Map<String, String> map) {
+	public boolean writeToMapFile(File mapFile, Map<String, String> map) throws IOException {
 		try {
-
 			fWriter = new FileWriter(mapFile);
 			bWriter = new BufferedWriter(fWriter);
 
@@ -120,15 +124,11 @@ public class FolderManager {
 			fWriter.close();
 			return true;
 		} catch (IOException ioEx) {
-			System.err.println("Write to map problem");
-			return false;
-		} catch (NullPointerException E) {
-			E.printStackTrace();
-			return false;
+			throw new IOException("Error writing to mapFile", ioEx);
 		}
 	}
 
-	public boolean writeListToFile(File file, ArrayList<String> list) {
+	public boolean writeListToFile(File file, ArrayList<String> list) throws IOException {
 		try {
 			fWriter = new FileWriter(file, true);
 			bWriter = new BufferedWriter(fWriter);
@@ -143,11 +143,11 @@ public class FolderManager {
 
 			return true;
 		} catch (IOException ioEx) {
-			return false;
+			throw new IOException("Error writing to " + file.getAbsolutePath(), ioEx);
 		}
 	}
 
-	public boolean clearAnOverviewFile(File fileToClear) {
+	public boolean clearAnOverviewFile(File fileToClear) throws IOException {
 		try {
 			fWriter = new FileWriter(fileToClear);
 			bWriter = new BufferedWriter(fWriter);
@@ -157,12 +157,11 @@ public class FolderManager {
 			fWriter.close();
 			return true;
 		} catch (IOException ioEx) {
-			System.err.println("fail to clear" + fileToClear.toString());
-			return false;
+			throw new IOException("Error clearing " + fileToClear.getAbsolutePath(), ioEx);
 		}
 	}
 
-	public ArrayList<String> readFromListFile(File listFile) {
+	public ArrayList<String> readFromListFile(File listFile) throws IOException {
 		try {
 
 			fReader = new FileReader(listFile);
@@ -182,34 +181,41 @@ public class FolderManager {
 			bReader.close();
 
 			return contentInFile;
+		} catch (FileNotFoundException fileNotFoundEx) {
+			throw new FileNotFoundException(listFile.getAbsolutePath() + "does not exist");
 		} catch (IOException ioEx) {
-			System.err.println("hello2");
-			return null;
+			throw new IOException("Error reading " + listFile.getAbsolutePath(), ioEx);
 		}
 	}
 
-	public Map<String, String> readFromMapFile(File mapFile) throws IOException {
+	public Map<String, String> readFromFolderMapFile(File mapFile) throws IOException {
+		try {
+			fReader = new FileReader(mapFile);
+			bReader = new BufferedReader(fReader);
+			Map<String, String> mapFromFile = new HashMap<String, String>();
 
-		fReader = new FileReader(mapFile);
-		bReader = new BufferedReader(fReader);
-		Map<String, String> mapFromFile = new HashMap<String, String>();
+			if (bReader.ready()) {
+				String mapString = bReader.readLine();
 
-		if (bReader.ready()) {
-			String mapString = bReader.readLine();
-
-			if (mapString != null) {
-				Type typeOfMap = new TypeToken<Map<String, String>>() {
-				}.getType();
-				mapFromFile = gsonHelper.fromJson(mapString, typeOfMap);
+				if (mapString != null) {
+					Type typeOfMap = new TypeToken<Map<String, String>>() {
+					}.getType();
+					mapFromFile = gsonHelper.fromJson(mapString, typeOfMap);
+				}
 			}
-		}
 
-		bReader.close();
-		fReader.close();
-		return mapFromFile;
+			bReader.close();
+			fReader.close();
+			return mapFromFile;
+
+		} catch (FileNotFoundException fileNotFoundEx) {
+			throw new FileNotFoundException(mapFile.getAbsolutePath() + "does not exist");
+		} catch (IOException ioEx) {
+			throw new IOException("Error reading " + mapFile.getAbsolutePath(), ioEx);
+		}
 	}
 
-	public TaskFile readTaskFile(File taskFileToBeFound) {
+	public TaskFile readTaskFile(File taskFileToBeFound) throws IOException {
 		try {
 			fReader = new FileReader(taskFileToBeFound);
 			bReader = new BufferedReader(fReader);
@@ -224,10 +230,10 @@ public class FolderManager {
 			bReader.close();
 			fReader.close();
 			return taskFile;
+		} catch (FileNotFoundException fileNoFoundEx) {
+			throw new FileNotFoundException(taskFileToBeFound.getAbsolutePath() + "does not exist");
 		} catch (IOException ioEx) {
-			System.err.println("IOException in readTaskFile");
-			ioEx.printStackTrace();
-			return null;
+			throw new IOException("Error reading" + taskFileToBeFound.getAbsolutePath(), ioEx);
 		}
 	}
 
@@ -263,37 +269,34 @@ public class FolderManager {
 
 		return true;
 	}
-	
-	public boolean setNewDirectory(String newDirectoryString) {
+
+	public boolean setNewDirectory(String newDirectoryString) throws IOException{
 		File newParentDirectory = new File(newDirectoryString);
 		return copyFilesIntoNewDirectory(newParentDirectory, parentDirectory);
 	}
-	
-	public boolean copyFilesIntoNewDirectory(File newDirectory, File oldDirectory) {
+
+	public boolean copyFilesIntoNewDirectory(File newDirectory, File oldDirectory) throws IOException{
 		try {
-			System.out.println(newDirectory.toString());
-			for (File oldFile : oldDirectory.listFiles()) {
-				File newFile = new File(newDirectory, oldFile.getName());
+		for (File oldFile : oldDirectory.listFiles()) {
+			File newFile = new File(newDirectory, oldFile.getName());
 
-				if (oldFile.isDirectory()) {
-					createDirectory(newFile);
-					System.out.println("1. " + newFile.getAbsolutePath());
-					copyFilesIntoNewDirectory(newFile, oldFile);
-				} else {
-					// is a file
-					//createFile(newFile);
-					System.out.println("2. " + newFile.getAbsolutePath());
-					Files.copy(oldFile.toPath(), newFile.toPath());
-				}
+			if (oldFile.isDirectory()) {
+				createDirectory(newFile);
 
+				copyFilesIntoNewDirectory(newFile, oldFile);
+			} else {
+				// is a file
+				// createFile(newFile);
+				Files.copy(oldFile.toPath(), newFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
 			}
-			return true;
-
-		} catch (IOException ioEx) {
-			ioEx.printStackTrace();
-			System.err.println("error copying");
-			return false;
 		}
 
+		return true;
+		} catch (DirectoryNotEmptyException dirNotEmptyEx) {
+			throw new DirectoryNotEmptyException(newDirectory.getAbsolutePath() + 
+					" is not an empty directory. Please specify an empty directory.");
+		} catch (IOException ioEx) {
+			throw new IOException("Error copying to " + newDirectory.getAbsolutePath(), ioEx);
+		}
 	}
 }
