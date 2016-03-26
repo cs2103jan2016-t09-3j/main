@@ -74,23 +74,18 @@ public class TNotesOverviewController {
     
     @FXML
     private void handleUserInput(){
-    	String output = tNote.executeCommand(userInput.getText());
-    	displayScreen.setText(output);
-    	userInput.clear();
-//    	 userInput.setOnAction(new EventHandler<ActionEvent>() {
-// 			
-// 			@Override
-// 			public void handle(ActionEvent event){
-// 				if((userInput.getText() != null && !userInput.getText().isEmpty())){
-// 					//String result = tNote.executeCommand(userInput.getText());
-// 					//t.appendText(result+ "\n");
-// 					//textField.clear();
-// 					displayScreen.appendText("This works");
-// 					displayScreen.clear();
-// 				}
-// 				
-// 			}
-// 		});
+    	String output = tNote.executeCommand(userInput.getText());    	
+    	
+    	if(output.equals("exit")){
+    		//exit program
+    		System.exit(0);
+    	}
+    	
+    	else {
+    		displayScreen.setText(output);
+    		userInput.clear();
+    	}
+
     }
     
     /**
