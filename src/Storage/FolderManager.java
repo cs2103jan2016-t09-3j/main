@@ -8,7 +8,9 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.nio.file.FileSystems;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -20,7 +22,7 @@ import Object.TaskFile;
 
 public class FolderManager {
 
-	private static final String DEFAULT_FOLDER = "\\TNote";
+	private static final String DEFAULT_FOLDER = "/TNote";
 
 	private static FolderManager instance;
 	private Path parentPath;
@@ -52,12 +54,10 @@ public class FolderManager {
 		}
 	}
 
-	protected File createDirectory(String directoryName) {
-		File directory = appendParentDirectory(directoryName);
+	protected void createDirectory(File directory) {
 		if (!directory.exists()) {
 			directory.mkdirs();
 		}
-		return directory;
 	}
 
 	protected File appendParentDirectory(String fileName) {
@@ -65,17 +65,15 @@ public class FolderManager {
 		return fileWithParentDirectory;
 	}
 
-	protected File getPathToFile(File folder, String fileName) {
+	protected File addDirectoryToFile(File folder, String fileName) {
 		File fileWithFolder = new File(folder, fileName);
 		return fileWithFolder;
 	}
 
-	protected File createFile(File folder, String fileName) throws IOException {
-		File fileToCreate = getPathToFile(folder, fileName);
+	protected void createFile(File fileToCreate) throws IOException {
 		if (!fileToCreate.exists()) {
 			fileToCreate.createNewFile();
 		}
-		return fileToCreate;
 	}
 
 	protected boolean writeTaskNameToListFile(File file, String taskName) {
@@ -110,10 +108,10 @@ public class FolderManager {
 
 	public boolean writeToMapFile(File mapFile, Map<String, String> map) {
 		try {
-			
+
 			fWriter = new FileWriter(mapFile);
 			bWriter = new BufferedWriter(fWriter);
-			
+
 			String mapString = gsonHelper.toJson(map);
 
 			bWriter.write(mapString);
@@ -162,35 +160,6 @@ public class FolderManager {
 			System.err.println("fail to clear" + fileToClear.toString());
 			return false;
 		}
-	}
-
-	public boolean clearMasterDirectory() {
-
-		if (deleteAllFilesAndFolders(parentDirectory) && parentDirectory.delete()) {
-			return true;
-		} else {
-
-			System.err.println("directory delete failed");
-			return false;
-		}
-	}
-
-	public boolean deleteAllFilesAndFolders(File parentFile) {
-
-		for (File file : parentFile.listFiles()) {
-			if (file.isDirectory()) {
-				if (!deleteAllFilesAndFolders(file)) {
-					System.err.println("fail to delete recursively file");
-					return false;
-				}
-			}
-			if (!file.delete()) {
-				System.err.println("fail to delete parent direc" + file.getAbsolutePath());
-				return false;
-			}
-		}
-
-		return true;
 	}
 
 	public ArrayList<String> readFromListFile(File listFile) {
@@ -265,10 +234,66 @@ public class FolderManager {
 	protected boolean deleteFile(File fileToDelete) {
 		return fileToDelete.delete();
 	}
-	// public boolean setNewDirectory(String newDirectoryString) {
-	// parentPath = Paths.get(newDirectoryString);
-	// this.directory = parentPath.toFile();
-	// return true;
-	//
-	// }
+
+	public boolean clearMasterDirectory() {
+
+		if (deleteAllFilesAndFolders(parentDirectory) && parentDirectory.delete()) {
+			return true;
+		} else {
+
+			System.err.println("directory delete failed");
+			return false;
+		}
+	}
+
+	public boolean deleteAllFilesAndFolders(File parentFile) {
+
+		for (File file : parentFile.listFiles()) {
+			if (file.isDirectory()) {
+				if (!deleteAllFilesAndFolders(file)) {
+					System.err.println("fail to delete recursively file");
+					return false;
+				}
+			}
+			if (!file.delete()) {
+				System.err.println("fail to delete parent direc" + file.getAbsolutePath());
+				return false;
+			}
+		}
+
+		return true;
+	}
+	
+	public boolean setNewDirectory(String newDirectoryString) {
+		File newParentDirectory = new File(newDirectoryString);
+		return copyFilesIntoNewDirectory(newParentDirectory, parentDirectory);
+	}
+	
+	public boolean copyFilesIntoNewDirectory(File newDirectory, File oldDirectory) {
+		try {
+			System.out.println(newDirectory.toString());
+			for (File oldFile : oldDirectory.listFiles()) {
+				File newFile = new File(newDirectory, oldFile.getName());
+
+				if (oldFile.isDirectory()) {
+					createDirectory(newFile);
+					System.out.println("1. " + newFile.getAbsolutePath());
+					copyFilesIntoNewDirectory(newFile, oldFile);
+				} else {
+					// is a file
+					//createFile(newFile);
+					System.out.println("2. " + newFile.getAbsolutePath());
+					Files.copy(oldFile.toPath(), newFile.toPath());
+				}
+
+			}
+			return true;
+
+		} catch (IOException ioEx) {
+			ioEx.printStackTrace();
+			System.err.println("error copying");
+			return false;
+		}
+
+	}
 }

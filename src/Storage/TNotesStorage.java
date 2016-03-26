@@ -70,7 +70,9 @@ public class TNotesStorage {
 		try {
 
 			fManager = FolderManager.getInstance();
-			overviewFolder = fManager.createDirectory(OVERVIEW_FILES_FOLDER_NAME);
+			overviewFolder = fManager.appendParentDirectory(OVERVIEW_FILES_FOLDER_NAME); 
+			
+			fManager.createDirectory(overviewFolder);
 
 			setUpMasterFile();
 			setUpFloatingTaskFileList();
@@ -102,7 +104,10 @@ public class TNotesStorage {
 	}
 
 	private File createAnOverviewFile(String name) throws IOException {
-		return fManager.createFile(overviewFolder, name);
+		File overviewFile = fManager.addDirectoryToFile(overviewFolder, name);
+		fManager.createFile(overviewFile);
+		
+		return overviewFile;
 
 	}
 
@@ -245,7 +250,7 @@ public class TNotesStorage {
 		// Check if folderName = recurr / floating
 		File folder = fManager.appendParentDirectory(folderName);
 
-		File fileToBeFound = fManager.getPathToFile(folder, taskName.trim() + FILE_TYPE_TXT_FILE);
+		File fileToBeFound = fManager.addDirectoryToFile(folder, taskName.trim() + FILE_TYPE_TXT_FILE);
 
 		return fileToBeFound;
 	}
@@ -296,9 +301,13 @@ public class TNotesStorage {
 	public boolean createTaskFile(String directory, TaskFile task) {
 
 		try {
-			File folder = fManager.createDirectory(directory.trim());
-
-			File newTask = fManager.createFile(folder, task.getName() + FILE_TYPE_TXT_FILE);
+			File folder = fManager.appendParentDirectory(directory.trim()); 
+			
+			fManager.createDirectory(folder);
+			
+			File newTask = fManager.addDirectoryToFile(folder, task.getName() + FILE_TYPE_TXT_FILE); 
+			
+			fManager.createFile(newTask);
 
 			return fManager.writeToTaskFile(newTask, task);
 
@@ -330,5 +339,9 @@ public class TNotesStorage {
 
 	public boolean clearMasterDirectory() {
 		return fManager.clearMasterDirectory();
+	}
+	
+	public boolean setNewDirectory(String newDirectory) {
+		return fManager.setNewDirectory(newDirectory.trim());
 	}
 }
