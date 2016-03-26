@@ -143,22 +143,24 @@ public class TNotesParser {
 	
 	public static ArrayList<String> timeList = new ArrayList<String>();
 	
-	public static void main(String[] args) throws Exception {
+	public static void main(String[] args){
+		TNotesParser parser = new TNotesParser();
+		parser.execute();
+		
+	}
+	public void execute(){
 		String output = new String();
 		String input = new String();
-		input = "help";
+		input = "add call mom from 2-2-2 to 3-3-3";
 		for (int i = 0; i < checkCommand(input).size(); i++){
 			output = checkCommand(input).get(i);// 24 hour clock
 			System.out.println(output);
-		}
-		if (output == null){
-			throw new Error("case 1 failed");
 		}
 	}
 	
 	
 	
-	public static ArrayList<String> checkCommand(String inputString) {
+	public ArrayList<String> checkCommand(String inputString) {
 		ArrayList<String> list = new ArrayList<String>();
 		//String errorMessage = "invalid command";
 		String arr[] = inputString.split(" ");
@@ -206,6 +208,10 @@ public class TNotesParser {
 				list.add(firstWord);
 				
 				return list;
+			case "exit" :
+				list.add(firstWord);
+				
+				return list;
 				
 		}
 
@@ -215,7 +221,7 @@ public class TNotesParser {
 /////////////////////////////////SORT//////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////
 	
-	public static ArrayList <String> sortCommand(String[] arr){
+	public ArrayList <String> sortCommand(String[] arr){
 		ArrayList<String> list = new ArrayList<String>();
 		String title = new String();
 		if (isLetters(arr[1]) ==0 && checkTime(arr[1]) ==0 ){
@@ -238,7 +244,7 @@ public class TNotesParser {
 /////////////////////////////////VIEW//////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////
 	
-	public static ArrayList <String> viewCommand(String[] arr){
+	public ArrayList <String> viewCommand(String[] arr){
 		ArrayList<String> list = new ArrayList<String>();
 		String taskName = new String();
 		for(int j=1;j<arr.length;j++ ){
@@ -269,7 +275,7 @@ public class TNotesParser {
 ///////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////VIEW TO//////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////
-	public static int checkViewTo(String[] arr) {
+	public int checkViewTo(String[] arr) {
 		int arrLength = arr.length;
 		if(arrLength >=3){
 			if(arr[2].equals("to")){
@@ -287,7 +293,7 @@ public class TNotesParser {
 ///////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////EDIT//////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////
-	public static ArrayList<String> editCommand(String[] arr){
+	public ArrayList<String> editCommand(String[] arr){
 		ArrayList<String> list = new ArrayList<String>();
 		String title = new String();
 		String title_beforeDate = new String();
@@ -337,7 +343,7 @@ public class TNotesParser {
 ///////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////onlyKey//////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////
-	public static int onlyKeyAt(String[] arr) {
+	public int onlyKeyAt(String[] arr) {
 		for(int i=0;i<arr.length;i++){
 			if(arr[i].equals("due") || arr[i].equals("from")){
 				return 0;
@@ -345,7 +351,7 @@ public class TNotesParser {
 		}
 		return 1;
 	}
-	public static int onlyKeyDetails(String[] arr) {
+	public int onlyKeyDetails(String[] arr) {
 		for(int i=0;i<arr.length;i++){
 			if(arr[i].equals("due") || arr[i].equals("from")||
 					arr[i].equals("at") || arr[i].equals("to")){
@@ -354,7 +360,7 @@ public class TNotesParser {
 		}
 		return 1;
 	}
-	public static int checkTime(String input) {
+	public int checkTime(String input) {
 		int inputCharLength = input.trim().length();
 		for(int i =0; i<inputCharLength; i++){
 			if(input.charAt(i) == ':' || inputCharLength <= 4){
@@ -363,7 +369,7 @@ public class TNotesParser {
 		}
 		return 0 ;
 	}
-	public static ArrayList<String> checkDate(String[] arr) {
+	public ArrayList<String> checkDate(String[] arr) {
 		ArrayList<String> list = new ArrayList<String>();
 		String date [] = {"today", "tomorrow", "afternoon","noon", "evenning","night",
 				"morning", "the next day", "the next month", "the next year"};
@@ -391,7 +397,7 @@ public class TNotesParser {
 /////////////////////////////////ADDCOMMAND//////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////	
 	
-	public static ArrayList<String> addCommand(String[] arr){
+	public ArrayList<String> addCommand(String[] arr){
 		String title = new String();
 		String details = new String();
 		ArrayList<String> list = new ArrayList<String>();
@@ -554,7 +560,7 @@ public class TNotesParser {
 ///////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////OTHERS//////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////
-	public static int findImpt(String[] arr){
+	public int findImpt(String[] arr){
 		for (int i=0;i<arr.length;i++){
 			if(arr[i].equals("important")){
 				return 1;//the output important will always be the same
@@ -562,13 +568,13 @@ public class TNotesParser {
 		}
 		return 0;
 	}
-	public static int findLastImpt(String[] arr){
+	public int findLastImpt(String[] arr){
 		if(arr[arr.length-1].equals("important")){
 			return 1;
 		}
 		return 0;
 	}
-	public static String formatDate(String inputDate){
+	public String formatDate(String inputDate){
 	      LocalDate parsedDate = null;	
 	      String date = new String();
 	      date = inputDate.trim();
@@ -587,8 +593,8 @@ public class TNotesParser {
 		return "the date is invalid";
 	}
 	
-	public static LocalTime formatTime(String time) {
-		
+	public LocalTime formatTime(String time) {
+	
 		assert time != null : "not a time";
 		time = time.toUpperCase();
 		
@@ -608,7 +614,7 @@ public class TNotesParser {
 		return null;
 	}
 	
-	private static LocalTime compareTimeFormat(String timeString, String pattern) {
+	private LocalTime compareTimeFormat(String timeString, String pattern) {
 		assert pattern != null : "no such pattern";
 		LocalTime time = null;
 		try {
@@ -621,7 +627,7 @@ public class TNotesParser {
 	
 	}
 	
-	public static String timeAMPM(String atDatePMAM){
+	public String timeAMPM(String atDatePMAM){
 		switch(atDatePMAM){
 			case "am" :
 				return "am";
@@ -635,7 +641,7 @@ public class TNotesParser {
 				return "";
 		}	
 	}
-	public static int isLetters(String nextString) {
+	public int isLetters(String nextString) {
 		if (nextString.matches("[a-zA-Z]+")) {
 			return 1;
 		} else {
