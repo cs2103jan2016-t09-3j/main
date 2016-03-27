@@ -418,6 +418,9 @@ public class TNotesStorage {
 		return false;
 	}
 	
+	public ArrayList<String> getRecurStartDateList (String taskName) {
+	}
+	
 	public boolean writeToRecurringMapFile(Map<String, ArrayList<String>> map, File mapFile) throws Exception {
 		if (clearAnOverviewFile(mapFile)) {
 			return fManager.writeToRecurringMapFile(mapFile, map);

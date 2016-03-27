@@ -25,7 +25,7 @@ import Object.TaskFile;
 
 public class FolderManager {
 
-	private static final String DEFAULT_FOLDER = "/TNote";
+	private static final String DEFAULT_FOLDER = File.pathSeparator + "TNote";
 
 	private static FolderManager instance;
 	private Path parentPath;
