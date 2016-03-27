@@ -215,6 +215,33 @@ public class FolderManager {
 		}
 	}
 
+	public Map<String, ArrayList<String>> readFromDateMapFile(File dateMapFile) throws IOException {
+		try {
+			fReader = new FileReader(dateMapFile);
+			bReader = new BufferedReader(fReader);
+			Map<String, ArrayList<String>> mapFromFile = new HashMap<String, ArrayList<String>>();
+
+			if (bReader.ready()) {
+				String mapString = bReader.readLine();
+
+				if (mapString != null) {
+					Type typeOfMap = new TypeToken<Map<String, ArrayList<String>>>() {
+					}.getType();
+					mapFromFile = gsonHelper.fromJson(mapString, typeOfMap);
+				}
+			}
+
+			bReader.close();
+			fReader.close();
+			return mapFromFile;
+
+		} catch (FileNotFoundException fileNotFoundEx) {
+			throw new FileNotFoundException(dateMapFile.getAbsolutePath() + "does not exist");
+		} catch (IOException ioEx) {
+			throw new IOException("Error reading " + dateMapFile.getAbsolutePath(), ioEx);
+		}
+	}
+	
 	public TaskFile readTaskFile(File taskFileToBeFound) throws IOException {
 		try {
 			fReader = new FileReader(taskFileToBeFound);
