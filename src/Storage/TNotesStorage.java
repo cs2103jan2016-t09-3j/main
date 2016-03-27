@@ -419,6 +419,11 @@ public class TNotesStorage {
 	}
 	
 	public ArrayList<String> getRecurStartDateList (String taskName) {
+		return recurringTasksStartDateMap.get(taskName);
+	}
+	
+	public ArrayList<String> getRecurEndDateList (String taskName) {
+		return recurringTasksEndDateMap.get(taskName);
 	}
 	
 	public boolean writeToRecurringMapFile(Map<String, ArrayList<String>> map, File mapFile) throws Exception {
