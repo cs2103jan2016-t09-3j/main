@@ -85,15 +85,6 @@ public class TNotesUI {
 					result += String.format("Note: Task was noted as important");
 				}
 
-				// Tasks with dates and without time given
-				// Example "add task due this week"
-				// Require flag to check that the given input is in "this week"
-				// kind of format
-				// if(checkFlag){
-				// result+= "I have added \"%s\" due %s to your schedule!\n" +
-				// taskFile.getName() + taskFile.get(?? this week);
-				// }
-
 				if (taskFile.hasDetails()) {
 					System.out.print("details");
 					result += String.format("Things to note: \"%s\"\n", taskFile.getDetails().trim());
@@ -108,16 +99,20 @@ public class TNotesUI {
 			
 		case CHANGE_DIRECTORY:
 			String directoryPath = userCommandSplit.get(1);
+			try {
 			if(logic.changeDirectory(directoryPath)){
 				result = "You have succesfully changed directory.\n";
 			}
 			else {
 				result = "Directory did not change.\n";
 			}
+			}catch(Exception e) {
+				result = e.getMessage();
+			}
 			break;
 		case DELETE_DIRECTORY:
-			String directoryPath = userCommandSplit.get(1);
-			if(logic.deleteDirectory(directoryPath)){
+			String directoryPathx = userCommandSplit.get(1);
+			if(logic.deleteDirectory(directoryPathx)){
 				result = "You have succesfully deleted directory.\n";
 			}
 			else {
@@ -283,11 +278,15 @@ public class TNotesUI {
 
 		case SET_COMMAND:
 			String taskName = userCommandSplit.get(1);
-			String taskStatus = userCommandSplit.get(2);
 			try {
+				taskFile = logic.searchSingleTask(taskName.trim()); 
+				boolean taskStatus = taskFile.getIsDone();
+					
 				boolean status = logic.toggleStatus(taskName);
 
 				result = String.format("You have changed the status in \"%s\" from [%s] to ", taskName, taskStatus);
+			
+				
 				if (status == true) {
 					result += "done\n";
 				}
