@@ -206,7 +206,7 @@ public class TNotesLogic {
 				RecurringTaskFile recurTask = new RecurringTaskFile(currentFile);
 				recurTask.addRecurringStartDate(dateList);
 				storage.addRecurringTask(recurTask);
-
+					return currentFile;
 			}
 
 			if (storage.addTask(currentFile)) {
