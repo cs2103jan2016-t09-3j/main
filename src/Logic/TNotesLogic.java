@@ -550,11 +550,8 @@ public class TNotesLogic {
 		System.out.println(lineOfText);
 	}
 
-	public String changeDirectory(String directoryName) throws Exception {
-		if (storage.setNewDirectory(directoryName)) {
-		
-		}
-		return ("Directory changed");
+	public boolean changeDirectory(String directoryName) throws Exception {
+		return storage.setNewDirectory(directoryName);
 	}
 
 	public boolean deleteDirectory(String directory) {
