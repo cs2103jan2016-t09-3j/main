@@ -155,8 +155,8 @@ public class TNotesMessages {
 		miscHelpArray = new ArrayList<String>();
 		miscHelpArray.add("====Misc====");
 		miscHelpArray.add("set [task] done/undone");
-		miscHelpArray.add("change directory location to [new directory location]");
-		miscHelpArray.add("delete directory");
+		miscHelpArray.add("change directory location to [new directory path]");
+		miscHelpArray.add("delete directory [directory path]");
 		miscHelpArray.add("\n");
 
 	}

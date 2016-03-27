@@ -10,7 +10,8 @@ import Parser.TNotesParser;
 public class TNotesUI {
 
 	enum COMMAND_TYPE {
-		ADD_COMMAND, EDIT_COMMAND, DELETE_COMMAND, VIEW_COMMAND, INVALID, SET_COMMAND, SEARCH_COMMAND, SORT_COMMAND, HELP_COMMAND, EXIT
+		ADD_COMMAND, CHANGE_DIRECTORY, DELETE_DIRECTORY, EDIT_COMMAND, DELETE_COMMAND, VIEW_COMMAND, INVALID, 
+		SET_COMMAND, SEARCH_COMMAND, SORT_COMMAND, HELP_COMMAND, EXIT
 	}
 
 	TNotesParser parser;
@@ -104,7 +105,25 @@ public class TNotesUI {
 			}
 
 			break;
-
+			
+		case CHANGE_DIRECTORY:
+			String directoryPath = userCommandSplit.get(1);
+			if(logic.changeDirectory(directoryPath)){
+				result = "You have succesfully changed directory.\n";
+			}
+			else {
+				result = "Directory did not change.\n";
+			}
+			break;
+		case DELETE_DIRECTORY:
+			String directoryPath = userCommandSplit.get(1);
+			if(logic.deleteDirectory(directoryPath)){
+				result = "You have succesfully deleted directory.\n";
+			}
+			else {
+				result = "Directory was not deleted.\n";
+			}
+			break;
 		case EDIT_COMMAND:
 
 			TaskFile oldTaskFile = new TaskFile();
@@ -372,6 +391,10 @@ public class TNotesUI {
 	private COMMAND_TYPE determineCommandType(String commandString) {
 		if (checkCommand(commandString, "add")) {
 			return COMMAND_TYPE.ADD_COMMAND;
+		} else if (checkCommand(commandString, "change directory")) {
+			return COMMAND_TYPE.CHANGE_DIRECTORY;
+		} if (checkCommand(commandString, "delete directory")) {
+			return COMMAND_TYPE.DELETE_DIRECTORY;
 		} else if (checkCommand(commandString, "edit")) {
 			return COMMAND_TYPE.EDIT_COMMAND;
 		} else if (checkCommand(commandString, "delete")) {
