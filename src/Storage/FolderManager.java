@@ -289,17 +289,20 @@ public class FolderManager {
 		return fileToDelete.delete();
 	}
 
-	public boolean clearMasterDirectory() {
+	public boolean deleteMasterDirectory() {
 
-		if (deleteAllFilesAndFolders(parentDirectory) && parentDirectory.delete()) {
+		if (clearMasterDirectory() && parentDirectory.delete()) {
 			return true;
 		} else {
-
-			System.err.println("directory delete failed");
 			return false;
 		}
 	}
-
+	
+	public boolean clearMasterDirectory() {
+		return deleteAllFilesAndFolders(parentDirectory);
+	}
+	
+	
 	public boolean deleteAllFilesAndFolders(File parentFile) {
 
 		for (File file : parentFile.listFiles()) {

@@ -8,6 +8,7 @@ import static org.junit.Assert.*;
 import java.util.ArrayList;
 
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -24,11 +25,14 @@ public class TNotesStorageTest {
 
 	@After
 	public void tearDown() throws Exception {
-		System.out.println(storage.clearMasterFile());
-		System.out.println("cleared");
-		System.out.println(storage.clearMasterDirectory());
+		System.out.println(storage.clearMasterFiles());
 	}
 
+	@AfterClass
+	public static void tearDownClass() throws Exception {
+		TNotesStorage storage = TNotesStorage.getInstance();
+		System.out.println(storage.deleteMasterDirectory());
+	}
 	@Test
 	public void test() {
 		try {
@@ -46,9 +50,9 @@ public class TNotesStorageTest {
 			assertEquals("read from master file", masterFileAL, storage.readFromMasterFile());
 
 			String task1String = "Task: call mom, Start Date: 2016-02-02, Start Time: 12:00, End Date: 2016-02-02, End Time: 12:00, Details: abc"
-					+ ", Importance: 0, IsRecurring: false, IsDone: false";
+					+ ", Importance: false, IsRecurring: false, IsDone: false";
 			String task2String = "Task: call dad, Start Date: , Start Time: , End Date: , End Time: , Details: "
-					+ ", Importance: 0, IsRecurring: false, IsDone: false";
+					+ ", Importance: false, IsRecurring: false, IsDone: false";
 			// assertEquals("read individual task files_obj1", task1,
 			// storage.getTaskFileByName("call mom"));
 			// assertEquals("read individual task files_obj2", task1,
@@ -64,7 +68,7 @@ public class TNotesStorageTest {
 
 			assertFalse(storage.addTask(task3));
 
-			assertTrue(storage.setNewDirectory("C:/newTNoteFolder"));
+			assertTrue(storage.setNewDirectory("C:\\newTNoteFolder"));
 		} catch (Exception ex) {
 			System.out.println(ex.getMessage());
 		}
@@ -110,9 +114,12 @@ public class TNotesStorageTest {
 			
 			assertTrue(storage.addRecurringTask(rTask1));
 			
-			System.out.println(storage.getTaskFileByName("call mom").toString());
+			String expectedString = "Task: call mom, Start Date: 2016-02-02, Start Time: 12:00, End Date: , End Time: , Details: abc" 
+			+ ", Importance: false, IsRecurring: true, IsDone: false";
+			assertEquals(expectedString, storage.getTaskFileByName("call mom").toString());
 			
-			storage.deleteTask("call mom");
+			TaskFile deletedTask = storage.deleteTask("call mom");
+			assertEquals(task1.toString(), deletedTask.toString());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
