@@ -29,7 +29,7 @@ public class TNotesStorageTest {
 
 	@Test
 	public void test() {
-		
+		try {
 		TaskFile task1 = new TaskFile("call mom", "2016-02-02", "12:00", "abc", false);
 		TaskFile task2 = new TaskFile("call dad");
 		
@@ -60,6 +60,9 @@ public class TNotesStorageTest {
 		assertFalse(storage.addTask(task3));
 		
 		storage.setNewDirectory("C:/newTNoteFolder");
+		} catch (Exception ex) {
+			System.out.println(ex.getMessage());
+		}
 	}
 
 }

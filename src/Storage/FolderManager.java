@@ -74,8 +74,12 @@ public class FolderManager {
 	}
 
 	protected void createFile(File fileToCreate) throws IOException {
-		if (!fileToCreate.exists()) {
-			fileToCreate.createNewFile();
+		try {
+			if (!fileToCreate.exists()) {
+				fileToCreate.createNewFile();
+			}
+		} catch (IOException ioEx) {
+			throw new IOException("Error creating " + fileToCreate.getName(), ioEx);
 		}
 	}
 
@@ -111,7 +115,24 @@ public class FolderManager {
 		}
 	}
 
-	public boolean writeToMapFile(File mapFile, Map<String, String> map) throws IOException {
+	public boolean writeToMonthMapFile(File mapFile, Map<String, String> map) throws IOException {
+		try {
+			fWriter = new FileWriter(mapFile);
+			bWriter = new BufferedWriter(fWriter);
+
+			String mapString = gsonHelper.toJson(map);
+
+			bWriter.write(mapString);
+
+			bWriter.close();
+			fWriter.close();
+			return true;
+		} catch (IOException ioEx) {
+			throw new IOException("Error writing to mapFile", ioEx);
+		}
+	}
+	
+	public boolean writeToRecurringMapFile(File mapFile, Map<String, ArrayList<String>> map) throws IOException {
 		try {
 			fWriter = new FileWriter(mapFile);
 			bWriter = new BufferedWriter(fWriter);
@@ -241,7 +262,7 @@ public class FolderManager {
 			throw new IOException("Error reading " + dateMapFile.getAbsolutePath(), ioEx);
 		}
 	}
-	
+
 	public TaskFile readTaskFile(File taskFileToBeFound) throws IOException {
 		try {
 			fReader = new FileReader(taskFileToBeFound);
@@ -297,31 +318,31 @@ public class FolderManager {
 		return true;
 	}
 
-	public boolean setNewDirectory(String newDirectoryString) throws IOException{
+	public boolean setNewDirectory(String newDirectoryString) throws IOException {
 		File newParentDirectory = new File(newDirectoryString);
 		return copyFilesIntoNewDirectory(newParentDirectory, parentDirectory);
 	}
 
-	public boolean copyFilesIntoNewDirectory(File newDirectory, File oldDirectory) throws IOException{
+	public boolean copyFilesIntoNewDirectory(File newDirectory, File oldDirectory) throws IOException {
 		try {
-		for (File oldFile : oldDirectory.listFiles()) {
-			File newFile = new File(newDirectory, oldFile.getName());
+			for (File oldFile : oldDirectory.listFiles()) {
+				File newFile = new File(newDirectory, oldFile.getName());
 
-			if (oldFile.isDirectory()) {
-				createDirectory(newFile);
+				if (oldFile.isDirectory()) {
+					createDirectory(newFile);
 
-				copyFilesIntoNewDirectory(newFile, oldFile);
-			} else {
-				// is a file
-				// createFile(newFile);
-				Files.copy(oldFile.toPath(), newFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+					copyFilesIntoNewDirectory(newFile, oldFile);
+				} else {
+					// is a file
+					// createFile(newFile);
+					Files.copy(oldFile.toPath(), newFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+				}
 			}
-		}
 
-		return true;
+			return true;
 		} catch (DirectoryNotEmptyException dirNotEmptyEx) {
-			throw new DirectoryNotEmptyException(newDirectory.getAbsolutePath() + 
-					" is not an empty directory. Please specify an empty directory.");
+			throw new DirectoryNotEmptyException(
+					newDirectory.getAbsolutePath() + " is not an empty directory. Please specify an empty directory.");
 		} catch (IOException ioEx) {
 			throw new IOException("Error copying to " + newDirectory.getAbsolutePath(), ioEx);
 		}
