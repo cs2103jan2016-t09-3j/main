@@ -165,33 +165,32 @@ public class TNotesLogic {
 					}
 				}
 			}
-			 if (currentFile.getIsRecurring()) {
-				 Calendar cal = Calendar.getInstance();
-				 DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
-				 ArrayList<String> dateList = new ArrayList<String>();
-				 if(recurArgument.equals("day")){
-					 for(int i = 0; i< 14; i++){
+			if (currentFile.getIsRecurring()) {
+				Calendar cal = Calendar.getInstance();
+				DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+				ArrayList<String> dateList = new ArrayList<String>();
+				if (recurArgument.equals("day")) {
+					for (int i = 0; i < 14; i++) {
 						dateList.add(df.format(cal.getTime()));
-					 	cal.add(Calendar.DATE, 1);
-					 }	 
-				 }else if(recurArgument.equals("week")){
-					 for(int i = 0; i< 8; i++){
-						 dateList.add(df.format(cal.getTime()));
-						 cal.add(Calendar.WEEK_OF_MONTH, 1);
-					 }
-				
-				 }else{
-					 for(int i = 0; i< 12; i++){
-						 dateList.add(df.format(cal.getTime()));
-						 cal.add(Calendar.MONTH, 1);
-					 }
-				 }
-				 RecurringTaskFile recurTask = new RecurringTaskFile(currentFile);
-				 recurTask.addRecurringStartDate(dateList);
-				 storage.addRecurringTask(recurTask);
-				 
-			 }
-			
+						cal.add(Calendar.DATE, 1);
+					}
+				} else if (recurArgument.equals("week")) {
+					for (int i = 0; i < 8; i++) {
+						dateList.add(df.format(cal.getTime()));
+						cal.add(Calendar.WEEK_OF_MONTH, 1);
+					}
+
+				} else {
+					for (int i = 0; i < 12; i++) {
+						dateList.add(df.format(cal.getTime()));
+						cal.add(Calendar.MONTH, 1);
+					}
+				}
+				RecurringTaskFile recurTask = new RecurringTaskFile(currentFile);
+				recurTask.addRecurringStartDate(dateList);
+				storage.addRecurringTask(recurTask);
+
+			}
 
 			if (storage.addTask(currentFile)) {
 				return currentFile;
@@ -285,9 +284,16 @@ public class TNotesLogic {
 		return taskListToBeDisplayed;
 	}
 
-	public ArrayList<String> viewFloatingList() {
+	public ArrayList<TaskFile> viewFloatingList() {
 		ArrayList<String> stringList = storage.readFromFloatingListFile();
-		return stringList;
+		ArrayList<TaskFile> taskListToBeDisplayed = new ArrayList<TaskFile>();
+		for (String text : stringList) {
+			TaskFile currentFile = storage.getTaskFileByName(text);
+			if (currentFile.getIsTask()) {
+				taskListToBeDisplayed.add(currentFile);
+			}
+		}
+		return taskListToBeDisplayed;
 	}
 
 	public void toggleStatus(TaskFile newTask) {
@@ -366,7 +372,7 @@ public class TNotesLogic {
 	// searches for a word or phrase within the storage, returns array list of
 	// taskfile
 	public ArrayList<TaskFile> searchTask(ArrayList<String> lineOfText) {
-		for(String text : lineOfText){
+		for (String text : lineOfText) {
 			System.out.println(text);
 		}
 		ArrayList<TaskFile> searchTaskList = new ArrayList<TaskFile>();
@@ -389,12 +395,12 @@ public class TNotesLogic {
 				}
 			}
 		}
-		for(TaskFile newTask : searchTaskList){
-			
+		for (TaskFile newTask : searchTaskList) {
+
 			System.out.println(newTask.getName());
 		}
-	return searchTaskList;
-		}
+		return searchTaskList;
+	}
 
 	// importance sort
 	// assumption, importance always placed first , regardless of sort.
@@ -429,7 +435,8 @@ public class TNotesLogic {
 			return true;
 		}
 	}
-	public ArrayList<String> helpFunction(){
+
+	public ArrayList<String> helpFunction() {
 		ArrayList<String> addList = new ArrayList<String>();
 		addList.add("add [task]");
 		addList.add("add [task] at [time]");
@@ -477,12 +484,12 @@ public class TNotesLogic {
 		System.out.println(lineOfText);
 	}
 
-	 public String changeDirectory(String directoryName) {
-	 if(storage.setNewDirectory(directoryName)){
-	 storage.clearMasterDirectory();
-	 }
-	 return ("Directory changed");
-	 }
+	public String changeDirectory(String directoryName) {
+		if (storage.setNewDirectory(directoryName)) {
+			storage.clearMasterDirectory();
+		}
+		return ("Directory changed");
+	}
 
 	public boolean deleteDirectory() {
 		if (storage.clearMasterDirectory()) {
@@ -491,22 +498,23 @@ public class TNotesLogic {
 			return false;
 		}
 	}
+
 	// //whats the parser arraylist for the recurring task, like the format of
 	// inputs.
-	 public TaskFile addRecurringTask(ArrayList<String> fromParser){
-		 String recurArgument = "";
-		 if (fromParser.contains("every")) {
-				int indexOfRecurKeyWord = fromParser.indexOf("every");
-				recurArgument = fromParser.remove(indexOfRecurKeyWord + 1);
-				fromParser.remove("every");
-			}
-		 if(recurArgument.equals("day")){
-			 
-		 }
-	
-	 return null;
-	
-	 }
+	public TaskFile addRecurringTask(ArrayList<String> fromParser) {
+		String recurArgument = "";
+		if (fromParser.contains("every")) {
+			int indexOfRecurKeyWord = fromParser.indexOf("every");
+			recurArgument = fromParser.remove(indexOfRecurKeyWord + 1);
+			fromParser.remove("every");
+		}
+		if (recurArgument.equals("day")) {
+
+		}
+
+		return null;
+
+	}
 	//
 	// public TaskFile editRecurringTask(ArrayList<String> parserOutput){
 	// return null;

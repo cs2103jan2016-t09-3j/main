@@ -8,15 +8,16 @@ import Object.TaskFile;
 
 public class CommandSort extends TNotesLogic{
 
-	public void whichSort(ArrayList<String> fromParser){
+	public ArrayList<TaskFile> whichSort(ArrayList<String> fromParser){
 		if(fromParser.contains("-")){
-			sortDateTask();
+			return sortDateTask();
+			
 		}
 		else if(fromParser.contains("importance")){
-			sortImportTask();
+			return sortImportTask();
 		}
 		else{
-			sortTaskList();
+			return sortTaskList();
 		}
 	}
 	

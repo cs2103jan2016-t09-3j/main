@@ -8,7 +8,6 @@ import Storage.TNotesStorage;
 public class LogicUnit {
 	Stack<LogicCommand> doCommand = new Stack<LogicCommand>();
 	Stack<LogicCommand> undoCommand = new Stack<LogicCommand>();
-	Stack<LogicCommand> redoCommand = new Stack<LogicCommand>();
 	ArrayList<String> taskDetails = new ArrayList<String>();
 
 	TNotesStorage storage = TNotesStorage.getInstance();
@@ -18,37 +17,57 @@ public class LogicUnit {
 	CommandDelete comDelete = new CommandDelete();
 	CommandEdit comEdit = new CommandEdit();
 	CommandSort comSort = new CommandSort();
+	CommandView comView = new CommandView();
 
-	public void logicFunction(ArrayList<String> fromParser) {
+	public TaskFile addTask(ArrayList<String> fromParser) {
 		String commandChecker = fromParser.remove(0);
-		LogicCommand newTask = new LogicCommand(fromParser.get(0));
-		if (commandChecker.equals("add")) {
-			newTask.setTask(comAdd.whichAdd(fromParser));
-		} else if (commandChecker.equals("delete")) {
-			newTask.setTask(comDelete.deleteTask(fromParser));
-		} else if (commandChecker.equals("edit")) {
-			newTask.setTask(comEdit.whichEdit(fromParser));
-		} else if (commandChecker.equals("sort")) {
-			comSort.whichSort(fromParser);
-		} else if (commandChecker.equals("search")) {
-			searchTask(string);
-		} else if (commandChecker.equals("undo")) {
-			undoCall();
-		} else if (commandChecker.equals("redo")) {
-			redoCall();
-		} else {
-			System.out.println("task did not pass thru checker");
-		}
-		doCommand.push(newTask);
-		// while (!undoCommand.isEmpty()) {
-		// undoCommand.pop();
-		// }
+		LogicCommand newCommand = new LogicCommand(fromParser.get(0));
+		TaskFile newTask = new TaskFile(comAdd.whichAdd(fromParser));
+		newCommand.setCommandType(commandChecker);
+		newCommand.setTask(newTask);
+		doCommand.push(newCommand);
+		emptyStack();
+		return newTask;
+	}
+
+	public TaskFile deleteTask(ArrayList<String> fromParser) {
+		String commandChecker = fromParser.remove(0);
+		LogicCommand newCommand = new LogicCommand(fromParser.get(0));
+		TaskFile newTask = new TaskFile(comDelete.deleteTask(fromParser));
+		newCommand.setCommandType(commandChecker);
+		newCommand.setTask(newTask);
+		doCommand.push(newCommand);
+		emptyStack();
+		return newTask;
+	}
+
+	public TaskFile editTask(ArrayList<String> fromParser) {
+		String commandChecker = fromParser.remove(0);
+		LogicCommand newCommand = new LogicCommand(fromParser.get(0));
+		TaskFile newTask = new TaskFile(comEdit.whichEdit(fromParser));
+		newCommand.setCommandType(commandChecker);
+		newCommand.setTask(newTask);
+		doCommand.push(newCommand);
+		emptyStack();
+		return newTask;
+	}
+
+	public ArrayList<TaskFile> sortTask(ArrayList<String> fromParser) {
+		fromParser.remove(0);
+		ArrayList<TaskFile> newTaskList = new ArrayList<TaskFile>(comSort.whichSort(fromParser));
+		return newTaskList;
+	}
+
+	public ArrayList<TaskFile> viewTask(ArrayList<String> fromParser) {
+		fromParser.remove(0);
+		ArrayList<TaskFile> newTaskList = new ArrayList<TaskFile>(comView.whichView(fromParser));
+		return newTaskList;
 	}
 
 	public void undoCall() {
-		if (doCommand.isEmpty())
+		if (doCommand.isEmpty()) {
 			System.out.println("No task in List");
-		else {
+		} else {
 			LogicCommand currentCommand = doCommand.pop();
 			String commandType = currentCommand.getCommandType();
 			if (commandType.equals("add")) {
@@ -59,7 +78,7 @@ public class LogicUnit {
 				storage.deleteTask(currentCommand.getTask().getName());
 				storage.addTask(comEdit.getOldTask());
 			} else {
-				System.out.println("task did not pass thru checker");
+				System.out.println("task did not pass through checker");
 			}
 			undoCommand.push(currentCommand);
 		}
@@ -82,8 +101,14 @@ public class LogicUnit {
 				storage.deleteTask(currentCommand.getTask().getName());
 				storage.addTask(comEdit.getOldTask());
 			} else {
-				System.out.println("task did not pass thru checker");
+				System.out.println("task did not pass through checker");
 			}
+			doCommand.push(currentCommand);
+		}
+	}
+	private void emptyStack(){
+		while(!undoCommand.isEmpty()){
+			undoCommand.pop();
 		}
 	}
 }
