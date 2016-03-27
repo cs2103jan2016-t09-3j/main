@@ -151,7 +151,7 @@ public class TNotesParser {
 	public void execute(){
 		String output = new String();
 		String input = new String();
-		input = "change directory location to ///";
+		input = "add call mom due 2-2-2 at 3:00 every day";
 		for (int i = 0; i < checkCommand(input).size(); i++){
 			output = checkCommand(input).get(i);// 24 hour clock
 			System.out.println(output);
@@ -527,7 +527,6 @@ public class TNotesParser {
 					list.add(title.trim());
 					list.add(arr[j+1]);
 					list.add(arr[j+2]);
-///////////////////////////////////////////////////////////////////////////////////////	
 				}else if(arr[j+1].equals("this")){
 					for (int num = 1; num <= j - 1; num++) {
 						title += "" + arr[num] + " ";
@@ -653,6 +652,9 @@ public class TNotesParser {
 				
 				list.add(title.trim());
 				list.add(arr[j+1]);
+			}else if(arr[j].equals("every")){
+				list.add("every");
+				list.add("day");
 			}
 			
 		}
