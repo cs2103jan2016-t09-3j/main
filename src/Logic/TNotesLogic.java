@@ -21,8 +21,8 @@ import Storage.TNotesStorage;
 public class TNotesLogic {
 	TNotesStorage storage;
 	ArrayList<TaskFile> taskList = new ArrayList<TaskFile>();
-	
-	public TNotesLogic() throws Exception{
+
+	public TNotesLogic() throws Exception {
 		storage = TNotesStorage.getInstance();
 	}
 	// compare calender to compare timings for various taskfiles.
@@ -37,6 +37,7 @@ public class TNotesLogic {
 			TaskFile currentFile = new TaskFile();
 			String importance = new String();
 			String recurArgument = new String();
+			Calendar cal = Calendar.getInstance();
 
 			assertNotEquals(0, fromParser.size());
 			currentFile.setName(fromParser.remove(0).trim());
@@ -52,6 +53,21 @@ public class TNotesLogic {
 				fromParser.remove("every");
 				currentFile.setIsRecurr(true);
 			}
+			if (fromParser.contains("today")) {
+				DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+				String date = df.format(cal.getTime());
+				fromParser.set(fromParser.indexOf("today"), date);
+			}
+			for(int i = 0; i< fromParser.size(); i++){
+				String day = fromParser.get(i);
+				if (day.equals("monday") || (day.equals("tuesday")) || (day.equals("wednesday"))
+					|| (day.equals("thursday")) || (day.equals("friday"))
+					|| (day.equals("saturday")) || (day.equals("sunday"))) {
+						String date = compareDates(day);
+						fromParser.set(i, date);
+				}
+			}	
+				
 			
 			// System.out.println("adcheck 2" + fromParser.toString());
 			Iterator<String> aListIterator = fromParser.iterator();
@@ -169,7 +185,6 @@ public class TNotesLogic {
 				}
 			}
 			if (currentFile.getIsRecurring()) {
-				Calendar cal = Calendar.getInstance();
 				DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 				ArrayList<String> dateList = new ArrayList<String>();
 				if (recurArgument.equals("day")) {
@@ -208,18 +223,17 @@ public class TNotesLogic {
 		}
 
 	}
-	
-	public String compareDates(String dates){
+
+	public String compareDates(String dates) {
 		Calendar cal = Calendar.getInstance();
 		DateFormat df = new SimpleDateFormat("EEE");
 		DateFormat dF = new SimpleDateFormat("yyyy-MM-dd");
 		String date = df.format(cal.getTime());
-		while(!dates.contains(date)){
-				cal.add(Calendar.DATE, 1);
-			}
+		while (!dates.contains(date)) {
+			cal.add(Calendar.DATE, 1);
+		}
 		return dF.format(cal.getTime());
-		} 
-	
+	}
 
 	protected boolean hasTimingClash(TaskFile currentFile, TaskFile savedTask) {
 		return ((currentFile.getStartCal().before(savedTask.getEndCal())
@@ -321,9 +335,9 @@ public class TNotesLogic {
 	}
 
 	public TaskFile editTask(ArrayList<String> fromParser) throws Exception {
-		
+
 		fromParser.remove(0);
-		
+
 		String type = fromParser.get(1).trim();
 		String title = fromParser.get(0).trim();
 		String newText = fromParser.get(2).trim();
@@ -370,8 +384,8 @@ public class TNotesLogic {
 				return currentFile;
 			} else {
 				System.out.println("did not manage to add to storage");
-			}	
-		}else
+			}
+		} else
 			System.out.println("did not edit");
 		return currentFile;
 	}
@@ -454,7 +468,6 @@ public class TNotesLogic {
 		}
 	}
 
-
 	// Sort name
 	public ArrayList<TaskFile> sortTaskList() throws Exception {
 		ArrayList<String> masterList = storage.readFromMasterFile();
@@ -520,67 +533,66 @@ public class TNotesLogic {
 		return null;
 
 	}
-	
-	public TaskFile editRecurringTask(ArrayList<String> fromParser)throws Exception{
 
-			String type = fromParser.get(1).trim();
-			String title = fromParser.get(0).trim();
-			String newText = fromParser.get(2).trim();
-			TaskFile currentFile = storage.getTaskFileByName(title);
-			RecurringTaskFile recurTask = new RecurringTaskFile(currentFile);
-			ArrayList<String> dateList = null;
-			recurTask.addRecurringStartDate(dateList);
-				
-			System.err.println(currentFile.getStartDate() + " " + currentFile.getStartTime());
-			if (type.equals("time")) {
-				storage.deleteTask(title);
-				recurTask.setStartTime(newText);
-				
-				if (storage.addRecurringTask(recurTask)) {
-					return recurTask;
-				} else {
-					System.out.println("did not manage to add to storage");
-				}
-			} else if (type.equals("endtime")) {
-				storage.deleteTask(title);
-				currentFile.setEndTime(newText);
-				if (storage.addRecurringTask(recurTask)) {
-					return currentFile;
-				} else {
-					System.out.println("did not manage to add to storage");
-				}
-			} else if (type.equals("date")) {
-				storage.deleteTask(title);
-				currentFile.setStartDate(newText);
-				if (storage.addRecurringTask(recurTask)) {
-					return currentFile;
-				} else {
-					System.out.println("did not manage to add to storage");
-				}
-			} else if (type.equals("enddate")) {
-				storage.deleteTask(title);
-				currentFile.setEndDate(newText);
-				if (storage.addRecurringTask(recurTask)) {
-					return currentFile;
-				} else {
-					System.out.println("did not manage to add to storage");
-				}
-			} else if (type.equals("details")) {
-				storage.deleteTask(title);
-				currentFile.setDetails(newText);
-				if (storage.addRecurringTask(recurTask)) {
-					return currentFile;
-				} else {
-					System.out.println("did not manage to add to storage");
-				}	
-			}else
-				System.out.println("did not edit");
-			return currentFile;
+	public TaskFile editRecurringTask(ArrayList<String> fromParser) throws Exception {
+
+		String type = fromParser.get(1).trim();
+		String title = fromParser.get(0).trim();
+		String newText = fromParser.get(2).trim();
+		TaskFile currentFile = storage.getTaskFileByName(title);
+		RecurringTaskFile recurTask = new RecurringTaskFile(currentFile);
+		ArrayList<String> dateList = null;
+		recurTask.addRecurringStartDate(dateList);
+
+		System.err.println(currentFile.getStartDate() + " " + currentFile.getStartTime());
+		if (type.equals("time")) {
+			storage.deleteTask(title);
+			recurTask.setStartTime(newText);
+
+			if (storage.addRecurringTask(recurTask)) {
+				return recurTask;
+			} else {
+				System.out.println("did not manage to add to storage");
+			}
+		} else if (type.equals("endtime")) {
+			storage.deleteTask(title);
+			currentFile.setEndTime(newText);
+			if (storage.addRecurringTask(recurTask)) {
+				return currentFile;
+			} else {
+				System.out.println("did not manage to add to storage");
+			}
+		} else if (type.equals("date")) {
+			storage.deleteTask(title);
+			currentFile.setStartDate(newText);
+			if (storage.addRecurringTask(recurTask)) {
+				return currentFile;
+			} else {
+				System.out.println("did not manage to add to storage");
+			}
+		} else if (type.equals("enddate")) {
+			storage.deleteTask(title);
+			currentFile.setEndDate(newText);
+			if (storage.addRecurringTask(recurTask)) {
+				return currentFile;
+			} else {
+				System.out.println("did not manage to add to storage");
+			}
+		} else if (type.equals("details")) {
+			storage.deleteTask(title);
+			currentFile.setDetails(newText);
+			if (storage.addRecurringTask(recurTask)) {
+				return currentFile;
+			} else {
+				System.out.println("did not manage to add to storage");
+			}
+		} else
+			System.out.println("did not edit");
+		return currentFile;
 	}
-	
-	
-	 public TaskFile deleteRecurringTask(ArrayList<String> fromParser) throws Exception{
-		 return storage.deleteTask(fromParser.get(0));
-	 }
+
+	public TaskFile deleteRecurringTask(ArrayList<String> fromParser) throws Exception {
+		return storage.deleteTask(fromParser.get(0));
+	}
 
 }
