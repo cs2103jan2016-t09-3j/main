@@ -264,11 +264,11 @@ public class TaskFile implements Comparable<TaskFile>, Cloneable {
 		} else if (!endDate.isEmpty() && endTime.isEmpty()) {
 			setEndTime(DEFAULT_TIME);
 		} else {
-			assertTrue(startDate.isEmpty());
-			assertTrue(startTime.isEmpty());
-			assertTrue(endDate.isEmpty());
-			assertTrue(endTime.isEmpty());
+			assertTrue((startDate.isEmpty() && startTime.isEmpty() && endDate.isEmpty() && endTime.isEmpty())
+						|| (!startDate.isEmpty() && !startTime.isEmpty() && !endDate.isEmpty() &&
+						!endTime.isEmpty()));
 		}
+		
 	}
 
 	private String getCurrentDate() {
