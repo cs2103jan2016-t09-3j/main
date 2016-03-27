@@ -151,7 +151,7 @@ public class TNotesParser {
 	public void execute(){
 		String output = new String();
 		String input = new String();
-		input = "add task details hello what are you doing";
+		input = "change directory location to ///";
 		for (int i = 0; i < checkCommand(input).size(); i++){
 			output = checkCommand(input).get(i);// 24 hour clock
 			System.out.println(output);
@@ -186,12 +186,9 @@ public class TNotesParser {
 				
 				return list;	
 			case "delete" :
-				String title = new String();
-				list.add(firstWord);
-				for (int j = 1; j < arr.length; j++) {
-					title += "" + arr[j]+" ";
-				}
-				list.add(title);
+				//list.add(firstWord);
+				list.addAll(deleteCommand(arr));
+				
 				return list;
 			case "search" :
 				list.add(firstWord);
@@ -213,10 +210,86 @@ public class TNotesParser {
 				list.add(firstWord);
 				
 				return list;
+			case "set" :
+				list.add(firstWord);
+				list.addAll(setCommand(arr));
 				
+				return list;
+			case "change" :
+				list.addAll(changeCommand(arr));
+				
+				return list;
 		}
 
 		return list;
+	}
+	
+///////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////change//////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////
+
+	public ArrayList <String> changeCommand(String[] arr){
+		ArrayList<String> list = new ArrayList<String>();
+		list.add("change directory");
+		for (int  f= 1;  f< arr.length ; f++){
+			if(arr[f].equals("to")){
+				list.add(arr[f+1].trim());
+			}
+		}
+		return list;
+
+	}
+///////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////delete//////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////
+	
+	public ArrayList <String> deleteCommand(String[] arr){
+		String title = new String();
+		ArrayList<String> list = new ArrayList<String>();
+		if(arr[1].equals("directory")){
+			list.add("delete directory");
+			list.add(arr[2].trim());
+		}
+		else{
+			for (int j = 1; j < arr.length; j++) {
+				title += "" + arr[j]+" ";
+			}
+			list.add("delete");
+			list.add(title.trim());
+		}
+		return list;
+	
+	}
+	
+	
+	
+	
+///////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////Set//////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////
+
+	public ArrayList <String> setCommand(String[] arr){
+		String title = new String();
+		ArrayList<String> list = new ArrayList<String>();
+		if(checkDone(arr[arr.length-1]) == 1){
+			for(int i = 1; i<arr.length-1;i++){
+				title += arr[i] + " ";
+			}
+			list.add(title.trim());
+			list.add(arr[arr.length-1].trim());
+		}
+		return list;
+	}
+
+	public int checkDone(String lastWord){
+		String done[] = {"done", "undone", "complete", "incomplete"};
+		for(int i=0;i<done.length;i++){
+			if(lastWord.equals(done[i])){
+				return 1;
+			}
+		}
+		
+		return 0;
 	}
 ///////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////SORT//////////////////////////////////////////////////
@@ -340,6 +413,22 @@ public class TNotesParser {
 				list.add(arr[f].trim());
 				list.add(arr[f+1].trim());
 			}
+			else if(arr[f].equals("startTime") || arr[f].equals("endTime")){
+				for(int i =1;i<f ;i++){
+					title += arr[i]+" ";
+				}
+				list.add(title.trim());
+				list.add(arr[f]);
+				list.add(formatTime(arr[f+1]).toString());
+			}
+			else if(arr[f].equals("startDate") || arr[f].equals("endDate")){
+				for(int i =1;i<f ;i++){
+					title += arr[i]+" ";
+				}
+				list.add(title.trim());
+				list.add(arr[f]);
+				list.add(formatDate(arr[f+1]));
+			}
 		}
 		for(int i =1;i<arr.length ;i++){
 			title += arr[i]+" ";
@@ -448,12 +537,21 @@ public class TNotesParser {
 					list.add(thisString);
 				}
 				else{
-					for (int num = 1; num <= j - 1; num++) {
-						title += "" + arr[num] + " ";
+					if(checkTime(arr[j+1])==1){
+						for (int num = 1; num <= j - 1; num++) {
+							title += "" + arr[num] + " ";
+						}
+						list.add(title.trim());
+						list.add(formatTime(arr[j + 1]).toString().trim());
+						
+					}else{
+						
+						for (int num = 1; num <= j - 1; num++) {
+							title += "" + arr[num] + " ";
+						}
+						list.add(title.trim());
+						list.add(formatDate(arr[j + 1]).trim());
 					}
-					list.add(title.trim());
-					String addDate = formatDate(arr[j + 1]);
-					list.add(addDate.trim());
 				}
 ///////////////////////////////////////////////////////////////////////////////////////	
 			} else if (arr[j].equals("at")) {
