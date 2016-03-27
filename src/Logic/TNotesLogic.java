@@ -274,7 +274,7 @@ public class TNotesLogic {
 	public ArrayList<String> sortViewTypes(ArrayList<String> fromParser) {
 		ArrayList<String> stringList = new ArrayList<String>();
 		String viewType = fromParser.get(1);
-		if (viewType.contains("-")||viewType.contains("today")) {
+		if (viewType.contains("-") || viewType.contains("today")) {
 			stringList.add("isViewDateList");
 		} else {
 			stringList.add("isViewTask");
@@ -410,15 +410,19 @@ public class TNotesLogic {
 			} else {
 				System.out.println("did not manage to add to storage");
 			}
-		} else if(type.equals("important")){
+		} else if (type.equals("important")) {
 			storage.deleteTask(title);
-			currentFile.setImportance(Boolean.valueOf(newText));
-			if(storage.addTask(currentFile)){
+			if (newText.equals("yes")) {
+				currentFile.setImportance(true);
+			} else {
+				currentFile.setImportance(false);
+			}
+			if (storage.addTask(currentFile)) {
 				return currentFile;
-			}else{
+			} else {
 				System.out.println("did not manage to add to storage");
 			}
-		}else{
+		} else {
 			System.out.println("did not edit");
 		}
 		return currentFile;
