@@ -206,6 +206,8 @@ public class TNotesLogic {
 				} else {
 					recurArgument.contains("day");
 					String date = compareDates(recurArgument);
+					Date dateToStart = df.parse(date);
+					cal.setTime(dateToStart);
 					for (int i = 0; i < 8; i++) {
 						dateList.add(df.format(cal.getTime()));
 						cal.add(Calendar.WEEK_OF_YEAR, 1);
