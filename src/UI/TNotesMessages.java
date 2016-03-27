@@ -90,7 +90,7 @@ public class TNotesMessages {
 
 	public void setViewHelpMessages() {
 		viewHelpArray = new ArrayList<String>();
-		viewHelpArray.add("====Help====");
+		viewHelpArray.add("====View====");
 		viewHelpArray.add("view [date]");
 		viewHelpArray.add("view [day]");
 		viewHelpArray.add("view [task]");
