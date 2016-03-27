@@ -23,31 +23,26 @@ public class LogicUnit {
 		String commandChecker = fromParser.remove(0);
 		LogicCommand newTask = new LogicCommand(fromParser.get(0));
 		if (commandChecker.equals("add")) {
-			if (fromParser.contains("every")) {
-				newTask.setTask(comAdd.addRecurringTask(fromParser));
-			} else {
-				newTask.setTask(comAdd.addTask(fromParser));
-			}
+			newTask.setTask(comAdd.whichAdd(fromParser));
 		} else if (commandChecker.equals("delete")) {
 			newTask.setTask(comDelete.deleteTask(fromParser));
 		} else if (commandChecker.equals("edit")) {
-			newTask.setTask(CommandEdit(fromParser));
+			newTask.setTask(comEdit.whichEdit(fromParser));
 		} else if (commandChecker.equals("sort")) {
-			sortTask();
+			comSort.whichSort(fromParser);
 		} else if (commandChecker.equals("search")) {
 			searchTask(string);
-		}else if(commandChecker.equals("undo")){
+		} else if (commandChecker.equals("undo")) {
 			undoCall();
-		}else if(commandChecker.equals("redo")){
+		} else if (commandChecker.equals("redo")) {
 			redoCall();
-		}
-		else {
+		} else {
 			System.out.println("task did not pass thru checker");
 		}
 		doCommand.push(newTask);
-		while (!undoCommand.isEmpty()) {
-			undoCommand.pop();
-		}
+		// while (!undoCommand.isEmpty()) {
+		// undoCommand.pop();
+		// }
 	}
 
 	public void undoCall() {
@@ -57,16 +52,20 @@ public class LogicUnit {
 			LogicCommand currentCommand = doCommand.pop();
 			String commandType = currentCommand.getCommandType();
 			if (commandType.equals("add")) {
-				currentCommand.setTask(CommandDelete(details));
+				storage.deleteTask(currentCommand.getTask().getName());
 			} else if (commandType.equals("delete")) {
-				currentCommand.setTask(CommandAdd(details));
+				storage.addTask(currentCommand.getTask());
 			} else if (commandType.equals("edit")) {
-				currentCommand.setTask(CommandEdit(details));
+				storage.deleteTask(currentCommand.getTask().getName());
+				storage.addTask(comEdit.getOldTask());
 			} else {
 				System.out.println("task did not pass thru checker");
 			}
-			undoCommand.push(currentTask);
+			undoCommand.push(currentCommand);
 		}
+		// while (!redoCommand.isEmpty()) {
+		// undoCommand.pop();
+		// }
 	}
 
 	public void redoCall() {
@@ -75,12 +74,13 @@ public class LogicUnit {
 		} else {
 			LogicCommand currentCommand = undoCommand.pop();
 			String commandType = currentCommand.getCommandType();
-			if (currentCommand.equals("add")) {
-				currentTask.setTask(CommandAdd(details));
-			} else if (currentCommand.equals("delete")) {
-				currentTask.setTask(CommandDelete(details));
-			} else if (currentCommand.equals("edit")) {
-				currentTask.setTask(CommandEdit(details));
+			if (commandType.equals("add")) {
+				storage.addTask(currentCommand.getTask());
+			} else if (commandType.equals("delete")) {
+				storage.deleteTask(currentCommand.getTask().getName());
+			} else if (commandType.equals("edit")) {
+				storage.deleteTask(currentCommand.getTask().getName());
+				storage.addTask(comEdit.getOldTask());
 			} else {
 				System.out.println("task did not pass thru checker");
 			}

@@ -32,12 +32,12 @@ public class RecurringTaskFile extends TaskFile {
 		this.recurringInterval = interval;
 	}
 	
-	public void addRecurringStartDate(String date) {
-		listOfRecurStartDates.add(date);
+	public void addRecurringStartDate(ArrayList<String> date) {
+		this.listOfRecurStartDates = date;
 	}
 	
-	public void addRecurringEndDate(String date) {
-		listOfRecurEndDates.add(date);
+	public void addRecurringEndDate(ArrayList<String> date) {
+		this.listOfRecurEndDates = date;
 	}
 	
 	public String getRecurringInterval() {

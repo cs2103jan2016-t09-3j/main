@@ -6,45 +6,73 @@ import Object.TaskFile;
 
 public class CommandEdit extends TNotesLogic {
 	private TaskFile oldTask;
+	
+	public TaskFile getOldTask() {
+		return oldTask;
+	}
+
+	public void setOldTask(TaskFile oldTask) {
+		this.oldTask = oldTask;
+	}
+
+	
+	public TaskFile whichEdit(ArrayList<String> fromParser){
+		oldTask = storage.getTaskFileByName(fromParser.get(0));
+		return editTask(fromParser);
+		
+	}
+	
 	public TaskFile editTask(ArrayList<String> fromParser) {
-		// System.err.println(fromParser.toString());
-		String type = fromParser.get(1);
-		String title = fromParser.get(0);
-		String newText = fromParser.get(2);
-		TaskFile currentFile = new TaskFile();
-		TaskFile changedFile = new TaskFile();
+
+		String type = fromParser.get(1).trim();
+		String title = fromParser.get(0).trim();
+		String newText = fromParser.get(2).trim();
+		TaskFile currentFile = storage.getTaskFileByName(title);
+
+		System.err.println(currentFile.getStartDate() + " " + currentFile.getStartTime());
 		if (type.equals("time")) {
-			currentFile = storage.deleteTask(title);
+			storage.deleteTask(title);
 			currentFile.setStartTime(newText);
-			changedFile = currentFile;
-			if(storage.addTask(currentFile)){
-					return changedFile;
-			}
-			else{
+
+			if (storage.addTask(currentFile)) {
+				return currentFile;
+			} else {
 				System.out.println("did not manage to add to storage");
 			}
 		} else if (type.equals("endtime")) {
-			currentFile = storage.deleteTask(title);
+			storage.deleteTask(title);
 			currentFile.setEndTime(newText);
-			changedFile = storage.addTask(currentFile);
-			return changedFile;
+			if (storage.addTask(currentFile)) {
+				return currentFile;
+			} else {
+				System.out.println("did not manage to add to storage");
+			}
 		} else if (type.equals("date")) {
-			currentFile = storage.deleteTask(title);
+			storage.deleteTask(title);
 			currentFile.setStartDate(newText);
-			changedFile = storage.addTask(currentFile);
-			return changedFile;
+			if (storage.addTask(currentFile)) {
+				return currentFile;
+			} else {
+				System.out.println("did not manage to add to storage");
+			}
 		} else if (type.equals("enddate")) {
-			currentFile = storage.deleteTask(title);
+			storage.deleteTask(title);
 			currentFile.setEndDate(newText);
-			changedFile = storage.addTask(currentFile);
-			return changedFile;
+			if (storage.addTask(currentFile)) {
+				return currentFile;
+			} else {
+				System.out.println("did not manage to add to storage");
+			}
 		} else if (type.equals("details")) {
-			currentFile = storage.deleteTask(title);
+			storage.deleteTask(title);
 			currentFile.setDetails(newText);
-			changedFile = storage.addTask(currentFile);
-			return changedFile;
+			if (storage.addTask(currentFile)) {
+				return currentFile;
+			} else {
+				System.out.println("did not manage to add to storage");
+			}
 		} else
 			System.out.println("did not edit");
-		return changedFile;
+		return currentFile;
 	}
 }

@@ -1,41 +1,45 @@
 package Logic;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Iterator;
 
 import Object.TaskFile;
 
 public class CommandAdd extends TNotesLogic {
 
-	public void whichTask(ArrayList<String> fromParser){
+	public TaskFile whichAdd(ArrayList<String> fromParser){
 		if(fromParser.contains("every")){
-			addRecurTask(fromParser);
+			return addRecurTask(fromParser);
 		}
 		else{
-			addTask(fromParser);
+			return addTask(fromParser);
 		}
 	}
 
 	public TaskFile addRecurTask(ArrayList<String> fromParser) {
-
+		TaskFile newTask = new TaskFile();
+		return newTask;
 	}
 
 	public TaskFile addTask(ArrayList<String> fromParser) {
 		try {
+			// System.out.println("addcheck " + fromParser.toString());
 
 			ArrayList<String> stringList = storage.readFromMasterFile();
 			TaskFile currentFile = new TaskFile();
-			boolean isRecurr = false;
 			String importance = new String();
 			String recurArgument = new String();
-			// assert size != 0
-			currentFile.setName(fromParser.remove(0));
+
+			assertNotEquals(0, fromParser.size());
+			currentFile.setName(fromParser.remove(0).trim());
 
 			if (fromParser.contains("important")) {
-				importance = fromParser.remove(fromParser.indexOf("importance"));
+				importance = fromParser.remove(fromParser.indexOf("important"));
 				currentFile.setImportance(importance);
 			}
 
@@ -46,15 +50,20 @@ public class CommandAdd extends TNotesLogic {
 				currentFile.setIsRecurr(true);
 			}
 
-			for (String details : fromParser) {
+			// System.out.println("adcheck 2" + fromParser.toString());
+			Iterator<String> aListIterator = fromParser.iterator();
+			while (aListIterator.hasNext()) {
+				String details = aListIterator.next();
 				if (!details.contains(":") && !details.contains("-")) {
 					currentFile.setDetails(details);
-					fromParser.remove(details);
+					aListIterator.remove();
 				}
 			}
+
 			System.err.println(fromParser.toString());
 			switch (fromParser.size()) {
 			case 1:
+
 				if (fromParser.get(0).contains("-")) {
 					currentFile.setStartDate(fromParser.get(0));
 				} else {
@@ -65,7 +74,7 @@ public class CommandAdd extends TNotesLogic {
 				break;
 			case 2:
 				if (fromParser.get(0).contains("-")) {
-					currentFile.setStartDate(fromParser.get(2));
+					currentFile.setStartDate(fromParser.get(0));
 
 					if (fromParser.get(1).contains("-")) {
 						currentFile.setEndDate(fromParser.get(1));
@@ -100,14 +109,18 @@ public class CommandAdd extends TNotesLogic {
 							currentFile.setStartTime(fromParser.get(2));
 						}
 
-					} else if (fromParser.get(1).contains("-")) {
+					} else {
+
+						assertTrue(fromParser.get(1).contains("-"));
 						currentFile.setEndDate(fromParser.get(1));
 
 						assertTrue(fromParser.get(2).contains(":"));
 						currentFile.setEndTime(fromParser.get(2));
 					}
 
-				} else if (fromParser.get(0).contains(":")) {
+				} else {
+
+					assertTrue(fromParser.get(0).contains(":"));
 					currentFile.setStartTime(fromParser.get(0));
 
 					assertTrue(fromParser.get(1).contains("-"));
@@ -138,58 +151,32 @@ public class CommandAdd extends TNotesLogic {
 				assertEquals(0, fromParser.size());
 			}
 			currentFile.setUpTaskFile();
-			if (currentFile.getIsRecurring()) {
-				Calendar firstRecurDate = currentFile.getStartCal();
-				Calendar endRecurDate = currentFile.getEndCal();
-				if (recurArgument.equals("day")) {
-					for (int i = 0; i < 10; i++) {
-						TaskFile test = 
-						firstRecurDate.add(Calendar.DATE, 1);
-						currentFile.setStartCal();
-						endRecurDate.add(Calendar.DATE, 1);
-						currentFile.setEndCal();
-						storage.addRecurTask(currentFile);
+
+			// only check if the task is a meeting
+			if (currentFile.getIsMeeting()) {
+				for (String savedTaskName : stringList) {
+					// System.out.println("2." + savedTaskName);
+					TaskFile savedTask = storage.getTaskFileByName(savedTaskName);
+					if (savedTask.getIsMeeting()) {
+						if (hasTimingClash(currentFile, savedTask)) {
+							// task clashes, should not add
+							return null;
+						}
 					}
-				} else if (recurArgument.equals("week")) {
-					for (int i = 0; i < 3; i++) {
-						firstRecurDate.add(Calendar.DATE, 7);
-						currentFile.setStartCal();
-						endRecurDate.add(Calendar.DATE, 7);
-						currentFile.setEndCal();
-					}
-					storage.addRecurTask(currentFile);
-				}else if (recurArgument.equals("month")){
-					for(int i = 0; i<4;i++){
-						firstRecurDate.add(Calendar.MONTH,1);
-						currentFile.setStartCal(firstRecurDate);
-						endRecurDate.add(Calendar.MONTH,1 );
-						currentFile.setEndCal();
-					}
-					storage.addRecurTask(currentFile);
-				}
-				else if(recurArgument.equals("year")){
-					for(int i = 0; i < 1;i++){
-						firstRecurDate.add(Calendar.YEAR, 1);
-						currentFile.setStartCal();
-						endRecurDate.add(Calendar.YEAR, 1);
-					}
-					storage.addRecurTask(currentFile);					
-				}
-				else{
-					System.out.println("Error");
 				}
 			}
-			if(storage.addTask(currentFile)){
+			if (storage.addTask(currentFile)) {
 				return currentFile;
+			} else {
+				return null;
 			}
 
-		}catch(
+		} catch (AssertionError aE) {
+			// means the switch statement got invalid arguments
+			// throw instead of return
+			return null;
+		}
 
-	AssertionError aE)
-
-	{
-		// means the switch statement got invalid arguments
-		// throw instead of return
-		return false;
 	}
 }
+
