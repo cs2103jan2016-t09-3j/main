@@ -381,6 +381,11 @@ public class TNotesStorage {
 		return fManager.deleteMasterDirectory();
 	}
 	
+	public boolean deleteDirectory(String directory) {
+		File directoryToDelete = fManager.appendParentDirectory(directory);
+		return fManager.deleteAllFilesAndFolders(directoryToDelete);
+	}
+	
 	public boolean clearMasterFiles() throws Exception {
 		ArrayList<String> deleteMasterList = new ArrayList<String>(readFromMasterFile());
 		for(String taskName: deleteMasterList) {

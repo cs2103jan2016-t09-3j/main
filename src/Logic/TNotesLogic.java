@@ -311,7 +311,8 @@ public class TNotesLogic {
 				}
 			}
 		}
-
+		
+		Collections.sort(taskListToBeDisplayed);
 		return taskListToBeDisplayed;
 	}
 
@@ -332,6 +333,7 @@ public class TNotesLogic {
 				taskListToBeDisplayed.add(currentFile);
 			}
 		}
+		Collections.sort(taskListToBeDisplayed);
 		return taskListToBeDisplayed;
 	}
 
@@ -524,7 +526,7 @@ public class TNotesLogic {
 				allTaskList.add(currentFile);
 			}
 		}
-		Collections.sort(allTaskList);
+		Collections.sort(allTaskList, new NameComparator());
 		taskList.clear();
 		return allTaskList;
 	}
@@ -539,7 +541,7 @@ public class TNotesLogic {
 				dateList.add(currentFile);
 			}
 		}
-		Collections.sort(dateList, new NameComparator());
+		Collections.sort(dateList);
 
 		return dateList;
 	}
@@ -550,13 +552,13 @@ public class TNotesLogic {
 
 	public String changeDirectory(String directoryName) throws Exception {
 		if (storage.setNewDirectory(directoryName)) {
-			storage.clearMasterDirectory();
+		
 		}
 		return ("Directory changed");
 	}
 
-	public boolean deleteDirectory() {
-		if (storage.clearMasterDirectory()) {
+	public boolean deleteDirectory(String directory) {
+		if (storage.deleteDirectory(directory)) {
 			return true;
 		} else {
 			return false;
