@@ -6,29 +6,23 @@ import Object.TaskFile;
 
 public interface TNoteLogicMethods {
 	
-	//done
+	
 	public TaskFile addTask(ArrayList<String> parserOutput);
-
-	//done
+	
 	public TaskFile deleteTask(ArrayList<String> parserOutput);
 
-	//done
 	public TaskFile editTask(ArrayList<String> parserOutput);
 	
-	//done
 	public TaskFile viewTask(ArrayList<String> parserOutput);
 	
 	public ArrayList<String> sortViewTypes(ArrayList<String> parserOutput);
-	
-	//IF you passing us just the date string, this metohd not needed? // ok
-	//public ArrayList<TaskFile> viewDateList(ArrayList<String> parserOutput);
-	
+
 	public ArrayList<TaskFile> viewDateList(String date);
+
+	public ArrayList<TaskFile> viewManyDateList(ArrayList<String> parserOutput);
 	
-	/*NEW*/ // KIV
 	public ArrayList<TaskFile> viewFloatingList();
 
-	// this might be hard, may face further problems. tell you all next time
 	public ArrayList<TaskFile> sortTaskByName(ArrayList<String> parserOutput);
 	
 	public ArrayList<TaskFile> sortTaskByImportance() ;
@@ -37,7 +31,6 @@ public interface TNoteLogicMethods {
 	
 	public TaskFile searchTask(String taskname);
 	
-	//same if abv method implemented, this dont need?
 	public ArrayList<TaskFile> searchTask(ArrayList<String> parserOutput);
 
 	// joelle u need both new and old directories?
