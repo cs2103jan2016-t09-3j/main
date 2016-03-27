@@ -10,6 +10,7 @@ public class TNotesMessages {
 	public ArrayList<String> editHelpArray;
 	public ArrayList<String> searchHelpArray;
 	public ArrayList<String> sortHelpArray;
+	public ArrayList<String> miscHelpArray;
 	
 	public ArrayList<String> allHelpArray;
 	
@@ -21,6 +22,7 @@ public class TNotesMessages {
 		setEditHelpMessages();
 		setSortHelpMessages();
 		setSearchHelpMessages();
+		setMiscHelpMessages();
 		setAllHelpMessages();
 	}
 
@@ -49,6 +51,10 @@ public class TNotesMessages {
 		return sortHelpArray;
 	}
 	
+	public ArrayList<String> getMiscHelpMessages() {
+		return miscHelpArray;
+	}
+	
 	public ArrayList<String> getAllHelpMessages(){
 		return allHelpArray;
 	}
@@ -62,6 +68,7 @@ public class TNotesMessages {
 		mergeArrays(deleteHelpArray);
 		mergeArrays(editHelpArray);
 		mergeArrays(sortHelpArray);
+		mergeArrays(miscHelpArray);
 		mergeArrays(searchHelpArray);
 	}
 
@@ -143,6 +150,18 @@ public class TNotesMessages {
 		sortHelpArray.add("\n");
 
 	}
+	
+	public void setMiscHelpMessages() {
+		miscHelpArray = new ArrayList<String>();
+		miscHelpArray.add("====Misc====");
+		miscHelpArray.add("set [task] done/undone");
+		miscHelpArray.add("change directory location to [new directory path]");
+		miscHelpArray.add("delete directory [directory path]");
+		miscHelpArray.add("\n");
+
+	}
+	
+	
 	
 	// Misc
 	

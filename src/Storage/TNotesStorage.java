@@ -377,10 +377,23 @@ public class TNotesStorage {
 		return false;
 	}
 
-	public boolean clearMasterDirectory() {
-		return fManager.clearMasterDirectory();
+	public boolean deleteMasterDirectory() {
+		return fManager.deleteMasterDirectory();
 	}
-
+	
+	public boolean deleteDirectory(String directory) {
+		File directoryToDelete = fManager.appendParentDirectory(directory);
+		return fManager.deleteAllFilesAndFolders(directoryToDelete);
+	}
+	
+	public boolean clearMasterFiles() throws Exception {
+		ArrayList<String> deleteMasterList = new ArrayList<String>(readFromMasterFile());
+		for(String taskName: deleteMasterList) {
+			deleteTask(taskName);
+		}
+		return true;
+	}
+	
 	public boolean setNewDirectory(String newDirectory) throws Exception {
 		return fManager.setNewDirectory(newDirectory.trim());
 	}

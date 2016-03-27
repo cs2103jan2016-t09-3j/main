@@ -10,7 +10,8 @@ import Parser.TNotesParser;
 public class TNotesUI {
 
 	enum COMMAND_TYPE {
-		ADD_COMMAND, EDIT_COMMAND, DELETE_COMMAND, VIEW_COMMAND, INVALID, SEARCH_COMMAND, SORT_COMMAND, HELP_COMMAND, EXIT
+		ADD_COMMAND, CHANGE_DIRECTORY, DELETE_DIRECTORY, EDIT_COMMAND, DELETE_COMMAND, VIEW_COMMAND, INVALID, 
+		SET_COMMAND, SEARCH_COMMAND, SORT_COMMAND, HELP_COMMAND, EXIT
 	}
 
 	TNotesParser parser;
@@ -104,14 +105,32 @@ public class TNotesUI {
 			}
 
 			break;
-
+			
+		case CHANGE_DIRECTORY:
+			String directoryPath = userCommandSplit.get(1);
+			if(logic.changeDirectory(directoryPath)){
+				result = "You have succesfully changed directory.\n";
+			}
+			else {
+				result = "Directory did not change.\n";
+			}
+			break;
+		case DELETE_DIRECTORY:
+			String directoryPath = userCommandSplit.get(1);
+			if(logic.deleteDirectory(directoryPath)){
+				result = "You have succesfully deleted directory.\n";
+			}
+			else {
+				result = "Directory was not deleted.\n";
+			}
+			break;
 		case EDIT_COMMAND:
 
 			TaskFile oldTaskFile = new TaskFile();
 
 			try {
-				oldTaskFile = logic.searchSingleTask(userCommandSplit.get(1));
-				String editType = userCommandSplit.get(2);
+				oldTaskFile = logic.searchSingleTask(userCommandSplit.get(1).trim());
+				String editType = userCommandSplit.get(2).trim();
 
 				taskFile = logic.editTask(userCommandSplit);
 
@@ -139,10 +158,12 @@ public class TNotesUI {
 					result = String.format("You have changed the details in \"%s\" from [%s] to [%s]!\n",
 							taskFile.getName(), oldTaskFile.getDetails(), taskFile.getDetails());
 				}
-				if (editType.equals("Status")) {
-					result = String.format("You have changed the status in \"%s\" from [%s] to [%s]!\n",
-							taskFile.getName(), oldTaskFile.getIsDone(), taskFile.getIsDone());
-				}
+				// if (editType.equals("Status")) {
+				// result = String.format("You have changed the status in \"%s\"
+				// from [%s] to [%s]!\n",
+				// taskFile.getName(), oldTaskFile.getIsDone(),
+				// taskFile.getIsDone());
+				// }
 				if (editType.equals("Reccuring")) {
 					result = String.format("You have set recurring in \"%s\" from [%s] to [%s]!\n", taskFile.getName(),
 							oldTaskFile.getIsRecurring(), taskFile.getIsRecurring());
@@ -165,7 +186,7 @@ public class TNotesUI {
 					arrN = logic.viewDateList(taskFile.getStartDate());
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
-					e.getMessage();
+					result = e.getMessage();
 				}
 
 				result += String.format("Your NEW schedule for %s:\n", taskFile.getStartDate());
@@ -260,6 +281,24 @@ public class TNotesUI {
 			}
 			break;
 
+		case SET_COMMAND:
+			String taskName = userCommandSplit.get(1);
+			String taskStatus = userCommandSplit.get(2);
+			try {
+				boolean status = logic.toggleStatus(taskName);
+
+				result = String.format("You have changed the status in \"%s\" from [%s] to ", taskName, taskStatus);
+				if (status == true) {
+					result += "done\n";
+				}
+				if (status == false) {
+					result += "undone\n";
+				}
+			} catch (Exception e) {
+				result = e.getMessage();
+			}
+			break;
+
 		case SEARCH_COMMAND:
 			// might have a problem when details becomes too long, either add
 			// newline char or set some
@@ -272,8 +311,14 @@ public class TNotesUI {
 					result = String.format("Searching for \"%s\" ... This is what I've found:\n",
 							userCommandSplit.get(1));
 					for (int i = 0; i < arrSearch.size(); i++) {
-						result += i + 1 + ". " + String.format("[%s] [%s] %s\n", arrSearch.get(i).getStartDate(),
-								arrSearch.get(i).getStartTime(), arrSearch.get(i).getName());
+						if (arrSearch.get(i).getIsTask()) {
+							result += i + 1 + ". " + String.format("%s\n", arrSearch.get(i).getName());
+						}
+
+						else {
+							result += i + 1 + ". " + String.format("[%s] [%s] %s\n", arrSearch.get(i).getStartDate(),
+									arrSearch.get(i).getStartTime(), arrSearch.get(i).getName());
+						}
 					}
 				} else {
 					result += "Nothing was found..\n";
@@ -346,6 +391,10 @@ public class TNotesUI {
 	private COMMAND_TYPE determineCommandType(String commandString) {
 		if (checkCommand(commandString, "add")) {
 			return COMMAND_TYPE.ADD_COMMAND;
+		} else if (checkCommand(commandString, "change directory")) {
+			return COMMAND_TYPE.CHANGE_DIRECTORY;
+		} if (checkCommand(commandString, "delete directory")) {
+			return COMMAND_TYPE.DELETE_DIRECTORY;
 		} else if (checkCommand(commandString, "edit")) {
 			return COMMAND_TYPE.EDIT_COMMAND;
 		} else if (checkCommand(commandString, "delete")) {
@@ -354,6 +403,8 @@ public class TNotesUI {
 			return COMMAND_TYPE.VIEW_COMMAND;
 		} else if (checkCommand(commandString, "search")) {
 			return COMMAND_TYPE.SEARCH_COMMAND;
+		} else if (checkCommand(commandString, "set")) {
+			return COMMAND_TYPE.SET_COMMAND;
 		} else if (checkCommand(commandString, "sort")) {
 			return COMMAND_TYPE.SORT_COMMAND;
 		} else if (checkCommand(commandString, "help")) {

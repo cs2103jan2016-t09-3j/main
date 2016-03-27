@@ -359,7 +359,23 @@ public class TaskFile implements Comparable<TaskFile>, Cloneable {
 
 	@Override
 	public int compareTo(TaskFile taskFile) {
-		return this.getName().compareTo(taskFile.getName());
+		if (getIsTask()) {
+			if (taskFile.getIsTask()) {
+				return getName().compareTo(taskFile.getName());
+			} else {
+				return -1;
+			}
+		} else {
+			if (taskFile.getIsTask()) {
+				return 1;
+			} else {
+				if (getStartCal().equals(taskFile.getStartCal())) {
+					return getName().compareTo(taskFile.getName());
+				} else {
+					return getStartCal().compareTo(taskFile.getStartCal());
+				}
+			}
+		} 
 	}
 
 	@Override
