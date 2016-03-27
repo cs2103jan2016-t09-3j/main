@@ -347,11 +347,15 @@ public class TNotesLogic {
 		return taskListToBeDisplayed;
 	}
 
-	public void toggleStatus(TaskFile newTask) {
+	public void toggleStatus(TaskFile newTask) throws Exception {
 		if (newTask.getIsDone()) {
+			storage.deleteTask(newTask.getName());
 			newTask.setIsDone(false);
+			storage.addTask(newTask);
 		} else {
+			storage.deleteTask(newTask.getName());
 			newTask.setIsDone(true);
+			storage.addTask(newTask);
 		}
 	}
 
