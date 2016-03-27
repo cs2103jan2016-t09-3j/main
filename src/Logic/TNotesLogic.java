@@ -224,6 +224,7 @@ public class TNotesLogic {
 	// it
 	// if i want to hold the main Array list
 	public TaskFile deleteTask(ArrayList<String> fromParser) throws Exception {
+		fromParser.remove(0);
 		assertNotEquals(0, fromParser.size());
 		return storage.deleteTask(fromParser.get(0));
 	}
@@ -308,7 +309,9 @@ public class TNotesLogic {
 	}
 
 	public TaskFile editTask(ArrayList<String> fromParser) throws Exception {
-
+		
+		fromParser.remove(0);
+		
 		String type = fromParser.get(1).trim();
 		String title = fromParser.get(0).trim();
 		String newText = fromParser.get(2).trim();
