@@ -108,11 +108,11 @@ public class TNotesUI {
 		case EDIT_COMMAND:
 
 			TaskFile oldTaskFile = new TaskFile();
-			
+
 			try {
 				oldTaskFile = logic.searchSingleTask(userCommandSplit.get(1));
 				String editType = userCommandSplit.get(2);
-				
+
 				taskFile = logic.editTask(userCommandSplit);
 
 				if (editType.equals("name")) {
@@ -198,7 +198,7 @@ public class TNotesUI {
 					if (arrView.get(i).getImportance()) {
 						result += "[IMPORTANT] ";
 					}
-					result += String.format("[%s]\n", arrView.get(i).getName());
+					result += String.format(" %s\n", arrView.get(i).getName());
 				}
 			}
 
@@ -252,7 +252,6 @@ public class TNotesUI {
 					if (taskFile.getImportance()) {
 						result += "Importance: highly important\n";
 					}
-					
 
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
@@ -269,15 +268,19 @@ public class TNotesUI {
 			ArrayList<TaskFile> arrSearch = new ArrayList<TaskFile>();
 			try {
 				arrSearch = logic.searchTask(userCommandSplit);
-
-				result = String.format("Searching for \"%s\" ... This is what I've found:\n", userCommandSplit.get(1));
-				for (int i = 0; i < arrSearch.size(); i++) {
-					result += i + 1 + ". " + String.format("[%s] [%s] %s, %s\n", arrSearch.get(i).getStartDate(),
-							arrSearch.get(i).getStartTime(), arrSearch.get(i).getName(), arrSearch.get(i).getDetails());
+				if (!arrSearch.isEmpty()) {
+					result = String.format("Searching for \"%s\" ... This is what I've found:\n",
+							userCommandSplit.get(1));
+					for (int i = 0; i < arrSearch.size(); i++) {
+						result += i + 1 + ". " + String.format("[%s] [%s] %s\n", arrSearch.get(i).getStartDate(),
+								arrSearch.get(i).getStartTime(), arrSearch.get(i).getName());
+					}
+				} else {
+					result += "Nothing was found..\n";
 				}
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
-				e.getMessage();
+				result = e.getMessage();
 			}
 
 			break;
