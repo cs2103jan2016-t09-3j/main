@@ -108,40 +108,42 @@ public class TNotesUI {
 		case EDIT_COMMAND:
 
 			TaskFile oldTaskFile = new TaskFile();
+			
 			try {
 				oldTaskFile = logic.searchSingleTask(userCommandSplit.get(1));
-
+				String editType = userCommandSplit.get(2);
+				
 				taskFile = logic.editTask(userCommandSplit);
 
-				if (userCommandSplit.get(2).equals("task name")) {
+				if (editType.equals("name")) {
 					result = String.format("You have changed the task name from \"%s\" to \"%s\"!\n",
 							oldTaskFile.getName(), taskFile.getName());
 				}
-				if (userCommandSplit.get(1).equals("time") || userCommandSplit.get(1).equals("startTime")) {
+				if (editType.equals("time") || editType.equals("startTime")) {
 					result = String.format("You have changed the start time in \"%s\" from [%s] to [%s]!\n",
 							taskFile.getName(), oldTaskFile.getStartTime(), taskFile.getStartTime());
 				}
-				if (userCommandSplit.get(2).equals("EndTime")) {
+				if (editType.equals("EndTime")) {
 					result = String.format("You have chaned the end time in \"%s\" from [%s] to [%s]!\n",
 							taskFile.getName(), oldTaskFile.getEndTime(), taskFile.getEndTime());
 				}
-				if (userCommandSplit.get(1).equals("date") || userCommandSplit.get(1).equals("startDate")) {
+				if (editType.equals("date") || editType.equals("startDate")) {
 					result = String.format("You have changed the start date in \"%s\" from [%s] to [%s]!\n",
 							taskFile.getName(), oldTaskFile.getStartDate(), taskFile.getStartDate());
 				}
-				if (userCommandSplit.get(2).equals("EndDate")) {
+				if (editType.equals("EndDate")) {
 					result = String.format("You have changed the end date in \"%s\" from [%s] to [%s]!\n",
 							taskFile.getName(), oldTaskFile.getEndDate(), taskFile.getEndDate());
 				}
-				if (userCommandSplit.get(2).equals("details")) {
+				if (editType.equals("details")) {
 					result = String.format("You have changed the details in \"%s\" from [%s] to [%s]!\n",
 							taskFile.getName(), oldTaskFile.getDetails(), taskFile.getDetails());
 				}
-				if (userCommandSplit.get(2).equals("Status")) {
+				if (editType.equals("Status")) {
 					result = String.format("You have changed the status in \"%s\" from [%s] to [%s]!\n",
 							taskFile.getName(), oldTaskFile.getIsDone(), taskFile.getIsDone());
 				}
-				if (userCommandSplit.get(2).equals("Reccuring")) {
+				if (editType.equals("Reccuring")) {
 					result = String.format("You have set recurring in \"%s\" from [%s] to [%s]!\n", taskFile.getName(),
 							oldTaskFile.getIsRecurring(), taskFile.getIsRecurring());
 				}
@@ -206,7 +208,7 @@ public class TNotesUI {
 					ArrayList<TaskFile> arrF = new ArrayList<TaskFile>();
 					arrF = logic.viewFloatingList();
 					result += "\n";
-					result += "Notes:";
+					result += "Notes:\n";
 					for (int i = 0; i < arrF.size(); i++) {
 						result += i + 1 + ". " + arrF.get(i).getName() + "\n";
 					}
