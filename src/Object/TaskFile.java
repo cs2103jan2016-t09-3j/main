@@ -1,5 +1,6 @@
 package Object;
 
+import static org.junit.Assert.assertTrue;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -51,7 +52,8 @@ import java.util.Date;
  * All task names must be unique
 */
 public class TaskFile implements Comparable<TaskFile>, Cloneable {
-
+	private static final String DEFAULT_TIME = "23:59";
+	
 	protected String name;
 	protected String startDate;
 	protected String startTime;
@@ -255,10 +257,17 @@ public class TaskFile implements Comparable<TaskFile>, Cloneable {
 
 		if (startDate.isEmpty() && !startTime.isEmpty()) {
 			setStartDate(currentDateString);
-		}
-
-		if (endDate.isEmpty() && !endTime.isEmpty()) {
+		} else if (!startDate.isEmpty() && startTime.isEmpty()) {
+			setStartTime(DEFAULT_TIME);
+		} else if (endDate.isEmpty() && !endTime.isEmpty()) {
 			setEndDate(currentDateString);
+		} else if (!endDate.isEmpty() && endTime.isEmpty()) {
+			setEndTime(DEFAULT_TIME);
+		} else {
+			assertTrue(startDate.isEmpty());
+			assertTrue(startTime.isEmpty());
+			assertTrue(endDate.isEmpty());
+			assertTrue(endTime.isEmpty());
 		}
 	}
 
@@ -306,18 +315,11 @@ public class TaskFile implements Comparable<TaskFile>, Cloneable {
 		Date date;
 		SimpleDateFormat stringToDateFormat;
 		
+		stringToDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm");
+
+		dateTimeString = combineDateTime(dateString, timeString);
 		
-		if (timeString.isEmpty()) {
-			stringToDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-
-			date = stringToDateFormat.parse(startDate);
-		} else {
-			stringToDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm");
-
-			dateTimeString = combineDateTime(dateString, timeString);
-			
-			date = stringToDateFormat.parse(dateTimeString);
-		}
+		date = stringToDateFormat.parse(dateTimeString);
 
 		return date;
 	}

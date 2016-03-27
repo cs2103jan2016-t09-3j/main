@@ -43,7 +43,6 @@ public class TNotesStorage {
 	private static final String MAPPING_FILE_NAME = "FileToFolderMapping.txt";
 	private static final String OVERVIEW_FILES_FOLDER_NAME = "overview";
 	private static final String FLOATING_LIST_FILE_NAME = "floatingtasks.txt";
-	
 
 	private static TNotesStorage instance;
 
@@ -59,7 +58,7 @@ public class TNotesStorage {
 	private Map<String, String> masterNameDateMap;
 	private Map<String, ArrayList<String>> recurringTasksStartDateMap;
 	private Map<String, ArrayList<String>> recurringTasksEndDateMap;
-	
+
 	/**
 	 * The constructor for TNotesStorage. Initializes necessary variables and
 	 * creates default files.
@@ -80,10 +79,9 @@ public class TNotesStorage {
 
 		setUpMasterFile();
 		setUpFloatingListFile();
-		
+
 		setUpFolderMap();
 		setUpRecurringMaps();
-		
 
 	}
 
@@ -93,21 +91,21 @@ public class TNotesStorage {
 		}
 		return instance;
 	}
-	
+
 	private void setUpMasterFile() throws Exception {
 		masterFile = createAnOverviewFile(MASTER_FILE_NAME);
-		
+
 		masterList = readFromMasterFile();
 	}
-	
+
 	public ArrayList<String> readFromMasterFile() throws Exception {
 		return readFromListFile(masterFile);
 	}
-	
+
 	public ArrayList<String> readFromFloatingListFile() throws Exception {
 		return readFromListFile(floatingListFile);
 	}
-	
+
 	private void setUpFloatingListFile() throws Exception {
 
 		floatingListFile = createAnOverviewFile(FLOATING_LIST_FILE_NAME);
@@ -116,34 +114,32 @@ public class TNotesStorage {
 	}
 
 	private void setUpRecurringMaps() throws Exception {
-		
+
 		setUpRecurStartDateMap();
-		
+
 		setUpRecurEndDateMap();
 	}
-	
+
 	private void setUpRecurStartDateMap() throws Exception {
-		
+
 		recurringTasksStartDateMap = new HashMap<String, ArrayList<String>>();
 		recurringStartDatesMasterFile = createAnOverviewFile(RECURRING_TASK_START_DATES_FILE_NAME);
-		
+
 		recurringTasksStartDateMap = readFromDateMapFile(recurringStartDatesMasterFile);
 	}
-	
+
 	private void setUpRecurEndDateMap() throws Exception {
-		
+
 		recurringTasksEndDateMap = new HashMap<String, ArrayList<String>>();
 		recurringEndDatesMasterFile = createAnOverviewFile(RECURRING_TASK_END_DATES_FILE_NAME);
-		
+
 		recurringTasksEndDateMap = readFromDateMapFile(recurringEndDatesMasterFile);
 	}
-	
-	
+
 	private Map<String, ArrayList<String>> readFromDateMapFile(File dateMapFile) throws Exception {
 		return fManager.readFromDateMapFile(dateMapFile);
 	}
-	
-	
+
 	private File createAnOverviewFile(String name) throws Exception {
 		File overviewFile = fManager.addDirectoryToFile(overviewFolder, name);
 		fManager.createFile(overviewFile);
@@ -154,16 +150,16 @@ public class TNotesStorage {
 
 	public void setUpFolderMap() throws Exception {
 		masterNameDateMap = new HashMap<String, String>();
-		
+
 		monthMapFile = createAnOverviewFile(MAPPING_FILE_NAME);
 
 		masterNameDateMap = readFromFolderMapFile();
 	}
-	
+
 	public ArrayList<String> readFromListFile(File listFile) throws Exception {
 		return fManager.readFromListFile(listFile);
 	}
-	
+
 	public Map<String, String> readFromFolderMapFile() throws Exception {
 		return fManager.readFromFolderMapFile(monthMapFile);
 	}
@@ -179,43 +175,43 @@ public class TNotesStorage {
 	 */
 	public boolean addTask(TaskFile task) throws Exception {
 		try {
-		String taskName = task.getName();
-		if (taskName.length() > 260) {
-			throw new InvalidFileNameException("Task name is too long.", task.getName());
-		}
+			String taskName = task.getName();
+			if (taskName.length() > 260) {
+				throw new InvalidFileNameException("Task name is too long.", task.getName());
+			}
 
-		if (!masterList.contains(taskName)) {
-			masterList.add(taskName);
+			if (!masterList.contains(taskName)) {
+				masterList.add(taskName);
 
-			String monthFolder;
+				String monthFolder;
 
-			monthFolder = createFolderName(task, taskName);
+				monthFolder = createFolderName(task, taskName);
 
-			masterNameDateMap.put(taskName, monthFolder);
+				masterNameDateMap.put(taskName, monthFolder);
 
-			if (writeTaskToMasterFile(taskName) && writeToMonthMapFile(masterNameDateMap, monthMapFile)) {
-				if (createTaskFile(monthFolder, task)) {
-					if (monthFolder.equals("floating")) {
-						return setUpForFloatingTask(taskName);
-					} else {
-						assertFalse(task.getIsTask());
-						return true;
+				if (writeTaskToMasterFile(taskName) && writeToMonthMapFile(masterNameDateMap, monthMapFile)) {
+					if (createTaskFile(monthFolder, task)) {
+						if (monthFolder.equals("floating")) {
+							return setUpForFloatingTask(taskName);
+						} else {
+							assertFalse(task.getIsTask());
+							return true;
+						}
 					}
+					revertChangesToListFiles(taskName);
+					return false;
 				}
-				revertChangesToListFiles(taskName);
+				masterList.remove(taskName);
 				return false;
 			}
-			masterList.remove(taskName);
-			return false;
-		}
-		throw new TaskExistsException("Task already exists", task.getName());
+			throw new TaskExistsException("Task already exists", task.getName());
 		} catch (IOException ioEx) {
 			revertChangesToListFiles(task.getName());
 			throw ioEx;
 		}
 	}
 
-	private boolean setUpForFloatingTask(String taskName) throws Exception{
+	private boolean setUpForFloatingTask(String taskName) throws Exception {
 		floatingList.add(taskName);
 		return writeTaskToFloatingListFile(taskName);
 	}
@@ -262,13 +258,18 @@ public class TNotesStorage {
 		if (deletedTask.getIsRecurring()) {
 			String deleteRecurringTaskName = deletedTask.getName();
 			ArrayList<String> startDates = recurringTasksStartDateMap.get(deleteRecurringTaskName);
-			
-			for(String otherDates: startDates) {
+
+			for (String otherDates : startDates) {
 				String singleRecurTaskName = deleteRecurringTaskName + "_" + otherDates;
 				deleteTask(singleRecurTaskName);
 			}
+			
+			recurringTasksStartDateMap.remove(taskName);
+			if(deletedTask.getIsMeeting()) {
+				recurringTasksEndDateMap.remove(taskName);
+			}
 		}
-		
+
 		File fileToDelete = getTaskFilePath(taskName.trim());
 
 		if (fManager.deleteFile(fileToDelete)) {
@@ -303,7 +304,7 @@ public class TNotesStorage {
 
 	}
 
-	private File getTaskFilePath(String taskName) throws Exception{
+	private File getTaskFilePath(String taskName) throws Exception {
 
 		String folderName = masterNameDateMap.get(taskName.trim());
 
@@ -391,12 +392,13 @@ public class TNotesStorage {
 			ArrayList<String> recurringStartDates = newRecurringTask.getListOfRecurStartDates();
 			ArrayList<String> recurringEndDates = newRecurringTask.getListOFRecurEndDates();
 			String taskName = newRecurringTask.getName();
-			
+
 			int i = 0;
 			for (String startDate : recurringStartDates) {
 				TaskFile task = newRecurringTask;
 				task.setStartDate(startDate);
 				if (newRecurringTask.getIsMeeting()) {
+					System.out.println(newRecurringTask.getIsMeeting());
 					String endDate = recurringEndDates.get(i++);
 					task.setEndDate(endDate);
 				}
@@ -406,10 +408,10 @@ public class TNotesStorage {
 				addTask(task);
 
 			}
-			
+
 			recurringTasksStartDateMap.put(taskName, recurringStartDates);
 			writeToRecurringMapFile(recurringTasksStartDateMap, recurringStartDatesMasterFile);
-			if(newRecurringTask.getIsMeeting()) {
+			if (newRecurringTask.getIsMeeting()) {
 				recurringTasksEndDateMap.put(taskName, recurringEndDates);
 				writeToRecurringMapFile(recurringTasksEndDateMap, recurringEndDatesMasterFile);
 			}
@@ -417,22 +419,22 @@ public class TNotesStorage {
 		}
 		return false;
 	}
-	
-	public ArrayList<String> getRecurStartDateList (String taskName) {
+
+	public ArrayList<String> getRecurStartDateList(String taskName) {
 		return recurringTasksStartDateMap.get(taskName);
 	}
-	
-	public ArrayList<String> getRecurEndDateList (String taskName) {
+
+	public ArrayList<String> getRecurEndDateList(String taskName) {
 		return recurringTasksEndDateMap.get(taskName);
 	}
-	
+
 	public boolean writeToRecurringMapFile(Map<String, ArrayList<String>> map, File mapFile) throws Exception {
 		if (clearAnOverviewFile(mapFile)) {
 			return fManager.writeToRecurringMapFile(mapFile, map);
 		}
 		return false;
 	}
-	
+
 	private void revertChangesToListFiles(String taskName) throws Exception {
 		masterList.remove(taskName);
 		writeListToMasterFile();

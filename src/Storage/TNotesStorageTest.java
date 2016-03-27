@@ -1,5 +1,6 @@
 package Storage;
 
+import Object.RecurringTaskFile;
 import Object.TaskFile;
 
 import static org.junit.Assert.*;
@@ -23,20 +24,63 @@ public class TNotesStorageTest {
 
 	@After
 	public void tearDown() throws Exception {
-		System.out.println(storage.clearMasterFile());
-		System.out.println("cleared");
-		System.out.println(storage.clearMasterDirectory());
+//		System.out.println(storage.clearMasterFile());
+//		System.out.println("cleared");
+//		System.out.println(storage.clearMasterDirectory());
 	}
 
+//	@Test
+//	public void test() {
+//		try {
+//			TaskFile task1 = new TaskFile("call mom", "2016-02-02", "12:00", "abc", false);
+//			TaskFile task2 = new TaskFile("call dad");
+//
+//			assertTrue(storage.addTask(task1));
+//			assertTrue(storage.addTask(task2));
+//
+//			ArrayList<String> masterFileAL = new ArrayList<String>();
+//
+//			masterFileAL.add("call mom");
+//			masterFileAL.add("call dad");
+//
+//			assertEquals("read from master file", masterFileAL, storage.readFromMasterFile());
+//
+//			String task1String = "Task: call mom, Start Date: 2016-02-02, Start Time: 12:00, End Date: 2016-02-02, End Time: 12:00, Details: abc"
+//					+ ", Importance: 0, IsRecurring: false, IsDone: false";
+//			String task2String = "Task: call dad, Start Date: , Start Time: , End Date: , End Time: , Details: "
+//					+ ", Importance: 0, IsRecurring: false, IsDone: false";
+//			// assertEquals("read individual task files_obj1", task1,
+//			// storage.getTaskFileByName("call mom"));
+//			// assertEquals("read individual task files_obj2", task1,
+//			// storage.getTaskFileByName("call mom"));
+//			assertEquals("read individual task files_1", task1String, storage.getTaskFileByName("call mom").toString());
+//			assertEquals("read individual task files_2", task2String, storage.getTaskFileByName("call dad").toString());
+//
+//			assertNull(storage.deleteTask(""));
+//			assertNull(storage.deleteTask("nonexistent"));
+//
+//			TaskFile task3 = new TaskFile(
+//					"abcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabc");
+//
+//			assertFalse(storage.addTask(task3));
+//
+//			assertTrue(storage.setNewDirectory("C:/newTNoteFolder"));
+//		} catch (Exception ex) {
+//			System.out.println(ex.getMessage());
+//		}
+//	}
+
 	@Test
-	public void test() {
+	public void testRecurring() {
+
 		try {
-			TaskFile task1 = new TaskFile("call mom", "2016-02-02", "12:00", "abc", false);
+
+			TaskFile task1 = new TaskFile();
 			task1.setName("call mom");
 			task1.setStartDate("2016-02-02");
 			task1.setStartTime("12:00");
 			task1.setDetails("abc");
-			task1.setIsRecurr(false);
+			task1.setIsRecurr(true);
 			task1.setUpTaskFile();
 			
 			TaskFile task2 = new TaskFile();
@@ -45,59 +89,33 @@ public class TNotesStorageTest {
 			task2.setStartTime("11:00");
 			task2.setEndDate("2016-02-03");
 			task2.setEndTime("13:00");
+			task2.setIsRecurr(true);
+			
+			task2.setUpTaskFile();
+
+			ArrayList<String> startDates = new ArrayList<String>();
+			startDates.add("2016-02-02");
+			startDates.add("2016-02-03");
+			startDates.add("2016-02-04");
 			
 			
-			assertTrue(storage.addTask(task1));
-			assertTrue(storage.addTask(task2));
-
-			ArrayList<String> masterFileAL = new ArrayList<String>();
-
-			masterFileAL.add("call mom");
-			masterFileAL.add("call dad");
-
-			assertEquals("read from master file", masterFileAL, storage.readFromMasterFile());
-
-			String task1String = "Task: call mom, Start Date: 2016-02-02, Start Time: 12:00, End Date: 2016-02-02, End Time: 12:00, Details: abc"
-					+ ", Importance: 0, IsRecurring: false, IsDone: false";
-			String task2String = "Task: call dad, Start Date: , Start Time: , End Date: , End Time: , Details: "
-					+ ", Importance: 0, IsRecurring: false, IsDone: false";
-			// assertEquals("read individual task files_obj1", task1,
-			// storage.getTaskFileByName("call mom"));
-			// assertEquals("read individual task files_obj2", task1,
-			// storage.getTaskFileByName("call mom"));
-			assertEquals("read individual task files_1", task1String, storage.getTaskFileByName("call mom").toString());
-			assertEquals("read individual task files_2", task2String, storage.getTaskFileByName("call dad").toString());
-
-//			assertNull(storage.deleteTask(""));
-//			assertNull(storage.deleteTask("nonexistent"));
-
-			TaskFile task3 = new TaskFile(
-					"abcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabc");
-
-//			assertFalse(storage.addTask(task3));
-
-//			storage.setNewDirectory("C:/newTNoteFolder");
-		} catch (Exception ex) {
-			System.out.println(ex.getMessage());
+			ArrayList<String> startDates2 = new ArrayList<String>();
+			startDates2.add("2016-02-03");
+			startDates2.add("2016-02-04");
+			startDates2.add("2016-02-05");
+			startDates2.add("2016-02-06");
+			
+			RecurringTaskFile rTask1 = new RecurringTaskFile(task1);
+			rTask1.addRecurringStartDate(startDates);
+			
+			assertTrue(storage.addRecurringTask(rTask1));
+			
+			System.out.println(storage.getTaskFileByName("call mom").toString());
+			
+			storage.deleteTask("call mom");
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
-
-//	@Test
-//	public void testRecurring() {
-//
-//		try {
-//
-//			TaskFile task1 = new TaskFile("call mom", "2016-02-02", "12:00", "abc", false);
-//
-//			ArrayList<String> startDates = new ArrayList<String>();
-//
-//			startDates.add("2016-02-02);
-//			
-//			
-//
-//		} catch (Exception e) {
-//
-//		}
-//	}
 
 }
