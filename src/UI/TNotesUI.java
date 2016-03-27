@@ -170,18 +170,18 @@ public class TNotesUI {
 					 	if(arrView.get(i).getImportance().equals("important")){
 					 		result+="[IMPORTANT] ";
 					 	}
-					 	result+="[%s]"+arrView.get(i).getName() + "\n";
+					 	result+=String.format("[%s]\n", arrView.get(i).getName());
 				 }
 			}
 			
 			// list of floating tasks
 			 if(logic.hasFloatingList()) {
-				 ArrayList<String> arrF = new ArrayList<String>();
+				 ArrayList<TaskFile> arrF = new ArrayList<TaskFile>();
 				 arrF = logic.viewFloatingList();
 				 result+="\n";
 				 result+="Notes:";
 				for(int i=0; i<arrF.size(); i++){
-					result+=i+1 + ". " + arrF.get(i)+"\n";
+					result+=i+1 + ". " + arrF.get(i).getName()+"\n";
 					}
 			 	}
 			 
