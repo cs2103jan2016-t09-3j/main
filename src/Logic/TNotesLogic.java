@@ -194,7 +194,7 @@ public class TNotesLogic {
 				} else if (recurArgument.equals("week")) {
 					for (int i = 0; i < 8; i++) {
 						dateList.add(df.format(cal.getTime()));
-						cal.add(Calendar.WEEK_OF_MONTH, 1);
+						cal.add(Calendar.WEEK_OF_YEAR, 1);
 					}
 
 				} else if (recurArgument.equals("month")) {
@@ -208,7 +208,7 @@ public class TNotesLogic {
 					String date = compareDates(recurArgument);
 					for (int i = 0; i < 8; i++) {
 						dateList.add(df.format(cal.getTime()));
-						cal.add(Calendar.WEEK_OF_MONTH, 1);
+						cal.add(Calendar.WEEK_OF_YEAR, 1);
 					}
 				}
 
