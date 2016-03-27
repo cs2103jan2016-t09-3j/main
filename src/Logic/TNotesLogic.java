@@ -197,16 +197,25 @@ public class TNotesLogic {
 						cal.add(Calendar.WEEK_OF_MONTH, 1);
 					}
 
-				} else {
+				} else if (recurArgument.equals("month")) {
 					for (int i = 0; i < 12; i++) {
 						dateList.add(df.format(cal.getTime()));
 						cal.add(Calendar.MONTH, 1);
 					}
+
+				} else {
+					recurArgument.contains("day");
+					String date = compareDates(recurArgument);
+					for (int i = 0; i < 8; i++) {
+						dateList.add(df.format(cal.getTime()));
+						cal.add(Calendar.WEEK_OF_MONTH, 1);
+					}
 				}
+
 				RecurringTaskFile recurTask = new RecurringTaskFile(currentFile);
 				recurTask.addRecurringStartDate(dateList);
 				storage.addRecurringTask(recurTask);
-					return currentFile;
+				return currentFile;
 			}
 
 			if (storage.addTask(currentFile)) {
@@ -220,7 +229,6 @@ public class TNotesLogic {
 			// throw instead of return
 			return null;
 		}
-
 	}
 
 	public String compareDates(String dates) {
@@ -311,7 +319,7 @@ public class TNotesLogic {
 				}
 			}
 		}
-		
+
 		Collections.sort(taskListToBeDisplayed);
 		return taskListToBeDisplayed;
 	}
