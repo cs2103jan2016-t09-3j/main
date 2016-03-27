@@ -114,8 +114,10 @@ public class TNotesMessages {
 		editHelpArray = new ArrayList<String>();
 		editHelpArray.add("====Edit====");
 		editHelpArray.add("edit [task] name [new value]");
+		editHelpArray.add("edit [task] time [new value]");
 		editHelpArray.add("edit [task] startTime [new value]");
 		editHelpArray.add("edit [task] endTime [new value]");
+		editHelpArray.add("edit [task] date [new value]");
 		editHelpArray.add("edit [task] startDate [new value]");
 		editHelpArray.add("edit [task] endDate [new value]");
 		editHelpArray.add("edit [task] status [complete/incomplete]");

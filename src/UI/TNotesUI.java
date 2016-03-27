@@ -51,9 +51,15 @@ public class TNotesUI {
 		
 		switch(command){
 		case ADD_COMMAND:
-			userCommandSplit.remove(0);
-			taskFile = logic.addTask(userCommandSplit);
-			System.out.println("works");
+		
+			try {
+				taskFile = logic.addTask(userCommandSplit);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				// String
+				e.getMessage();
+			}
+			
 			// Floating task case
 			if(taskFile.getIsTask()){
 				result+=String.format("I have added \"%s\" to your schedule!\n", taskFile.getName().trim());			
@@ -97,16 +103,26 @@ public class TNotesUI {
 		case EDIT_COMMAND:
 		
 				TaskFile oldTaskFile = new TaskFile();
+			try {
 				oldTaskFile = logic.searchSingleTask(userCommandSplit.get(1));
-				System.out.println("oldTaskFile");
-				userCommandSplit.remove(0);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.getMessage();
+			}
+			
+			
+			try {
 				taskFile = logic.editTask(userCommandSplit);
-				System.out.println("newTaskFile");
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.getMessage();
+			}
+			
 				if(userCommandSplit.get(2).equals("task name")){
 					result = String.format("You have changed the task name from \"%s\" to \"%s\"!\n",
 							oldTaskFile.getName(),taskFile.getName());
 				}
-				if(userCommandSplit.get(1).equals("time")){
+				if(userCommandSplit.get(1).equals("time")||userCommandSplit.get(1).equals("startTime")){
 					result = String.format("You have changed the start time in \"%s\" from [%s] to [%s]!\n",
 							taskFile.getName(),oldTaskFile.getStartTime(),taskFile.getStartTime());
 				}
@@ -114,7 +130,7 @@ public class TNotesUI {
 					result = String.format("You have chaned the end time in \"%s\" from [%s] to [%s]!\n",
 							 taskFile.getName(), oldTaskFile.getEndTime(), taskFile.getEndTime());
 				}
-				if(userCommandSplit.get(1).equals("date")){
+				if(userCommandSplit.get(1).equals("date")|| userCommandSplit.get(1).equals("startDate")){
 					result = String.format("You have changed the start date in \"%s\" from [%s] to [%s]!\n",
 							 taskFile.getName(), oldTaskFile.getStartDate(), taskFile.getStartDate());
 				}
@@ -140,11 +156,21 @@ public class TNotesUI {
 			break;
 			
 		case DELETE_COMMAND:
-				userCommandSplit.remove(0);
+				
+			try {
 				taskFile = logic.deleteTask(userCommandSplit);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.getMessage();
+			}
 				result = String.format("I have deleted \"%s\" from your schedule for you!\n\n", taskName);
 				ArrayList<TaskFile> arrN = new ArrayList<TaskFile>();
+			try {
 				arrN = logic.viewDateList(taskFile.getStartDate());
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.getMessage();
+			}
 				
 				result += String.format("Your NEW schedule for %s:\n", taskFile.getStartDate());
 				for(int i=0; i<arrN.size(); i++) {
@@ -163,7 +189,12 @@ public class TNotesUI {
 		if(viewType.get(0).equals("isViewDateList")) {
 				 String date = userCommandSplit.get(1);
 				ArrayList<TaskFile> arrView = new ArrayList<TaskFile>();
-				 arrView = logic.viewDateList(date);
+				 try {
+					arrView = logic.viewDateList(date);
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.getMessage();
+				}
 				 result = String.format("Your schedule for %s:\n",userCommandSplit.get(1));
 				 for(int i=0; i<arrView.size(); i++) {
 					 result+=i+1 +". " + "["+ arrView.get(i).getStartTime()+"]" ;
@@ -175,19 +206,29 @@ public class TNotesUI {
 			}
 			
 			// list of floating tasks
-			 if(logic.hasFloatingList()) {
-				 ArrayList<TaskFile> arrF = new ArrayList<TaskFile>();
-				 arrF = logic.viewFloatingList();
-				 result+="\n";
-				 result+="Notes:";
-				for(int i=0; i<arrF.size(); i++){
-					result+=i+1 + ". " + arrF.get(i).getName()+"\n";
-					}
-			 	}
+			 try {
+				if(logic.hasFloatingList()) {
+					 ArrayList<TaskFile> arrF = new ArrayList<TaskFile>();
+					 arrF = logic.viewFloatingList();
+					 result+="\n";
+					 result+="Notes:";
+					for(int i=0; i<arrF.size(); i++){
+						result+=i+1 + ". " + arrF.get(i).getName()+"\n";
+						}
+				 	}
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.getMessage();
+			}
 			 
 			
 			 if(viewType.get(0).equals("isViewTask")){
-				 taskFile = logic.viewTask(userCommandSplit.get(1));
+				 try {
+					taskFile = logic.viewTask(userCommandSplit.get(1));
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.getMessage();
+				}
 				 result = String.format("Displaying the task \"%s\":\n\n",taskFile.getName());
 				 	if(taskFile.getIsTask()){
 				 		result+= "Date: -\n";
@@ -228,7 +269,12 @@ public class TNotesUI {
 			// sort of limitation in gui
 			
 				ArrayList<TaskFile> arrSearch = new ArrayList<TaskFile>();
+			try {
 				arrSearch = logic.searchTask(userCommandSplit);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.getMessage();
+			}
 				result = String.format("Searching for \"%s\" ... This is what I've found:\n",taskName);
 				for(int i=0; i<arrSearch.size(); i++) {
 					result+= i+1 + ". " + String.format("[%s] [%s] %s, %s\n",
@@ -247,12 +293,22 @@ public class TNotesUI {
 			if(sortType.equals("importance")){
 				result = "I have sorted everything by importance for you. Do first things first!\n\n";
 				
-				arrSort = logic.sortImportTask();
+				try {
+					arrSort = logic.sortImportTask();
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 			
 			if(sortType.equals("name")){
 				result = "I have sorted everything by name for you! I'm so amazing, what would you do without me!";
-				arrSort = logic.sortDateTask(); // change name
+				try {
+					arrSort = logic.sortDateTask();
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} // change name
 			}
 			
 			result+=String.format("You new schedule for %s: \n\n",userCommandSplit.get(1));
