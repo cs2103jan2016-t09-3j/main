@@ -300,7 +300,7 @@ public class TNotesLogic {
 		return null;
 	}
 
-	public TaskFile viewManyDatesList(ArrayList<String> dates) throws Exception {
+	public ArrayList<TaskFile> viewManyDatesList(ArrayList<String> dates) throws Exception {
 		ArrayList<String> stringList = storage.readFromMasterFile();
 		ArrayList<TaskFile> taskListToBeDisplayed = new ArrayList<TaskFile>();
 		for (String date : dates) {
@@ -312,7 +312,7 @@ public class TNotesLogic {
 			}
 		}
 
-		return null;
+		return taskListToBeDisplayed;
 	}
 
 	// show the task by date
