@@ -228,12 +228,14 @@ public class TNotesLogic {
 		Calendar cal = Calendar.getInstance();
 		DateFormat df = new SimpleDateFormat("EEE");
 		DateFormat dF = new SimpleDateFormat("yyyy-MM-dd");
-		String date = df.format(cal.getTime());
+		String date = df.format(cal.getTime()).toLowerCase();
 		while (!dates.contains(date)) {
 			cal.add(Calendar.DATE, 1);
+			date = df.format(cal.getTime()).toLowerCase();
 		}
 		return dF.format(cal.getTime());
 	}
+	
 
 	protected boolean hasTimingClash(TaskFile currentFile, TaskFile savedTask) {
 		return ((currentFile.getStartCal().before(savedTask.getEndCal())
@@ -297,6 +299,21 @@ public class TNotesLogic {
 			}
 		}
 		// taskFile not found
+		return null;
+	}
+	public TaskFile viewManyDatesList(ArrayList<String> dates) throws Exception{
+		ArrayList<String> stringList = storage.readFromMasterFile();
+		ArrayList<TaskFile> taskListToBeDisplayed = new ArrayList<TaskFile>();
+		for(String date : dates){
+			for(String text : stringList){
+				TaskFile currentFile = storage.getTaskFileByName(text);
+				if (currentFile.getStartDate().equals(date)){
+				taskListToBeDisplayed.add(currentFile);
+				}
+			}
+		}
+		
+		
 		return null;
 	}
 
