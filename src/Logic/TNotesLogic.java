@@ -42,8 +42,8 @@ public class TNotesLogic {
 			currentFile.setName(fromParser.remove(0).trim());
 
 			if (fromParser.contains("important")) {
-				importance = fromParser.remove(fromParser.indexOf("important"));
-				currentFile.setImportance(importance);
+				fromParser.remove(fromParser.indexOf("important"));
+				currentFile.setImportance(true);
 			}
 
 			if (fromParser.contains("every")) {
@@ -52,7 +52,7 @@ public class TNotesLogic {
 				fromParser.remove("every");
 				currentFile.setIsRecurr(true);
 			}
-
+			
 			// System.out.println("adcheck 2" + fromParser.toString());
 			Iterator<String> aListIterator = fromParser.iterator();
 			while (aListIterator.hasNext()) {
@@ -170,7 +170,7 @@ public class TNotesLogic {
 			}
 			if (currentFile.getIsRecurring()) {
 				Calendar cal = Calendar.getInstance();
-				DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+				DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 				ArrayList<String> dateList = new ArrayList<String>();
 				if (recurArgument.equals("day")) {
 					for (int i = 0; i < 14; i++) {
@@ -208,6 +208,18 @@ public class TNotesLogic {
 		}
 
 	}
+	
+	public String compareDates(String dates){
+		Calendar cal = Calendar.getInstance();
+		DateFormat df = new SimpleDateFormat("EEE");
+		DateFormat dF = new SimpleDateFormat("yyyy-MM-dd");
+		String date = df.format(cal.getTime());
+		while(!dates.contains(date)){
+				cal.add(Calendar.DATE, 1);
+			}
+		return dF.format(cal.getTime());
+		} 
+	
 
 	protected boolean hasTimingClash(TaskFile currentFile, TaskFile savedTask) {
 		return ((currentFile.getStartCal().before(savedTask.getEndCal())
@@ -421,7 +433,7 @@ public class TNotesLogic {
 		}
 		masterList.clear();
 		for (TaskFile newFile : taskList) {
-			if (newFile.getImportance().equals("important")) {
+			if (newFile.getImportance()) {
 				importList.add(newFile);
 				taskList.remove(newFile);
 			}
