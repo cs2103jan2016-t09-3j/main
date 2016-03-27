@@ -259,14 +259,17 @@ public class TaskFile implements Comparable<TaskFile>, Cloneable {
 			setStartDate(currentDateString);
 		} else if (!startDate.isEmpty() && startTime.isEmpty()) {
 			setStartTime(DEFAULT_TIME);
-		} else if (endDate.isEmpty() && !endTime.isEmpty()) {
+		} else {
+			assertTrue((startDate.isEmpty() && startTime.isEmpty() || !startDate.isEmpty() && !startTime.isEmpty()));
+		}
+		
+		
+		if (endDate.isEmpty() && !endTime.isEmpty()) {
 			setEndDate(currentDateString);
 		} else if (!endDate.isEmpty() && endTime.isEmpty()) {
 			setEndTime(DEFAULT_TIME);
 		} else {
-			assertTrue((startDate.isEmpty() && startTime.isEmpty() && endDate.isEmpty() && endTime.isEmpty())
-						|| (!startDate.isEmpty() && !startTime.isEmpty() && !endDate.isEmpty() &&
-						!endTime.isEmpty()));
+			assertTrue((endDate.isEmpty() && endTime.isEmpty() || !endDate.isEmpty() && !endTime.isEmpty()));
 		}
 		
 	}
