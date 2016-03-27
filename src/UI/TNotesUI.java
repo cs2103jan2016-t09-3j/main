@@ -288,10 +288,9 @@ public class TNotesUI {
 			try {
 				taskFile = logic.searchSingleTask(taskName.trim()); 
 				boolean taskStatus = taskFile.getIsDone();
-					
-				boolean status = logic.toggleStatus(taskName);
-
+				String currStatus = userCommandSplit.get(2);
 				result = String.format("You have changed the status in \"%s\" from ", taskName);
+				
 				if(taskStatus == true){
 					result += "[DONE] to ";
 				}
@@ -299,12 +298,18 @@ public class TNotesUI {
 					result += "[UNDONE] to ";
 				}
 				
-				if (status == true) {
-					result += "[DONE]\n";
+				if(currStatus.equals("done")){
+					if(logic.setStatus(true)){
+						result+= "[DONE]\n";
+					}
 				}
-				if (status == false) {
-					result += "[UNDONE]\n";
+				
+				if(currStatus.equals("undone")){
+					if(logic.setStatus(false)){
+						result+= "[UNDONE]\n";
+					}
 				}
+				
 			} catch (Exception e) {
 				result = e.getMessage();
 			}
