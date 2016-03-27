@@ -19,17 +19,16 @@ import Object.TaskFile;
 import Storage.TNotesStorage;
 
 public class TNotesLogic {
-	TNotesStorage storage = TNotesStorage.getInstance();
+	TNotesStorage storage;
 	ArrayList<TaskFile> taskList = new ArrayList<TaskFile>();
 
 	// compare calender to compare timings for various taskfiles.
 	// for blocking out timings, need to check if the timing for task to be
 	// added is available.
 
-	public TaskFile addTask(ArrayList<String> fromParser) {
+	public TaskFile addTask(ArrayList<String> fromParser) throws Exception {
 		try {
 			// System.out.println("addcheck " + fromParser.toString());
-
 			ArrayList<String> stringList = storage.readFromMasterFile();
 			TaskFile currentFile = new TaskFile();
 			String importance = new String();
@@ -220,14 +219,14 @@ public class TNotesLogic {
 	// currently has issue, need to make a new object, compare it, then remove
 	// it
 	// if i want to hold the main Array list
-	public TaskFile deleteTask(ArrayList<String> fromParser) {
+	public TaskFile deleteTask(ArrayList<String> fromParser) throws Exception {
 		assertNotEquals(0, fromParser.size());
 		return storage.deleteTask(fromParser.get(0));
 	}
 
 	// currently gets a array list String, converts to array list taskFile, then
 	// checks if any is done. returns new array list without done task/
-	public ArrayList<TaskFile> displayList() {
+	public ArrayList<TaskFile> displayList() throws Exception {
 		ArrayList<String> stringList = storage.readFromMasterFile();
 		ArrayList<TaskFile> taskToBeDisplayed = new ArrayList<TaskFile>();
 
@@ -254,7 +253,7 @@ public class TNotesLogic {
 
 	// Show the details of a single task
 	// will take in the name of the task,
-	public TaskFile viewTask(String taskToBeDisplayed) {
+	public TaskFile viewTask(String taskToBeDisplayed) throws Exception {
 		ArrayList<String> stringList = storage.readFromMasterFile();
 
 		for (String text : stringList) {
@@ -272,7 +271,7 @@ public class TNotesLogic {
 
 	// show the task by date
 	// take in a date string?
-	public ArrayList<TaskFile> viewDateList(String date) {
+	public ArrayList<TaskFile> viewDateList(String date) throws Exception {
 		ArrayList<String> stringList = storage.readFromMasterFile();
 		ArrayList<TaskFile> taskListToBeDisplayed = new ArrayList<TaskFile>();
 		for (String text : stringList) {
@@ -284,7 +283,7 @@ public class TNotesLogic {
 		return taskListToBeDisplayed;
 	}
 
-	public ArrayList<TaskFile> viewFloatingList() {
+	public ArrayList<TaskFile> viewFloatingList() throws Exception {
 		ArrayList<String> stringList = storage.readFromFloatingListFile();
 		ArrayList<TaskFile> taskListToBeDisplayed = new ArrayList<TaskFile>();
 		for (String text : stringList) {
@@ -304,7 +303,7 @@ public class TNotesLogic {
 		}
 	}
 
-	public TaskFile editTask(ArrayList<String> fromParser) {
+	public TaskFile editTask(ArrayList<String> fromParser) throws Exception {
 
 		String type = fromParser.get(1).trim();
 		String title = fromParser.get(0).trim();
@@ -358,7 +357,7 @@ public class TNotesLogic {
 		return currentFile;
 	}
 
-	public TaskFile searchSingleTask(String lineOfText) {
+	public TaskFile searchSingleTask(String lineOfText) throws Exception {
 		ArrayList<String> masterList = storage.readFromMasterFile();
 		TaskFile oldTask = new TaskFile();
 		for (String text : masterList) {
@@ -371,7 +370,7 @@ public class TNotesLogic {
 
 	// searches for a word or phrase within the storage, returns array list of
 	// taskfile
-	public ArrayList<TaskFile> searchTask(ArrayList<String> lineOfText) {
+	public ArrayList<TaskFile> searchTask(ArrayList<String> lineOfText) throws Exception {
 		for (String text : lineOfText) {
 			System.out.println(text);
 		}
@@ -404,7 +403,7 @@ public class TNotesLogic {
 
 	// importance sort
 	// assumption, importance always placed first , regardless of sort.
-	public ArrayList<TaskFile> sortImportTask() {
+	public ArrayList<TaskFile> sortImportTask() throws Exception {
 		ArrayList<String> masterList = storage.readFromMasterFile();
 		ArrayList<TaskFile> importList = new ArrayList<TaskFile>();
 		for (String text : masterList) {
@@ -427,7 +426,7 @@ public class TNotesLogic {
 		return importList;
 	}
 
-	public boolean hasFloatingList() {
+	public boolean hasFloatingList() throws Exception {
 		ArrayList<String> list = storage.readFromFloatingListFile();
 		if (list.isEmpty()) {
 			return false;
@@ -451,7 +450,7 @@ public class TNotesLogic {
 	}
 
 	// Sort name
-	public ArrayList<TaskFile> sortTaskList() {
+	public ArrayList<TaskFile> sortTaskList() throws Exception {
 		ArrayList<String> masterList = storage.readFromMasterFile();
 		ArrayList<TaskFile> allTaskList = new ArrayList<TaskFile>();
 		for (String text : masterList) {
@@ -466,7 +465,7 @@ public class TNotesLogic {
 	}
 
 	// sort date
-	public ArrayList<TaskFile> sortDateTask() {
+	public ArrayList<TaskFile> sortDateTask() throws Exception {
 		ArrayList<String> masterList = storage.readFromMasterFile();
 		ArrayList<TaskFile> dateList = new ArrayList<TaskFile>();
 		for (String text : masterList) {
@@ -484,7 +483,7 @@ public class TNotesLogic {
 		System.out.println(lineOfText);
 	}
 
-	public String changeDirectory(String directoryName) {
+	public String changeDirectory(String directoryName) throws Exception {
 		if (storage.setNewDirectory(directoryName)) {
 			storage.clearMasterDirectory();
 		}
@@ -515,13 +514,14 @@ public class TNotesLogic {
 		return null;
 
 	}
-	//
-	// public TaskFile editRecurringTask(ArrayList<String> parserOutput){
-	// return null;
-	// }
-	//
-	// public TaskFile deleteRecurringTask(ArrayList<String> parserOutput){
-	// return null;
-	// }
+	
+	 public TaskFile editRecurringTask(ArrayList<String> fromParser){
+		 
+	 return null;
+	 }
+	
+	 public TaskFile deleteRecurringTask(ArrayList<String> fromParser) throws Exception{
+		 return storage.deleteTask(fromParser.get(0));
+	 }
 
 }

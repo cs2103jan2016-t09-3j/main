@@ -26,7 +26,7 @@ public interface TNoteLogicMethods {
 	public ArrayList<TaskFile> viewDateList(String date);
 	
 	/*NEW*/ // KIV
-	public ArrayList<String> viewFloatingList();
+	public ArrayList<TaskFile> viewFloatingList();
 
 	// this might be hard, may face further problems. tell you all next time
 	public ArrayList<TaskFile> sortTaskByName(ArrayList<String> parserOutput);

@@ -10,15 +10,18 @@ public class LogicUnit {
 	Stack<LogicCommand> undoCommand = new Stack<LogicCommand>();
 	ArrayList<String> taskDetails = new ArrayList<String>();
 
-	TNotesStorage storage = TNotesStorage.getInstance();
-	boolean isRecurring = false;
+	TNotesStorage storage;
 
 	CommandAdd comAdd = new CommandAdd();
 	CommandDelete comDelete = new CommandDelete();
 	CommandEdit comEdit = new CommandEdit();
 	CommandSort comSort = new CommandSort();
 	CommandView comView = new CommandView();
-
+	
+	public LogicUnit() throws Exception{
+		storage = TNotesStorage.getInstance();
+	}
+		
 	public TaskFile addTask(ArrayList<String> fromParser) {
 		String commandChecker = fromParser.remove(0);
 		LogicCommand newCommand = new LogicCommand(fromParser.get(0));
@@ -64,13 +67,16 @@ public class LogicUnit {
 		return newTaskList;
 	}
 
-	public void undoCall() {
+	public TaskFile undoCall() {
 		if (doCommand.isEmpty()) {
 			System.out.println("No task in List");
+			return null;
 		} else {
 			LogicCommand currentCommand = doCommand.pop();
 			String commandType = currentCommand.getCommandType();
+			TaskFile newTask = new TaskFile(currentCommand.getTask());
 			if (commandType.equals("add")) {
+				newTask = currentCommand.getTask();
 				storage.deleteTask(currentCommand.getTask().getName());
 			} else if (commandType.equals("delete")) {
 				storage.addTask(currentCommand.getTask());
@@ -81,15 +87,14 @@ public class LogicUnit {
 				System.out.println("task did not pass through checker");
 			}
 			undoCommand.push(currentCommand);
+			return newTask;
 		}
-		// while (!redoCommand.isEmpty()) {
-		// undoCommand.pop();
-		// }
 	}
 
-	public void redoCall() {
+	public TaskFile redoCall() {
 		if (undoCommand.isEmpty()) {
 			System.out.println("No task in List");
+			return null;
 		} else {
 			LogicCommand currentCommand = undoCommand.pop();
 			String commandType = currentCommand.getCommandType();
@@ -104,6 +109,7 @@ public class LogicUnit {
 				System.out.println("task did not pass through checker");
 			}
 			doCommand.push(currentCommand);
+			return TaskFile;
 		}
 	}
 	private void emptyStack(){
