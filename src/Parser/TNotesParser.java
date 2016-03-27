@@ -116,12 +116,12 @@ public class TNotesParser {
 			"H:MM", "HH:M", "HH:MM",
 			"h:mma", "hh:ma", "hh:mma",
 			"H:MMA", "HH:MA", "HH:MMA",
-			"H:mma", "HH:ma", "HH:ma",
+			"H:mma", "HH:ma", "HH:ma","ha",
 			"h:mm a", "hh:m a", "hh:mm a",
 			"H:MM A", "HH:M A", "HH:MM A",
 			"H:mm a", "HH:m a", "HH:m a",
 			
-			"hmm", "hhm", "hhmm",
+			"hmm", "hhm", "hhmm","HHmm",
 			"HMM", "HHM", "HHMM",
 			"hmma", "hhma", "hhmma",
 			"HMMA", "HHMA", "HHMMA",
@@ -131,7 +131,7 @@ public class TNotesParser {
 			"Hmm a", "HHm a", "HHm a",
 			
 			 
-			"h.mm", "hh.m", "hh.mm",
+			"h.mm", "hh.m", "hh.mm","HH.mm",
 			"H.MM", "HH.M", "HH.MM",
 			"h.mma", "hh.ma", "hh.mma",
 			"H.MMA", "HH.MA", "HH.MMA",
@@ -151,7 +151,7 @@ public class TNotesParser {
 	public void execute(){
 		String output = new String();
 		String input = new String();
-		input = "add call mom from 2-2-2 to 3-3-3";
+		input = "add task details hello what are you doing";
 		for (int i = 0; i < checkCommand(input).size(); i++){
 			output = checkCommand(input).get(i);// 24 hour clock
 			System.out.println(output);
@@ -174,6 +174,7 @@ public class TNotesParser {
 				list.add(firstWord);
 				//System.out.println(firstWord.length());
 				list.addAll(addCommand(arr));
+				//System.out.println(list);
 				return list;
 			case "view" :
 				list.add(firstWord);
@@ -331,6 +332,14 @@ public class TNotesParser {
 					String editDate = formatDate(title_afterDate.trim());
 					list.add(editDate);
 			}
+			else if(arr[f].equals("status")){
+				for(int i =1;i<f ;i++){
+					title += arr[i]+" ";
+				}
+				list.add(title.trim());
+				list.add(arr[f].trim());
+				list.add(arr[f+1].trim());
+			}
 		}
 		for(int i =1;i<arr.length ;i++){
 			title += arr[i]+" ";
@@ -345,7 +354,7 @@ public class TNotesParser {
 ///////////////////////////////////////////////////////////////////////////////////////
 	public int onlyKeyAt(String[] arr) {
 		for(int i=0;i<arr.length;i++){
-			if(arr[i].equals("due") || arr[i].equals("from")){
+			if(arr[i].equals("due") || arr[i].equals("from") || arr[i].equals("details")){
 				return 0;
 			}
 		}
@@ -396,6 +405,9 @@ public class TNotesParser {
 ///////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////ADDCOMMAND//////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////	
+///////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////ADDCOMMAND//////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////	
 	
 	public ArrayList<String> addCommand(String[] arr){
 		String title = new String();
@@ -417,20 +429,21 @@ public class TNotesParser {
 		}
 		//System.out.println(titleOrig);
 		for (int j = 0; j < arr.length; j++) {
-
+///////////////////////////////////////////////////////////////////////////////////////	
 			if (arr[j].equals("due")) {
 				if(arr[j+1].equals("every")){
 					for (int num = 1; num <= j - 1; num++) {
 						title += "" + arr[num] + " ";
 					}
-					list.add(title);
+					list.add(title.trim());
 					list.add(arr[j+1]);
 					list.add(arr[j+2]);
+///////////////////////////////////////////////////////////////////////////////////////	
 				}else if(arr[j+1].equals("this")){
 					for (int num = 1; num <= j - 1; num++) {
 						title += "" + arr[num] + " ";
 					}
-					list.add(title);
+					list.add(title.trim());
 					thisString = "this"+" "+ arr[j+2];
 					list.add(thisString);
 				}
@@ -438,27 +451,34 @@ public class TNotesParser {
 					for (int num = 1; num <= j - 1; num++) {
 						title += "" + arr[num] + " ";
 					}
-					list.add(title);
+					list.add(title.trim());
 					String addDate = formatDate(arr[j + 1]);
-					list.add(addDate);
+					list.add(addDate.trim());
 				}
+///////////////////////////////////////////////////////////////////////////////////////	
 			} else if (arr[j].equals("at")) {
-				if(onlyKeyAt(arr) == 1){
+				if(onlyKeyAt(arr) == 1 && checkTime(arr[j+1])==1){
 					for(int i=1;i<arr.length-2;i++){
 						title +=arr[i]+" ";
 					}
-					list.add(title);
+					list.add(title.trim());
 					if(arr.length >= j+3){
 						atTimePMAM = arr[j+2];
 						String temp = arr[j + 1] +" "+ timeAMPM(atTimePMAM);
-						//System.out.println(temp);
 						list.add(formatTime(temp).toString());
 					}
 					else{
-						list.add(formatTime(arr[j + 1]).toString());
+						list.add(formatTime(arr[j+1]).toString());
 					}
 				}
-				else{
+				if(onlyKeyAt(arr) == 1 && checkTime(arr[j+1])==0){
+					for(int i=1;i<arr.length-2;i++){
+						title +=arr[i]+" ";
+					}
+					list.add(title.trim());
+					list.add(formatDate(arr[j+1]));
+					
+				}else if(onlyKeyAt(arr) == 0){
 					if(arr.length >= j+3){
 						atTimePMAM = arr[j+2];
 						String temp = arr[j + 1] +" "+ timeAMPM(atTimePMAM);
@@ -469,17 +489,17 @@ public class TNotesParser {
 						list.add(formatTime(arr[j + 1]).toString());
 					}
 				}
-				
+///////////////////////////////////////////////////////////////////////////////////////	
 			} else if(arr[j].equals("from")){
 				for (int num = 1; num <= j - 1; num++) {
 					title += "" + arr[num] + " ";
 				}
 				
-				list.add(title);
+				list.add(title.trim());
 				if(checkTime(arr[j+1])==0){
 					list.add(formatDate(arr[j + 1]));
 				}
-				else{
+				else if(checkTime(arr[j+1])==1){
 					if(arr.length >= j+3){
 						atTimePMAM = arr[j+2];
 						String temp = arr[j + 1] +" "+ timeAMPM(atTimePMAM);
@@ -489,8 +509,8 @@ public class TNotesParser {
 					else{
 						list.add(formatTime(arr[j + 1]).toString());
 					}
-					//list.add(arr[j+1]);
 				}
+///////////////////////////////////////////////////////////////////////////////////////	
 			}else if(arr[j].equals("to")){
 				if(checkTime(arr[j+1])==0){
 					list.add(formatDate(arr[j + 1]));
@@ -505,33 +525,35 @@ public class TNotesParser {
 					else{
 						list.add(formatTime(arr[j + 1]).toString());
 					}
-					//list.add(arr[j+1]);
 				}
+///////////////////////////////////////////////////////////////////////////////////////	
 			}else if(arr[j].equals("details")){
 				if(onlyKeyDetails(arr) == 1){
 					for(int i=1;i<j;i++){
 						title +=arr[i]+" ";
 					}
-					list.add(title);
+					list.add(title.trim());
 					for (int num = j+1; num < arr.length; num++) {
 						details += "" + arr[num] + " ";
 					}
-					list.add(details);
+					//list.add("details");
+					list.add(details.trim());
 				}
 				else{
 					for (int num = j+1; num < arr.length; num++) {
 						details += "" + arr[num] + " ";
 					}
-					list.add(details);
+					//list.add("details");
+					list.add(details.trim());
 				}
 				
-				
+///////////////////////////////////////////////////////////////////////////////////////	
 			}else if(arr[j].equals("on")){
 				for (int num = 1; num <= j - 1; num++) {
 					title += "" + arr[num] + " ";
 				}
 				
-				list.add(title);
+				list.add(title.trim());
 				list.add(arr[j+1]);
 			}
 			
