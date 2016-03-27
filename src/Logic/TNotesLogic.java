@@ -58,17 +58,16 @@ public class TNotesLogic {
 				String date = df.format(cal.getTime());
 				fromParser.set(fromParser.indexOf("today"), date);
 			}
-			for(int i = 0; i< fromParser.size(); i++){
+			for (int i = 0; i < fromParser.size(); i++) {
 				String day = fromParser.get(i);
 				if (day.equals("monday") || (day.equals("tuesday")) || (day.equals("wednesday"))
-					|| (day.equals("thursday")) || (day.equals("friday"))
-					|| (day.equals("saturday")) || (day.equals("sunday"))) {
-						String date = compareDates(day);
-						fromParser.set(i, date);
+						|| (day.equals("thursday")) || (day.equals("friday")) || (day.equals("saturday"))
+						|| (day.equals("sunday"))) {
+					String date = compareDates(day);
+					fromParser.set(i, date);
 				}
-			}	
-				
-			
+			}
+
 			// System.out.println("adcheck 2" + fromParser.toString());
 			Iterator<String> aListIterator = fromParser.iterator();
 			while (aListIterator.hasNext()) {
@@ -235,7 +234,6 @@ public class TNotesLogic {
 		}
 		return dF.format(cal.getTime());
 	}
-	
 
 	protected boolean hasTimingClash(TaskFile currentFile, TaskFile savedTask) {
 		return ((currentFile.getStartCal().before(savedTask.getEndCal())
@@ -301,30 +299,36 @@ public class TNotesLogic {
 		// taskFile not found
 		return null;
 	}
-	public TaskFile viewManyDatesList(ArrayList<String> dates) throws Exception{
+
+	public TaskFile viewManyDatesList(ArrayList<String> dates) throws Exception {
 		ArrayList<String> stringList = storage.readFromMasterFile();
 		ArrayList<TaskFile> taskListToBeDisplayed = new ArrayList<TaskFile>();
-		for(String date : dates){
-			for(String text : stringList){
+		for (String date : dates) {
+			for (String text : stringList) {
 				TaskFile currentFile = storage.getTaskFileByName(text);
-				if (currentFile.getStartDate().equals(date)){
-				taskListToBeDisplayed.add(currentFile);
+				if (currentFile.getStartDate().equals(date)) {
+					taskListToBeDisplayed.add(currentFile);
 				}
 			}
 		}
-		
-		
+
 		return null;
 	}
 
 	// show the task by date
 	// take in a date string?
 	public ArrayList<TaskFile> viewDateList(String date) throws Exception {
+		if (date.equals("today")) {
+			Calendar cal = Calendar.getInstance();
+			DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+			String today = df.format(cal.getTime());
+			date = today;
+		}
 		ArrayList<String> stringList = storage.readFromMasterFile();
 		ArrayList<TaskFile> taskListToBeDisplayed = new ArrayList<TaskFile>();
 		for (String text : stringList) {
 			TaskFile currentFile = storage.getTaskFileByName(text);
-			if (currentFile.getStartDate().equals(date)) {
+			if (currentFile.getStartDate().equals(date.trim())) {
 				taskListToBeDisplayed.add(currentFile);
 			}
 		}
@@ -361,7 +365,11 @@ public class TNotesLogic {
 		TaskFile currentFile = storage.getTaskFileByName(title);
 
 		System.err.println(currentFile.getStartDate() + " " + currentFile.getStartTime());
-		if (type.equals("time")) {
+
+		if (currentFile.getIsRecurring()) {
+			editRecurringTask(fromParser);
+
+		} else if (type.equals("time")) {
 			storage.deleteTask(title);
 			currentFile.setStartTime(newText);
 
@@ -402,16 +410,26 @@ public class TNotesLogic {
 			} else {
 				System.out.println("did not manage to add to storage");
 			}
-		} else
+		} else if(type.equals("important")){
+			storage.deleteTask(title);
+			currentFile.setImportance(Boolean.valueOf(newText));
+			if(storage.addTask(currentFile)){
+				return currentFile;
+			}else{
+				System.out.println("did not manage to add to storage");
+			}
+		}else{
 			System.out.println("did not edit");
+		}
 		return currentFile;
+
 	}
 
 	public TaskFile searchSingleTask(String lineOfText) throws Exception {
 		ArrayList<String> masterList = storage.readFromMasterFile();
 		TaskFile oldTask = new TaskFile();
 		for (String text : masterList) {
-			if (text.equals(lineOfText)) {
+			if (text.equals(lineOfText.trim())) {
 				oldTask = storage.getTaskFileByName(text);
 			}
 		}
@@ -536,20 +554,6 @@ public class TNotesLogic {
 
 	// //whats the parser arraylist for the recurring task, like the format of
 	// inputs.
-	public TaskFile addRecurringTask(ArrayList<String> fromParser) {
-		String recurArgument = "";
-		if (fromParser.contains("every")) {
-			int indexOfRecurKeyWord = fromParser.indexOf("every");
-			recurArgument = fromParser.remove(indexOfRecurKeyWord + 1);
-			fromParser.remove("every");
-		}
-		if (recurArgument.equals("day")) {
-
-		}
-
-		return null;
-
-	}
 
 	public TaskFile editRecurringTask(ArrayList<String> fromParser) throws Exception {
 
@@ -558,7 +562,7 @@ public class TNotesLogic {
 		String newText = fromParser.get(2).trim();
 		TaskFile currentFile = storage.getTaskFileByName(title);
 		RecurringTaskFile recurTask = new RecurringTaskFile(currentFile);
-		ArrayList<String> dateList = null;
+		ArrayList<String> dateList = storage.getRecurStartDateList(title);
 		recurTask.addRecurringStartDate(dateList);
 
 		System.err.println(currentFile.getStartDate() + " " + currentFile.getStartTime());
