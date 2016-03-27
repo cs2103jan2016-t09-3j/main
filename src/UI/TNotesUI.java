@@ -57,15 +57,22 @@ public class TNotesUI {
 
 			try {
 				taskFile = logic.addTask(userCommandSplit);
-
+				
+				
 				// Floating task case
 				if (taskFile.getIsTask()) {
 					result += String.format("I have added \"%s\" to your schedule!\n", taskFile.getName().trim());
 				}
 
 				if (taskFile.getIsRecurring()) {
-					result += String.format("I have added \"%s\" every %s to your schedule!", taskFile.getName(),
-							taskFile.getStartDate());
+					int everyIndex = 0;
+					int displayIndex = 0;
+					
+					for(int i=0; i<userCommandSplit.size(); i++) {
+						everyIndex = userCommandSplit.indexOf("every");
+						displayIndex = everyIndex + 1;
+					}
+					result += String.format("Note: It recurs every %s\n", userCommandSplit.get(displayIndex));
 				}
 
 				// Tasks with only 1 date
@@ -284,14 +291,19 @@ public class TNotesUI {
 					
 				boolean status = logic.toggleStatus(taskName);
 
-				result = String.format("You have changed the status in \"%s\" from [%s] to ", taskName, taskStatus);
-			
+				result = String.format("You have changed the status in \"%s\" from ", taskName);
+				if(taskStatus == true){
+					result += "[DONE] to ";
+				}
+				if(taskStatus == false){
+					result += "[UNDONE] to ";
+				}
 				
 				if (status == true) {
-					result += "done\n";
+					result += "[DONE]\n";
 				}
 				if (status == false) {
-					result += "undone\n";
+					result += "[UNDONE]\n";
 				}
 			} catch (Exception e) {
 				result = e.getMessage();
