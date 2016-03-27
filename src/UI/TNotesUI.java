@@ -20,12 +20,16 @@ public class TNotesUI {
 	ArrayList<String> commandArguments;
 	String commandString;
 	String result = "";
-	String taskName;
 	TaskFile taskFile;
 
 	public TNotesUI() {
 		parser = new TNotesParser();
-		logic = new TNotesLogic();
+		try {
+			logic = new TNotesLogic();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.getMessage();
+		}
 		msg = new TNotesMessages();
 	}
 
@@ -38,7 +42,6 @@ public class TNotesUI {
 		ArrayList<String> userCommandSplit = new ArrayList<String>();
 		userCommandSplit = parser.checkCommand(userInput);
 		commandString = getFirstWord(userCommandSplit);
-		taskName = getTaskName(userCommandSplit);
 		
 		COMMAND_TYPE command = determineCommandType(commandString);
 		
@@ -163,7 +166,7 @@ public class TNotesUI {
 				// TODO Auto-generated catch block
 				e.getMessage();
 			}
-				result = String.format("I have deleted \"%s\" from your schedule for you!\n\n", taskName);
+				result = String.format("I have deleted \"%s\" from your schedule for you!\n\n", taskFile.getName());
 				ArrayList<TaskFile> arrN = new ArrayList<TaskFile>();
 			try {
 				arrN = logic.viewDateList(taskFile.getStartDate());
@@ -275,7 +278,7 @@ public class TNotesUI {
 				// TODO Auto-generated catch block
 				e.getMessage();
 			}
-				result = String.format("Searching for \"%s\" ... This is what I've found:\n",taskName);
+				result = String.format("Searching for \"%s\" ... This is what I've found:\n",userCommandSplit.get(1));
 				for(int i=0; i<arrSearch.size(); i++) {
 					result+= i+1 + ". " + String.format("[%s] [%s] %s, %s\n",
 							 arrSearch.get(i).getStartDate(),arrSearch.get(i).getStartTime(),arrSearch.get(i).getName()
@@ -377,7 +380,4 @@ public class TNotesUI {
 		return userCommandArrayList.get(0);
 	}
 
-	private String getTaskName(ArrayList<String> userCommandArrayList) {
-		return userCommandArrayList.get(1);
-	}
 }
