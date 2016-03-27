@@ -52,8 +52,6 @@ import java.util.Date;
 */
 public class TaskFile implements Comparable<TaskFile>, Cloneable {
 
-	private static final String IMPORTANCE_ZERO = "0";
-
 	protected String name;
 	protected String startDate;
 	protected String startTime;
@@ -61,7 +59,7 @@ public class TaskFile implements Comparable<TaskFile>, Cloneable {
 	private String endDate;
 	private String endTime;
 	private String details;
-	private String importance;
+	protected boolean importance;
 
 	private boolean isDone;
 
@@ -84,7 +82,7 @@ public class TaskFile implements Comparable<TaskFile>, Cloneable {
 		setEndTime("");
 
 		setDetails("");
-		setImportance(IMPORTANCE_ZERO);
+		setImportance(false);
 
 		setIsDone(false);
 
@@ -92,7 +90,7 @@ public class TaskFile implements Comparable<TaskFile>, Cloneable {
 	}
 
 	public TaskFile(String name) {
-		this(name, "", "", "", "", "", IMPORTANCE_ZERO, false);
+		this(name, "", "", "", "", "", false, false);
 	}
 
 	// public TaskFile(String name, String importance) {
@@ -107,17 +105,16 @@ public class TaskFile implements Comparable<TaskFile>, Cloneable {
 	// }
 
 	public TaskFile(String name, String date, String time, String details, boolean isRecurr) {
-		this(name, date, time, date, time, details, IMPORTANCE_ZERO, isRecurr);
+		this(name, date, time, date, time, details, false, isRecurr);
 
 	}
 
-	public TaskFile(String name, String date, String time, String details, String importance, boolean isRecurr) {
-
+	public TaskFile(String name, String date, String time, String details, boolean importance, boolean isRecurr) {
 		this(name, date, time, date, time, details, importance, isRecurr);
 	}
 
 	public TaskFile(String name, String startDate, String startTime, String endDate, String endTime, 
-			String details,	String importance, boolean isRecurr) {
+			String details,	boolean importance, boolean isRecurr) {
 
 		setName(name);
 		setStartDate(startDate);
@@ -160,7 +157,7 @@ public class TaskFile implements Comparable<TaskFile>, Cloneable {
 		return details;
 	}
 
-	public String getImportance() {
+	public boolean getImportance() {
 		return importance;
 	}
 
@@ -235,7 +232,7 @@ public class TaskFile implements Comparable<TaskFile>, Cloneable {
 		this.details = details;
 	}
 
-	public void setImportance(String importance) {
+	public void setImportance(boolean importance) {
 		this.importance = importance;
 	}
 

@@ -80,7 +80,7 @@ public class TNotesUI {
 							taskFile.getEndTime());
 				}
 
-				if (taskFile.getImportance().equals("true")) {
+				if (taskFile.getImportance()) {
 					result += String.format("Note: Task was noted as important");
 				}
 
@@ -193,7 +193,7 @@ public class TNotesUI {
 				result = String.format("Your schedule for %s:\n", userCommandSplit.get(1));
 				for (int i = 0; i < arrView.size(); i++) {
 					result += i + 1 + ". " + "[" + arrView.get(i).getStartTime() + "]";
-					if (arrView.get(i).getImportance().equals("important")) {
+					if (arrView.get(i).getImportance()) {
 						result += "[IMPORTANT] ";
 					}
 					result += String.format("[%s]\n", arrView.get(i).getName());
@@ -244,12 +244,13 @@ public class TNotesUI {
 					if (!taskFile.getIsDone()) {
 						result += "Status: Incomplete\n";
 					}
-					if (taskFile.getImportance().equals("0")) {
+					if (!taskFile.getImportance()) {
 						result += "Importance: -\n";
 					}
-					if (taskFile.getImportance().equals("1")) {
+					if (taskFile.getImportance()) {
 						result += "Importance: highly important\n";
 					}
+					
 
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
@@ -303,7 +304,7 @@ public class TNotesUI {
 
 					for (int i = 0; i < arrSort.size(); i++) {
 						result += i + 1 + ". " + "[" + arrSort.get(i).getStartTime() + "] ";
-						if (arrSort.get(i).getImportance().equals("important")) {
+						if (arrSort.get(i).getImportance()) {
 							result += "[IMPORTANT] ";
 						}
 						result += "[" + arrSort.get(i).getName() + "]\n";
