@@ -319,7 +319,7 @@ public class TNotesLogic {
 	// show the task by date
 	// take in a date string?
 	public ArrayList<TaskFile> viewDateList(String date) throws Exception {
-		if (date.equals("today")) {
+		if (date.trim().equals("today")) {
 			Calendar cal = Calendar.getInstance();
 			DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 			String today = df.format(cal.getTime());
