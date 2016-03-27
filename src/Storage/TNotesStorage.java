@@ -186,7 +186,6 @@ public class TNotesStorage {
 				String monthFolder;
 
 				monthFolder = createFolderName(task, taskName);
-
 				masterNameDateMap.put(taskName, monthFolder);
 
 				if (writeTaskToMasterFile(taskName) && writeToMonthMapFile(masterNameDateMap, monthMapFile)) {
@@ -222,7 +221,7 @@ public class TNotesStorage {
 			monthFolder = "floating";
 
 		} else if (task.getIsRecurring()) {
-			monthFolder = "recuring";
+			monthFolder = "recurring";
 		} else {
 			monthFolder = getTaskMonth(task);
 		}
