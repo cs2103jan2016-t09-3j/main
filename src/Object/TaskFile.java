@@ -128,7 +128,6 @@ public class TaskFile implements Comparable<TaskFile>, Cloneable {
 		setImportance(importance);
 		setIsRecurr(isRecurr);
 		setIsDone(false);
-		initializeTaskTypes();
 		setUpTaskFile();
 
 	}
@@ -328,7 +327,8 @@ public class TaskFile implements Comparable<TaskFile>, Cloneable {
 	}
 
 	private void setTypeOfTask() {
-
+		initializeTaskTypes();
+		
 		if (startDate.isEmpty()) {
 			isTask = true;
 		} else if (endDate.isEmpty()) {

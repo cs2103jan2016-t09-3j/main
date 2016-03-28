@@ -167,6 +167,19 @@ public class TNotesLogic {
 
 			default:
 				assertEquals(0, fromParser.size());
+				if(!recurArgument.isEmpty()) {
+					DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+					String date;
+					if(recurArgument.equals("day")) {
+						date = df.format(cal.getTime());
+					} else if(recurArgument.contains("day")){
+						date = compareDates(recurArgument);
+					} else {
+						date = df.format(cal.getTime());
+					}
+					currentFile.setStartDate(date);
+				
+				}
 			}
 			currentFile.setUpTaskFile();
 

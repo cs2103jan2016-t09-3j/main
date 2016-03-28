@@ -41,8 +41,7 @@ public class TNotesUI {
 	public String executeCommand(String userInput) {
 		ArrayList<String> userCommandSplit = new ArrayList<String>();
 		userCommandSplit = parser.checkCommand(userInput);
-		ArrayList<String> userCommandSplitCopy = new ArrayList<String>();
-		userCommandSplitCopy = userCommandSplit;
+		ArrayList<String> userCommandSplitCopy = new ArrayList<String>(userCommandSplit);
 		commandString = getFirstWord(userCommandSplit);
 
 		COMMAND_TYPE command = determineCommandType(commandString);
