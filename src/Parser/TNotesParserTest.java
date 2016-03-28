@@ -22,6 +22,8 @@ public class TNotesParserTest {
 			Arrays.asList("add", "call mom", "tell her buy apple");
 	private static final List<String> listAdd5 = 
 			Arrays.asList("add", "call mom", "13:00");
+	private static final List<String> listAdd6 = 
+			Arrays.asList("add", "call mom", "12:00", "13:00");
 	///////////////////////////////////////////////////////////////////////////
 	private static final List<String> listEdit1 = 
 			Arrays.asList("edit", "call mom", "status", "done");
@@ -69,6 +71,10 @@ public class TNotesParserTest {
 		assertEquals("i want to test", listAdd5, 
 		tester.checkCommand("add call mom due 13:00"));
 		System.out.println("5. add call mom due 13:00");
+		
+		assertEquals("i want to test", listAdd6, 
+				tester.checkCommand("add call mom from 12:00 to 13:00"));
+				System.out.println("6. add call mom from 12:00 to 13:00");
 		
 			
 	}

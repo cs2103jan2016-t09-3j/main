@@ -70,6 +70,7 @@ public class TNotesParser {
 	 * view feb to march
 	 * view today
 	 * view next year/month
+	 * view tmr
 	 * havent do view time
 	 * havent format month
 	 */
@@ -140,7 +141,13 @@ public class TNotesParser {
 			"H.MM A", "HH.M A", "HH.MM A",
 			"H.mm a", "HH.m a", "HH.m a"
 			);
-	
+	//add call mom every tuesday
+	//edit call mom name new name
+	//edit name name
+	//edit importance yes/no
+	//sort by name
+	//sort by importance
+	//add task at 3:00 every day important
 	public static ArrayList<String> timeList = new ArrayList<String>();
 	
 	public static void main(String[] args){
@@ -151,9 +158,9 @@ public class TNotesParser {
 	public void execute(){
 		String output = new String();
 		String input = new String();
-		input = "add call mom due 2-2-2 at 3:00 every month";
+		input = "sort by name";
 		for (int i = 0; i < checkCommand(input).size(); i++){
-			output = checkCommand(input).get(i);// 24 hour clock
+			output = checkCommand(input).get(i);
 			System.out.println(output);
 		}
 	}
@@ -298,19 +305,11 @@ public class TNotesParser {
 	public ArrayList <String> sortCommand(String[] arr){
 		ArrayList<String> list = new ArrayList<String>();
 		String title = new String();
-		if (isLetters(arr[1]) ==0 && checkTime(arr[1]) ==0 ){
-			list.add(formatDate(arr[1]));
+		
+		if(arr[1].equals("by")){
+			list.add(arr[2]);
 		}
-		else if(isLetters(arr[1]) ==0 && checkTime(arr[1]) == 1 ){
-			list.add(formatTime(arr[1]).toString());
-		}
-		else{
-			list.add(arr[1]);
-		}
-		for(int i=3;i<arr.length;i++){
-			title += arr[i] + " ";
-		}
-		list.add(title);
+		
 		return list;
 	}
 
@@ -653,7 +652,8 @@ public class TNotesParser {
 				list.add(title.trim());
 				list.add(arr[j+1]);
 ///////////////////////////////////////////////////////////////////////////////////////	
-			}else if(arr[j].equals("every")){
+			}else if(arr[j].equals("every") && !arr[j-1].equals("due")){
+				
 				list.add("every");
 				list.add(arr[j+1]);
 			}
@@ -680,6 +680,10 @@ public class TNotesParser {
 	}
 		return list;
 	}
+	
+	//public int onlyKeyEvery(String [] arr) {
+		//for(int i)
+	//}
 ///////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////OTHERS//////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////
