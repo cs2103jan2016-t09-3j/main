@@ -7,7 +7,85 @@ import java.util.Collection;
 import java.util.List;
 
 import org.junit.Test;
+//date cannot be zero
+//the first letter of the month must be a capital letter
+//date cannot be separated by space(will be changed)
 
+////////////////////////////////////////////////////////
+
+
+/*command word: add
+ *add call mom due 2-2-2 at 12:00
+ *add call mom due 2-2-2 at 300pm
+ *add call mom due 2-2-2 at 300 pm
+ *add call important mom due 2-2-2  at 12:00
+ *add call important mom due 2-2-2  at 300 pm
+ *add call mom due 2-2-2 at 12:00 important
+ *add call mom due 2-2-2 at 12:00 details say hello
+ *add call mom due 2-2-2 at 300 pm details say hello
+ *add call mom details buy apple
+ *add call mom due every tuesday at 12:00 important
+ *add call mom due every tuesday at 300 pm important
+ *add call mom due every tue
+ *add call mom
+ *add ,d,fdgv,,,gdr//gdr, fshsbsuh,fsrgr
+ *add call mom important
+ *add call mom from 2-2-2 to 3-3-3
+ *add call mom from 2-2-2 at 12:00 to 3-3-3 at 13:00
+ *add call mom from 2-2-2 at 12:00 to 3-3-3 at 13:00 details haha hahaha// the word details not in the arraylist
+ *add call mom due this semester/year/week important(add,call mom,this semester, important)
+ *add call mom at 12:00
+ *add call mom due 2-2-2
+ *Add call mom from 2-2-2 to 3-3-3
+ *Add call mom from 12:00 to 13:00
+ *Add call mom from 3:00 pm to 3:00 pm
+ *Add call mom from 1000 pm to 1000 pm
+ *havent debug chec time
+ *havent do different variations for important
+ *Add call mom on Tuesday
+ *Add call mom today
+ *Add 2(any index)
+ *
+ *
+ *rmb to do timing 7pm
+ *rmb to add different forms
+ *rmb to add the word details
+ */
+
+/*command word: edit
+ * edit call mom
+ * edit string 
+ * edit date
+ * edit call mom date/details/time 2-2-2
+ */
+
+/*command word: view
+ * view 2-2-2
+ * view call mom 
+ * View 2-2-2 to 3-3-3
+ * view feb to march
+ * view today
+ * view next year/month
+ * view tmr
+ * 
+ */
+
+/*command word: delete
+ * delete call mom
+ */
+
+/*command word: search
+ * search for call mom
+ * search for key words
+ */
+
+/*command word: sort
+ * sort time by name
+ * sort today by importance
+ * sort 2-2-2 by importance
+ * sort today by title
+ * 
+ */
 public class TNotesParserTest {
 	private static final String TEXT_EXIT = "exit command successful";
 	
@@ -41,6 +119,9 @@ public class TNotesParserTest {
 	////////////////////////////////////////////////////////////////////////////
 	private static final List<String> listChange1 = 
 			Arrays.asList("change directory", "c:/file");
+	////////////////////////////////////////////////////////////////////////////
+	private static final List<String> listAdd7 = 
+			Arrays.asList("add", "call mom", "every", "tuesday");
 	
 	@Test
 	public void checkCommandExit(){
@@ -73,8 +154,12 @@ public class TNotesParserTest {
 		System.out.println("5. add call mom due 13:00");
 		
 		assertEquals("i want to test", listAdd6, 
-				tester.checkCommand("add call mom from 12:00 to 13:00"));
-				System.out.println("6. add call mom from 12:00 to 13:00");
+		tester.checkCommand("add call mom from 12:00 to 13:00"));
+		System.out.println("6. add call mom from 12:00 to 13:00");
+		
+		assertEquals("i want to test", listAdd7, 
+		tester.checkCommand("add call mom every tuesday"));
+		System.out.println("7. add call mom every tuesday");
 		
 			
 	}
