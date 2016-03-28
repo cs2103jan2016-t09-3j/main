@@ -108,7 +108,7 @@ public class TNotesLogic {
 						currentFile.setEndDate(fromParser.get(1));
 					} else {
 						assertTrue(fromParser.get(1).contains(":"));
-						currentFile.setStartTime(fromParser.get(1));
+						currentFile.setEndTime(fromParser.get(1));
 					}
 
 				}
@@ -124,7 +124,7 @@ public class TNotesLogic {
 							currentFile.setEndDate(fromParser.get(2));
 						} else {
 							assertTrue(fromParser.get(2).contains(":"));
-							currentFile.setStartTime(fromParser.get(2));
+							currentFile.setEndTime(fromParser.get(2));
 						}
 
 					} else {
@@ -386,7 +386,7 @@ public class TNotesLogic {
 		String title = fromParser.get(0).trim();
 		String newText = fromParser.get(2).trim();
 		TaskFile currentFile = storage.getTaskFileByName(title);
-
+		
 		System.err.println(currentFile.getStartDate() + " " + currentFile.getStartTime());
 
 		if (currentFile.getIsRecurring()) {
@@ -556,7 +556,6 @@ public class TNotesLogic {
 			}
 		}
 		Collections.sort(dateList);
-
 		return dateList;
 	}
 
