@@ -10,8 +10,7 @@ import Parser.TNotesParser;
 public class TNotesUI {
 
 	enum COMMAND_TYPE {
-		ADD_COMMAND, CHANGE_DIRECTORY, DELETE_DIRECTORY, EDIT_COMMAND, DELETE_COMMAND, VIEW_COMMAND, INVALID, 
-		SET_COMMAND, SEARCH_COMMAND, SORT_COMMAND, HELP_COMMAND, EXIT
+		ADD_COMMAND, CHANGE_DIRECTORY, DELETE_DIRECTORY, EDIT_COMMAND, DELETE_COMMAND, VIEW_COMMAND, INVALID, SET_COMMAND, SEARCH_COMMAND, SORT_COMMAND, HELP_COMMAND, EXIT
 	}
 
 	TNotesParser parser;
@@ -21,6 +20,7 @@ public class TNotesUI {
 	String commandString;
 	String result = "";
 	TaskFile taskFile;
+	ArrayList<TaskFile> viewList;
 
 	public TNotesUI() {
 		parser = new TNotesParser();
@@ -57,8 +57,7 @@ public class TNotesUI {
 
 			try {
 				taskFile = logic.addTask(userCommandSplit);
-				
-				
+
 				// Floating task case
 				if (taskFile.getIsTask()) {
 					result += String.format("I have added \"%s\" to your schedule!\n", taskFile.getName().trim());
@@ -67,8 +66,8 @@ public class TNotesUI {
 				if (taskFile.getIsRecurring()) {
 					int everyIndex = 0;
 					int displayIndex = 0;
-					
-					for(int i=0; i<userCommandSplit.size(); i++) {
+
+					for (int i = 0; i < userCommandSplit.size(); i++) {
 						everyIndex = userCommandSplit.indexOf("every");
 						displayIndex = everyIndex + 1;
 					}
@@ -103,26 +102,24 @@ public class TNotesUI {
 			}
 
 			break;
-			
+
 		case CHANGE_DIRECTORY:
 			String directoryPath = userCommandSplit.get(1);
 			try {
-			if(logic.changeDirectory(directoryPath)){
-				result = "You have succesfully changed directory.\n";
-			}
-			else {
-				result = "Directory did not change.\n";
-			}
-			}catch(Exception e) {
+				if (logic.changeDirectory(directoryPath)) {
+					result = "You have succesfully changed directory.\n";
+				} else {
+					result = "Directory did not change.\n";
+				}
+			} catch (Exception e) {
 				result = e.getMessage();
 			}
 			break;
 		case DELETE_DIRECTORY:
 			String directoryPathx = userCommandSplit.get(1);
-			if(logic.deleteDirectory(directoryPathx)){
+			if (logic.deleteDirectory(directoryPathx)) {
 				result = "You have succesfully deleted directory.\n";
-			}
-			else {
+			} else {
 				result = "Directory was not deleted.\n";
 			}
 			break;
@@ -179,27 +176,36 @@ public class TNotesUI {
 			break;
 
 		case DELETE_COMMAND:
+			if (isLetters(userCommandSplit.get(1)) == 0) {
+				int indexNum = Integer.valueOf(userCommandSplit.get(1));
+				ArrayList<TaskFile> arrD = new ArrayList<TaskFile>();
+				arrD = logic.deleteIndex(viewList, indexNum);
 
-			try {
-				taskFile = logic.deleteTask(userCommandSplit);
-				result = String.format("I have deleted \"%s\" from your schedule for you!\n\n", taskFile.getName());
-				ArrayList<TaskFile> arrN = new ArrayList<TaskFile>();
+				result += String.format("Your NEW schedule:\n");
+				for (int i = 0; i < arrD.size(); i++) {
+					result += i + 1 + ". " + "[" + arrD.get(i).getStartTime() + "] " + arrD.get(i).getName() + "\n";
+				}
+			} else {
 				try {
-					arrN = logic.viewDateList(taskFile.getStartDate());
+					taskFile = logic.deleteTask(userCommandSplit);
+					result = String.format("I have deleted \"%s\" from your schedule for you!\n\n", taskFile.getName());
+					ArrayList<TaskFile> arrN = new ArrayList<TaskFile>();
+					try {
+						arrN = logic.viewDateList(taskFile.getStartDate());
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						result = e.getMessage();
+					}
+
+					result += String.format("Your NEW schedule for %s:\n", taskFile.getStartDate());
+					for (int i = 0; i < arrN.size(); i++) {
+						result += i + 1 + ". " + "[" + arrN.get(i).getStartTime() + "] " + arrN.get(i).getName() + "\n";
+					}
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					result = e.getMessage();
 				}
-
-				result += String.format("Your NEW schedule for %s:\n", taskFile.getStartDate());
-				for (int i = 0; i < arrN.size(); i++) {
-					result += i + 1 + ". " + "[" + arrN.get(i).getStartTime() + "] " + arrN.get(i).getName() + "\n";
-				}
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				result = e.getMessage();
 			}
-
 			break;
 
 		case VIEW_COMMAND:
@@ -211,6 +217,7 @@ public class TNotesUI {
 				ArrayList<TaskFile> arrView = new ArrayList<TaskFile>();
 				try {
 					arrView = logic.viewDateList(date);
+					viewList = arrView;
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					result = e.getMessage();
@@ -286,30 +293,30 @@ public class TNotesUI {
 		case SET_COMMAND:
 			String taskName = userCommandSplit.get(1);
 			try {
-				taskFile = logic.searchSingleTask(taskName.trim()); 
+				taskFile = logic.searchSingleTask(taskName.trim());
 				boolean taskStatus = taskFile.getIsDone();
-				String currStatus = userCommandSplit.get(2);
+				String currStatus = userCommandSplit.get(2).trim();
 				result = String.format("You have changed the status in \"%s\" from ", taskName);
-				
-				if(taskStatus == true){
+
+				if (taskStatus == true) {
 					result += "[DONE] to ";
 				}
-				if(taskStatus == false){
+				if (taskStatus == false) {
 					result += "[UNDONE] to ";
 				}
-				
-				if(currStatus.equals("done")){
-					if(logic.setStatus(true)){
-						result+= "[DONE]\n";
+
+				if (currStatus.equals("done")) {
+					if (logic.setStatus(taskName, true)) {
+						result += "[DONE]\n";
 					}
 				}
-				
-				if(currStatus.equals("undone")){
-					if(logic.setStatus(false)){
-						result+= "[UNDONE]\n";
+
+				if (currStatus.equals("undone")) {
+					if (!logic.setStatus(taskName, false)) {
+						result += "[UNDONE]\n";
 					}
 				}
-				
+
 			} catch (Exception e) {
 				result = e.getMessage();
 			}
@@ -409,7 +416,8 @@ public class TNotesUI {
 			return COMMAND_TYPE.ADD_COMMAND;
 		} else if (checkCommand(commandString, "change directory")) {
 			return COMMAND_TYPE.CHANGE_DIRECTORY;
-		} if (checkCommand(commandString, "delete directory")) {
+		}
+		if (checkCommand(commandString, "delete directory")) {
 			return COMMAND_TYPE.DELETE_DIRECTORY;
 		} else if (checkCommand(commandString, "edit")) {
 			return COMMAND_TYPE.EDIT_COMMAND;
@@ -441,6 +449,14 @@ public class TNotesUI {
 
 	private String getFirstWord(ArrayList<String> userCommandArrayList) {
 		return userCommandArrayList.get(0);
+	}
+	
+	public int isLetters(String nextString) {
+		if (nextString.matches("[a-zA-Z]+")) {
+			return 1;
+		} else {
+			return 0;
+		}
 	}
 
 }
