@@ -264,6 +264,11 @@ public class TNotesLogic {
 		assertNotEquals(0, fromParser.size());
 		return storage.deleteTask(fromParser.get(0));
 	}
+	
+	public ArrayList<TaskFile> deleteIndex(ArrayList<TaskFile> currentList, int num){
+		currentList.remove(num-1);
+		return currentList;
+	}
 
 	// currently gets a array list String, converts to array list taskFile, then
 	// checks if any is done. returns new array list without done task/
