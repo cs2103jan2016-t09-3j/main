@@ -167,18 +167,18 @@ public class TNotesLogic {
 
 			default:
 				assertEquals(0, fromParser.size());
-				if(!recurArgument.isEmpty()) {
+				if (!recurArgument.isEmpty()) {
 					DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 					String date;
-					if(recurArgument.equals("day")) {
+					if (recurArgument.equals("day")) {
 						date = df.format(cal.getTime());
-					} else if(recurArgument.contains("day")){
+					} else if (recurArgument.contains("day")) {
 						date = compareDates(recurArgument);
 					} else {
 						date = df.format(cal.getTime());
 					}
 					currentFile.setStartDate(date);
-				
+
 				}
 			}
 			currentFile.setUpTaskFile();
@@ -399,24 +399,34 @@ public class TNotesLogic {
 		String title = fromParser.get(0).trim();
 		String newText = fromParser.get(2).trim();
 		TaskFile currentFile = storage.getTaskFileByName(title);
-		
+
 		System.err.println(currentFile.getStartDate() + " " + currentFile.getStartTime());
 
 		if (currentFile.getIsRecurring()) {
 			editRecurringTask(fromParser);
 
-		} else if (type.equals("time")) {
+		} else if (type.equals("name")) {
 			storage.deleteTask(title);
-			currentFile.setStartTime(newText);
+			currentFile.setName(newText);
 
 			if (storage.addTask(currentFile)) {
 				return currentFile;
 			} else {
 				System.out.println("did not manage to add to storage");
 			}
-		} else if (type.equals("endtime")) {
+		} else if (type.equals("time")) {
+			storage.deleteTask(title);
+			currentFile.setStartTime(newText);
+			currentFile.setUpTaskFile();
+			if (storage.addTask(currentFile)) {
+				return currentFile;
+			} else {
+				System.out.println("did not manage to add to storage");
+			}
+		} else if (type.equals("endTime")) {
 			storage.deleteTask(title);
 			currentFile.setEndTime(newText);
+			currentFile.setUpTaskFile();
 			if (storage.addTask(currentFile)) {
 				return currentFile;
 			} else {
@@ -430,7 +440,7 @@ public class TNotesLogic {
 			} else {
 				System.out.println("did not manage to add to storage");
 			}
-		} else if (type.equals("enddate")) {
+		} else if (type.equals("endDate")) {
 			storage.deleteTask(title);
 			currentFile.setEndDate(newText);
 			if (storage.addTask(currentFile)) {
