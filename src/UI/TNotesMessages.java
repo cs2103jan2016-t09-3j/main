@@ -85,6 +85,7 @@ public class TNotesMessages {
 		addHelpArray.add("add [task]");
 		addHelpArray.add("add [task] on [day]");
 		addHelpArray.add("add [task] every [day]");
+		addHelpArray.add("add [task] due every [day]");
 		addHelpArray.add("add [task] at [time]");
 		addHelpArray.add("add [task] due [date]");
 		addHelpArray.add("add [task] from [date] to [date]");

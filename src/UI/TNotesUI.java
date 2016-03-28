@@ -63,16 +63,7 @@ public class TNotesUI {
 					result += String.format("I have added \"%s\" to your schedule!\n", taskFile.getName().trim());
 				}
 
-				if (taskFile.getIsRecurring()) {
-					int everyIndex = 0;
-					int displayIndex = 0;
-
-					for (int i = 0; i < userCommandSplit.size(); i++) {
-						everyIndex = userCommandSplit.indexOf("every");
-						displayIndex = everyIndex + 1;
-					}
-					result += String.format("Note: It recurs every %s\n", userCommandSplit.get(displayIndex));
-				}
+		
 
 				// Tasks with only 1 date
 				if (taskFile.getIsDeadline()) {
@@ -95,6 +86,18 @@ public class TNotesUI {
 					System.out.print("details");
 					result += String.format("Things to note: \"%s\"\n", taskFile.getDetails().trim());
 				}
+				
+				if (taskFile.getIsRecurring()) {
+					int everyIndex = 0;
+					int displayIndex = 0;
+
+					for (int i = 0; i < userCommandSplit.size(); i++) {
+						everyIndex = userCommandSplit.indexOf("every");
+						displayIndex = everyIndex + 1;
+					}
+					result += String.format("Note: It recurs every %s\n", userCommandSplit.get(displayIndex));
+				}
+				
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				// String
@@ -179,11 +182,15 @@ public class TNotesUI {
 			if (isLetters(userCommandSplit.get(1)) == 0) {
 				int indexNum = Integer.valueOf(userCommandSplit.get(1));
 				ArrayList<TaskFile> arrD = new ArrayList<TaskFile>();
+				try {
 				arrD = logic.deleteIndex(viewList, indexNum);
 
 				result += String.format("Your NEW schedule:\n");
 				for (int i = 0; i < arrD.size(); i++) {
 					result += i + 1 + ". " + "[" + arrD.get(i).getStartTime() + "] " + arrD.get(i).getName() + "\n";
+				}
+				} catch (Exception e) {
+					result = e.getMessage();
 				}
 			} else {
 				try {
