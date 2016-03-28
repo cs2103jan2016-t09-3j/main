@@ -264,9 +264,11 @@ public class TNotesLogic {
 		assertNotEquals(0, fromParser.size());
 		return storage.deleteTask(fromParser.get(0));
 	}
-	
-	public ArrayList<TaskFile> deleteIndex(ArrayList<TaskFile> currentList, int num){
-		currentList.remove(num-1);
+
+	public ArrayList<TaskFile> deleteIndex(ArrayList<TaskFile> currentList, int num) throws Exception {
+		TaskFile removedTask = currentList.remove(num - 1);
+		storage.deleteTask(removedTask.getName());
+
 		return currentList;
 	}
 
@@ -369,7 +371,7 @@ public class TNotesLogic {
 		storage.deleteTask(newTask.getName());
 		newTask.setIsDone(status);
 		storage.addTask(newTask);
-		if (newTask.getIsDone()){
+		if (newTask.getIsDone()) {
 			return true;
 		} else {
 			return false;
@@ -599,35 +601,45 @@ public class TNotesLogic {
 			}
 		} else if (type.equals("endtime")) {
 			storage.deleteTask(title);
-			currentFile.setEndTime(newText);
+			recurTask.setEndTime(newText);
 			if (storage.addRecurringTask(recurTask)) {
-				return currentFile;
+				return recurTask;
 			} else {
 				System.out.println("did not manage to add to storage");
 			}
 		} else if (type.equals("date")) {
 			storage.deleteTask(title);
-			currentFile.setStartDate(newText);
+			recurTask.setStartDate(newText);
 			if (storage.addRecurringTask(recurTask)) {
-				return currentFile;
+				return recurTask;
 			} else {
 				System.out.println("did not manage to add to storage");
 			}
 		} else if (type.equals("enddate")) {
 			storage.deleteTask(title);
-			currentFile.setEndDate(newText);
+			recurTask.setEndDate(newText);
 			if (storage.addRecurringTask(recurTask)) {
-				return currentFile;
+				return recurTask;
 			} else {
 				System.out.println("did not manage to add to storage");
 			}
 		} else if (type.equals("details")) {
 			storage.deleteTask(title);
-			currentFile.setDetails(newText);
+			recurTask.setDetails(newText);
 			if (storage.addRecurringTask(recurTask)) {
-				return currentFile;
+				return recurTask;
 			} else {
 				System.out.println("did not manage to add to storage");
+			}
+		} else if (type.equals("important")) {
+			storage.deleteTask(title);
+			if (newText.equals("yes")) {
+				recurTask.setImportance(true);
+			} else {
+				recurTask.setImportance(false);
+			}
+			if (storage.addRecurringTask(recurTask)) {
+				return currentFile;
 			}
 		} else
 			System.out.println("did not edit");
