@@ -41,6 +41,8 @@ public class TNotesUI {
 	public String executeCommand(String userInput) {
 		ArrayList<String> userCommandSplit = new ArrayList<String>();
 		userCommandSplit = parser.checkCommand(userInput);
+		ArrayList<String> userCommandSplitCopy = new ArrayList<String>();
+		userCommandSplitCopy = userCommandSplit;
 		commandString = getFirstWord(userCommandSplit);
 
 		COMMAND_TYPE command = determineCommandType(commandString);
@@ -56,6 +58,7 @@ public class TNotesUI {
 		case ADD_COMMAND:
 
 			try {
+				
 				taskFile = logic.addTask(userCommandSplit);
 
 				// Floating task case
@@ -91,11 +94,11 @@ public class TNotesUI {
 					int everyIndex = 0;
 					int displayIndex = 0;
 
-					for (int i = 0; i < userCommandSplit.size(); i++) {
-						everyIndex = userCommandSplit.indexOf("every");
+					for (int i = 0; i < userCommandSplitCopy.size(); i++) {
+						everyIndex = userCommandSplitCopy.indexOf("every");
 						displayIndex = everyIndex + 1;
 					}
-					result += String.format("Note: It recurs every %s\n", userCommandSplit.get(displayIndex));
+					result += String.format("Note: It recurs every %s\n", userCommandSplitCopy.get(displayIndex));
 				}
 				
 			} catch (Exception e) {
@@ -231,7 +234,13 @@ public class TNotesUI {
 				}
 				result = String.format("Your schedule for %s:\n", userCommandSplit.get(1));
 				for (int i = 0; i < arrView.size(); i++) {
-					result += i + 1 + ". " + "[" + arrView.get(i).getStartTime() + "]";
+					if(arrView.get(i).getIsMeeting()) {
+						result += i + 1 + ". " + "[" + arrView.get(i).getStartTime() + "]-" 
+								+ "[" + arrView.get(i).getEndTime() + "]";
+					}
+					if(arrView.get(i).getIsDeadline()) {
+						result += i + 1 + ". " + "[" + arrView.get(i).getStartTime() + "]";
+					}
 					if (arrView.get(i).getImportance()) {
 						result += "[IMPORTANT] ";
 					}
