@@ -58,6 +58,13 @@ public class TNotesLogic {
 				String date = df.format(cal.getTime());
 				fromParser.set(fromParser.indexOf("today"), date);
 			}
+			if (fromParser.contains("tomorrow")) {
+				DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+				String date = df.format(cal.getTime()).toLowerCase();
+				cal.add(Calendar.DATE,1);
+				date = df.format(cal.getTime()).toLowerCase();
+				fromParser.set(fromParser.indexOf("tomorrow"), date);
+			}
 			for (int i = 0; i < fromParser.size(); i++) {
 				String day = fromParser.get(i);
 				if (day.equals("monday") || (day.equals("tuesday")) || (day.equals("wednesday"))
@@ -612,7 +619,7 @@ public class TNotesLogic {
 		recurTask.addRecurringStartDate(dateList);
 
 		System.err.println(currentFile.getStartDate() + " " + currentFile.getStartTime());
-		if (type.equals("time")) {
+		if (type.equals("startTime")) {
 			storage.deleteTask(title);
 			recurTask.setStartTime(newText);
 
@@ -621,7 +628,7 @@ public class TNotesLogic {
 			} else {
 				System.out.println("did not manage to add to storage");
 			}
-		} else if (type.equals("endtime")) {
+		} else if (type.equals("endTime")) {
 			storage.deleteTask(title);
 			recurTask.setEndTime(newText);
 			if (storage.addRecurringTask(recurTask)) {
@@ -629,7 +636,7 @@ public class TNotesLogic {
 			} else {
 				System.out.println("did not manage to add to storage");
 			}
-		} else if (type.equals("date")) {
+		} else if (type.equals("startDate")) {
 			storage.deleteTask(title);
 			recurTask.setStartDate(newText);
 			if (storage.addRecurringTask(recurTask)) {
@@ -637,7 +644,7 @@ public class TNotesLogic {
 			} else {
 				System.out.println("did not manage to add to storage");
 			}
-		} else if (type.equals("enddate")) {
+		} else if (type.equals("endDate")) {
 			storage.deleteTask(title);
 			recurTask.setEndDate(newText);
 			if (storage.addRecurringTask(recurTask)) {
