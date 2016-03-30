@@ -386,7 +386,7 @@ public class TNotesUI {
 			if (sortType.equals("name")) {
 				result = "I have sorted everything by name for you! I'm so amazing, what would you do without me!";
 				try {
-					arrSort = logic.sortNameTask();
+					//arrSort = logic.sor;
 
 					result += String.format("You new schedule for %s: \n\n", userCommandSplit.get(1));
 
