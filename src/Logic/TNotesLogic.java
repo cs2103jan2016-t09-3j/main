@@ -61,7 +61,7 @@ public class TNotesLogic {
 			if (fromParser.contains("tomorrow")) {
 				DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 				String date = df.format(cal.getTime()).toLowerCase();
-				cal.add(Calendar.DATE,1);
+				cal.add(Calendar.DATE, 1);
 				date = df.format(cal.getTime()).toLowerCase();
 				fromParser.set(fromParser.indexOf("tomorrow"), date);
 			}
@@ -311,7 +311,10 @@ public class TNotesLogic {
 	public ArrayList<String> sortViewTypes(ArrayList<String> fromParser) {
 		ArrayList<String> stringList = new ArrayList<String>();
 		String viewType = fromParser.get(1);
-		if (viewType.contains("-") || viewType.contains("today")) {
+		if (viewType.contains("-") || viewType.contains("today")
+				|| (viewType.contains("monday") || (viewType.contains("tuesday")) || (viewType.contains("wednesday"))
+						|| (viewType.contains("thursday")) || (viewType.contains("friday")) || (viewType.contains("saturday"))
+						|| (viewType.contains("sunday")))) {
 			stringList.add("isViewDateList");
 		} else {
 			stringList.add("isViewTask");
@@ -362,6 +365,12 @@ public class TNotesLogic {
 			String today = df.format(cal.getTime());
 			date = today;
 		}
+		if (date.equals("monday") || (date.equals("tuesday")) || (date.equals("wednesday")) || (date.equals("thursday"))
+				|| (date.equals("friday")) || (date.equals("saturday")) || (date.equals("sunday"))) {
+			String whichDay = compareDates(date);
+			date = whichDay;
+		}
+
 		ArrayList<String> stringList = storage.readFromMasterFile();
 		ArrayList<TaskFile> taskListToBeDisplayed = new ArrayList<TaskFile>();
 		for (String text : stringList) {
@@ -531,22 +540,23 @@ public class TNotesLogic {
 	public ArrayList<TaskFile> sortImportTask() throws Exception {
 		ArrayList<String> masterList = storage.readFromMasterFile();
 		ArrayList<TaskFile> importList = new ArrayList<TaskFile>();
+		ArrayList<TaskFile> nonImportList = new ArrayList<TaskFile>();
 		for (String text : masterList) {
 			TaskFile currentFile = storage.getTaskFileByName(text);
-			if (!currentFile.getIsDone()&&!currentFile.getName().contains("_")) {
-				taskList.add(currentFile);
+			if (!currentFile.getIsDone() && !currentFile.getName().contains("_")) {
+				nonImportList.add(currentFile);
 			}
 		}
 		masterList.clear();
-		for (TaskFile newFile : taskList) {
-			if (newFile.getImportance()&&!newFile.getName().contains("_")) {
+		for (TaskFile newFile : nonImportList) {
+			if (newFile.getImportance() && !newFile.getName().contains("_")) {
 				importList.add(newFile);
-				taskList.remove(newFile);
+				nonImportList.remove(newFile);
 			}
 		}
 		Collections.sort(importList, new NameComparator());
-		Collections.sort(taskList, new NameComparator());
-		importList.addAll(taskList);
+		Collections.sort(nonImportList, new NameComparator());
+		importList.addAll(nonImportList);
 		taskList.clear();
 		return importList;
 	}
@@ -581,8 +591,8 @@ public class TNotesLogic {
 		ArrayList<TaskFile> dateList = new ArrayList<TaskFile>();
 		for (String text : masterList) {
 			TaskFile currentFile = storage.getTaskFileByName(text);
-			if (!currentFile.getIsDone()&&!currentFile.getName().contains("_")){
-				
+			if (!currentFile.getIsDone() && !currentFile.getName().contains("_")) {
+
 				dateList.add(currentFile);
 			}
 		}
