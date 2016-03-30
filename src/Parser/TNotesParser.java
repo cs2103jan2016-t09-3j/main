@@ -808,7 +808,13 @@ public class TNotesParser {
 					list.add(formatWeekDay(arr[j+1]).trim());
 				}else{	
 					list.add(arr[j].trim());
-					list.add(formatWeekDay(arr[j+1]).trim());
+					
+					String dayString = formatWeekDay(arr[j+1].trim());
+					if(dayString.isEmpty()) {
+						list.add(formatSpecialDay(arr[j+1].trim()));
+					} else {
+						list.add(dayString);
+					}
 				}
 			}
 			
