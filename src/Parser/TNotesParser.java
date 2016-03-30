@@ -101,7 +101,7 @@ public class TNotesParser {
 		//Month month = Month.august;
 		String output = new String();
 		String input = new String();  
-		input = "add i want the house on Tue";
+		input = "add call mom";
 		for (int i = 0; i < checkCommand(input).size(); i++){
 			output = checkCommand(input).get(i);
 			System.out.println(output);
@@ -543,7 +543,7 @@ public class TNotesParser {
 		int inputCharLength = input.trim().length();
 		for(int i =0; i<inputCharLength; i++){
 			if((input.charAt(i) == ':' || inputCharLength <= 5) 
-					&& isLetters(input) == 0){
+					&& isLetters(Character.toString(input.charAt(0))) == 0){
 				return 1;//if the input is time
 			}
 		}
@@ -605,7 +605,7 @@ public class TNotesParser {
 				timeList.add(formatTime(arr[i]));
 			}
 		}
-		
+		//System.out.println(timeList);
 		for(int i=0;i<arr.length;i++){
 			if(checkTime(arr[i])==0 && checkDate(arr[i])==1){
 				dateList.add(formatDate(arr[i]));
@@ -633,7 +633,7 @@ public class TNotesParser {
 ///////////////////////////////////////////////////////////////////////////////////////	
 			//add call mom due every Tue(can be month) at 12:00 important
 			if (arr[j].equals("due")) {
-				if(arr[j+1].equals("every")&& isKeyWord(arr[j+2]) == 1){
+				if((arr[j+1].equals("every")||arr[j+1].equals("next"))&& isKeyWord(arr[j+2]) == 1){
 					taskName.clear();
 					taskName.add(arr);
 					taskName.add(j);
@@ -659,8 +659,8 @@ public class TNotesParser {
 						if(arr.length>j+2){
 							list.add(formatTime(arr[j + 1]+ 
 									isAMPM(arr[j+2])).toString().trim());
-							timeList.add(formatTime(arr[j + 1]+ 
-									isAMPM(arr[j+2])).toString().trim());
+//							timeList.add(formatTime(arr[j + 1]+ 
+//									isAMPM(arr[j+2])).toString().trim());
 						}
 						else{
 							list.add(formatTime(arr[j + 1]).toString().trim());
@@ -823,9 +823,9 @@ public class TNotesParser {
 			
 		}
 
-
+		//System.out.println(timeList);
 	if(timeList.size() == 2 && compareTime(timeList).get(0).equals("Invalid time range")){
-		//System.out.println(timeList.size());
+		//System.out.println(timeList);
 		list.clear();
 		list.add("Invalid time range");
 	}
