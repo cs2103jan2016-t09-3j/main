@@ -1,7 +1,13 @@
 package Parser;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.Locale;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.DateTimeException;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -10,7 +16,11 @@ import java.time.Month;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Arrays;
-import java.time.DateTimeException;
+import java.time.DateTimeException;//import org.ocpsoft.prettytime.nlp.PrettyTimeParser;
+import org.ocpsoft.prettytime.nlp.PrettyTimeParser;
+import org.ocpsoft.prettytime.shade.org.antlr.runtime.EarlyExitException;
+
+//import TNotesParser.KeyWord;
 
 public class TNotesParser {
 
@@ -20,7 +30,7 @@ public class TNotesParser {
 			"dd/MM/yy","dd/M/yyyy", "dd/MM/yy", "dd/MMM/yyyy", 
 			"dd/MMMM/yy","d/MMMM/yyyy", "dd/MMMM/yyyy",
     		
-			"d-M-y", "d-M-yyyy", "d-MM-yy","d-MMM-yyyy", "MMM", 
+			"d-M-y", "d-M-yyyy", "d-MM-yy","d-MMM-yyyy",
 			"dd-MM-yy","dd-M-yyyy", "dd-MM-yy", "dd-MMM-yyyy", "d-MMM-yyyy",
 			"d-MMMM-yy","d-MMMM-yyyy", "dd-MMMM-yyyy",
 			
@@ -64,27 +74,34 @@ public class TNotesParser {
 			"H.mm a", "HH.m a", "HH.m a"
 			);
 	private static final List<String> WEEKDAY_POSSIBLE_FORMAT = Arrays.asList(
-			"EEE", "EEEE", "EEEEEE"
-	);
+			"EEE", "EEEE", "EE"
+			);
 	
 	private static final List<String> MONTH_POSSIBLE_FORMAT = Arrays.asList(
 			"MMM"
-	);
-	//edit name name
-	//edit importance yes/no
-	//add task at 3:00 every day important
+			);
+	private static final String ARR_IMPORTANT [] = {"impt","important","importance",
+			   "compulsory", "must do", "essential",
+			   "indispensable"};
+	private static final String ARR_AFTER_THE [] = {"day","week","year",
+			   "decade", "century"};
+	
+	enum KeyWord {
+		FROM, TO, AT, BY, DUE
+	};	
 	public static ArrayList<String> timeList = new ArrayList<String>();
 	
-	public static void main(String[] args){
+	public static void main(String[] args) throws ParseException{
 		TNotesParser parser = new TNotesParser();
 		parser.execute();
+		//System.out.println("haha");
 		
 	}
-	public void execute(){
+	public void execute() throws ParseException{
 		//Month month = Month.august;
 		String output = new String();
 		String input = new String();  
-		input = "add call mom due Sep at 12:00";
+		input = "add i want the house Tuesday";
 		for (int i = 0; i < checkCommand(input).size(); i++){
 			output = checkCommand(input).get(i);
 			System.out.println(output);
@@ -93,7 +110,7 @@ public class TNotesParser {
 	
 	
 	
-	public ArrayList<String> checkCommand(String inputString) {
+	public ArrayList<String> checkCommand(String inputString) throws ParseException {
 		ArrayList<String> list = new ArrayList<String>();
 		
 		String arr[] = inputString.split(" ");
@@ -184,7 +201,6 @@ public class TNotesParser {
 ///////////////////////////////////////////////////////////////////////////////////////
 	
 	public ArrayList <String> deleteCommand(String[] arr){
-		String title = new String();
 		ArrayList<String> list = new ArrayList<String>();
 		
 		if(arr[1].equals("directory")){
@@ -192,11 +208,8 @@ public class TNotesParser {
 			list.add(arr[2].trim());
 		}
 		else{
-			for (int j = 1; j < arr.length; j++) {
-				title += "" + arr[j]+" ";
-			}
 			list.add("delete");
-			list.add(title.trim());
+			list.add(taskNameFloat(arr).trim());
 		}
 		return list;
 	
@@ -249,71 +262,133 @@ public class TNotesParser {
 /////////////////////////////////VIEW//////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////
 	
-	public ArrayList <String> viewCommand(String[] arr){
+	public ArrayList <String> viewCommand(String[] arr) throws ParseException{
 		ArrayList<String> list = new ArrayList<String>();
+		ArrayList<String> compareTimeList = new ArrayList<String>();
+		ArrayList<String> compareDateList = new ArrayList<String>();
+		if(arr.length!=1){
 		//view next year/week/month
 		if (isLetters(arr[1].trim()) == 1 && checkViewTo(arr) == 0) {
-			for(int i=0;i<arr.length;i++){
-				if(arr[i].equals("next")){
-					list.add(arr[i]);
-					list.add(arr[i+1]);
-					//System.out.println(formatWeekDay(arr[i+1]));
-					//list.add(formatWeekDay(arr[i+1]).toString());
-					//list.add(formatMonth(arr[i+1]).toString());
+				if(arr[1].equals("next")){
+					list.add(arr[1]);	
+					list.add(compareWeekDayMonth(arr[2]));
+					
 				}
-			}
+				//view today
+				else{
+					list.add(compareWeekDayMonth(arr[1]));
+				}
 		//view year/week/month to year/week/month
-		}else if(isLetters(arr[1].trim()) == 1 && checkViewTo(arr) == 1){
-			list.add(arr[1]);
-			list.add(arr[3]);
+		//view Feb to Mar
+		}else if(isLetters(arr[1].trim()) == 1 && checkViewTo(arr) == 1 
+				&& checkKeyWordBefore(arr)==1){
+			list.add(compareWeekDayMonth(arr[1]));
+			list.add(compareWeekDayMonth(arr[3]));
 		//view date
-		}else if (isLetters(arr[1].trim()) == 0 && checkViewTo(arr) == 0 && checkTime(arr[1].trim())==0) {
+		}else if (isLetters(arr[1].trim()) == 0 && checkViewTo(arr) == 0 
+				&& checkTime(arr[1].trim())==0) {
 			list.add(formatDate(arr[1]));
 		//view date to date
-		}else if(isLetters(arr[1].trim()) == 0 && checkViewTo(arr) == 1 && checkTime(arr[1].trim())==0){
-			list.add(formatDate(arr[1]));
-			list.add(formatDate(arr[3]));
+		}else if(isLetters(arr[1].trim()) == 0 && checkViewTo(arr) == 1 
+				&& checkTime(arr[1].trim())==0 && checkKeyWordBefore(arr)==1){
+			compareDateList.add(formatDate(arr[1]));
+			compareDateList.add(formatDate(arr[3]));
+			list.addAll(compareDate(compareDateList));
 		//view time
-		}else if (isLetters(arr[1].trim()) == 0 && checkViewTo(arr) == 0 && checkTime(arr[1].trim())==1) {
-			list.add(formatTime(arr[1] + timeAMPM(arr[arr.length-1])).toString());
+		}else if (isLetters(arr[1].trim()) == 0 && checkViewTo(arr) == 0 
+				&& checkTime(arr[1].trim())==1) {
+			list.add(formatTime(arr[1] + isAMPM(arr[arr.length-1])).toString());
 		//view time to time
-		}else if(isLetters(arr[1].trim()) == 0 && checkViewTo(arr) == 1 && checkTime(arr[1].trim())==1){
-			list.add(formatTime(arr[1] + timeAMPM(arr[2])).toString());
+		}else if(isLetters(arr[1].trim()) == 0 && checkViewTo(arr) == 1 
+				&& checkTime(arr[1].trim())==1 && checkKeyWordBefore(arr)==1){
+			compareTimeList.add(formatTime(arr[1] + isAMPM(arr[2])).toString());
 			for(int i=0;i<arr.length;i++){
 				if(arr[i].equals("to")){
-					list.add(formatTime(arr[i+1] + timeAMPM(arr[arr.length-1])).toString());
+					compareTimeList.add(formatTime(arr[i+1] + isAMPM(arr[arr.length-1])).toString());
+					//System.out.println(compareTimeList.get(1));
 				}
 			}
+			list.addAll(compareTime(compareTimeList));
+		}
+		}
+		else{
+			list.clear();
+			return list;
 		}
 		
 		
 		if(list.isEmpty()){
-			list.add(taskName(arr));
+			list.add(taskNameFloat(arr));
 		}
 		
 		
 		return list;
 	}
-	
-	public String formatWeekDays(String weekDays){
-		switch(weekDays.toLowerCase()){
-			case "mon" :
-				return "am";
-			case "pm" :
-				return "pm";
-			case "AM" :
-				return "AM";
-			case "PM" :
-				return "PM";
-			default   :
-				return "";
-		}	
+	public ArrayList<String> compareDate(ArrayList<String> list) throws ParseException{
+		SimpleDateFormat dateformat = new SimpleDateFormat("yyyy-MM-dd");
+		Date date1 = dateformat.parse(list.get(0));
+		Date date2 = dateformat.parse(list.get(1));
+		try{
+		if (date1.after(date2) || date1.equals(date2)) {
+			list.clear();
+		    list.add("Invalid date range");
+		    return list;
+		  
+		}else if (date1.before(date2)) {
+		  
+		    return list;  
+		}
+		}catch (DateTimeException e) {
+			return list;
+		}
+		return list;	
+
 	}
+	public ArrayList<String> compareTime(ArrayList<String> list){
+		int firstTime = Integer.parseInt(list.get(0).substring(0,2));
+		int secondTime = Integer.parseInt(list.get(1).substring(0,2));
+		
+		if(firstTime >= secondTime){
+			list.clear();
+			list.add("Invalid time range");
+			return list;
+		}
+		else{
 	
+		return list;
+		}
+	}
+	public int checkKeyWordBefore(String[] arr) {
+		int index = 0;
+		String keyWord [] = {"from", "to", "at", "by", "due"};
+		for (int i=1;i<arr.length;i++){
+			for(int j=0;j<keyWord.length;j++){
+				if(arr[i].equals(keyWord[j])){
+					index = isKeyWord(arr[i+1]);
+				}
+			}
+		}
+		//System.out.println(index);
+		return index;
+		
+	}
+	public int isKeyWord(String word) {
+		//System.out.println(word);
+		if(formatWeekDay(word).equals("")
+				&&formatMonth(word).equals("")
+				&&formatSpecialDay(word).equals("")
+				&&formatTime(word).equals("")
+				&&formatDate(word).equals("")){
+			return 0;
+		}
+		else{
+			return 1;
+		}
+	}
 	public String formatAMPM(String[] arr) {
 		String time = new String();
 		for(int j=1;j<arr.length;j++ ){
-			if(!timeAMPM(arr[j]).equals("")){
+			if(!isAMPM(arr[j]).equals("")){
 				time = arr[j-1] +" " + arr[j];
 			}else{
 				time = arr[j-1];
@@ -322,7 +397,7 @@ public class TNotesParser {
 		return time;
 	}
 	
-	public String taskName(String[] arr) {
+	public String taskNameFloat(String[] arr) {
 		String task = new String();
 		for(int j=1;j<arr.length;j++ ){
 			task += arr[j] + " ";
@@ -338,78 +413,75 @@ public class TNotesParser {
 		}
 		return 0;
 	}
+	
+	public String compareWeekDayMonth(String inputDay){
+		if(!formatWeekDay(inputDay).equals("")){
+			return formatWeekDay(inputDay);
+		}
+		else if(!formatMonth(inputDay).equals("")){
+			return formatMonth(inputDay);
+		}
+		else if(!formatSpecialDay(inputDay).equals("")){
+			return formatSpecialDay(inputDay);
+		}
+		else if(!formatDate(inputDay).equals("")){
+			return formatDate(inputDay);
+		}
+		return inputDay;
+	}
 
 ///////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////EDIT//////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////
 	public ArrayList<String> editCommand(String[] arr){
 		ArrayList<String> list = new ArrayList<String>();
-		String title = new String();
-		String title_beforeDate = new String();
-		String title_afterDate = new String();
-		String title_before = new String();
-		String title_after = new String();
+		ArrayList<Object> taskName = new ArrayList<Object>();
+		String details = new String();
 		String newName = new String();
 		//System.out.println(arr[3]);
 		for (int  f= 1;  f< arr.length ; f++){
-			if (arr[f].equals("time") || arr[f].equals("details")) {
-				for (int num1 = 1; num1 <= f - 1; num1++) {
-					title_before += "" + arr[num1] + " ";
-				}
-				//System.out.println(title_beforeDate);
-				list.add(title_before);
-				list.add(arr[f]);//"word"
-				for(int num2 = f+1; num2<arr.length; num2++){
-					title_after +=arr[num2]+" ";
+			if (arr[f].equals("details")) {
+				taskName.clear();
+				taskName.add(arr);
+				taskName.add(f);
+				list.add(taskName(taskName).trim());
+				list.add(arr[f]);//"details"
+				for(int i = f+1; i<arr.length; i++){
+					details +=arr[i]+" ";
 				}
 				
-					list.add(title_after);
-				
+					list.add(details.trim());
 					
 				}
-
-			else if(arr[f].equals("date")){
-					for (int num1 = 1; num1 <= f - 1; num1++) {
-						title_beforeDate += "" + arr[num1] + " ";
-					}
-					//System.out.println(title_beforeDate);
-					list.add(title_beforeDate);
-					list.add(arr[f]);//"word"
-					for(int num2 = f+1; num2<arr.length; num2++){
-						title_afterDate +=arr[num2]+" ";
-					}
-					String editDate = formatDate(title_afterDate.trim());
-					list.add(editDate);
-			}
 			else if(arr[f].equals("status")){
-				for(int i =1;i<f ;i++){
-					title += arr[i]+" ";
-				}
-				list.add(title.trim());
+				taskName.clear();
+				taskName.add(arr);
+				taskName.add(f);
+				list.add(taskName(taskName).trim());
 				list.add(arr[f].trim());
 				list.add(arr[f+1].trim());
 			}
-			else if(arr[f].equals("startTime") || arr[f].equals("endTime")){
-				for(int i =1;i<f ;i++){
-					title += arr[i]+" ";
-				}
-				list.add(title.trim());
+			else if(arr[f].equals("startTime") || arr[f].equals("endTime") || arr[f].equals("time")){
+				taskName.clear();
+				taskName.add(arr);
+				taskName.add(f);
+				list.add(taskName(taskName).trim());
 				list.add(arr[f]);
 				list.add(formatTime(arr[f+1]).toString());
 			}
-			else if(arr[f].equals("startDate") || arr[f].equals("endDate")){
-				for(int i =1;i<f ;i++){
-					title += arr[i]+" ";
-				}
-				list.add(title.trim());
+			else if(arr[f].equals("startDate") || arr[f].equals("endDate") ||arr[f].equals("date")){
+				taskName.clear();
+				taskName.add(arr);
+				taskName.add(f);
+				list.add(taskName(taskName).trim());
 				list.add(arr[f]);
 				list.add(formatDate(arr[f+1]));
 			}
 			else if(arr[f].equals("name")){
-				for(int i =1;i<f ;i++){
-					title += arr[i]+" ";
-				}
-				list.add(title.trim());
+				taskName.clear();
+				taskName.add(arr);
+				taskName.add(f);
+				list.add(taskName(taskName).trim());
 				list.add(arr[f]);
 				for(int j = f+1; j<arr.length; j++){
 				
@@ -418,16 +490,25 @@ public class TNotesParser {
 				list.add(newName.trim());	
 			}
 			else if(arr[f].equals("importance")){
+				taskName.clear();
+				taskName.add(arr);
+				taskName.add(f);
+				list.add(taskName(taskName).trim());
+				list.add(arr[f]);
 				list.add(arr[f+1]);
 			}
 		}
-		for(int i =1;i<arr.length ;i++){
-			title += arr[i]+" ";
-		}
 		if(list.isEmpty()){
-			list.add(title);
+			list.add(taskNameFloat(arr));
 		}
 		return list;
+	}
+	public String taskName(ArrayList<Object> list){
+		String task = new String();
+		for(int i =1;i<((int) list.get(1)) ;i++){
+			task += ((String[])list.get(0))[i]+" ";
+		}		
+		return task;
 	}
 ///////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////onlyKey//////////////////////////////////////////////////
@@ -461,16 +542,27 @@ public class TNotesParser {
 	public int checkTime(String input) {
 		int inputCharLength = input.trim().length();
 		for(int i =0; i<inputCharLength; i++){
-			if(input.charAt(i) == ':' || inputCharLength <= 4){
+			if((input.charAt(i) == ':' || inputCharLength <= 5) 
+					&& isLetters(input) == 0){
 				return 1;//if the input is time
 			}
 		}
 		return 0 ;
 	}
-	public ArrayList<String> checkDate(String[] arr) {
+	public int checkDate(String input) {
+		int inputCharLength = input.trim().length();
+		for(int i =0; i<inputCharLength; i++){
+			if((input.charAt(i) == '.' || input.charAt(i) == '-' ||inputCharLength <= 8) 
+					&& isLetters(input) == 0){
+				return 1;//if the input is time
+			}
+		}
+		return 0 ;
+	}
+	public ArrayList<String> checkSpecialDay(String[] arr) {
 		ArrayList<String> list = new ArrayList<String>();
 		String date [] = {"today", "tomorrow", "afternoon","noon", "evenning","night",
-				"morning", "the next day", "the next month", "the next year"};
+				"morning","week","month", "the next day", "the next month", "the next year"};
 		if(findLastImpt(arr) == 1){
 			for(int i=0;i<date.length;i++){
 				if(arr[arr.length-2].equals(date[i])){
@@ -497,221 +589,340 @@ public class TNotesParser {
 ///////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////ADDCOMMAND//////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////	
+	// *add call mom due this semester/year/week/tue important(add,call mom,this semester, important)
 	
-	public ArrayList<String> addCommand(String[] arr){
-		String title = new String();
+	public ArrayList<String> addCommand(String[] arr) throws ParseException{
 		String details = new String();
 		ArrayList<String> list = new ArrayList<String>();
+		ArrayList<String> dateList = new ArrayList<String>();
+		ArrayList<String> timeList = new ArrayList<String>();
+		ArrayList<Object> taskName = new ArrayList<Object>();
 		String titleOrig = new String();
 		String thisString = new String();
-		String atTimePMAM = new String();
 		
-		if(arr[arr.length-1].equals("important")){
-			for (int h = 1; h < arr.length-1; h++) {
-				titleOrig += "" + arr[h] + " ";
+		for(int i=0;i<arr.length;i++){
+			if(checkTime(arr[i])==1){
+				timeList.add(formatTime(arr[i]));
 			}
 		}
-		else{
-			for (int h = 1; h < arr.length; h++) {
-				titleOrig += "" + arr[h] + " ";
+		
+		for(int i=0;i<arr.length;i++){
+			if(checkTime(arr[i])==0 && checkDate(arr[i])==1){
+				dateList.add(formatDate(arr[i]));
 			}
+		}
+		
+		//System.out.println(timeList.size());
+		//System.out.println(dateList.size());
+		
+		if(arr[arr.length-1].equals("important")){
+			taskName.clear();
+			taskName.add(arr);
+			taskName.add(arr.length-1);
+			titleOrig = taskName(taskName).trim();
+		}
+		else{
+			taskName.clear();
+			taskName.add(arr);
+			taskName.add(arr.length);
+			titleOrig = taskName(taskName).trim();
+			
 		}
 		//System.out.println(titleOrig);
 		for (int j = 0; j < arr.length; j++) {
 ///////////////////////////////////////////////////////////////////////////////////////	
+			//add call mom due every Tue(can be month) at 12:00 important
 			if (arr[j].equals("due")) {
-				if(arr[j+1].equals("every")){
-					for (int num = 1; num <= j - 1; num++) {
-						title += "" + arr[num] + " ";
-					}
-					list.add(title.trim());
-					list.add(arr[j+1]);
-					list.add(arr[j+2]);
-				}else if(arr[j+1].equals("this")){
-					for (int num = 1; num <= j - 1; num++) {
-						title += "" + arr[num] + " ";
-					}
-					list.add(title.trim());
-					thisString = "this"+" "+ arr[j+2];
-					list.add(thisString);
+				if(arr[j+1].equals("every")&& isKeyWord(arr[j+2]) == 1){
+					taskName.clear();
+					taskName.add(arr);
+					taskName.add(j);
+					list.add(taskName(taskName).trim());
+					list.add(arr[j+1].trim());
+					list.add(compareWeekDayMonth(arr[j+2]).trim());
+				//add call mom due this week(variable)
+				}else if(arr[j+1].equals("this")&& isKeyWord(arr[j+2]) == 1){
+					taskName.clear();
+					taskName.add(arr);
+					taskName.add(j);
+					list.add(taskName(taskName).trim());
+					thisString = "this"+" "+ compareWeekDayMonth(arr[j+2]);
+					list.add(thisString.trim());
 				}
-				else{
+				//add call mom due time/date
+				else if(isKeyWord(arr[j+1]) == 1){
 					if(checkTime(arr[j+1])==1){
-						for (int num = 1; num <= j - 1; num++) {
-							title += "" + arr[num] + " ";
+						taskName.clear();
+						taskName.add(arr);
+						taskName.add(j);
+						list.add(taskName(taskName).trim());
+						if(arr.length>j+2){
+							list.add(formatTime(arr[j + 1]+ 
+									isAMPM(arr[j+2])).toString().trim());
+							timeList.add(formatTime(arr[j + 1]+ 
+									isAMPM(arr[j+2])).toString().trim());
 						}
-						list.add(title.trim());
-						list.add(formatTime(arr[j + 1]).toString().trim());
-						
-					}else{
-						
-						for (int num = 1; num <= j - 1; num++) {
-							title += "" + arr[num] + " ";
+						else{
+							list.add(formatTime(arr[j + 1]).toString().trim());
+//							timeList.add(formatTime(arr[j + 1]).toString().trim());
 						}
-						list.add(title.trim());
-						list.add(formatDate(arr[j + 1]).trim());
+						
+					}else if(checkTime(arr[j+1])==0){
+						taskName.clear();
+						taskName.add(arr);
+						taskName.add(j);
+						list.add(taskName(taskName).trim());
+						list.add(compareWeekDayMonth(arr[j + 1]).trim());
+						//list.add(compareWeekDayMonth("Jul").trim());
+						//list.add(formatDate(arr[j + 1]).trim());
 					}
+					
 				}
 ///////////////////////////////////////////////////////////////////////////////////////	
-			} else if (arr[j].equals("at")) {
+			} else if (arr[j].equals("at")&& isKeyWord(arr[j+1]) == 1) {
+				
 				if(onlyKeyAt(arr) == 1 && checkTime(arr[j+1])==1){
-					for(int i=1;i<arr.length-2;i++){
-						title +=arr[i]+" ";
-					}
-					list.add(title.trim());
+					taskName.clear();
+					taskName.add(arr);
+					taskName.add(arr.length-2);
+					list.add(taskName(taskName).trim());
 					if(arr.length >= j+3){
-						atTimePMAM = arr[j+2];
-						String temp = arr[j + 1] +" "+ timeAMPM(atTimePMAM);
-						list.add(formatTime(temp).toString());
+						list.add(formatTime(arr[j + 1]+ 
+								isAMPM(arr[j+2])).toString().trim());
+					}
+					else{
+						list.add(formatTime(arr[j+1]).toString());
+					}
+				}else if(onlyKeyAt(arr) == 1 && checkTime(arr[j+1])==0){
+					taskName.clear();
+					taskName.add(arr);
+					taskName.add(arr.length-2);
+					list.add(taskName(taskName).trim());
+					list.add(compareWeekDayMonth(arr[j+1]).trim());
+					
+				}else if(onlyKeyAt(arr) == 0){
+					if(arr.length >= j+3){
+						list.add(formatTime(arr[j + 1]+ 
+								isAMPM(arr[j+2])).toString().trim());
 					}
 					else{
 						list.add(formatTime(arr[j+1]).toString());
 					}
 				}
-				if(onlyKeyAt(arr) == 1 && checkTime(arr[j+1])==0){
-					for(int i=1;i<arr.length-2;i++){
-						title +=arr[i]+" ";
-					}
-					list.add(title.trim());
-					list.add(formatDate(arr[j+1]));
-					
-				}else if(onlyKeyAt(arr) == 0){
-					if(arr.length >= j+3){
-						atTimePMAM = arr[j+2];
-						String temp = arr[j + 1] +" "+ timeAMPM(atTimePMAM);
-						//System.out.println(atTimePMAM);
-						list.add(formatTime(temp.trim()).toString());
-					}
-					else{
-						list.add(formatTime(arr[j + 1]).toString());
-					}
-				}
 ///////////////////////////////////////////////////////////////////////////////////////	
-			} else if(arr[j].equals("from")){
-				for (int num = 1; num <= j - 1; num++) {
-					title += "" + arr[num] + " ";
-				}
-				
-				list.add(title.trim());
+			} else if(arr[j].equals("from")&& isKeyWord(arr[j+1]) == 1){
+				taskName.clear();
+				taskName.add(arr);
+				taskName.add(j);
+				list.add(taskName(taskName).trim());
+				//from time/date
 				if(checkTime(arr[j+1])==0){
-					list.add(formatDate(arr[j + 1]));
+					list.add(compareWeekDayMonth(arr[j + 1]).trim());
 				}
 				else if(checkTime(arr[j+1])==1){
 					if(arr.length >= j+3){
-						atTimePMAM = arr[j+2];
-						String temp = arr[j + 1] +" "+ timeAMPM(atTimePMAM);
-						//System.out.println(atTimePMAM);
-						list.add(formatTime(temp.trim()).toString());
+						list.add(formatTime(arr[j + 1]+ isAMPM(arr[j+2])).toString().trim());
 					}
 					else{
-						list.add(formatTime(arr[j + 1]).toString());
+						list.add(formatTime(arr[j+1]).toString());
 					}
 				}
 ///////////////////////////////////////////////////////////////////////////////////////	
-			}else if(arr[j].equals("to")){
+			}else if(arr[j].equals("to")&& isKeyWord(arr[j+1]) == 1){
 				if(checkTime(arr[j+1])==0){
-					list.add(formatDate(arr[j + 1]));
+					list.add(compareWeekDayMonth(arr[j + 1]).trim());
 				}
-				else{
+				else if(checkTime(arr[j+1])==1){
 					if(arr.length >= j+3){
-						atTimePMAM = arr[j+2];
-						String temp = arr[j + 1] +" "+ timeAMPM(atTimePMAM);
-						//System.out.println(atTimePMAM);
-						list.add(formatTime(temp.trim()).toString());
+						list.add(formatTime(arr[j + 1]+ 
+								isAMPM(arr[j+2])).toString().trim());
 					}
 					else{
-						list.add(formatTime(arr[j + 1]).toString());
+						list.add(formatTime(arr[j+1]).toString());
 					}
 				}
 ///////////////////////////////////////////////////////////////////////////////////////	
 			}else if(arr[j].equals("details")){
+				//add call mom details tell her buy apple(debug)
 				if(onlyKeyDetails(arr) == 1){
-					for(int i=1;i<j;i++){
-						title +=arr[i]+" ";
-					}
-					list.add(title.trim());
+					taskName.clear();
+					taskName.add(arr);
+					taskName.add(j);
+					list.add(taskName(taskName).trim());
 					for (int num = j+1; num < arr.length; num++) {
 						details += "" + arr[num] + " ";
 					}
-					//list.add("details");
 					list.add(details.trim());
 				}
+				//add call mom ......details tell her buy apple
 				else{
 					for (int num = j+1; num < arr.length; num++) {
 						details += "" + arr[num] + " ";
 					}
-					//list.add("details");
 					list.add(details.trim());
 				}
 				
 ///////////////////////////////////////////////////////////////////////////////////////	
-			}else if(arr[j].equals("on")){
-				for (int num = 1; num <= j - 1; num++) {
-					title += "" + arr[num] + " ";
-				}
-				
-				list.add(title.trim());
-				list.add(arr[j+1]);
+			//add call mom on Tues(always week day)
+			}else if(arr[j].equals("on")&& isKeyWord(arr[j+1]) == 1){
+				taskName.clear();
+				taskName.add(arr);
+				taskName.add(j);
+				list.add(taskName(taskName).trim());
+				list.add(formatWeekDay(arr[j+1]).trim());
 ///////////////////////////////////////////////////////////////////////////////////////	
-			}else if(arr[j].equals("every") && !arr[j-1].equals("due")){
+			}else if(arr[j].equals("every") && !arr[j-1].equals("due")&& isKeyWord(arr[j+1]) == 1){
 				
 				if(onlyKeyEvery(arr) == 1){
-					for (int num = 1; num <= j - 1; num++) {
-						title += "" + arr[num] + " ";
-					}
-					list.add(title.trim());
-					list.add("every");
-					list.add(arr[j+1]);
-				}else{
-				
-					list.add("every");
-					list.add(arr[j+1]);
+					taskName.clear();
+					taskName.add(arr);
+					taskName.add(j);
+					list.add(taskName(taskName).trim());
+					list.add(arr[j].trim());
+					list.add(formatWeekDay(arr[j+1]).trim());
+				}else{	
+					list.add(arr[j].trim());
+					list.add(formatWeekDay(arr[j+1]).trim());
 				}
 			}
 			
 		}
-	String str = new String();	
-	if(list.isEmpty()){	
-		if(checkDate(arr).isEmpty()){
-			list.add(titleOrig);
-		}
-		else{
-			for (int h = 1; h < arr.length-1; h++) {
-				str += "" + arr[h] + " ";
+		if(list.isEmpty()){	
+			int index = 0;
+			String task = new String();
+			for(int f=0;f<arr.length;f++){
+				if(arr[f].equals("the")){
+					//check the last the
+					taskName.clear();
+					taskName.add(arr);
+					taskName.add(f);
+					task = taskName(taskName).trim();
+					index = 1;
+				}
 			}
-			list.add(str);
-			list.addAll(checkDate(arr));
+			  
+			if(index ==1 ){
+				if(prettyTime(titleOrig) !=null){
+					list.add(task);
+					list.add(prettyTime(titleOrig));
+				}
+				else{
+					list.addAll(withoutThe(arr));
+				}
+			}
+			else if(index == 0){
+				list.addAll(withoutThe(arr));
+			}
+			
+			
 		}
-		
-		
+
+
+	if(timeList.size() == 2 && compareTime(timeList).get(0).equals("Invalid time range")){
+		//System.out.println(timeList.size());
+		list.clear();
+		list.add("Invalid time range");
 	}
-	
+	//System.out.println(compareDate(dateList).get(0).equals("Invalid date range"));
+	if(dateList.size() == 2 && compareDate(dateList).get(0).equals("Invalid date range")){
+		//System.out.println(dateList.size());
+		list.clear();
+		list.add("Invalid date range");
+		//System.out.println(list);
+	}	
 	if(findImpt(arr) == 1){
 		list.add("important");
 	}
-		return list;
+	return list;
 	}
 	
-	//public int onlyKeyEvery(String [] arr) {
-		//for(int i)
-	//}
+	public String prettyTime(String input){
+		try{
+		List<Date> dates = new PrettyTimeParser().parse(input);
+	    Date date = new Date();
+	    date =dates.get(0);
+	    SimpleDateFormat dateFormatter = new SimpleDateFormat("E, y-M-d 'at' h:m:s a z");
+	    dateFormatter = new SimpleDateFormat("yyyy-MM-d");
+	    return dateFormatter.format(date);
+		}catch(Exception e){
+			return null;
+		}
+	}
+	
+	public ArrayList<String> withoutThe(String arr[]){
+		ArrayList<String> list = new ArrayList<String>();
+		String taskName1 = new String();
+		String taskName2 = new String();
+		String str = new String();
+		for(int i=1;i<arr.length;i++){
+			taskName1 += arr[i] + " ";
+		}
+		for (int h = 1; h < arr.length-1; h++) {
+			taskName2 += arr[h] + " ";
+		}
+		if(checkSpecialDay(arr).isEmpty()){
+			if(findLastImpt(arr)==1){
+				list.add(taskName2.trim());
+			}
+			else if(findLastImpt(arr)==0){
+				list.add(taskName1.trim());
+			}
+			
+		}
+		else{
+			for (int h = 1; h < arr.length-1; h++) {
+				str += arr[h] + " ";
+			}
+			list.add(str.trim());
+			list.addAll(checkSpecialDay(arr));
+		}
+//		if(checkSpecialDay(arr).isEmpty()){
+//			if(findLastImpt(arr) == 1){
+//				list.add(taskName2.trim());
+//				//list.add("important");
+//			}else if((findLastImpt(arr) == 0)){
+//				list.add(taskName1.trim());
+//			}
+//		}
+//		else if(!checkSpecialDay(arr).isEmpty()){
+//			if(findLastImpt(arr) == 1){
+//				list.add(taskName2.trim());
+//				//list.add("important");
+//				list.addAll(checkSpecialDay(arr));
+//			}else if((findLastImpt(arr) == 0)){
+//				list.add(taskName1.trim());
+//				list.addAll(checkSpecialDay(arr));
+//			}
+//		}
+		return list;
+	}
 ///////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////OTHERS//////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////
 	public int findImpt(String[] arr){
+		int index = 0;
 		for (int i=0;i<arr.length;i++){
-			if(arr[i].equals("important")){
-				return 1;//the output important will always be the same
+			for(int j=0;j<ARR_IMPORTANT.length;j++){
+				if(arr[i].equals(ARR_IMPORTANT[j])){
+					index = 1;
+					//return index;
+				}
 			}
 		}
-		return 0;
+		//System.out.println(index);
+		return index;
+		
 	}
 	public int findLastImpt(String[] arr){
-		if(arr[arr.length-1].equals("important")){
-			return 1;
+		int index = 0;
+		for(int j=0;j<ARR_IMPORTANT.length;j++){
+			if(arr[arr.length-1].equals(ARR_IMPORTANT[j])){
+				index = 1;
+			}
 		}
-		return 0;
+		return index;
 	}
+	//////////////////////////////////////////////////////////////////
 	public String formatDate(String inputDate){
 	      LocalDate parsedDate = null;	
 	      String date = new String();
@@ -728,29 +939,10 @@ public class TNotesParser {
 					return parsedDate.toString();
 				}
 			}
-		return "the date is invalid";
+		return "";
 	}
-	
-	public String formatMonth(String month){
-	      LocalDate parsedDate = null;	
-	      String date = new String();
-	      date = month.trim();
-
-	      for (String pattern : MONTH_POSSIBLE_FORMAT) {
-	    	  try {
-	  			DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern);
-	  			parsedDate = LocalDate.parse(date, formatter);
-	  		} catch (DateTimeException e) {
-	  			parsedDate = null;
-	  		}
-				if (parsedDate != null) {
-					return parsedDate.toString();
-				}
-			}
-		return "the month is invalid";
-	}
-	
-	public LocalTime formatTime(String time) {
+	//////////////////////////////////////////////////////////////////
+	public String formatTime(String time) {
 	
 		assert time != null : "not a time";
 		time = time.toUpperCase();
@@ -764,11 +956,11 @@ public class TNotesParser {
 			parsedTime = compareTimeFormat(time, timeFormat);
 			
 			if (parsedTime != null) {
-				return parsedTime;
+				return parsedTime.toString();
 			}
 		}
 	
-		return null;
+		return "";
 	}
 	
 	private LocalTime compareTimeFormat(String timeString, String pattern) {
@@ -783,8 +975,8 @@ public class TNotesParser {
 		}
 	
 	}
-	
-	public String timeAMPM(String atDatePMAM){
+	//////////////////////////////////////////////////////////////////
+	public String isAMPM(String atDatePMAM){
 		switch(atDatePMAM){
 			case "am" :
 				return "am";
@@ -798,7 +990,7 @@ public class TNotesParser {
 				return "";
 		}	
 	}
-	
+	//////////////////////////////////////////////////////////////////
 	public String formatSpecialDay(String date){
 		switch(date.toLowerCase()){
 			case "today" :
@@ -809,10 +1001,13 @@ public class TNotesParser {
 				return "tomorrow";
 			case "tonight" :
 				return "tonight";
+			case "week" :
+				return "week";
 			default   :
 				return "";
 		}	
 	}
+	//////////////////////////////////////////////////////////////////
 	public int isLetters(String nextString) {
 		if (nextString.matches("[a-zA-Z]+")) {
 			return 1;
@@ -820,20 +1015,24 @@ public class TNotesParser {
 			return 0;
 		}
 	}
-	
+	//////////////////////////////////////////////////////////////////
 	
 	private String formatWeekDay(String weekDay) {
+		String weekDayString = new String();
 		DayOfWeek day = null;
+		//System.out.println(weekDay);
 		for (String dayFormat : WEEKDAY_POSSIBLE_FORMAT) {
-			day = compareWeekDayFormat(weekDay, dayFormat);
+			//System.out.println(dayFormat);
+			day = compareWeekDayFormat(weekDay.trim(), dayFormat);
+			//day = compareWeekDayFormat("Tue", "EE");
 			if (day != null) {
-				return day.toString();
+				weekDayString =  day.toString();
 			}
 			else{
-				return "";
+				weekDayString =  "";
 			}
-	}
-		return null;
+	}//System.out.println(weekDayString);
+		return weekDayString;
 	}
 	
 	private DayOfWeek compareWeekDayFormat(String dateString, String pattern) {
@@ -842,6 +1041,33 @@ public class TNotesParser {
 			DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern);
 			DayOfWeek day = DayOfWeek.from(formatter.parse(dateString));
 			return day;
+		} catch (DateTimeException e) {
+			return null;
+		}
+	}
+	/////////////////////////////////////////////////////////////////////////////////////////
+	private String formatMonth(String monthInput) {
+		String monthString = new String();
+		Month month = null;
+		for (String monthFormat : MONTH_POSSIBLE_FORMAT) {
+			month = compareMonthFormat(monthInput, monthFormat);
+			if (month != null) {
+				monthString =  month.toString();
+			}
+			else{
+				monthString =  "";
+			}
+	}
+		//System.out.println(monthString);
+		return monthString;
+	}
+	
+	private Month compareMonthFormat(String monthString, String pattern) {
+		assert pattern != null : "not a week month";
+		try {
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern);
+			Month month = Month.from(formatter.parse(monthString));
+			return month;
 		} catch (DateTimeException e) {
 			return null;
 		}
