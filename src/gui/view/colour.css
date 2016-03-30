@@ -1,4 +1,7 @@
 .TextArea {
-	-fx-background-color: #ffffcc;
+	-fx-background-color: #003380;
 }
 
+.check-box {
+    -fx-text-fill: white;
+}
