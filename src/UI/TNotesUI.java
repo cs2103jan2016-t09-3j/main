@@ -1,6 +1,7 @@
 package UI;
 
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.ArrayList;
 
 import Logic.TNotesLogic;
@@ -21,6 +22,7 @@ public class TNotesUI {
 	String result = "";
 	TaskFile taskFile;
 	ArrayList<TaskFile> viewList;
+	String errorMessage;
 
 	public TNotesUI() {
 		parser = new TNotesParser();
@@ -37,10 +39,46 @@ public class TNotesUI {
 		String welcomeMsg = "Hello, welcome to T-Note. How may I help you?";
 		return welcomeMsg;
 	}
+	
+	public String displaySchedule(){
+	
+		String schedule = "";
+		ArrayList<TaskFile> todaySchedule = new ArrayList<TaskFile>();
+		
+		try {
+			todaySchedule = logic.viewDateList("today");
+			schedule = "====TODAY's Schedule====\n";
+			for(int i=0; i<todaySchedule.size(); i++) {
+				
+				if(todaySchedule.get(i).getIsDeadline()) {
+					schedule+= "[" + todaySchedule.get(i).getStartTime() + "] "
+							+ todaySchedule.get(i).getName() + "\n";
+				}
+				
+				if(todaySchedule.get(i).getIsMeeting()) {
+					schedule += "[" + todaySchedule.get(i).getStartTime() + "]-" +
+							"[" + todaySchedule.get(i).getEndTime() + "] " + 
+							todaySchedule.get(i).getName() + "\n";
+				}
+			}	
+			schedule += "\n";
+			
+		} catch (Exception e) {
+			errorMessage = e.getMessage();
+			schedule = errorMessage;
+		}
+		return schedule;
+	}
+	
 
 	public String executeCommand(String userInput) {
 		ArrayList<String> userCommandSplit = new ArrayList<String>();
-		userCommandSplit = parser.checkCommand(userInput);
+		try {
+			userCommandSplit = parser.checkCommand(userInput);
+		} catch (ParseException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		ArrayList<String> userCommandSplitCopy = new ArrayList<String>(userCommandSplit);
 		commandString = getFirstWord(userCommandSplit);
 

@@ -74,15 +74,20 @@ public class TNotesOverviewController {
     
     @FXML
     private void handleUserInput(){
-    	String output = tNote.executeCommand(userInput.getText());    	
+    	String result = "";
+    	String update = "";
+    	 	
+    	update = tNote.executeCommand(userInput.getText());    	
+    	result = tNote.displaySchedule();
     	
-    	if(output.equals("exit")){
+    	if(result.equals("exit")){
     		//exit program
     		System.exit(0);
     	}
     	
     	else {
-    		displayScreen.setText(output);
+    		result += update;
+    		displayScreen.setText(result);
     		userInput.clear();
     	}
 

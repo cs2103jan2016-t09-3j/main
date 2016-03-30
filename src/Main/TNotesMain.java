@@ -7,12 +7,13 @@ import UI.TNotesUI;
 public class TNotesMain {
 	
 	
-
 	//Define Display Messages 
-	
-	private static Scanner sc = new Scanner(System.in);
-	
 	public static void main(String[] args) {
+		String result="";
+		String update="";
+		
+		Scanner sc = new Scanner(System.in);
+		
 		TNotesUI tNote = new TNotesUI();
 		String welcomeMessage = tNote.getWelcomeMessage();
 		showToUser(welcomeMessage);
@@ -20,7 +21,9 @@ public class TNotesMain {
 		while(true){
 		String userInput = sc.nextLine();
 		
-		String result = tNote.executeCommand(userInput);
+		update = tNote.executeCommand(userInput);
+		result += tNote.displaySchedule();
+		result += update;
 		
 		showToUser(result);
 		}		
