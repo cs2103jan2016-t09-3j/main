@@ -101,7 +101,7 @@ public class TNotesParser {
 		//Month month = Month.august;
 		String output = new String();
 		String input = new String();  
-		input = "add i want the house Tuesday";
+		input = "add i want the house on Tue";
 		for (int i = 0; i < checkCommand(input).size(); i++){
 			output = checkCommand(input).get(i);
 			System.out.println(output);
@@ -787,22 +787,28 @@ public class TNotesParser {
 			}
 			
 		}
+		//add i want to buy the house tomorrow
 		if(list.isEmpty()){	
 			int index = 0;
 			String task = new String();
 			for(int f=0;f<arr.length;f++){
-				if(arr[f].equals("the")){
+				
+				if(arr[f].equals("the") ){
 					//check the last the
+					if(afterBeforeExit(arr) == 1){
 					taskName.clear();
 					taskName.add(arr);
 					taskName.add(f);
 					task = taskName(taskName).trim();
 					index = 1;
+					}
+					
 				}
 			}
+			
 			  
 			if(index ==1 ){
-				if(prettyTime(titleOrig) !=null){
+				if(prettyTime(titleOrig) !=null){//the next day
 					list.add(task);
 					list.add(prettyTime(titleOrig));
 				}
@@ -835,7 +841,15 @@ public class TNotesParser {
 	}
 	return list;
 	}
-	
+	public int afterBeforeExit(String arr[]){
+		int index = 0;
+		for(int i=0;i<arr.length;i++){
+			if(arr[i].equals("after") ||arr[i].equals("before")){
+				index = 1;
+			}
+		}
+		return index;
+	}
 	public String prettyTime(String input){
 		try{
 		List<Date> dates = new PrettyTimeParser().parse(input);
