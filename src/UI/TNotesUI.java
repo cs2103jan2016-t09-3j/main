@@ -51,22 +51,28 @@ public class TNotesUI {
 			for(int i=0; i<todaySchedule.size(); i++) {
 				
 				if(todaySchedule.get(i).getIsDeadline()) {
-					schedule+= "[" + todaySchedule.get(i).getStartTime() + "] ";
+					schedule+= String.format("%-24s","[" + todaySchedule.get(i).getStartTime() + "]");
+					
+					schedule+= todaySchedule.get(i).getName() + " ";
 					
 					if(todaySchedule.get(i).getImportance()) {
-							schedule+= "[IMPORTANT] ";
+						schedule+= "[IMPORTANT]\n";
+					} else {
+						schedule += "\n";
 					}
-					schedule+= todaySchedule.get(i).getName() + "\n";
 				}
 				
 				if(todaySchedule.get(i).getIsMeeting()) {
-					schedule += "[" + todaySchedule.get(i).getStartTime() + "]-" +
-							"[" + todaySchedule.get(i).getEndTime() + "] " ;
-							
-							if(todaySchedule.get(i).getImportance()) {
-								schedule+= "[IMPORTANT] ";
-							}
-						schedule+= todaySchedule.get(i).getName() + "\n";
+					schedule += String.format("%-20s", "[" + todaySchedule.get(i).getStartTime() + "] - " +
+							"[" + todaySchedule.get(i).getEndTime() + "]") ;
+				
+					schedule+= todaySchedule.get(i).getName() + " ";
+					
+					if(todaySchedule.get(i).getImportance()) {
+						schedule+= "[IMPORTANT]\n";
+					} else {
+						schedule += "\n";
+					}
 				}
 			}	
 			schedule += "\n";
@@ -192,7 +198,7 @@ public class TNotesUI {
 					result = String.format("You have changed the start time in \"%s\" from [%s] to [%s]!\n",
 							taskFile.getName(), oldTaskFile.getStartTime(), taskFile.getStartTime());
 				}
-				if (editType.equals("EndTime")) {
+				if (editType.equals("endTime")) {
 					result = String.format("You have chaned the end time in \"%s\" from [%s] to [%s]!\n",
 							taskFile.getName(), oldTaskFile.getEndTime(), taskFile.getEndTime());
 				}
@@ -200,13 +206,21 @@ public class TNotesUI {
 					result = String.format("You have changed the start date in \"%s\" from [%s] to [%s]!\n",
 							taskFile.getName(), oldTaskFile.getStartDate(), taskFile.getStartDate());
 				}
-				if (editType.equals("EndDate")) {
+				if (editType.equals("endDate")) {
 					result = String.format("You have changed the end date in \"%s\" from [%s] to [%s]!\n",
 							taskFile.getName(), oldTaskFile.getEndDate(), taskFile.getEndDate());
 				}
 				if (editType.equals("details")) {
 					result = String.format("You have changed the details in \"%s\" from [%s] to [%s]!\n",
 							taskFile.getName(), oldTaskFile.getDetails(), taskFile.getDetails());
+				}
+				if (editType.equals("importance")) {
+					result = String.format("You have changed the importance of \"%s\" to ", taskFile.getName());
+					if(taskFile.getImportance()) {
+						result += "important";
+					} else {
+						result += "not as important";
+					}
 				}
 				// if (editType.equals("Status")) {
 				// result = String.format("You have changed the status in \"%s\"
@@ -235,7 +249,14 @@ public class TNotesUI {
 
 				result += String.format("Your NEW schedule:\n");
 				for (int i = 0; i < arrD.size(); i++) {
-					result += i + 1 + ". " + "[" + arrD.get(i).getStartTime() + "] " + arrD.get(i).getName() + "\n";
+					result += i + 1 + ". " + "[" + arrD.get(i).getStartTime() + "] ";
+					if(arrD.get(i).getIsMeeting()) {
+						result +=  "- [" + arrD.get(i).getEndTime() + "] ";
+					}
+					if(arrD.get(i).getImportance()) {
+						result+= "[IMPORTANT] ";
+					}
+					result += arrD.get(i).getName() + "\n";
 				}
 				} catch (Exception e) {
 					result = e.getMessage();
@@ -254,7 +275,14 @@ public class TNotesUI {
 
 					result += String.format("Your NEW schedule for %s:\n", taskFile.getStartDate());
 					for (int i = 0; i < arrN.size(); i++) {
-						result += i + 1 + ". " + "[" + arrN.get(i).getStartTime() + "] " + arrN.get(i).getName() + "\n";
+						result += i + 1 + ". " + "[" + arrN.get(i).getStartTime() + "] ";
+						if(arrN.get(i).getIsMeeting()) {
+							result +=  "- [" + arrN.get(i).getEndTime() + "] ";
+						}
+						if(arrN.get(i).getImportance()) {
+							result+= "[IMPORTANT] ";
+						}
+						result += arrN.get(i).getName() + "\n";
 					}
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
@@ -268,6 +296,7 @@ public class TNotesUI {
 			ArrayList<String> viewType = logic.sortViewTypes(userCommandSplit);
 
 			if (viewType.get(0).equals("isViewDateList")) {
+				
 				String date = userCommandSplit.get(1);
 				ArrayList<TaskFile> arrView = new ArrayList<TaskFile>();
 				try {
@@ -277,6 +306,8 @@ public class TNotesUI {
 					// TODO Auto-generated catch block
 					result = e.getMessage();
 				}
+				
+				
 				result = String.format("Your schedule for %s:\n", userCommandSplit.get(1));
 				for (int i = 0; i < arrView.size(); i++) {
 					if(arrView.get(i).getIsMeeting()) {
@@ -291,6 +322,7 @@ public class TNotesUI {
 					}
 					result += String.format(" %s\n", arrView.get(i).getName());
 				}
+				
 			}
 
 			// list of floating tasks
@@ -513,7 +545,7 @@ public class TNotesUI {
 	}
 	
 	public int isLetters(String nextString) {
-		if (nextString.matches("[a-zA-Z]+")) {
+		if (!nextString.matches("[0-9]+")) {
 			return 1;
 		} else {
 			return 0;

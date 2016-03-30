@@ -32,7 +32,7 @@ public class TNotesLogic {
 	public TaskFile addTask(ArrayList<String> fromParser) throws Exception {
 		try {
 			fromParser.remove(0);
-			// System.out.println("addcheck " + fromParser.toString());
+			System.out.println("addcheck " + fromParser.toString());
 			ArrayList<String> stringList = storage.readFromMasterFile();
 			TaskFile currentFile = new TaskFile();
 			String importance = new String();
@@ -431,7 +431,7 @@ public class TNotesLogic {
 			} else {
 				System.out.println("did not manage to add to storage");
 			}
-		} else if (type.equals("time")) {
+		} else if (type.equals("time") || type.equals("startTime")) {
 			storage.deleteTask(title);
 			currentFile.setStartTime(newText);
 			currentFile.setUpTaskFile();
@@ -449,7 +449,7 @@ public class TNotesLogic {
 			} else {
 				System.out.println("did not manage to add to storage");
 			}
-		} else if (type.equals("date")) {
+		} else if (type.equals("date") || type.equals("startDate")) {
 			storage.deleteTask(title);
 			currentFile.setStartDate(newText);
 			if (storage.addTask(currentFile)) {
@@ -473,7 +473,7 @@ public class TNotesLogic {
 			} else {
 				System.out.println("did not manage to add to storage");
 			}
-		} else if (type.equals("important")) {
+		} else if (type.equals("important")|| type.equals("importance")) {
 			storage.deleteTask(title);
 			if (newText.equals("yes")) {
 				currentFile.setImportance(true);

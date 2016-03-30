@@ -101,11 +101,13 @@ public class TNotesParser {
 		//Month month = Month.august;
 		String output = new String();
 		String input = new String();  
-		input = "add call mom";
+		input = "add task12 due every tuesday";
 		for (int i = 0; i < checkCommand(input).size(); i++){
 			output = checkCommand(input).get(i);
 			System.out.println(output);
 		}
+		
+		System.out.println("1 " + formatWeekDay("tuesday"));
 	}
 	
 	
@@ -277,6 +279,13 @@ public class TNotesParser {
 				//view today
 				else{
 					list.add(compareWeekDayMonth(arr[1]));
+					
+//					for(int i=2; i< arr.length; i++) {
+//						String taskName = list.get(0);
+//						System.out.println(i + taskName);
+//						taskName.concat(arr[i]);
+//						list.set(0, taskName);
+//					}
 				}
 		//view year/week/month to year/week/month
 		//view Feb to Mar
@@ -287,7 +296,12 @@ public class TNotesParser {
 		//view date
 		}else if (isLetters(arr[1].trim()) == 0 && checkViewTo(arr) == 0 
 				&& checkTime(arr[1].trim())==0) {
-			list.add(formatDate(arr[1]));
+			String formattedDate = formatDate(arr[1]);
+			if(formattedDate.isEmpty()) {
+				list.add(arr[1]);
+			} else {
+				list.add(formatDate(arr[1]));
+			}
 		//view date to date
 		}else if(isLetters(arr[1].trim()) == 0 && checkViewTo(arr) == 1 
 				&& checkTime(arr[1].trim())==0 && checkKeyWordBefore(arr)==1){
@@ -348,7 +362,19 @@ public class TNotesParser {
 		int firstTime = Integer.parseInt(list.get(0).substring(0,2));
 		int secondTime = Integer.parseInt(list.get(1).substring(0,2));
 		
-		if(firstTime >= secondTime){
+		if(firstTime == secondTime) {
+			firstTime = Integer.parseInt(list.get(0).substring(3,5));
+			secondTime = Integer.parseInt(list.get(1).substring(3,5));
+			
+			if(firstTime >= secondTime) {
+				list.clear();
+				list.add("Invalid time range");
+				return list;
+			} else {
+				return list;
+			}
+		
+		} else if(firstTime > secondTime){
 			list.clear();
 			list.add("Invalid time range");
 			return list;

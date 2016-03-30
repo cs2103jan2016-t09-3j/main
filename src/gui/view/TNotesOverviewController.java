@@ -80,7 +80,7 @@ public class TNotesOverviewController {
     	update = tNote.executeCommand(userInput.getText());    	
     	result = tNote.displaySchedule();
     	
-    	if(result.equals("exit")){
+    	if(update.equals("exit")){
     		//exit program
     		System.exit(0);
     	}
