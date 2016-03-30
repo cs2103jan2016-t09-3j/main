@@ -10,6 +10,7 @@ import javafx.application.Application;
 //import javafx.collections.FXCollections;
 import javafx.fxml.*;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
@@ -24,6 +25,8 @@ public class MainApp extends Application {
 	        this.primaryStage = primaryStage;
 	        this.primaryStage.setTitle("T-Note");
 	        
+	        // Set the application icon
+	        this.primaryStage.getIcons().add(new Image("file:resources/images/turtleIcon.png"));
 	        
 	        initRootLayout();
 

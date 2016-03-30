@@ -51,14 +51,22 @@ public class TNotesUI {
 			for(int i=0; i<todaySchedule.size(); i++) {
 				
 				if(todaySchedule.get(i).getIsDeadline()) {
-					schedule+= "[" + todaySchedule.get(i).getStartTime() + "] "
-							+ todaySchedule.get(i).getName() + "\n";
+					schedule+= "[" + todaySchedule.get(i).getStartTime() + "] ";
+					
+					if(todaySchedule.get(i).getImportance()) {
+							schedule+= "[IMPORTANT] ";
+					}
+					schedule+= todaySchedule.get(i).getName() + "\n";
 				}
 				
 				if(todaySchedule.get(i).getIsMeeting()) {
 					schedule += "[" + todaySchedule.get(i).getStartTime() + "]-" +
-							"[" + todaySchedule.get(i).getEndTime() + "] " + 
-							todaySchedule.get(i).getName() + "\n";
+							"[" + todaySchedule.get(i).getEndTime() + "] " ;
+							
+							if(todaySchedule.get(i).getImportance()) {
+								schedule+= "[IMPORTANT] ";
+							}
+						schedule+= todaySchedule.get(i).getName() + "\n";
 				}
 			}	
 			schedule += "\n";
