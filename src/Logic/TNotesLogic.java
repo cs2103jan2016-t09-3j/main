@@ -304,7 +304,7 @@ public class TNotesLogic {
 	public ArrayList<String> sortViewTypes(ArrayList<String> fromParser) {
 		ArrayList<String> stringList = new ArrayList<String>();
 		String viewType = fromParser.get(1);
-		if (viewType.contains("-") || viewType.contains("today")) {
+		if (viewType.contains("-") || viewType.contains("today") || viewType.equals("tuesday")) {
 			stringList.add("isViewDateList");
 		} else {
 			stringList.add("isViewTask");
