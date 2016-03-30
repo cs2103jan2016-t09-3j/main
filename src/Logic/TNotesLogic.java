@@ -576,12 +576,13 @@ public class TNotesLogic {
 	}
 
 	// sort date
-	public ArrayList<TaskFile> sortDateTask() throws Exception {
+	public ArrayList<TaskFile> sortNameTask() throws Exception {
 		ArrayList<String> masterList = storage.readFromMasterFile();
 		ArrayList<TaskFile> dateList = new ArrayList<TaskFile>();
 		for (String text : masterList) {
 			TaskFile currentFile = storage.getTaskFileByName(text);
-			if (!currentFile.getIsDone()) {
+			if (!currentFile.getIsDone()&&!currentFile.getName().contains("_")){
+				
 				dateList.add(currentFile);
 			}
 		}

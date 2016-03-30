@@ -370,7 +370,7 @@ public class TNotesUI {
 
 		case SORT_COMMAND:
 			ArrayList<TaskFile> arrSort = new ArrayList<TaskFile>();
-			String sortType = userCommandSplit.get(2).trim();
+			String sortType = userCommandSplit.get(1).trim();
 
 			if (sortType.equals("importance")) {
 				result = "I have sorted everything by importance for you. Do first things first!\n\n";
@@ -386,7 +386,7 @@ public class TNotesUI {
 			if (sortType.equals("name")) {
 				result = "I have sorted everything by name for you! I'm so amazing, what would you do without me!";
 				try {
-					arrSort = logic.sortDateTask();
+					arrSort = logic.sortNameTask();
 
 					result += String.format("You new schedule for %s: \n\n", userCommandSplit.get(1));
 
