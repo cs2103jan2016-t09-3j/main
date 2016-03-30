@@ -414,7 +414,7 @@ public class TNotesLogic {
 			} else {
 				System.out.println("did not manage to add to storage");
 			}
-		} else if (type.equals("time")) {
+		} else if (type.equals("startTime")) {
 			storage.deleteTask(title);
 			currentFile.setStartTime(newText);
 			currentFile.setUpTaskFile();
@@ -432,7 +432,7 @@ public class TNotesLogic {
 			} else {
 				System.out.println("did not manage to add to storage");
 			}
-		} else if (type.equals("date")) {
+		} else if (type.equals("startDate")) {
 			storage.deleteTask(title);
 			currentFile.setStartDate(newText);
 			if (storage.addTask(currentFile)) {
