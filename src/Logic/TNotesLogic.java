@@ -533,19 +533,19 @@ public class TNotesLogic {
 		ArrayList<TaskFile> importList = new ArrayList<TaskFile>();
 		for (String text : masterList) {
 			TaskFile currentFile = storage.getTaskFileByName(text);
-			if (!currentFile.getIsDone()) {
+			if (!currentFile.getIsDone()&&!currentFile.getName().contains("_")) {
 				taskList.add(currentFile);
 			}
 		}
 		masterList.clear();
 		for (TaskFile newFile : taskList) {
-			if (newFile.getImportance()) {
+			if (newFile.getImportance()&&!newFile.getName().contains("_")) {
 				importList.add(newFile);
 				taskList.remove(newFile);
 			}
 		}
-		Collections.sort(taskList, new NameComparator());
 		Collections.sort(importList, new NameComparator());
+		Collections.sort(taskList, new NameComparator());
 		importList.addAll(taskList);
 		taskList.clear();
 		return importList;
@@ -586,7 +586,7 @@ public class TNotesLogic {
 				dateList.add(currentFile);
 			}
 		}
-		Collections.sort(dateList);
+		Collections.sort(dateList, new NameComparator());
 		return dateList;
 	}
 
