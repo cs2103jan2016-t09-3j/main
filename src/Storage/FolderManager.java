@@ -25,6 +25,8 @@ import Object.TaskFile;
 
 public class FolderManager {
 
+	private static final String STRING_TO_CLEAR_FILES = "";
+
 	private static final String DEFAULT_FOLDER = "\\TNote";
 
 	private static FolderManager instance;
@@ -39,9 +41,13 @@ public class FolderManager {
 
 	private FolderManager() {
 		gsonHelper = new Gson();
+		setUpParentDirectory();
+	}
+
+	private void setUpParentDirectory() {
 		parentPath = FileSystems.getDefault().getPath(DEFAULT_FOLDER);
 		this.parentDirectory = parentPath.toFile();
-		createMasterDirectory();
+		createParentDirectory();
 	}
 
 	public static FolderManager getInstance() {
@@ -51,7 +57,7 @@ public class FolderManager {
 		return instance;
 	}
 
-	private void createMasterDirectory() {
+	private void createParentDirectory() {
 		if (!parentDirectory.exists()) {
 			parentDirectory.mkdirs();
 		}
@@ -99,7 +105,7 @@ public class FolderManager {
 		}
 	}
 
-	public boolean writeToTaskFile(File newTask, TaskFile task) throws IOException {
+	protected boolean writeToTaskFile(File newTask, TaskFile task) throws IOException {
 		try {
 			fWriter = new FileWriter(newTask);
 
@@ -115,7 +121,7 @@ public class FolderManager {
 		}
 	}
 
-	public boolean writeToMonthMapFile(File mapFile, Map<String, String> map) throws IOException {
+	protected boolean writeToMonthMapFile(File mapFile, Map<String, String> map) throws IOException {
 		try {
 			fWriter = new FileWriter(mapFile);
 			bWriter = new BufferedWriter(fWriter);
@@ -132,7 +138,7 @@ public class FolderManager {
 		}
 	}
 	
-	public boolean writeToRecurringMapFile(File mapFile, Map<String, ArrayList<String>> map) throws IOException {
+	protected boolean writeToRecurringMapFile(File mapFile, Map<String, ArrayList<String>> map) throws IOException {
 		try {
 			fWriter = new FileWriter(mapFile);
 			bWriter = new BufferedWriter(fWriter);
@@ -149,9 +155,9 @@ public class FolderManager {
 		}
 	}
 
-	public boolean writeListToFile(File file, ArrayList<String> list) throws IOException {
+	protected boolean writeListToFile(File file, ArrayList<String> list) throws IOException {
 		try {
-			fWriter = new FileWriter(file, true);
+			fWriter = new FileWriter(file);
 			bWriter = new BufferedWriter(fWriter);
 
 			for (String taskName : list) {
@@ -168,12 +174,12 @@ public class FolderManager {
 		}
 	}
 
-	public boolean clearAnOverviewFile(File fileToClear) throws IOException {
+	protected boolean clearAnOverviewFile(File fileToClear) throws IOException {
 		try {
 			fWriter = new FileWriter(fileToClear);
 			bWriter = new BufferedWriter(fWriter);
 
-			bWriter.write("");
+			bWriter.write(STRING_TO_CLEAR_FILES);
 			bWriter.close();
 			fWriter.close();
 			return true;
@@ -182,7 +188,7 @@ public class FolderManager {
 		}
 	}
 
-	public ArrayList<String> readFromListFile(File listFile) throws IOException {
+	protected ArrayList<String> readFromListFile(File listFile) throws IOException {
 		try {
 
 			fReader = new FileReader(listFile);
@@ -209,7 +215,7 @@ public class FolderManager {
 		}
 	}
 
-	public Map<String, String> readFromFolderMapFile(File mapFile) throws IOException {
+	protected Map<String, String> readFromFolderMapFile(File mapFile) throws IOException {
 		try {
 			fReader = new FileReader(mapFile);
 			bReader = new BufferedReader(fReader);
@@ -236,7 +242,7 @@ public class FolderManager {
 		}
 	}
 
-	public Map<String, ArrayList<String>> readFromDateMapFile(File dateMapFile) throws IOException {
+	protected Map<String, ArrayList<String>> readFromDateMapFile(File dateMapFile) throws IOException {
 		try {
 			fReader = new FileReader(dateMapFile);
 			bReader = new BufferedReader(fReader);
@@ -263,7 +269,7 @@ public class FolderManager {
 		}
 	}
 
-	public TaskFile readTaskFile(File taskFileToBeFound) throws IOException {
+	protected TaskFile readTaskFile(File taskFileToBeFound) throws IOException {
 		try {
 			fReader = new FileReader(taskFileToBeFound);
 			bReader = new BufferedReader(fReader);
@@ -289,7 +295,7 @@ public class FolderManager {
 		return fileToDelete.delete();
 	}
 
-	public boolean deleteMasterDirectory() {
+	protected boolean deleteMasterDirectory() {
 
 		if (clearMasterDirectory() && parentDirectory.delete()) {
 			return true;
@@ -298,12 +304,12 @@ public class FolderManager {
 		}
 	}
 	
-	public boolean clearMasterDirectory() {
+	protected boolean clearMasterDirectory() {
 		return deleteAllFilesAndFolders(parentDirectory);
 	}
 	
 	
-	public boolean deleteAllFilesAndFolders(File parentFile) {
+	protected boolean deleteAllFilesAndFolders(File parentFile) {
 
 		for (File file : parentFile.listFiles()) {
 			if (file.isDirectory()) {
@@ -321,12 +327,12 @@ public class FolderManager {
 		return true;
 	}
 
-	public boolean setNewDirectory(String newDirectoryString) throws IOException {
+	protected boolean setNewDirectory(String newDirectoryString) throws IOException {
 		File newParentDirectory = new File(newDirectoryString);
 		return copyFilesIntoNewDirectory(newParentDirectory, parentDirectory);
 	}
 
-	public boolean copyFilesIntoNewDirectory(File newDirectory, File oldDirectory) throws IOException {
+	protected boolean copyFilesIntoNewDirectory(File newDirectory, File oldDirectory) throws IOException {
 		try {
 			for (File oldFile : oldDirectory.listFiles()) {
 				File newFile = new File(newDirectory, oldFile.getName());
