@@ -36,6 +36,8 @@ import Utilities.TaskExistsException;
  */
 public class TNotesStorage {
 
+	private static final String RECURRING_TASK_MASTER_FOLDER = "recurring";
+	private static final String FLOATING_TASK_FOLDER = "floating";
 	private static final String RECURRING_TASK_END_DATES_FILE_NAME = "RecurringTaskEndDates.txt";
 	private static final String RECURRING_TASK_START_DATES_FILE_NAME = "RecurringTaskStartDates.txt";
 	private static final String FILE_TYPE_TXT_FILE = ".txt";
@@ -98,14 +100,7 @@ public class TNotesStorage {
 		masterList = readFromMasterFile();
 	}
 
-	public ArrayList<String> readFromMasterFile() throws Exception {
-		return readFromListFile(masterFile);
-	}
-
-	public ArrayList<String> readFromFloatingListFile() throws Exception {
-		return readFromListFile(floatingListFile);
-	}
-
+	
 	private void setUpFloatingListFile() throws Exception {
 
 		floatingListFile = createAnOverviewFile(FLOATING_LIST_FILE_NAME);
@@ -148,7 +143,7 @@ public class TNotesStorage {
 
 	}
 
-	public void setUpFolderMap() throws Exception {
+	private void setUpFolderMap() throws Exception {
 		masterNameDateMap = new HashMap<String, String>();
 
 		monthMapFile = createAnOverviewFile(MAPPING_FILE_NAME);
@@ -156,13 +151,6 @@ public class TNotesStorage {
 		masterNameDateMap = readFromFolderMapFile();
 	}
 
-	public ArrayList<String> readFromListFile(File listFile) throws Exception {
-		return fManager.readFromListFile(listFile);
-	}
-
-	public Map<String, String> readFromFolderMapFile() throws Exception {
-		return fManager.readFromFolderMapFile(monthMapFile);
-	}
 
 	/**
 	 * Saves the specified task.
@@ -176,38 +164,61 @@ public class TNotesStorage {
 	public boolean addTask(TaskFile task) throws Exception {
 		try {
 			String taskName = task.getName();
+			
 			if (taskName.length() > 260) {
 				throw new InvalidFileNameException("Task name is too long.", task.getName());
 			}
 
-			if (!masterList.contains(taskName)) {
+			if (!checkIfTaskExists(taskName)) {
 				masterList.add(taskName);
 
 				String monthFolder;
-
 				monthFolder = createFolderName(task, taskName);
 				masterNameDateMap.put(taskName, monthFolder);
 
-				if (writeTaskToMasterFile(taskName) && writeToMonthMapFile(masterNameDateMap, monthMapFile)) {
-					if (createTaskFile(monthFolder, task)) {
-						if (monthFolder.equals("floating")) {
-							return setUpForFloatingTask(taskName);
-						} else {
-							assertFalse(task.getIsTask());
-							return true;
-						}
-					}
-					revertChangesToListFiles(taskName);
+				if (addTaskToListAndMapFiles(taskName)) {
+					return saveTaskFile(task, taskName, monthFolder);
+				} else {				
+					masterList.remove(taskName);
 					return false;
 				}
-				masterList.remove(taskName);
-				return false;
+				
+			} else {
+				throw new TaskExistsException("Task already exists", task.getName());
 			}
-			throw new TaskExistsException("Task already exists", task.getName());
 		} catch (IOException ioEx) {
 			revertChangesToListFiles(task.getName());
 			throw ioEx;
 		}
+	}
+
+	private boolean saveTaskFile(TaskFile task, String taskName, String monthFolder) throws Exception {
+		
+		if (createTaskFile(monthFolder, task)) {
+		
+			if (checkTaskIsFloating(monthFolder)) {
+				return setUpForFloatingTask(taskName);
+			} else {
+				assertFalse(task.getIsTask());
+				return true;
+			}
+		
+		} else {
+			revertChangesToListFiles(taskName);
+			return false;
+		}
+	}
+
+	private boolean checkTaskIsFloating(String monthFolder) {
+		return monthFolder.equals(FLOATING_TASK_FOLDER);
+	}
+
+	private boolean addTaskToListAndMapFiles(String taskName) throws Exception {
+		return writeTaskToMasterFile(taskName) && writeToMonthMapFile(masterNameDateMap, monthMapFile);
+	}
+
+	private boolean checkIfTaskExists(String taskName) {
+		return masterList.contains(taskName);
 	}
 
 	private boolean setUpForFloatingTask(String taskName) throws Exception {
@@ -218,10 +229,10 @@ public class TNotesStorage {
 	private String createFolderName(TaskFile task, String taskName) {
 		String monthFolder;
 		if (task.getIsTask()) {
-			monthFolder = "floating";
+			monthFolder = FLOATING_TASK_FOLDER;
 
 		} else if (task.getIsRecurring()) {
-			monthFolder = "recurring";
+			monthFolder = RECURRING_TASK_MASTER_FOLDER;
 		} else {
 			monthFolder = getTaskMonth(task);
 		}
@@ -258,12 +269,13 @@ public class TNotesStorage {
 			String deleteRecurringTaskName = deletedTask.getName();
 			ArrayList<String> startDates = recurringTasksStartDateMap.get(deleteRecurringTaskName);
 
-			for (String otherDates : startDates) {
-				String singleRecurTaskName = deleteRecurringTaskName + "_" + otherDates;
+			for (String dates : startDates) {
+				String singleRecurTaskName = deleteRecurringTaskName + "_" + dates;
 				deleteTask(singleRecurTaskName);
 			}
 			
 			recurringTasksStartDateMap.remove(taskName);
+			
 			if(deletedTask.getIsMeeting()) {
 				recurringTasksEndDateMap.remove(taskName);
 			}
@@ -282,9 +294,10 @@ public class TNotesStorage {
 				writeListToFloatingListFile();
 			}
 			return deletedTask;
-		}
+		} else {
 
 		throw new IOException("Error deleting " + taskName);
+		}
 	}
 
 	public TaskFile getTaskFileByName(String taskName) throws Exception {
@@ -310,8 +323,7 @@ public class TNotesStorage {
 		if (folderName == null || folderName.isEmpty()) {
 			throw new FileNotFoundException(taskName + " does not exist.");
 		}
-		// System.out.println(folderName + "3.");
-		// Check if folderName = recurr / floating
+		
 		File folder = fManager.appendParentDirectory(folderName);
 
 		File fileToBeFound = fManager.addDirectoryToFile(folder, taskName.trim() + FILE_TYPE_TXT_FILE);
@@ -412,13 +424,14 @@ public class TNotesStorage {
 				TaskFile task = newRecurringTask;
 				task.setStartDate(startDate);
 				if (newRecurringTask.getIsMeeting()) {
-					System.out.println(newRecurringTask.getIsMeeting());
 					String endDate = recurringEndDates.get(i++);
 					task.setEndDate(endDate);
 				}
-				task.setUpTaskFile();
-				task.setName(taskName + "_" + startDate);
 				task.setIsRecurr(false);
+				task.setName(taskName + "_" + startDate);
+				task.setUpTaskFile();
+				
+				
 				addTask(task);
 
 			}
@@ -454,5 +467,23 @@ public class TNotesStorage {
 		writeListToMasterFile();
 		masterNameDateMap.remove(taskName);
 		writeToMonthMapFile(masterNameDateMap, monthMapFile);
+	}
+	
+	//change adam's method so he doesnt access my read. Just return him the arrayList.
+	public ArrayList<String> readFromMasterFile() throws Exception {
+		return readFromListFile(masterFile);
+	}
+
+	public ArrayList<String> readFromFloatingListFile() throws Exception {
+		return readFromListFile(floatingListFile);
+	}
+	
+
+	private ArrayList<String> readFromListFile(File listFile) throws Exception {
+		return fManager.readFromListFile(listFile);
+	}
+
+	private Map<String, String> readFromFolderMapFile() throws Exception {
+		return fManager.readFromFolderMapFile(monthMapFile);
 	}
 }
