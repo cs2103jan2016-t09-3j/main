@@ -302,7 +302,15 @@ public class TNotesLogic {
 
 		for (String text : stringList) {
 			TaskFile currentFile = storage.getTaskFileByName(text);
+			if(currentFile.getIsRecurring()) {
+				continue;
+			}
 			if (!currentFile.getIsDone()) {
+				String name = currentFile.getName();
+				if(name.contains("_")) {
+					String formatterName = name.substring(0, name.indexOf("_"));
+					currentFile.setName(formatterName);
+				}
 				taskToBeDisplayed.add(currentFile);
 			}
 
@@ -376,7 +384,15 @@ public class TNotesLogic {
 		ArrayList<TaskFile> taskListToBeDisplayed = new ArrayList<TaskFile>();
 		for (String text : stringList) {
 			TaskFile currentFile = storage.getTaskFileByName(text);
+			if(currentFile.getIsRecurring()) {
+				continue;
+			}
 			if (currentFile.getStartDate().equals(date.trim())) {
+				String name = currentFile.getName();
+				if(name.contains("_")) {
+					String formatterName = name.substring(0, name.indexOf("_"));
+					currentFile.setName(formatterName);
+				}
 				taskListToBeDisplayed.add(currentFile);
 			}
 		}

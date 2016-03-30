@@ -101,7 +101,7 @@ public class TNotesParser {
 		//Month month = Month.august;
 		String output = new String();
 		String input = new String();  
-		input = "add task12 due every tuesday";
+		input = "add task12 due 31-3-2016 at 13:00 every day";
 		for (int i = 0; i < checkCommand(input).size(); i++){
 			output = checkCommand(input).get(i);
 			System.out.println(output);
@@ -1043,6 +1043,8 @@ public class TNotesParser {
 				return "tonight";
 			case "week" :
 				return "week";
+			case "day" :
+				return "day";
 			default   :
 				return "";
 		}	
