@@ -387,9 +387,11 @@ public class TNotesStorage {
 	}
 	
 	public boolean clearMasterFiles() throws Exception {
-		ArrayList<String> deleteMasterList = new ArrayList<String>(readFromMasterFile());
-		for(String taskName: deleteMasterList) {
+		ArrayList<String> deleteMasterList = readFromMasterFile();
+		while(!deleteMasterList.isEmpty()) {
+			String taskName = deleteMasterList.get(0);
 			deleteTask(taskName);
+			deleteMasterList = readFromMasterFile();
 		}
 		return true;
 	}
