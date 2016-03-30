@@ -6,7 +6,7 @@
 
 <AnchorPane prefHeight="400.0" prefWidth="600.0" styleClass="TextArea" stylesheets="@colour.css" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.view.TNotesOverviewController">
    <children>
-      <TextArea fx:id="displayScreen" layoutX="15.0" layoutY="34.0" prefHeight="307.0" prefWidth="555.0" styleClass="check-box" stylesheets="@colour.css" AnchorPane.bottomAnchor="59.0" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="34.0" />
-      <TextField fx:id="userInput" layoutX="17.0" layoutY="353.0" onAction="#handleUserInput" styleClass="check-box" stylesheets="@colour.css" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="15.0" />
+      <TextArea fx:id="displayScreen" layoutX="15.0" layoutY="34.0" prefHeight="307.0" prefWidth="555.0" stylesheets="@colour.css" AnchorPane.bottomAnchor="59.0" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="34.0" />
+      <TextField fx:id="userInput" layoutX="17.0" layoutY="353.0" onAction="#handleUserInput" stylesheets="@colour.css" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="15.0" />
    </children>
 </AnchorPane>
