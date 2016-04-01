@@ -16,6 +16,7 @@ import org.junit.Test;
 
 
 /*command word: add
+
  * 
  * 
  * 
@@ -153,6 +154,10 @@ public class TNotesParserTest {
 	////////////////////////////////////////////////////////////////////////////
 	private static final List<String> listView1 = 
 			Arrays.asList("view", "2016-03-02", "2016-03-04");
+	private static final List<String> listView2 = 
+			Arrays.asList("view", "i will do homework");
+	private static final List<String> listView3 = 
+			Arrays.asList("view", "i want to go to school");
 	////////////////////////////////////////////////////////////////////////////
 	private static final List<String> listSet1 = 
 			Arrays.asList("set", "call mom", "complete");
@@ -295,6 +300,10 @@ public class TNotesParserTest {
 		TNotesParser tester = new TNotesParser(); 		
 		assertEquals("i want to test", listView1, tester.checkCommand("view 2-3-2016 to 4-3-2016"));
 		System.out.println("1. view 2-3-2016 to 4-3-2016");	
+		assertEquals("i want to test", listView2, tester.checkCommand("view i will do homework"));
+		System.out.println("2. view i will do homework");	
+		assertEquals("i want to test", listView3, tester.checkCommand("view i want to go to school"));
+		System.out.println("3. view i want to go to school");	
 	}
 	
 	@Test

@@ -74,7 +74,8 @@ public class TNotesParser {
 			"H.mm a", "HH.m a", "HH.m a"
 			);
 	private static final List<String> WEEKDAY_POSSIBLE_FORMAT = Arrays.asList(
-			"EEE", "EEEE", "EE"
+			//"EEE", "EEEE", "EE"
+			"EEE", "EEEE"
 			);
 	
 	private static final List<String> MONTH_POSSIBLE_FORMAT = Arrays.asList(
@@ -101,13 +102,13 @@ public class TNotesParser {
 		//Month month = Month.august;
 		String output = new String();
 		String input = new String();  
-		input = "add task12 due 31-3-2016 at 13:00 every day";
+		input = "add call mom on Monday";
 		for (int i = 0; i < checkCommand(input).size(); i++){
 			output = checkCommand(input).get(i);
 			System.out.println(output);
 		}
 		
-		System.out.println("1 " + formatWeekDay("tuesday"));
+		//System.out.println("1 " + formatWeekDay("tuesday"));
 	}
 	
 	
@@ -129,6 +130,7 @@ public class TNotesParser {
 				
 				list.add(firstWord);
 				list.addAll(viewCommand(arr));
+				//System.out.println(list);
 				
 				return list;
 			case "edit" :
@@ -263,7 +265,7 @@ public class TNotesParser {
 ///////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////VIEW//////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////
-	
+	// view task
 	public ArrayList <String> viewCommand(String[] arr) throws ParseException{
 		ArrayList<String> list = new ArrayList<String>();
 		ArrayList<String> compareTimeList = new ArrayList<String>();
@@ -277,15 +279,13 @@ public class TNotesParser {
 					
 				}
 				//view today
+				else if(!arr[1].equals("next") && (arr.length>=3 || formatSpecialDay(arr[1]).equals(""))){
+					list.add(taskNameFloat(arr).trim());
+					//System.out.println(list);
+				}
 				else{
 					list.add(compareWeekDayMonth(arr[1]));
 					
-//					for(int i=2; i< arr.length; i++) {
-//						String taskName = list.get(0);
-//						System.out.println(i + taskName);
-//						taskName.concat(arr[i]);
-//						list.set(0, taskName);
-//					}
 				}
 		//view year/week/month to year/week/month
 		//view Feb to Mar
@@ -327,15 +327,16 @@ public class TNotesParser {
 		}
 		else{
 			list.clear();
-			return list;
+			//return list;
 		}
+		//System.out.println(list);
 		
 		
 		if(list.isEmpty()){
-			list.add(taskNameFloat(arr));
+			list.add(taskNameFloat(arr).trim());
 		}
 		
-		
+		//System.out.println(list);
 		return list;
 	}
 	public ArrayList<String> compareDate(ArrayList<String> list) throws ParseException{
@@ -1066,10 +1067,17 @@ public class TNotesParser {
 	//////////////////////////////////////////////////////////////////
 	
 	private String formatWeekDay(String weekDay) {
+		String dayFormat = new String();
+		if(weekDay.trim().length() <= 4){
+			dayFormat = "EE";
+			
+		}else{
+			dayFormat = "EEEE";
+		}
 		String weekDayString = new String();
 		DayOfWeek day = null;
 		//System.out.println(weekDay);
-		for (String dayFormat : WEEKDAY_POSSIBLE_FORMAT) {
+		//for (String dayFormat : WEEKDAY_POSSIBLE_FORMAT) {
 			//System.out.println(dayFormat);
 			day = compareWeekDayFormat(weekDay.trim(), dayFormat);
 			//day = compareWeekDayFormat("Tue", "EE");
@@ -1079,7 +1087,8 @@ public class TNotesParser {
 			else{
 				weekDayString =  "";
 			}
-	}//System.out.println(weekDayString);
+	//}
+		//System.out.println(weekDayString);
 		return weekDayString;
 	}
 	
