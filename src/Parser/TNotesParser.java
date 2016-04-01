@@ -16,7 +16,6 @@ import java.time.Month;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Arrays;
-import java.time.DateTimeException;//import org.ocpsoft.prettytime.nlp.PrettyTimeParser;
 import org.ocpsoft.prettytime.nlp.PrettyTimeParser;
 import org.ocpsoft.prettytime.shade.org.antlr.runtime.EarlyExitException;
 
@@ -102,7 +101,7 @@ public class TNotesParser {
 		//Month month = Month.august;
 		String output = new String();
 		String input = new String();  
-		input = "add call mom on Monday";
+		input = "sort by importance";
 		for (int i = 0; i < checkCommand(input).size(); i++){
 			output = checkCommand(input).get(i);
 			System.out.println(output);
@@ -148,7 +147,7 @@ public class TNotesParser {
 				
 				list.add(firstWord);
 				for(int i=1; i<arr.length; i++){
-					list.add(arr[i]);
+					list.add(arr[i].trim());
 				}
 				
 				return list;

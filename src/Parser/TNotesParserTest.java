@@ -48,33 +48,6 @@ import org.junit.Test;
  *Add 2(any index)
  */
 
-/*command word: edit
- * edit call mom
- * edit string 
- * edit date
- * edit call mom date/details/time 2-2-2
- */
-
-/*command word: view
- * view 2-2-2
- * view call mom 
- * View 2-2-2 to 3-3-3
- * view feb to march
- * view today
- * view next year/month
- * view tmr
- * 
- */
-
-/*command word: delete
- * delete call mom
- */
-
-/*command word: search
- * search for call mom
- * search for key words
- */
-
 /*command word: sort
  * sort time by name
  * sort today by importance
@@ -158,6 +131,18 @@ public class TNotesParserTest {
 			Arrays.asList("view", "i will do homework");
 	private static final List<String> listView3 = 
 			Arrays.asList("view", "i want to go to school");
+	private static final List<String> listView4 = 
+			Arrays.asList("view", "today");
+	private static final List<String> listView5 = 
+			Arrays.asList("view", "2016-03-04");
+	private static final List<String> listView6 = 
+			Arrays.asList("view", "tomorrow");
+	private static final List<String> listView7 = 
+			Arrays.asList("view", "JANUARY", "FEBRUARY");
+	private static final List<String> listView8 = 
+			Arrays.asList("view","next", "month");
+	private static final List<String> listView9 = 
+			Arrays.asList("view","next" ,"FEBRUARY");
 	////////////////////////////////////////////////////////////////////////////
 	private static final List<String> listSet1 = 
 			Arrays.asList("set", "call mom", "complete");
@@ -169,7 +154,12 @@ public class TNotesParserTest {
 	////////////////////////////////////////////////////////////////////////////
 	private static final List<String> listChange1 = 
 			Arrays.asList("change directory", "c:/file");
-	
+	////////////////////////////////////////////////////////////////////////////
+	private static final List<String> listSearch1 = 
+			Arrays.asList("search", "call", "mom");
+	////////////////////////////////////////////////////////////////////////////
+	private static final List<String> listSort1 = 
+			Arrays.asList("sort", "importance");
 	
 	@Test
 	public void checkCommandExit() throws ParseException{
@@ -304,6 +294,18 @@ public class TNotesParserTest {
 		System.out.println("2. view i will do homework");	
 		assertEquals("i want to test", listView3, tester.checkCommand("view i want to go to school"));
 		System.out.println("3. view i want to go to school");	
+		assertEquals("i want to test", listView4, tester.checkCommand("view today"));
+		System.out.println("4. view today");
+		assertEquals("i want to test", listView5, tester.checkCommand("view 4-3-2016"));
+		System.out.println("5. view 4-3-2016");	
+		assertEquals("i want to test", listView6, tester.checkCommand("view tomorrow"));
+		System.out.println("6. view tomorrow");	
+		assertEquals("i want to test", listView7, tester.checkCommand("view Jan to Feb"));
+		System.out.println("7. view Jan to Feb");
+		assertEquals("i want to test", listView8, tester.checkCommand("view next month"));
+		System.out.println("8. view next month");	
+		assertEquals("i want to test", listView9, tester.checkCommand("view next Feb"));
+		System.out.println("9. view next Feb");
 	}
 	
 	@Test
@@ -331,6 +333,21 @@ public class TNotesParserTest {
 		assertEquals("i want to test", listChange1, tester.checkCommand("change directory location to c:/file"));
 		System.out.println("1. change directory location to c:/file");	
 	}
+	@Test
+	public void checkCommandSearch() throws ParseException{
+		
+		TNotesParser tester = new TNotesParser(); 		
+		assertEquals("i want to test", listSearch1, tester.checkCommand("search call mom"));
+		System.out.println("1. search call mom");	
+	}
+	@Test
+	public void checkCommandSort() throws ParseException{
+		
+		TNotesParser tester = new TNotesParser(); 		
+		assertEquals("i want to test", listSort1, tester.checkCommand("sort by importance"));
+		System.out.println("1. sort by importance");	
+	}
+	
 	
 
 }
