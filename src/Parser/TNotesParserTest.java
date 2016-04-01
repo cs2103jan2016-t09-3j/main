@@ -220,8 +220,8 @@ public class TNotesParserTest {
 				tester.checkCommand("add call mom due every Tue at 12:00 important"));
 				System.out.println("13. add call mom due every Tue at 12:00 important");
 		assertEquals("i want to test", listAdd14, 
-				tester.checkCommand("add call mom due every Tue"));
-				System.out.println("14. add call mom due every Tue (with due)");
+				tester.checkCommand("add call mom due every Tuesday"));
+				System.out.println("14. add call mom due every Tuesday (with due)");
 		assertEquals("i want to test", listAdd15, 
 				tester.checkCommand("add call mom"));
 				System.out.println("15. add call mom(can add symbols)");

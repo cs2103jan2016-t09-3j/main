@@ -74,7 +74,7 @@ public class TNotesParser {
 			);
 	private static final List<String> WEEKDAY_POSSIBLE_FORMAT = Arrays.asList(
 			//"EEE", "EEEE", "EE"
-			"EEE", "EEEE"
+			"EE", "EEEE"
 			);
 	
 	private static final List<String> MONTH_POSSIBLE_FORMAT = Arrays.asList(
@@ -1068,10 +1068,10 @@ public class TNotesParser {
 	private String formatWeekDay(String weekDay) {
 		String dayFormat = new String();
 		if(weekDay.trim().length() <= 4){
-			dayFormat = "EE";
+			dayFormat = WEEKDAY_POSSIBLE_FORMAT.get(0);
 			
 		}else{
-			dayFormat = "EEEE";
+			dayFormat = WEEKDAY_POSSIBLE_FORMAT.get(1);
 		}
 		String weekDayString = new String();
 		DayOfWeek day = null;
