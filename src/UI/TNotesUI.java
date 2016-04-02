@@ -487,7 +487,24 @@ public class TNotesUI {
 				result = "I have sorted everything by importance for you. Do first things first!\n\n";
 
 				try {
-					arrSort = logic.sortImportTask();
+					viewList = logic.sortImportTask();
+					result = String.format("Your schedule for %s:\n", userCommandSplit.get(1));
+					for (int i = 0; i < viewList.size(); i++) {
+						if (viewList.get(i).getIsMeeting()) {
+							result += i + 1 + ". " + "[" + viewList.get(i).getStartTime() + "]-" + "["
+									+ viewList.get(i).getEndTime() + "]";
+						}
+						if (viewList.get(i).getIsDeadline()) {
+							result += i + 1 + ". " + "[" + viewList.get(i).getStartTime() + "]";
+						}
+						if (viewList.get(i).getImportance()) {
+							result += "[IMPORTANT] ";
+						}
+						result += String.format(" %s\n", viewList.get(i).getName());
+					}
+					
+					
+					
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					result = e.getMessage();
@@ -497,7 +514,7 @@ public class TNotesUI {
 			if (sortType.equals("name")) {
 				result = "I have sorted everything by name for you! I'm so amazing, what would you do without me!";
 				try {
-					// arrSort = logic.sor;
+					arrSort = logic.sortNameTask();
 
 					result += String.format("You new schedule for %s: \n\n", userCommandSplit.get(1));
 
