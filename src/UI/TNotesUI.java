@@ -57,7 +57,7 @@ public class TNotesUI {
 	}
 
 	public String displayFloats() {
-		String floatString = "";
+		String floatString;
 		try {
 			if (logic.hasFloatingList()) {
 			ArrayList<TaskFile> arrFloat = new ArrayList<TaskFile>();
@@ -67,7 +67,7 @@ public class TNotesUI {
 				for (int i = 0; i < arrFloat.size(); i++) {
 					floatString += i + 1 + ". " + arrFloat.get(i).getName() + "\n";
 				}
-				floatString = "\n";
+				floatString += "\n";
 			}
 			else {
 				floatString = "          ====NO NOTES====\n\n";
@@ -76,8 +76,7 @@ public class TNotesUI {
 		} catch (Exception e) {
 			floatString = e.getMessage();
 		}
-		
-		
+				
 		return floatString;
 	}
 
