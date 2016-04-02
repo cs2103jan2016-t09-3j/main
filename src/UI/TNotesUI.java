@@ -389,6 +389,33 @@ public class TNotesUI {
 					result = e.getMessage();
 				}
 			}
+			
+			else {
+			
+				ArrayList<TaskFile> arrView = new ArrayList<TaskFile>();
+				try {
+					arrView = logic.viewManyDatesList(userCommandSplit);
+					viewList = arrView;
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					result = e.getMessage();
+				}
+
+				result = String.format("Your schedule from %s to %s:\n", userCommandSplit.get(1), userCommandSplit.get(2));
+				for (int i = 0; i < arrView.size(); i++) {
+					if (arrView.get(i).getIsMeeting()) {
+						result += i + 1 + ". " + "[" + arrView.get(i).getStartTime() + "]-" + "["
+								+ arrView.get(i).getEndTime() + "]";
+					}
+					if (arrView.get(i).getIsDeadline()) {
+						result += i + 1 + ". " + "[" + arrView.get(i).getStartTime() + "]";
+					}
+					if (arrView.get(i).getImportance()) {
+						result += "[IMPORTANT] ";
+					}
+					result += String.format(" %s\n", arrView.get(i).getName());
+				}
+			}
 			break;
 
 		case SET_COMMAND:
