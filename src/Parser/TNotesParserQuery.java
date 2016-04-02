@@ -1,11 +1,7 @@
 package Parser;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 
-import org.ocpsoft.prettytime.nlp.PrettyTimeParser;
 
 
 
@@ -103,6 +99,7 @@ public class TNotesParserQuery {
 		}		
 		return task;
 	}
+
 
 
 

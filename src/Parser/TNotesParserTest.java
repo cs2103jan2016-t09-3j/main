@@ -117,6 +117,8 @@ public class TNotesParserTest {
 			Arrays.asList("add", "call mom", "2016-02-02", "12:00", "2016-03-03", "13:00", "at to due from");
 	private static final List<String> listAdd27 = 
 			Arrays.asList("add", "call mom", "15:00", "2016-02-02");
+	private static final List<String> listAdd28 = 
+			Arrays.asList("add", "call mom", "every", "JULY");
 	
 	///////////////////////////////////////////////////////////////////////////
 	private static final List<String> listEdit1 = 
@@ -201,8 +203,8 @@ public class TNotesParserTest {
 		System.out.println("6. add call mom from 12:00 to 13:00");
 		
 		assertEquals("i want to test", listAdd7, 
-		tester.checkCommand("add call mom every Tue"));
-		System.out.println("7. add call mom every Tue");
+		tester.checkCommand("add call mom every tue"));
+		System.out.println("7. add call mom every tue(small letter)");
 		
 		assertEquals("i want to test", listAdd8, 
 				tester.checkCommand("add call mom due 2-3-2016 at 300pm"));
@@ -258,8 +260,8 @@ public class TNotesParserTest {
 				tester.checkCommand("add call mom important"));
 				System.out.println("24. add call mom important");
 		assertEquals("i want to test", listAdd25, 
-				tester.checkCommand("add call mom at Jul"));
-				System.out.println("25. add call mom at Jul");
+				tester.checkCommand("add call mom at jul"));
+				System.out.println("25. add call mom at jul(small letter)");
 //		assertEquals("i want to test", listAdd26, 
 //				tester.checkCommand("add call mom the day after tomorrow"));
 //				System.out.println("26. add call mom the day after tomorrow");
@@ -272,7 +274,10 @@ public class TNotesParserTest {
 		assertEquals("i want to test", listAdd27, 
 				tester.checkCommand("add call mom 3pm 2-2-2016"));
 				System.out.println("27. add call mom 3pm 2-2-2016");
-			
+		assertEquals("i want to test", listAdd28, 
+				tester.checkCommand("add call mom every jul"));
+				System.out.println("28. add call mom every jul");
+					
 				
 
 	}

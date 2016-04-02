@@ -66,7 +66,7 @@ public class TNotesParser {
 		//Month month = Month.august;
 		String output = new String();
 		String input = new String();  
-		input = "add call mom 3pm 2-2-2016";
+		input = "add buggs due every Wed at 8pm";
 		for (int i = 0; i < checkCommand(input).size(); i++){
 			output = checkCommand(input).get(i);
 			System.out.println(output);
