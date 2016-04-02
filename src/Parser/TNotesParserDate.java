@@ -1,10 +1,10 @@
 package Parser;
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.DateTimeException;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.time.Month;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -13,26 +13,39 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
+
 public class TNotesParserDate {
 	
 	
 	private static final String MESSAGE_INVALID_MONTH = "Invalid month!";
 	private static final String MESSAGE_INVALID_WEEKDAY = "Invalid weekday!";
 	private static final String MESSAGE_INVALID_DATE = "invalid date!";
+	private static final String MESSAGE_ISLETTER = "[a-zA-Z]+";
 	private static final String MESSAGE_NULL_STRING = "";
+	private static final String MESSAGE_INVALID_DATE_RANGE = "Invalid date range!";
+	private static final String MESSAGE_STANDARD_DATE_FORMAT ="yyyy-MM-dd";
 	
 	private static int NUM_SHORT_WEEKDAY = 4;
 	private static int NUM_LAST_ARR_STR = 1;
 	private static int NUM_LAST_TWO_ARR_STR = 2;
-	private static int NUM_INITIALISATION = 1;
-	private static int NUM_DELETE_TYPE = 2;
+	private static int NUM_INITIALISATION = 0;
 	private static int NUM_TRUE = 1;
 	private static int NUM_FALSE = 0;
+	private static int NUM_FIRST_WORD = 0;
+	private static int NUM_SECOND_WORD = 1;
+	private static int NUM_MAX_DATE_LENGTH = 8;
+	private static int NUM_FIRST_CHAR = 0;
+	private static int NUM_SUBSTRING_RANGE = 1;
+	private static int NUM_START_FROM_SECOND_STR = 1;
 	
 	private static String specialDate [] = {
 			"today", "tomorrow", "afternoon",
 			"noon", "evenning","night",
 			"morning","week","month"
+			};
+	private static final String ARR_IMPORTANT [] = {
+			"impt","important","importance",
+			"compulsory", "essential","indispensable"
 			};
 	
 	
@@ -55,7 +68,6 @@ public class TNotesParserDate {
     		));
 	
 	private static final List<String> WEEKDAY_POSSIBLE_FORMAT = Collections.unmodifiableList(Arrays.asList(
-			//"EEE", "EEEE", "EE"
 			"EE", "EEEE"
 			));
 	
@@ -63,7 +75,6 @@ public class TNotesParserDate {
 			"MMM"
 			));
 
-	
 	String formatMonth(String monthInput) {
 		String monthStr = capTheFirstChar(monthInput);
 		String monthString = new String();
@@ -100,10 +111,10 @@ public class TNotesParserDate {
 		DayOfWeek day = null;
 		
 		if(weekDay.trim().length() <= NUM_SHORT_WEEKDAY){
-			dayFormat = WEEKDAY_POSSIBLE_FORMAT.get(0);
+			dayFormat = WEEKDAY_POSSIBLE_FORMAT.get(NUM_FIRST_WORD);
 			
 		}else{
-			dayFormat = WEEKDAY_POSSIBLE_FORMAT.get(1);
+			dayFormat = WEEKDAY_POSSIBLE_FORMAT.get(NUM_SECOND_WORD);
 		}
 		
 		day = compareWeekDayFormat(weekDay.trim(), dayFormat);
@@ -172,17 +183,17 @@ public class TNotesParserDate {
 	///////////////////////////////////////////////////////////////////////////////////////////
 	public ArrayList<String> checkSpecialDay(String[] arr) {
 		ArrayList<String> specialDateList = new ArrayList<String>();
-		if(findLastImpt(arr) == 1){
-			for(int i=0;i<specialDate.length;i++){
-				if(arr[arr.length-2].equals(specialDate[i])){
+		if(findLastImpt(arr) == NUM_TRUE){
+			for(int i=NUM_START_FROM_SECOND_STR;i<specialDate.length;i++){
+				if(arr[arr.length- NUM_LAST_TWO_ARR_STR].equals(specialDate[i])){
 					specialDateList.add(specialDate[i]);
 					return specialDateList;
 				}
 			}
 		}
 		else{
-			for(int i=0;i<specialDate.length;i++){
-				if(arr[arr.length-1].equals(specialDate[i])){
+			for(int i=NUM_INITIALISATION;i<specialDate.length;i++){
+				if(arr[arr.length- NUM_LAST_ARR_STR].equals(specialDate[i])){
 					specialDateList.add(specialDate[i]);
 					return specialDateList;
 				}
@@ -194,74 +205,71 @@ public class TNotesParserDate {
 	//////////////////////////////////////////////////////////////////////////////////////////
 	public int checkDate(String input) {
 		int inputCharLength = input.trim().length();
-		for(int i =0; i<inputCharLength; i++){
-			if((input.charAt(i) == '.' || input.charAt(i) == '-' ||inputCharLength <= 8) 
-					&& isLetters(input) == 0){
-				return 1;//if the input is time
+		for(int i =NUM_INITIALISATION; i<inputCharLength; i++){
+			if((input.charAt(i) == '.' || input.charAt(i) == '-' 
+					||inputCharLength <= NUM_MAX_DATE_LENGTH) 
+					&& isLetters(input) == NUM_FALSE){
+				return NUM_TRUE;//if the input is time
 			}
 		}
-		return 0 ;
+		return NUM_FALSE ;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 		public String compareWeekDayMonth(String inputDay){
 			//inputDay = capTheFirstChar(inputDay);
-		if(!formatWeekDay(inputDay).equals("")){
+		if(!formatWeekDay(inputDay).equals(MESSAGE_NULL_STRING)){
 			return formatWeekDay(inputDay);
 		}
-		else if(!formatMonth(inputDay).equals("")){
+		else if(!formatMonth(inputDay).equals(MESSAGE_NULL_STRING)){
 			return formatMonth(inputDay);
 		}
-		else if(!formatSpecialDay(inputDay).equals("")){
+		else if(!formatSpecialDay(inputDay).equals(MESSAGE_NULL_STRING)){
 			return formatSpecialDay(inputDay);
 		}
-		else if(!formatDate(inputDay).equals("")){
+		else if(!formatDate(inputDay).equals(MESSAGE_NULL_STRING)){
 			return formatDate(inputDay);
 		}
 		return inputDay;
 	}
-		public ArrayList<String> compareDate(ArrayList<String> list) throws ParseException{
-			SimpleDateFormat dateformat = new SimpleDateFormat("yyyy-MM-dd");
-			Date date1 = dateformat.parse(list.get(0));
-			Date date2 = dateformat.parse(list.get(1));
+		public ArrayList<String> compareDate(ArrayList<String> dateList) throws ParseException{
+			SimpleDateFormat dateformat = new SimpleDateFormat(MESSAGE_STANDARD_DATE_FORMAT);
+			Date dateOne = dateformat.parse(dateList.get(NUM_FIRST_WORD));
+			Date dateTwo = dateformat.parse(dateList.get(NUM_SECOND_WORD));
 			try{
-			if (date1.after(date2) || date1.equals(date2)) {
-				list.clear();
-			    list.add("Invalid date range");
-			    return list;
+			if (dateOne.after(dateTwo) || dateOne.equals(dateTwo)) {
+				dateList.clear();
+				dateList.add(MESSAGE_INVALID_DATE_RANGE);
+			    return dateList;
 			  
-			}else if (date1.before(date2)) {
+			}else if (dateOne.before(dateTwo)) {
 			  
-			    return list;  
+			    return dateList;  
 			}
 			}catch (DateTimeException e) {
-				return list;
+				return dateList;
 			}
-			return list;	
+			return dateList;	
 
 		}
-		private static final String ARR_IMPORTANT [] = {"impt","important","importance",
-				   "compulsory", "must do", "essential",
-				   "indispensable"};
 		public int findLastImpt(String[] arr){
-			int index = 0;
-			for(int j=0;j<ARR_IMPORTANT.length;j++){
-				if(arr[arr.length-1].equals(ARR_IMPORTANT[j])){
-					index = 1;
+			for(int i=NUM_INITIALISATION;i<ARR_IMPORTANT.length;i++){
+				if(arr[arr.length-NUM_LAST_ARR_STR].equals(ARR_IMPORTANT[i])){
+					return NUM_TRUE;
 				}
 			}
-			return index;
+			return NUM_FALSE;
 		}
 		public int isLetters(String nextString) {
-			if (nextString.matches("[a-zA-Z]+")) {
-				return 1;
-			} else {
-				return 0;
+			if (nextString.matches(MESSAGE_ISLETTER)) {
+				return NUM_TRUE;
+			} 
+			else {
+				return NUM_FALSE;
 			}
 		}
 		public String capTheFirstChar(String dayMonth) {
-			//String dayMonth = Character.toString(dayMonth.charAt(0)).toUpperCase() + dayMonth.substring(1);
-			return Character.toString(dayMonth.charAt(0)).toUpperCase() + dayMonth.substring(1);
+			return Character.toString(dayMonth.charAt(NUM_FIRST_CHAR)).toUpperCase() + dayMonth.substring(NUM_SUBSTRING_RANGE);
 		}
 		
 }

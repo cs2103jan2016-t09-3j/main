@@ -99,6 +99,13 @@ public class TNotesParserQuery {
 		}		
 		return task;
 	}
+	public String taskNameString(String arr[], int count){
+		String task = new String();
+		for(int i =1;i<count ;i++){
+			task += arr[i]+" ";
+		}		
+		return task;
+	}
 
 
 

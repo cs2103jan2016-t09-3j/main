@@ -9,11 +9,12 @@ public class TNotesParserSet {
 	private static final int NUM_TRUE = 1;
 	private static final int NUM_FALSE = 0;
 	
-	private ArrayList<String> list = new ArrayList<String>();
+	//private ArrayList<String> list = new ArrayList<String>();
 	
 	private static final String ARR_STATUS [] = {"done", "undone", "complete", "incomplete"};
 	
 	public ArrayList <String> setCommand(String[] arr){
+		ArrayList<String> list = new ArrayList<String>();
 		String title = new String();
 		if(checkDone(arr[arr.length-NUM_DECREMENTATION]) == NUM_TRUE){
 			for(int i = NUM_INITIALISATION; i<arr.length-NUM_DECREMENTATION;i++){

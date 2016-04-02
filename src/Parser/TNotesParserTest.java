@@ -90,6 +90,8 @@ public class TNotesParserTest {
 			Arrays.asList("add", "call mom", "every", "JULY");
 	private static final List<String> listAdd29 = 
 			Arrays.asList("add", "call mom", "every", "JULY", "for", "2", "week");
+	private static final List<String> listAdd30 = 
+			Arrays.asList("add", "call mom", "2016-02-02", "13:00", "2016-03-03", "12:00", "at to due from");
 	
 	///////////////////////////////////////////////////////////////////////////
 	private static final List<String> listEdit1 = 
@@ -251,6 +253,9 @@ public class TNotesParserTest {
 		assertEquals("i want to test", listAdd29, 
 				tester.checkCommand("add call mom every jul for 2 week"));
 				System.out.println("29. add call mom every jul for 2 week");
+		assertEquals("i want to test", listAdd30, 
+				tester.checkCommand("add call mom from 2-2-2016 at 13:00 to 3-3-2016 at 12:00 details at to due from"));
+				System.out.println("30. add call mom from 2-2-2016 at 13:00 to 3-3-2016 at 12:00 details at to due from");
 					
 				
 

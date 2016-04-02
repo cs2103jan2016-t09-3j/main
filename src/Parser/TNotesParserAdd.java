@@ -8,12 +8,6 @@ import org.ocpsoft.prettytime.nlp.PrettyTimeParser;
 
 
 public class TNotesParserAdd {
-	//TNotesParserAdd add;
-//	TNotesParserChange change;
-//	TNotesParserDelete delete;
-//	TNotesParserSet set;
-//	TNotesParserSort sort;
-//	TNotesParserSearch search;
 	TNotesParserTime time;
 	TNotesParserDate date;
 	TNotesParserQuery query;
@@ -24,20 +18,12 @@ public class TNotesParserAdd {
 		query = new TNotesParserQuery();
 	}
 	
-	private static final String ARR_IMPORTANT [] = {
-			"impt","important","importance",
-			"compulsory", "must do", "essential",
-			"indispensable"
-	};
-	
 	
 	public ArrayList<String> addCommand(String[] arr) throws ParseException{
-	//	time = new TNotesParserTime();
 		String details = new String();
 		ArrayList<String> list = new ArrayList<String>();
 		ArrayList<String> dateList = new ArrayList<String>();
 		ArrayList<String> timeList = new ArrayList<String>();
-		ArrayList<Object> taskName = new ArrayList<Object>();
 		String titleOrig = new String();
 		String thisString = new String();
 		
@@ -53,20 +39,11 @@ public class TNotesParserAdd {
 			}
 		}
 		
-		//System.out.println(timeList.size());
-		//System.out.println(dateList.size());
-		
 		if(arr[arr.length-1].equals("important")){
-			taskName.clear();
-			taskName.add(arr);
-			taskName.add(arr.length-1);
-			titleOrig = query.taskName(taskName).trim();
+			titleOrig = query.taskNameString(arr, arr.length-1).trim();
 		}
 		else{
-			taskName.clear();
-			taskName.add(arr);
-			taskName.add(arr.length);
-			titleOrig = query.taskName(taskName).trim();
+			titleOrig = query.taskNameString(arr, arr.length).trim();
 			
 		}
 		//System.out.println(titleOrig);
@@ -75,28 +52,19 @@ public class TNotesParserAdd {
 			//add call mom due every Tue(can be month) at 12:00 important
 			if (arr[j].equals("due")) {
 				if((arr[j+1].equals("every")||arr[j+1].equals("next"))&& isKeyWord(arr[j+2]) == 1){
-					taskName.clear();
-					taskName.add(arr);
-					taskName.add(j);
-					list.add(query.taskName(taskName).trim());
+					list.add(query.taskNameString(arr, j).trim());
 					list.add(arr[j+1].trim());
 					list.add(date.compareWeekDayMonth(arr[j+2]).trim());
 				//add call mom due this week(variable)
 				}else if(arr[j+1].equals("this")&& isKeyWord(arr[j+2]) == 1){
-					taskName.clear();
-					taskName.add(arr);
-					taskName.add(j);
-					list.add(query.taskName(taskName).trim());
+					list.add(query.taskNameString(arr, j).trim());
 					thisString = "this"+" "+ date.compareWeekDayMonth(arr[j+2]);
 					list.add(thisString.trim());
 				}
 				//add call mom due time/date
 				else if(isKeyWord(arr[j+1]) == 1){
 					if(time.checkTime(arr[j+1])==1){
-						taskName.clear();
-						taskName.add(arr);
-						taskName.add(j);
-						list.add(query.taskName(taskName).trim());
+						list.add(query.taskNameString(arr, j).trim());
 						if(arr.length>j+2){
 							list.add(time.formatTime(arr[j + 1]+ 
 									time.isAMPM(arr[j+2])).toString().trim());
@@ -109,10 +77,7 @@ public class TNotesParserAdd {
 						}
 						
 					}else if(time.checkTime(arr[j+1])==0){
-						taskName.clear();
-						taskName.add(arr);
-						taskName.add(j);
-						list.add(query.taskName(taskName).trim());
+						list.add(query.taskNameString(arr, j).trim());
 						list.add(date.compareWeekDayMonth(arr[j + 1]).trim());
 						//list.add(compareWeekDayMonth("Jul").trim());
 						//list.add(formatDate(arr[j + 1]).trim());
@@ -123,10 +88,7 @@ public class TNotesParserAdd {
 			} else if (arr[j].equals("at")&& isKeyWord(arr[j+1]) == 1) {
 				
 				if(query.onlyKeyAt(arr) == 1 && time.checkTime(arr[j+1])==1){
-					taskName.clear();
-					taskName.add(arr);
-					taskName.add(arr.length-2);
-					list.add(query.taskName(taskName).trim());
+					list.add(query.taskNameString(arr, arr.length-2).trim());
 					if(arr.length >= j+3){
 						list.add(time.formatTime(arr[j + 1]+ 
 								time.isAMPM(arr[j+2])).toString().trim());
@@ -135,10 +97,7 @@ public class TNotesParserAdd {
 						list.add(time.formatTime(arr[j+1]).toString());
 					}
 				}else if(query.onlyKeyAt(arr) == 1 && time.checkTime(arr[j+1])==0){
-					taskName.clear();
-					taskName.add(arr);
-					taskName.add(arr.length-2);
-					list.add(query.taskName(taskName).trim());
+					list.add(query.taskNameString(arr, arr.length-2).trim());
 					list.add(date.compareWeekDayMonth(arr[j+1]).trim());
 					
 				}else if(query.onlyKeyAt(arr) == 0){
@@ -152,10 +111,7 @@ public class TNotesParserAdd {
 				}
 ///////////////////////////////////////////////////////////////////////////////////////	
 			} else if(arr[j].equals("from")&& isKeyWord(arr[j+1]) == 1){
-				taskName.clear();
-				taskName.add(arr);
-				taskName.add(j);
-				list.add(query.taskName(taskName).trim());
+				list.add(query.taskNameString(arr, j).trim());
 				//from time/date
 				if(time.checkTime(arr[j+1])==0){
 					list.add(date.compareWeekDayMonth(arr[j + 1]).trim());
@@ -186,10 +142,7 @@ public class TNotesParserAdd {
 			}else if(arr[j].equals("details")){
 				//add call mom details tell her buy apple(debug)
 				if(query.onlyKeyDetails(arr) == 1){
-					taskName.clear();
-					taskName.add(arr);
-					taskName.add(j);
-					list.add(query.taskName(taskName).trim());
+					list.add(query.taskNameString(arr, j).trim());
 					for (int num = j+1; num < arr.length; num++) {
 						details += "" + arr[num] + " ";
 					}
@@ -208,19 +161,13 @@ public class TNotesParserAdd {
 ///////////////////////////////////////////////////////////////////////////////////////	
 			//add call mom on Tues(always week day)
 			}else if(arr[j].equals("on")&& isKeyWord(arr[j+1]) == 1){
-				taskName.clear();
-				taskName.add(arr);
-				taskName.add(j);
-				list.add(query.taskName(taskName).trim());
+				list.add(query.taskNameString(arr, j).trim());
 				list.add(date.formatWeekDay(arr[j+1]).trim());
 ///////////////////////////////////////////////////////////////////////////////////////	
 			}else if(arr[j].equals("every") && !arr[j-1].equals("due")&& isKeyWord(arr[j+1]) == 1){
 				
 				if(query.onlyKeyEvery(arr) == 1){
-					taskName.clear();
-					taskName.add(arr);
-					taskName.add(j);
-					list.add(query.taskName(taskName).trim());
+					list.add(query.taskNameString(arr, j).trim());
 					list.add(arr[j].trim());
 					list.add(date.compareWeekDayMonth(arr[j+1]).trim());
 					for(int k = 0; k < arr.length; k++){
@@ -260,10 +207,7 @@ public class TNotesParserAdd {
 				if(arr[f].equals("the") ){
 					//check the last the
 					if(query.afterBeforeExit(arr) == 1){
-					taskName.clear();
-					taskName.add(arr);
-					taskName.add(f);
-					task = query.taskName(taskName).trim();
+						list.add(query.taskNameString(arr, f).trim());
 					index = 1;
 					}
 					
@@ -306,8 +250,13 @@ public class TNotesParserAdd {
 	if(query.findImpt(arr) == 1){
 		list.add("important");
 	}
+	//System.out.println(list);
 	return list;
 	}
+//////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
 	public ArrayList<String> withoutKey(ArrayList<String> list){
 		ArrayList<String> outputList = new ArrayList<String>();
 		int indexTime = 0;
