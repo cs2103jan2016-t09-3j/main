@@ -222,13 +222,13 @@ public class TNotesParserAdd {
 					taskName.add(j);
 					list.add(query.taskName(taskName).trim());
 					list.add(arr[j].trim());
-					list.add(date.formatWeekDay(arr[j+1]).trim());
+					list.add(date.compareWeekDayMonth(arr[j+1]).trim());
 				}else{	
 					list.add(arr[j].trim());
 					
 					String dayString = date.formatWeekDay(arr[j+1].trim());
 					if(dayString.isEmpty()) {
-						list.add(date.formatSpecialDay(arr[j+1].trim()));
+						list.add(date.compareWeekDayMonth(arr[j+1].trim()));
 					} else {
 						list.add(dayString);
 					}

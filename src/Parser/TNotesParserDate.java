@@ -8,12 +8,13 @@ import java.time.Month;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
 public class TNotesParserDate {
 	
-	private static final List<String> DATE_POSSIBLE_FORMAT = Arrays.asList(
+	private static final List<String> DATE_POSSIBLE_FORMAT = Collections.unmodifiableList(Arrays.asList(
 			"d/M/y", "d/M/yyyy", "d/MM/yy","d/MMM/yy", "d/MMM/yyyy",
 			"dd/MM/yy","dd/M/yyyy", "dd/MM/yy", "dd/MMM/yyyy", 
 			"dd/MMMM/yy","d/MMMM/yyyy", "dd/MMMM/yyyy",
@@ -29,23 +30,24 @@ public class TNotesParserDate {
 			"d M y", "d M yy", "d M yyyy", "d MM yy","d MMM yyyy",  
 			"dd MM yy","dd M yyyy", "dd MM yy", "dd MMM yyyy", 
 			"dd MMMM yy","d MMMM yyyy", "dd MMMM yyyy"
-    		);
+    		));
 	
-	private static final List<String> WEEKDAY_POSSIBLE_FORMAT = Arrays.asList(
+	private static final List<String> WEEKDAY_POSSIBLE_FORMAT = Collections.unmodifiableList(Arrays.asList(
 			//"EEE", "EEEE", "EE"
 			"EE", "EEEE"
-			);
+			));
 	
-	private static final List<String> MONTH_POSSIBLE_FORMAT = Arrays.asList(
+	private static final List<String> MONTH_POSSIBLE_FORMAT = Collections.unmodifiableList(Arrays.asList(
 			"MMM"
-			);
+			));
 
 	
 	String formatMonth(String monthInput) {
+		String monthStr = capTheFirstChar(monthInput);
 		String monthString = new String();
 		Month month = null;
 		for (String monthFormat : MONTH_POSSIBLE_FORMAT) {
-			month = compareMonthFormat(monthInput, monthFormat);
+			month = compareMonthFormat(monthStr, monthFormat);
 			if (month != null) {
 				monthString =  month.toString();
 			}
@@ -69,14 +71,16 @@ public class TNotesParserDate {
 	}
 	
 	////////////////////////////////////////////////////////////////////////
-	 String formatWeekDay(String weekDay) {
+	 String formatWeekDay(String weekDayInput) {
 		String dayFormat = new String();
+		String weekDay = capTheFirstChar(weekDayInput);
 		if(weekDay.trim().length() <= 4){
 			dayFormat = WEEKDAY_POSSIBLE_FORMAT.get(0);
 			
 		}else{
 			dayFormat = WEEKDAY_POSSIBLE_FORMAT.get(1);
 		}
+		
 		String weekDayString = new String();
 		DayOfWeek day = null;
 		//System.out.println(weekDay);
@@ -181,6 +185,7 @@ public class TNotesParserDate {
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 		public String compareWeekDayMonth(String inputDay){
+			//inputDay = capTheFirstChar(inputDay);
 		if(!formatWeekDay(inputDay).equals("")){
 			return formatWeekDay(inputDay);
 		}
@@ -233,6 +238,10 @@ public class TNotesParserDate {
 			} else {
 				return 0;
 			}
+		}
+		public String capTheFirstChar(String dayMonth) {
+			//String dayMonth = Character.toString(dayMonth.charAt(0)).toUpperCase() + dayMonth.substring(1);
+			return Character.toString(dayMonth.charAt(0)).toUpperCase() + dayMonth.substring(1);
 		}
 		
 }

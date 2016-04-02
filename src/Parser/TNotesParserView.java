@@ -4,23 +4,11 @@ import java.text.ParseException;
 import java.util.ArrayList;
 
 public class TNotesParserView {
-//	TNotesParserAdd add;
-//	TNotesParserChange change;
-//	TNotesParserDelete delete;
-//	TNotesParserSet set;
-//	TNotesParserSort sort;
-//	TNotesParserSearch search;
 	TNotesParserTime time;
 	TNotesParserDate date;
 	TNotesParserQuery query;
 	
 	public TNotesParserView(){
-//		add = new TNotesParserAdd();
-//		change = new TNotesParserChange();
-//		delete = new TNotesParserDelete();
-//		set = new TNotesParserSet();
-//		sort = new TNotesParserSort();
-//		search = new TNotesParserSearch();
 		time = new TNotesParserTime();
 		date = new TNotesParserDate();
 		query = new TNotesParserQuery();
