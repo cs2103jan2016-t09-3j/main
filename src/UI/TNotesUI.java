@@ -47,7 +47,8 @@ public class TNotesUI {
 		arrOverdue = logic.callOverdueTasks();
 		overDueString += "          ====OVERDUE===\n";
 		for (int i = 0; i < arrOverdue.size(); i++) {
-			overDueString += i + 1 + ". " + arrOverdue.get(i).getName() + "\n";
+			overDueString += i + 1 + ". [" + arrOverdue.get(i).getEndTime() + "] [" + arrOverdue.get(i).getEndDate() + "] "
+		+ arrOverdue.get(i).getName() + "\n";
 			} 
 		}catch (Exception e) {
 			overDueString = e.getMessage();
@@ -65,7 +66,13 @@ public class TNotesUI {
 			
 				floatString = "          ====NOTES====\n";
 				for (int i = 0; i < arrFloat.size(); i++) {
-					floatString += i + 1 + ". " + arrFloat.get(i).getName() + "\n";
+					floatString += i + 1 + ". "; 
+							if (arrFloat.get(i).getImportance()){
+								floatString += "[IMPORTANT] ";
+							}
+							else {
+							floatString += arrFloat.get(i).getName() + "\n";
+							}
 				}
 				floatString += "\n";
 			}
