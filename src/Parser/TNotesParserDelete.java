@@ -11,20 +11,22 @@ public class TNotesParserDelete {
 	private static int NUM_INITIALISATION = 1;
 	private static int NUM_DELETE_TYPE = 2;
 	
-	private ArrayList<String> list = new ArrayList<String>();
+	
 	public ArrayList <String> deleteCommand(String[] arr){
 		
+		ArrayList<String> deleteList = new ArrayList<String>();
+		
 		if(arr[1].equals(KEYWORD_DIRECTORY)){
-			list = new ArrayList<String>();
-			this.list.add(KEYWORD_DELETE_DIRECTORY);
-			this.list.add(arr[NUM_DELETE_TYPE].trim());
+			
+			deleteList.add(KEYWORD_DELETE_DIRECTORY);
+			deleteList.add(arr[NUM_DELETE_TYPE].trim());
 		}
 		else{
-			list = new ArrayList<String>();
-			this.list.add(KEYWORD_DELETE);
-			this.list.add(taskNameFloat(arr).trim());
+			
+			deleteList.add(KEYWORD_DELETE);
+			deleteList.add(taskNameFloat(arr).trim());
 		}
-		return this.list;
+		return deleteList;
 	
 	}
 	public String taskNameFloat(String[] arr) {

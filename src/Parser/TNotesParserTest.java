@@ -14,40 +14,6 @@ import org.junit.Test;
 //format for month is not stable
 ////////////////////////////////////////////////////////
 
-
-/*command word: add
-
- * 
- * 
- * 
- * 
- * 
- *add call mom due 2-2-2 at 12:00 details say hello
- *add call mom due 2-2-2 at 300 pm details say hello
- *add call mom details buy apple
- *add call mom due every tuesday at 12:00 important
- *add call mom due every tuesday at 300 pm important
- *add call mom due every tue
- *add call mom
- *add ,d,fdgv,,,gdr//gdr, fshsbsuh,fsrgr
- *add call mom important
- *add call mom from 2-2-2 to 3-3-3
- *add call mom from 2-2-2 at 12:00 to 3-3-3 at 13:00
- *add call mom from 2-2-2 at 12:00 to 3-3-3 at 13:00 details haha hahaha// the word details not in the arraylist
- *add call mom due this semester/year/week important(add,call mom,this semester, important)
- *add call mom at 12:00
- *add call mom due 2-2-2
- *Add call mom from 2-2-2 to 3-3-3
- *Add call mom from 12:00 to 13:00
- *Add call mom from 3:00 pm to 3:00 pm
- *Add call mom from 1000 pm to 1000 pm
- *havent debug chec time
- *havent do different variations for important
- *Add call mom on Tuesday
- *Add call mom today
- *Add 2(any index)
- */
-
 /*command word: sort
  * sort time by name
  * sort today by importance
@@ -55,6 +21,9 @@ import org.junit.Test;
  * sort today by title
  * 
  */
+//very for 2 weeks
+//for a month
+//for 6 day
 public class TNotesParserTest {
 	private static final String TEXT_EXIT = "exit command successful";
 	
@@ -119,6 +88,8 @@ public class TNotesParserTest {
 			Arrays.asList("add", "call mom", "15:00", "2016-02-02");
 	private static final List<String> listAdd28 = 
 			Arrays.asList("add", "call mom", "every", "JULY");
+	private static final List<String> listAdd29 = 
+			Arrays.asList("add", "call mom", "every", "JULY", "for", "2", "week");
 	
 	///////////////////////////////////////////////////////////////////////////
 	private static final List<String> listEdit1 = 
@@ -277,6 +248,9 @@ public class TNotesParserTest {
 		assertEquals("i want to test", listAdd28, 
 				tester.checkCommand("add call mom every jul"));
 				System.out.println("28. add call mom every jul");
+		assertEquals("i want to test", listAdd29, 
+				tester.checkCommand("add call mom every jul for 2 week"));
+				System.out.println("29. add call mom every jul for 2 week");
 					
 				
 
