@@ -67,6 +67,9 @@ public class TNotesOverviewController {
 //        firstNameColumn.setCellValueFactory(cellData -> cellData.getValue().firstNameProperty());
 //        lastNameColumn.setCellValueFactory(cellData -> cellData.getValue().lastNameProperty());
       // displayScreen.setText("Welcome to T-Note. How may I help you?");
+    	displaySideScreen.setWrapText(true);
+    	displayMainScreen.setWrapText(true)
+    	;
     	String welcomeMsg = tNote.getWelcomeMessage();
     	displaySideScreen.setEditable(false);
     	String mainScreenPrint = tNote.displaySchedule();
