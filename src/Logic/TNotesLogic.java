@@ -435,7 +435,7 @@ public class TNotesLogic {
 		ArrayList<TaskFile> taskListToBeDisplayed = new ArrayList<TaskFile>();
 		for (String text : stringList) {
 			TaskFile currentFile = storage.getTaskFileByName(text);
-			if (currentFile.getIsTask()) {
+			if (currentFile.getIsTask()&& !currentFile.getIsDone()) {
 				taskListToBeDisplayed.add(currentFile);
 			}
 		}

@@ -495,7 +495,7 @@ public class TNotesStorage {
 		
 		for(String taskName: masterList) {
 			TaskFile task = getTaskFileByName(taskName);
-			if(task.getIsRecurring()) {
+			if(task.getIsRecurring() || task.getIsDone()) {
 				continue;
 			}
 			
