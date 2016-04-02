@@ -1,4 +1,5 @@
 package UI;
+
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -38,51 +39,67 @@ public class TNotesUI {
 		String welcomeMsg = "Hello, welcome to T-Note. How may I help you?";
 		return welcomeMsg;
 	}
-	
-	public String displaySchedule(){
-	
+
+	public String displayFloats() {
+
+		try {
+			ArrayList<TaskFile> arrFloat = new ArrayList<TaskFile>();
+			arrFloat = logic.viewFloatingList();
+			if (logic.hasFloatingList()) {
+				result = "====Notes====\n";
+				for (int i = 0; i < arrFloat.size(); i++) {
+					result += i + 1 + ". " + arrFloat.get(i).getName() + "\n";
+				}
+			}
+		} catch (Exception e) {
+			result = e.getMessage();
+		}
+		return result;
+	}
+
+	public String displaySchedule() {
+
 		String schedule = "";
 		ArrayList<TaskFile> todaySchedule = new ArrayList<TaskFile>();
-		
+
 		try {
 			todaySchedule = logic.viewDateList("today");
 			schedule = "====TODAY's Schedule====\n";
-			for(int i=0; i<todaySchedule.size(); i++) {
-				
-				if(todaySchedule.get(i).getIsDeadline()) {
-					schedule+= String.format("%-24s","[" + todaySchedule.get(i).getStartTime() + "]");
-					
-					schedule+= todaySchedule.get(i).getName() + " ";
-					
-					if(todaySchedule.get(i).getImportance()) {
-						schedule+= "[IMPORTANT]\n";
+			for (int i = 0; i < todaySchedule.size(); i++) {
+
+				if (todaySchedule.get(i).getIsDeadline()) {
+					schedule += String.format("%-24s", "[" + todaySchedule.get(i).getStartTime() + "]");
+
+					schedule += todaySchedule.get(i).getName() + " ";
+
+					if (todaySchedule.get(i).getImportance()) {
+						schedule += "[IMPORTANT]\n";
 					} else {
 						schedule += "\n";
 					}
 				}
-				
-				if(todaySchedule.get(i).getIsMeeting()) {
-					schedule += String.format("%-20s", "[" + todaySchedule.get(i).getStartTime() + "] - " +
-							"[" + todaySchedule.get(i).getEndTime() + "]") ;
-				
-					schedule+= todaySchedule.get(i).getName() + " ";
-					
-					if(todaySchedule.get(i).getImportance()) {
-						schedule+= "[IMPORTANT]\n";
+
+				if (todaySchedule.get(i).getIsMeeting()) {
+					schedule += String.format("%-20s", "[" + todaySchedule.get(i).getStartTime() + "] - " + "["
+							+ todaySchedule.get(i).getEndTime() + "]");
+
+					schedule += todaySchedule.get(i).getName() + " ";
+
+					if (todaySchedule.get(i).getImportance()) {
+						schedule += "[IMPORTANT]\n";
 					} else {
 						schedule += "\n";
 					}
 				}
-			}	
+			}
 			schedule += "\n";
-			
+
 		} catch (Exception e) {
 			errorMessage = e.getMessage();
 			schedule = errorMessage;
 		}
 		return schedule;
 	}
-	
 
 	public String executeCommand(String userInput) {
 		ArrayList<String> userCommandSplit = new ArrayList<String>();
@@ -108,15 +125,13 @@ public class TNotesUI {
 		case ADD_COMMAND:
 
 			try {
-				
+
 				taskFile = logic.addTask(userCommandSplit);
 
 				// Floating task case
 				if (taskFile.getIsTask()) {
 					result += String.format("I have added \"%s\" to your schedule!\n", taskFile.getName().trim());
 				}
-
-		
 
 				// Tasks with only 1 date
 				if (taskFile.getIsDeadline()) {
@@ -139,7 +154,7 @@ public class TNotesUI {
 					System.out.print("details");
 					result += String.format("Things to note: \"%s\"\n", taskFile.getDetails().trim());
 				}
-				
+
 				if (taskFile.getIsRecurring()) {
 					int everyIndex = 0;
 					int displayIndex = 0;
@@ -150,7 +165,7 @@ public class TNotesUI {
 					}
 					result += String.format("Note: It recurs every %s\n", userCommandSplitCopy.get(displayIndex));
 				}
-				
+
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				// String
@@ -215,18 +230,13 @@ public class TNotesUI {
 				}
 				if (editType.equals("importance")) {
 					result = String.format("You have changed the importance of \"%s\" to ", taskFile.getName());
-					if(taskFile.getImportance()) {
+					if (taskFile.getImportance()) {
 						result += "important";
 					} else {
 						result += "not as important";
 					}
 				}
-				// if (editType.equals("Status")) {
-				// result = String.format("You have changed the status in \"%s\"
-				// from [%s] to [%s]!\n",
-				// taskFile.getName(), oldTaskFile.getIsDone(),
-				// taskFile.getIsDone());
-				// }
+
 				if (editType.equals("Reccuring")) {
 					result = String.format("You have set recurring in \"%s\" from [%s] to [%s]!\n", taskFile.getName(),
 							oldTaskFile.getIsRecurring(), taskFile.getIsRecurring());
@@ -244,19 +254,19 @@ public class TNotesUI {
 				int indexNum = Integer.valueOf(userCommandSplit.get(1));
 				ArrayList<TaskFile> arrD = new ArrayList<TaskFile>();
 				try {
-				arrD = logic.deleteIndex(viewList, indexNum);
+					arrD = logic.deleteIndex(viewList, indexNum);
 
-				result += String.format("Your NEW schedule:\n");
-				for (int i = 0; i < arrD.size(); i++) {
-					result += i + 1 + ". " + "[" + arrD.get(i).getStartTime() + "] ";
-					if(arrD.get(i).getIsMeeting()) {
-						result +=  "- [" + arrD.get(i).getEndTime() + "] ";
+					result += String.format("Your NEW schedule:\n");
+					for (int i = 0; i < arrD.size(); i++) {
+						result += i + 1 + ". " + "[" + arrD.get(i).getStartTime() + "] ";
+						if (arrD.get(i).getIsMeeting()) {
+							result += "- [" + arrD.get(i).getEndTime() + "] ";
+						}
+						if (arrD.get(i).getImportance()) {
+							result += "[IMPORTANT] ";
+						}
+						result += arrD.get(i).getName() + "\n";
 					}
-					if(arrD.get(i).getImportance()) {
-						result+= "[IMPORTANT] ";
-					}
-					result += arrD.get(i).getName() + "\n";
-				}
 				} catch (Exception e) {
 					result = e.getMessage();
 				}
@@ -275,11 +285,11 @@ public class TNotesUI {
 					result += String.format("Your NEW schedule for %s:\n", taskFile.getStartDate());
 					for (int i = 0; i < arrN.size(); i++) {
 						result += i + 1 + ". " + "[" + arrN.get(i).getStartTime() + "] ";
-						if(arrN.get(i).getIsMeeting()) {
-							result +=  "- [" + arrN.get(i).getEndTime() + "] ";
+						if (arrN.get(i).getIsMeeting()) {
+							result += "- [" + arrN.get(i).getEndTime() + "] ";
 						}
-						if(arrN.get(i).getImportance()) {
-							result+= "[IMPORTANT] ";
+						if (arrN.get(i).getImportance()) {
+							result += "[IMPORTANT] ";
 						}
 						result += arrN.get(i).getName() + "\n";
 					}
@@ -295,7 +305,7 @@ public class TNotesUI {
 			ArrayList<String> viewType = logic.sortViewTypes(userCommandSplit);
 
 			if (viewType.get(0).equals("isViewDateList")) {
-				
+
 				String date = userCommandSplit.get(1);
 				ArrayList<TaskFile> arrView = new ArrayList<TaskFile>();
 				try {
@@ -305,15 +315,14 @@ public class TNotesUI {
 					// TODO Auto-generated catch block
 					result = e.getMessage();
 				}
-				
-				
+
 				result = String.format("Your schedule for %s:\n", userCommandSplit.get(1));
 				for (int i = 0; i < arrView.size(); i++) {
-					if(arrView.get(i).getIsMeeting()) {
-						result += i + 1 + ". " + "[" + arrView.get(i).getStartTime() + "]-" 
-								+ "[" + arrView.get(i).getEndTime() + "]";
+					if (arrView.get(i).getIsMeeting()) {
+						result += i + 1 + ". " + "[" + arrView.get(i).getStartTime() + "]-" + "["
+								+ arrView.get(i).getEndTime() + "]";
 					}
-					if(arrView.get(i).getIsDeadline()) {
+					if (arrView.get(i).getIsDeadline()) {
 						result += i + 1 + ". " + "[" + arrView.get(i).getStartTime() + "]";
 					}
 					if (arrView.get(i).getImportance()) {
@@ -321,7 +330,7 @@ public class TNotesUI {
 					}
 					result += String.format(" %s\n", arrView.get(i).getName());
 				}
-				
+
 			}
 
 			// list of floating tasks
@@ -463,7 +472,7 @@ public class TNotesUI {
 			if (sortType.equals("name")) {
 				result = "I have sorted everything by name for you! I'm so amazing, what would you do without me!";
 				try {
-					//arrSort = logic.sor;
+					// arrSort = logic.sor;
 
 					result += String.format("You new schedule for %s: \n\n", userCommandSplit.get(1));
 
@@ -542,7 +551,7 @@ public class TNotesUI {
 	private String getFirstWord(ArrayList<String> userCommandArrayList) {
 		return userCommandArrayList.get(0);
 	}
-	
+
 	public int isLetters(String nextString) {
 		if (!nextString.matches("[0-9]+")) {
 			return 1;
