@@ -769,7 +769,7 @@ public class TNotesLogic {
 			}
 		}
 		if (listOfOverdueTasks.isEmpty()) {
-			throw new Exception("no overdue tasks");
+			throw new Exception("\n==no overdue tasks==\n");
 		}
 		return listOfOverdueTasks;
 	}
