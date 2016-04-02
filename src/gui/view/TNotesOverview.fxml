@@ -4,9 +4,9 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" styleClass="background" stylesheets="@colour.css" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.view.TNotesOverviewController">
+<AnchorPane prefHeight="700" prefWidth="700" styleClass="background" stylesheets="@colour.css" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.view.TNotesOverviewController">
    <children>
-      <TextArea fx:id="displayScreen" layoutX="15.0" layoutY="34.0" prefHeight="307.0" prefWidth="555.0" stylesheets="@colour.css" AnchorPane.bottomAnchor="59.0" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="34.0" />
+      <TextArea fx:id="displayScreen" layoutX="15.0" layoutY="34.0" onKeyPressed="#handleScrollBar" prefHeight="307.0" prefWidth="555.0" stylesheets="@colour.css" AnchorPane.bottomAnchor="59.0" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="34.0" />
       <TextField fx:id="userInput" layoutX="17.0" layoutY="353.0" onAction="#handleUserInput" stylesheets="@colour.css" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="15.0" />
    </children>
 </AnchorPane>

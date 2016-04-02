@@ -59,6 +59,7 @@ public class MainApp extends Application {
 	        try {
 	            // Load TNotesOverview overview.
 	            FXMLLoader loader = new FXMLLoader();
+	         
 	            loader.setLocation(MainApp.class.getResource("view/TNotesOverview.fxml"));
 	          
 	            AnchorPane TNotesOverview = (AnchorPane) loader.load();

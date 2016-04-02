@@ -3,5 +3,10 @@
 }
 
 .background {
-    -fx-background-color: #b3ffcc
+    -fx-background-color: #ac7339;
+}
+
+.body{
+  background-image: url(/resources/images/tile.jpg);
+  background-repeat:repeat;
 }
