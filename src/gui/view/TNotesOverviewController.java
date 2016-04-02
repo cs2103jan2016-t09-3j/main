@@ -27,7 +27,10 @@ public class TNotesOverviewController {
     private TextField userInput;
     
     @FXML
-    private TextArea displayScreen;
+    private TextArea displayMainScreen;
+    
+    @FXML
+    private TextArea displaySideScreen;
     
     private ScrollBar scrollBar;
 //    @FXML
@@ -64,8 +67,9 @@ public class TNotesOverviewController {
 //        lastNameColumn.setCellValueFactory(cellData -> cellData.getValue().lastNameProperty());
       // displayScreen.setText("Welcome to T-Note. How may I help you?");
     	String welcomeMsg = tNote.getWelcomeMessage();
-    	displayScreen.setText(welcomeMsg);
-       displayScreen.setEditable(false);
+    	displaySideScreen.setEditable(false);
+    	displayMainScreen.setText(welcomeMsg);
+       displayMainScreen.setEditable(false);
     	// Clear person details.
 //        showPersonDetails(null);
 
@@ -92,10 +96,10 @@ public class TNotesOverviewController {
     		System.exit(0);
     	}
     	
-    	else {
-    		floatList += result;
-    		 floatList += update;
-    		displayScreen.setText(floatList);
+    	else {   		
+    		displaySideScreen.setText(floatList);
+    		result+=update;
+    		displayMainScreen.setText(result);
     		userInput.clear();
     	}
 

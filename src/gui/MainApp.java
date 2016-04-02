@@ -60,8 +60,9 @@ public class MainApp extends Application {
 	            // Load TNotesOverview overview.
 	            FXMLLoader loader = new FXMLLoader();
 	         
-	            loader.setLocation(MainApp.class.getResource("view/TNotesOverview.fxml"));
-	          
+	          //  loader.setLocation(MainApp.class.getResource("view/TNotesOverview.fxml"));
+	            loader.setLocation(MainApp.class.getResource("view/TNotesSplitView.fxml"));
+	            
 	            AnchorPane TNotesOverview = (AnchorPane) loader.load();
 
 	            // Set TNotes overview into the center of root layout.
