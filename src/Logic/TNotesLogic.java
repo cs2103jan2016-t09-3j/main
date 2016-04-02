@@ -358,15 +358,31 @@ public class TNotesLogic {
 	}
 
 	public ArrayList<TaskFile> viewManyDatesList(ArrayList<String> dates) throws Exception {
+		Date startDate;
+		Date endDate;
+		Calendar cal = Calendar.getInstance();
+		DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 		ArrayList<String> stringList = storage.readFromMasterFile();
+		ArrayList<Date> listOfDates = new ArrayList<Date>();
 		ArrayList<TaskFile> taskListToBeDisplayed = new ArrayList<TaskFile>();
-		for (String date : dates) {
+		
+		startDate = df.parse(dates.remove(0));
+		endDate = df.parse(dates.remove(0));
+		listOfDates.add(startDate);
+		cal.setTime(startDate);
+		while(!startDate.equals(endDate)){
+			cal.add(Calendar.DATE, 1);
+			startDate = cal.getTime();
+			listOfDates.add(startDate);
+		}
+		for (Date date : listOfDates) {
+			String dateString = df.format(date);
 			for (String text : stringList) {
 				TaskFile currentFile = storage.getTaskFileByName(text);
 				if (currentFile.getIsRecurring()|| currentFile.getIsDone()) {
 					continue;
 				}
-				if (currentFile.getStartDate().equals(date.trim())) {
+				if (currentFile.getStartDate().equals(dateString.trim())) {
 					String name = currentFile.getName();
 					if (name.contains("_")) {
 						String formatterName = name.substring(0, name.indexOf("_"));
