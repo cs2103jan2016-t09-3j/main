@@ -42,10 +42,11 @@ public class TNotesUI {
 	
 	public String displayOverdueTasks() {
 		try{
-		viewList = logic.callOverdueTasks();
+		ArrayList<TaskFile> arrOverdue = new ArrayList<TaskFile> ();
+		arrOverdue = logic.callOverdueTasks();
 		result += "====OVERDUE===\n";
-		for (int i = 0; i < viewList.size(); i++) {
-			result += i + 1 + ". " + viewList.get(i).getName() + "\n";
+		for (int i = 0; i < arrOverdue.size(); i++) {
+			result += i + 1 + ". " + arrOverdue.get(i).getName() + "\n";
 			} 
 		}catch (Exception e) {
 			result = e.getMessage();
@@ -347,7 +348,7 @@ public class TNotesUI {
 
 			}
 
-			if (viewType.get(0).equals("isViewTask")) {
+			else if (viewType.get(0).equals("isViewTask")) {
 				try {
 					taskFile = logic.viewTask(userCommandSplit.get(1));
 
