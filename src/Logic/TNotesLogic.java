@@ -231,7 +231,7 @@ public class TNotesLogic {
 					currentFile.setStartDate(date);
 					Date dateToStart = df.parse(date);
 					cal.setTime(dateToStart);
-					
+
 					for (int i = 0; i < 8; i++) {
 						dateList.add(df.format(cal.getTime()));
 						cal.add(Calendar.WEEK_OF_YEAR, 1);
@@ -285,7 +285,7 @@ public class TNotesLogic {
 	// if i want to hold the main Array list
 	public TaskFile deleteTask(ArrayList<String> fromParser) throws Exception {
 		fromParser.remove(0);
-		if(fromParser.isEmpty()) {
+		if (fromParser.isEmpty()) {
 			throw new Exception("invalid command");
 		}
 		return storage.deleteTask(fromParser.get(0));
@@ -325,10 +325,9 @@ public class TNotesLogic {
 	public ArrayList<String> sortViewTypes(ArrayList<String> fromParser) {
 		ArrayList<String> stringList = new ArrayList<String>();
 		String viewType = fromParser.get(1);
-		if(fromParser.size() == 3){
+		if (fromParser.size() == 3) {
 			stringList.add("isViewManyList");
-		}
-		else if (viewType.contains("-") || viewType.contains("today")
+		} else if (viewType.contains("-") || viewType.contains("today")
 				|| (viewType.contains("monday") || (viewType.contains("tuesday")) || (viewType.contains("wednesday"))
 						|| (viewType.contains("thursday")) || (viewType.contains("friday"))
 						|| (viewType.contains("saturday")) || (viewType.contains("sunday")))) {
@@ -365,12 +364,12 @@ public class TNotesLogic {
 		ArrayList<String> stringList = storage.readFromMasterFile();
 		ArrayList<Date> listOfDates = new ArrayList<Date>();
 		ArrayList<TaskFile> taskListToBeDisplayed = new ArrayList<TaskFile>();
-		
-		startDate = df.parse(dates.remove(0));
-		endDate = df.parse(dates.remove(0));
+
+		startDate = df.parse(dates.get(1));
+		endDate = df.parse(dates.get(2));
 		listOfDates.add(startDate);
 		cal.setTime(startDate);
-		while(!startDate.equals(endDate)){
+		while (!startDate.equals(endDate)) {
 			cal.add(Calendar.DATE, 1);
 			startDate = cal.getTime();
 			listOfDates.add(startDate);
@@ -379,7 +378,7 @@ public class TNotesLogic {
 			String dateString = df.format(date);
 			for (String text : stringList) {
 				TaskFile currentFile = storage.getTaskFileByName(text);
-				if (currentFile.getIsRecurring()|| currentFile.getIsDone()) {
+				if (currentFile.getIsRecurring() || currentFile.getIsDone()) {
 					continue;
 				}
 				if (currentFile.getStartDate().equals(dateString.trim())) {
@@ -415,7 +414,7 @@ public class TNotesLogic {
 		ArrayList<TaskFile> taskListToBeDisplayed = new ArrayList<TaskFile>();
 		for (String text : stringList) {
 			TaskFile currentFile = storage.getTaskFileByName(text);
-			if (currentFile.getIsRecurring()||currentFile.getIsDone()) {
+			if (currentFile.getIsRecurring() || currentFile.getIsDone()) {
 				continue;
 			}
 			if (currentFile.getStartDate().equals(date.trim())) {
@@ -755,14 +754,21 @@ public class TNotesLogic {
 
 	public TaskFile deleteRecurringTask(ArrayList<String> fromParser) throws Exception {
 		fromParser.remove(0);
-		if(fromParser.isEmpty()) {
+		if (fromParser.isEmpty()) {
 			throw new Exception("invalid command");
 		}
 		return storage.deleteTask(fromParser.get(0));
 	}
-	public ArrayList<TaskFile> callOverdueTasks() throws Exception{
+
+	public ArrayList<TaskFile> callOverdueTasks() throws Exception {
 		ArrayList<TaskFile> listOfOverdueTasks = storage.retrieveOverdueTasks();
-		if(listOfOverdueTasks.isEmpty()) {
+		for (TaskFile newTask : listOfOverdueTasks) {
+			if (newTask.getName().contains("_")) {
+				String formatterName = newTask.getName().substring(0, newTask.getName().indexOf("_"));
+				newTask.setName(formatterName);
+			}
+		}
+		if (listOfOverdueTasks.isEmpty()) {
 			throw new Exception("no overdue tasks");
 		}
 		return listOfOverdueTasks;
