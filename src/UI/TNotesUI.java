@@ -237,7 +237,7 @@ public class TNotesUI {
 							taskFile.getName(), oldTaskFile.getStartTime(), taskFile.getStartTime());
 				}
 				if (editType.equals("endTime")) {
-					result = String.format("You have chaned the end time in \"%s\" from [%s] to [%s]!\n",
+					result = String.format("You have changed the end time in \"%s\" from [%s] to [%s]!\n",
 							taskFile.getName(), oldTaskFile.getEndTime(), taskFile.getEndTime());
 				}
 				if (editType.equals("date") || editType.equals("startDate")) {
