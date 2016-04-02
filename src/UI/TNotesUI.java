@@ -41,35 +41,37 @@ public class TNotesUI {
 	}
 	
 	public String displayOverdueTasks() {
+		String overDueString = "";
 		try{
 		ArrayList<TaskFile> arrOverdue = new ArrayList<TaskFile> ();
 		arrOverdue = logic.callOverdueTasks();
-		result += "====OVERDUE===\n";
+		overDueString += "====OVERDUE===\n";
 		for (int i = 0; i < arrOverdue.size(); i++) {
-			result += i + 1 + ". " + arrOverdue.get(i).getName() + "\n";
+			overDueString += i + 1 + ". " + arrOverdue.get(i).getName() + "\n";
 			} 
 		}catch (Exception e) {
-			result = e.getMessage();
+			overDueString = e.getMessage();
 		}
 		
-		return result;
+		return overDueString;
 	}
 
 	public String displayFloats() {
+		String floatString = "";
 		try {
 			if (logic.hasFloatingList()) {
 			ArrayList<TaskFile> arrFloat = new ArrayList<TaskFile>();
 			arrFloat = logic.viewFloatingList();
 			
-				result = "====Notes====\n";
+				floatString = "====Notes====\n";
 				for (int i = 0; i < arrFloat.size(); i++) {
-					result += i + 1 + ". " + arrFloat.get(i).getName() + "\n";
+					floatString += i + 1 + ". " + arrFloat.get(i).getName() + "\n";
 				}
 			}
 		} catch (Exception e) {
-			result = e.getMessage();
+			floatString = e.getMessage();
 		}
-		return result;
+		return floatString;
 	}
 
 	public String displaySchedule() {
