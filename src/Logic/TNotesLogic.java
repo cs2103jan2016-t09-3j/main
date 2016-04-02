@@ -325,7 +325,10 @@ public class TNotesLogic {
 	public ArrayList<String> sortViewTypes(ArrayList<String> fromParser) {
 		ArrayList<String> stringList = new ArrayList<String>();
 		String viewType = fromParser.get(1);
-		if (viewType.contains("-") || viewType.contains("today")
+		if(fromParser.size() == 3){
+			stringList.add("isViewManyList");
+		}
+		else if (viewType.contains("-") || viewType.contains("today")
 				|| (viewType.contains("monday") || (viewType.contains("tuesday")) || (viewType.contains("wednesday"))
 						|| (viewType.contains("thursday")) || (viewType.contains("friday"))
 						|| (viewType.contains("saturday")) || (viewType.contains("sunday")))) {
@@ -360,7 +363,7 @@ public class TNotesLogic {
 		for (String date : dates) {
 			for (String text : stringList) {
 				TaskFile currentFile = storage.getTaskFileByName(text);
-				if (currentFile.getIsRecurring()) {
+				if (currentFile.getIsRecurring()|| currentFile.getIsDone()) {
 					continue;
 				}
 				if (currentFile.getStartDate().equals(date.trim())) {
