@@ -228,8 +228,10 @@ public class TNotesLogic {
 				} else {
 					recurArgument.contains("day");
 					String date = compareDates(recurArgument);
+					currentFile.setStartDate(date);
 					Date dateToStart = df.parse(date);
 					cal.setTime(dateToStart);
+					
 					for (int i = 0; i < 8; i++) {
 						dateList.add(df.format(cal.getTime()));
 						cal.add(Calendar.WEEK_OF_YEAR, 1);
@@ -283,7 +285,9 @@ public class TNotesLogic {
 	// if i want to hold the main Array list
 	public TaskFile deleteTask(ArrayList<String> fromParser) throws Exception {
 		fromParser.remove(0);
-		assertNotEquals(0, fromParser.size());
+		if(fromParser.isEmpty()) {
+			throw new Exception("invalid command");
+		}
 		return storage.deleteTask(fromParser.get(0));
 	}
 
@@ -356,7 +360,15 @@ public class TNotesLogic {
 		for (String date : dates) {
 			for (String text : stringList) {
 				TaskFile currentFile = storage.getTaskFileByName(text);
-				if (currentFile.getStartDate().equals(date)) {
+				if (currentFile.getIsRecurring()) {
+					continue;
+				}
+				if (currentFile.getStartDate().equals(date.trim())) {
+					String name = currentFile.getName();
+					if (name.contains("_")) {
+						String formatterName = name.substring(0, name.indexOf("_"));
+						currentFile.setName(formatterName);
+					}
 					taskListToBeDisplayed.add(currentFile);
 				}
 			}
@@ -664,7 +676,7 @@ public class TNotesLogic {
 			if (storage.addRecurringTask(recurTask)) {
 				return recurTask;
 			} else {
-				System.out.println("did not manage to add to storage");
+				throw new Exception("did not add to storage");
 			}
 		} else if (type.equals("startTime")) {
 			storage.deleteTask(title);
@@ -673,7 +685,7 @@ public class TNotesLogic {
 			if (storage.addRecurringTask(recurTask)) {
 				return recurTask;
 			} else {
-				System.out.println("did not manage to add to storage");
+				throw new Exception("did not add to storage");
 			}
 		} else if (type.equals("endTime")) {
 			storage.deleteTask(title);
@@ -681,7 +693,7 @@ public class TNotesLogic {
 			if (storage.addRecurringTask(recurTask)) {
 				return recurTask;
 			} else {
-				System.out.println("did not manage to add to storage");
+				throw new Exception("did not add to storage");
 			}
 		} else if (type.equals("startDate")) {
 			storage.deleteTask(title);
@@ -689,7 +701,7 @@ public class TNotesLogic {
 			if (storage.addRecurringTask(recurTask)) {
 				return recurTask;
 			} else {
-				System.out.println("did not manage to add to storage");
+				throw new Exception("did not add to storage");
 			}
 		} else if (type.equals("endDate")) {
 			storage.deleteTask(title);
@@ -697,7 +709,7 @@ public class TNotesLogic {
 			if (storage.addRecurringTask(recurTask)) {
 				return recurTask;
 			} else {
-				System.out.println("did not manage to add to storage");
+				throw new Exception("did not add to storage");
 			}
 		} else if (type.equals("details")) {
 			storage.deleteTask(title);
@@ -705,7 +717,7 @@ public class TNotesLogic {
 			if (storage.addRecurringTask(recurTask)) {
 				return recurTask;
 			} else {
-				System.out.println("did not manage to add to storage");
+				throw new Exception("did not add to storage");
 			}
 		} else if (type.equals("important")) {
 			storage.deleteTask(title);
@@ -718,12 +730,22 @@ public class TNotesLogic {
 				return currentFile;
 			}
 		} else
-			System.out.println("did not edit");
+			throw new Exception("did not edit");
 		return currentFile;
 	}
 
 	public TaskFile deleteRecurringTask(ArrayList<String> fromParser) throws Exception {
+		fromParser.remove(0);
+		if(fromParser.isEmpty()) {
+			throw new Exception("invalid command");
+		}
 		return storage.deleteTask(fromParser.get(0));
 	}
-
+	public ArrayList<TaskFile> callOverdueTasks() throws Exception{
+		ArrayList<TaskFile> listOfOverdueTasks = storage.retrieveOverdueTasks();
+		if(listOfOverdueTasks.isEmpty()) {
+			throw new Exception("no overdue tasks");
+		}
+		return listOfOverdueTasks;
+	}
 }
