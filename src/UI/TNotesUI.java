@@ -406,10 +406,10 @@ public class TNotesUI {
 				for (int i = 0; i < arrView.size(); i++) {
 					if (arrView.get(i).getIsMeeting()) {
 						result += i + 1 + ". " + "[" + arrView.get(i).getStartTime() + "]-" + "["
-								+ arrView.get(i).getEndTime() + "]";
+								+ arrView.get(i).getEndTime() + "] [" + arrView.get(i).getStartDate() + "]";
 					}
 					if (arrView.get(i).getIsDeadline()) {
-						result += i + 1 + ". " + "[" + arrView.get(i).getStartTime() + "]";
+						result += i + 1 + ". " + "[" + arrView.get(i).getStartTime() + "] [" + arrView.get(i).getStartDate() + "]" ;
 					}
 					if (arrView.get(i).getImportance()) {
 						result += "[IMPORTANT] ";
