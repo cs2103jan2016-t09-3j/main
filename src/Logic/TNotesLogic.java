@@ -399,7 +399,7 @@ public class TNotesLogic {
 		ArrayList<TaskFile> taskListToBeDisplayed = new ArrayList<TaskFile>();
 		for (String text : stringList) {
 			TaskFile currentFile = storage.getTaskFileByName(text);
-			if (currentFile.getIsRecurring()) {
+			if (currentFile.getIsRecurring()||currentFile.getIsDone()) {
 				continue;
 			}
 			if (currentFile.getStartDate().equals(date.trim())) {
