@@ -106,7 +106,7 @@ public class TNotesStorage {
 
 		floatingListFile = createAnOverviewFile(FLOATING_LIST_FILE_NAME);
 
-		floatingList = readFromListFile(floatingListFile);
+		floatingList = readFromFloatingListFile();
 	}
 
 	private void setUpRecurringMaps() throws Exception {
