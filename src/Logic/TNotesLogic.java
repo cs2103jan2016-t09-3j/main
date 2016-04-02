@@ -49,7 +49,7 @@ public class TNotesLogic {
 
 			if (fromParser.contains("every")) {
 				int indexOfRecurKeyWord = fromParser.indexOf("every");
-				recurArgument = fromParser.remove(indexOfRecurKeyWord + 1);
+				recurArgument = fromParser.remove(indexOfRecurKeyWord + 1).toLowerCase();
 				fromParser.remove("every");
 				currentFile.setIsRecurr(true);
 			}
@@ -302,12 +302,12 @@ public class TNotesLogic {
 
 		for (String text : stringList) {
 			TaskFile currentFile = storage.getTaskFileByName(text);
-			if(currentFile.getIsRecurring()) {
+			if (currentFile.getIsRecurring()) {
 				continue;
 			}
 			if (!currentFile.getIsDone()) {
 				String name = currentFile.getName();
-				if(name.contains("_")) {
+				if (name.contains("_")) {
 					String formatterName = name.substring(0, name.indexOf("_"));
 					currentFile.setName(formatterName);
 				}
@@ -384,12 +384,12 @@ public class TNotesLogic {
 		ArrayList<TaskFile> taskListToBeDisplayed = new ArrayList<TaskFile>();
 		for (String text : stringList) {
 			TaskFile currentFile = storage.getTaskFileByName(text);
-			if(currentFile.getIsRecurring()) {
+			if (currentFile.getIsRecurring()) {
 				continue;
 			}
 			if (currentFile.getStartDate().equals(date.trim())) {
 				String name = currentFile.getName();
-				if(name.contains("_")) {
+				if (name.contains("_")) {
 					String formatterName = name.substring(0, name.indexOf("_"));
 					currentFile.setName(formatterName);
 				}
@@ -489,7 +489,7 @@ public class TNotesLogic {
 			} else {
 				System.out.println("did not manage to add to storage");
 			}
-		} else if (type.equals("important")|| type.equals("importance")) {
+		} else if (type.equals("important") || type.equals("importance")) {
 			storage.deleteTask(title);
 			if (newText.equals("yes")) {
 				currentFile.setImportance(true);
@@ -528,19 +528,27 @@ public class TNotesLogic {
 		ArrayList<TaskFile> searchTaskList = new ArrayList<TaskFile>();
 		ArrayList<String> masterList = storage.readFromMasterFile();
 		for (int i = 0; i < lineOfText.size(); i++) {
-			if (lineOfText.get(i).length() < 1) {
-				System.out.println("you are searching null");
-				break;
-			} else if (lineOfText.get(i).length() == 1) {
+			if (lineOfText.size() == 1) {
 				for (String text : masterList) {
-					if (text.startsWith(lineOfText.get(i))) {
+					if (text.contains(lineOfText.get(i))) {
 						searchTaskList.add(storage.getTaskFileByName(text));
 					}
 				}
 			} else {
-				for (String text : masterList) {
-					if (text.contains(lineOfText.get(i))) {
-						searchTaskList.add(storage.getTaskFileByName(text));
+				if (lineOfText.get(i).length() < 1) {
+					System.out.println("you are searching null");
+					break;
+				} else if (lineOfText.get(i).length() == 1) {
+					for (String text : masterList) {
+						if (text.startsWith(lineOfText.get(i))) {
+							searchTaskList.add(storage.getTaskFileByName(text));
+						}
+					}
+				} else {
+					for (String text : masterList) {
+						if (text.contains(lineOfText.get(i))) {
+							searchTaskList.add(storage.getTaskFileByName(text));
+						}
 					}
 				}
 			}
@@ -610,7 +618,7 @@ public class TNotesLogic {
 		ArrayList<TaskFile> dateList = new ArrayList<TaskFile>();
 		for (String text : masterList) {
 			TaskFile currentFile = storage.getTaskFileByName(text);
-            if (!currentFile.getIsDone() && !currentFile.getName().contains("_")) {
+			if (!currentFile.getIsDone() && !currentFile.getName().contains("_")) {
 				dateList.add(currentFile);
 			}
 		}
@@ -648,7 +656,7 @@ public class TNotesLogic {
 		recurTask.addRecurringStartDate(dateList);
 
 		System.err.println(currentFile.getStartDate() + " " + currentFile.getStartTime());
-		
+
 		if (type.equals("time")) {
 			storage.deleteTask(title);
 			recurTask.setStartTime(newText);
@@ -658,7 +666,7 @@ public class TNotesLogic {
 			} else {
 				System.out.println("did not manage to add to storage");
 			}
-		}else if (type.equals("startTime")) {
+		} else if (type.equals("startTime")) {
 			storage.deleteTask(title);
 			recurTask.setStartTime(newText);
 
