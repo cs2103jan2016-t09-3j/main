@@ -85,8 +85,7 @@ public class TNotesOverviewController {
     	
     	update = tNote.executeCommand(userInput.getText()); 
     	floatList = tNote.displayFloats();
-    	result = floatList;
-    	result += tNote.displaySchedule();
+    	result = tNote.displaySchedule();
     	
     	if(update.equals("exit")){
     		//exit program
@@ -94,8 +93,9 @@ public class TNotesOverviewController {
     	}
     	
     	else {
-    		result += update;
-    		displayScreen.setText(result);
+    		floatList += result;
+    		 floatList += update;
+    		displayScreen.setText(floatList);
     		userInput.clear();
     	}
 

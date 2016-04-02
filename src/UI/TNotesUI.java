@@ -41,11 +41,12 @@ public class TNotesUI {
 	}
 
 	public String displayFloats() {
-
+		result="";
 		try {
+			if (logic.hasFloatingList()) {
 			ArrayList<TaskFile> arrFloat = new ArrayList<TaskFile>();
 			arrFloat = logic.viewFloatingList();
-			if (logic.hasFloatingList()) {
+			
 				result = "====Notes====\n";
 				for (int i = 0; i < arrFloat.size(); i++) {
 					result += i + 1 + ". " + arrFloat.get(i).getName() + "\n";
