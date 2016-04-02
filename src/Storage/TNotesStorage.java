@@ -495,6 +495,10 @@ public class TNotesStorage {
 		
 		for(String taskName: masterList) {
 			TaskFile task = getTaskFileByName(taskName);
+			if(task.getIsRecurring()) {
+				continue;
+			}
+			
 			if(task.getIsMeeting()) {
 				if(task.getEndCal().before(currDateTime)) {
 					overdueTasks.add(task);
