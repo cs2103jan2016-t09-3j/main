@@ -87,8 +87,10 @@ public class TNotesOverviewController {
     	String result = "";
     	String update = "";
     	String floatList = ""; 
+    	String overDueList = "";
     	
     	update = tNote.executeCommand(userInput.getText()); 
+    	overDueList = tNote.displayOverdueTasks();
     	floatList = tNote.displayFloats();
     	result = tNote.displaySchedule();
     	
@@ -97,7 +99,8 @@ public class TNotesOverviewController {
     		System.exit(0);
     	}
     	
-    	else {   		
+    	else { 
+    		floatList+=overDueList;
     		displaySideScreen.setText(floatList);
     		result+=update;
     		displayMainScreen.setText(result);
@@ -106,7 +109,7 @@ public class TNotesOverviewController {
 
     }
     
-    // not working
+    
     @FXML
     private void handleScrollBar(KeyEvent event) {
     	if(event.getCode() == KeyCode.UP){

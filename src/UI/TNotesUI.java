@@ -39,9 +39,22 @@ public class TNotesUI {
 		String welcomeMsg = "Hello, welcome to T-Note. How may I help you?";
 		return welcomeMsg;
 	}
+	
+	public String displayOverdueTasks() {
+		try{
+		viewList = logic.callOverdueTasks();
+		result += "====OVERDUE===\n";
+		for (int i = 0; i < viewList.size(); i++) {
+			result += i + 1 + ". " + viewList.get(i).getName() + "\n";
+			} 
+		}catch (Exception e) {
+			result = e.getMessage();
+		}
+		
+		return result;
+	}
 
 	public String displayFloats() {
-		result="";
 		try {
 			if (logic.hasFloatingList()) {
 			ArrayList<TaskFile> arrFloat = new ArrayList<TaskFile>();
