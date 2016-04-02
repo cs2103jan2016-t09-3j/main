@@ -69,8 +69,14 @@ public class TNotesOverviewController {
       // displayScreen.setText("Welcome to T-Note. How may I help you?");
     	String welcomeMsg = tNote.getWelcomeMessage();
     	displaySideScreen.setEditable(false);
-    	displayMainScreen.setText(welcomeMsg);
+    	String mainScreenPrint = tNote.displaySchedule();
+    	mainScreenPrint += welcomeMsg;
+    	displayMainScreen.setText(mainScreenPrint);
        displayMainScreen.setEditable(false);
+       String showOverDue = tNote.displayOverdueTasks();
+       String showFloats = tNote.displayFloats();
+       showFloats += showOverDue;
+       displaySideScreen.setText(showFloats);
     	// Clear person details.
 //        showPersonDetails(null);
 
