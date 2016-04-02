@@ -45,7 +45,7 @@ public class TNotesUI {
 		try{
 		ArrayList<TaskFile> arrOverdue = new ArrayList<TaskFile> ();
 		arrOverdue = logic.callOverdueTasks();
-		overDueString += "====OVERDUE===\n";
+		overDueString += "          ====OVERDUE===\n";
 		for (int i = 0; i < arrOverdue.size(); i++) {
 			overDueString += i + 1 + ". " + arrOverdue.get(i).getName() + "\n";
 			} 
@@ -63,14 +63,21 @@ public class TNotesUI {
 			ArrayList<TaskFile> arrFloat = new ArrayList<TaskFile>();
 			arrFloat = logic.viewFloatingList();
 			
-				floatString = "====Notes====\n";
+				floatString = "          ====NOTES====\n";
 				for (int i = 0; i < arrFloat.size(); i++) {
 					floatString += i + 1 + ". " + arrFloat.get(i).getName() + "\n";
 				}
+				floatString = "\n";
 			}
+			else {
+				floatString = "          ====NO NOTES====\n\n";
+			}
+			
 		} catch (Exception e) {
 			floatString = e.getMessage();
 		}
+		
+		
 		return floatString;
 	}
 
@@ -81,7 +88,7 @@ public class TNotesUI {
 
 		try {
 			todaySchedule = logic.viewDateList("today");
-			schedule = "====TODAY's Schedule====\n";
+			schedule = "                                             ====TODAY's Schedule====\n";
 			for (int i = 0; i < todaySchedule.size(); i++) {
 
 				if (todaySchedule.get(i).getIsDeadline()) {
