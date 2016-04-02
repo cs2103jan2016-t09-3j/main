@@ -334,22 +334,6 @@ public class TNotesUI {
 
 			}
 
-			// list of floating tasks
-			try {
-				if (logic.hasFloatingList()) {
-					ArrayList<TaskFile> arrF = new ArrayList<TaskFile>();
-					arrF = logic.viewFloatingList();
-					result += "\n";
-					result += "Notes:\n";
-					for (int i = 0; i < arrF.size(); i++) {
-						result += i + 1 + ". " + arrF.get(i).getName() + "\n";
-					}
-				}
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				result = e.getMessage();
-			}
-
 			if (viewType.get(0).equals("isViewTask")) {
 				try {
 					taskFile = logic.viewTask(userCommandSplit.get(1));
