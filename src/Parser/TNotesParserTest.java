@@ -113,7 +113,10 @@ public class TNotesParserTest {
 //			Arrays.asList("add", "call mom", "2016-04-2");
 //	private static final List<String> listAdd27 = 
 //			Arrays.asList("add", "i want to buy the room", "2016-04-2");
-
+	private static final List<String> listAdd26 = 
+			Arrays.asList("add", "call mom", "2016-02-02", "12:00", "2016-03-03", "13:00", "at to due from");
+	private static final List<String> listAdd27 = 
+			Arrays.asList("add", "call mom", "15:00", "2016-02-02");
 	
 	///////////////////////////////////////////////////////////////////////////
 	private static final List<String> listEdit1 = 
@@ -160,6 +163,8 @@ public class TNotesParserTest {
 	////////////////////////////////////////////////////////////////////////////
 	private static final List<String> listSort1 = 
 			Arrays.asList("sort", "importance");
+	private static final List<String> listSort2 = 
+			Arrays.asList("sort", "name");
 	
 	@Test
 	public void checkCommandExit() throws ParseException{
@@ -261,7 +266,12 @@ public class TNotesParserTest {
 //		assertEquals("i want to test", listAdd27, 
 //				tester.checkCommand("add i want to buy the room the day after tomorrow"));
 //				System.out.println("27. add i want to buy the room the day after tomorrow");
-		
+		assertEquals("i want to test", listAdd26, 
+				tester.checkCommand("add call mom from 2-2-2016 at 12:00 to 3-3-2016 at 13:00 details at to due from"));
+				System.out.println("26. add call mom from 2-2-2016 at 12:00 to 3-3-2016 at 13:00 details at to due from");
+		assertEquals("i want to test", listAdd27, 
+				tester.checkCommand("add call mom 3pm 2-2-2016"));
+				System.out.println("27. add call mom 3pm 2-2-2016");
 			
 				
 
@@ -345,7 +355,9 @@ public class TNotesParserTest {
 		
 		TNotesParser tester = new TNotesParser(); 		
 		assertEquals("i want to test", listSort1, tester.checkCommand("sort by importance"));
-		System.out.println("1. sort by importance");	
+		System.out.println("1. sort by importance");
+		assertEquals("i want to test", listSort2, tester.checkCommand("sort by name"));
+		System.out.println("2. sort by name");
 	}
 	
 	
