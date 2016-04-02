@@ -54,6 +54,7 @@ public class TNotesOverviewController {
      * The constructor is called before the initialize() method.
      */
     public TNotesOverviewController() {
+    	scrollBar = new ScrollBar();
     }
 
     /**
