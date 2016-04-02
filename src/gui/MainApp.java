@@ -44,7 +44,7 @@ public class MainApp extends Application {
 	            rootLayout = (BorderPane) loader.load();
 
 	            // Show the scene containing the root layout.
-	            Scene scene = new Scene(rootLayout,800,600);
+	            Scene scene = new Scene(rootLayout,800,700);
 	            primaryStage.setScene(scene);
 	            primaryStage.show();
 	        } catch (IOException e) {
