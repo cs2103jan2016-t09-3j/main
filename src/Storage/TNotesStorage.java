@@ -2,6 +2,7 @@ package Storage;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -398,7 +399,7 @@ public class TNotesStorage {
 		return fManager.deleteAllFilesAndFolders(directoryToDelete);
 	}
 	
-	public boolean clearMasterFiles() throws Exception {
+	public boolean clearFiles() throws Exception {
 		ArrayList<String> deleteMasterList = readFromMasterFile();
 		while(!deleteMasterList.isEmpty()) {
 			String taskName = deleteMasterList.get(0);
@@ -485,5 +486,28 @@ public class TNotesStorage {
 
 	private Map<String, String> readFromFolderMapFile() throws Exception {
 		return fManager.readFromFolderMapFile(monthMapFile);
+	}
+	
+	public ArrayList<TaskFile> retrieveOverdueTasks() throws Exception {
+		Calendar currDateTime = Calendar.getInstance();
+		masterList = readFromMasterFile();
+		ArrayList<TaskFile> overdueTasks = new ArrayList<TaskFile>();
+		
+		for(String taskName: masterList) {
+			TaskFile task = getTaskFileByName(taskName);
+			if(task.getIsMeeting()) {
+				if(task.getEndCal().before(currDateTime)) {
+					overdueTasks.add(task);
+				}
+			} else if(task.getIsDeadline()) {
+				if(task.getStartCal().before(currDateTime)) {
+					overdueTasks.add(task);
+				}
+			} else {
+				assertTrue(task.getIsTask());
+			}
+		}
+		
+		return overdueTasks;
 	}
 }

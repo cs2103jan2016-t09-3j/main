@@ -20,12 +20,13 @@ public class TNotesStorageTest {
 	public void setUp() throws Exception {
 
 		storage = TNotesStorage.getInstance();
+		storage.clearFiles();
 
 	}
 
 	@After
 	public void tearDown() throws Exception {
-		System.out.println(storage.clearMasterFiles());
+		System.out.println(storage.clearFiles());
 	}
 
 	@AfterClass
@@ -41,7 +42,9 @@ public class TNotesStorageTest {
 
 			assertTrue(storage.addTask(task1));
 			assertTrue(storage.addTask(task2));
-
+			
+			
+			
 			ArrayList<String> masterFileAL = new ArrayList<String>();
 
 			masterFileAL.add("call mom");
@@ -65,7 +68,10 @@ public class TNotesStorageTest {
 
 			TaskFile task3 = new TaskFile(
 					"abcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabc");
-
+			ArrayList<TaskFile> overdueTasks = new ArrayList<TaskFile>();
+			overdueTasks.add(task1);
+			assertEquals("get overdue tasks", overdueTasks, storage.retrieveOverdueTasks());
+			
 			//assertFalse(storage.addTask(task3));
 			System.out.println(storage.readFromMasterFile());
 
