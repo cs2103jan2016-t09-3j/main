@@ -4,6 +4,7 @@ import java.text.SimpleDateFormat;
 import java.time.DateTimeException;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.Month;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -13,6 +14,27 @@ import java.util.Date;
 import java.util.List;
 
 public class TNotesParserDate {
+	
+	
+	private static final String MESSAGE_INVALID_MONTH = "Invalid month!";
+	private static final String MESSAGE_INVALID_WEEKDAY = "Invalid weekday!";
+	private static final String MESSAGE_INVALID_DATE = "invalid date!";
+	private static final String MESSAGE_NULL_STRING = "";
+	
+	private static int NUM_SHORT_WEEKDAY = 4;
+	private static int NUM_LAST_ARR_STR = 1;
+	private static int NUM_LAST_TWO_ARR_STR = 2;
+	private static int NUM_INITIALISATION = 1;
+	private static int NUM_DELETE_TYPE = 2;
+	private static int NUM_TRUE = 1;
+	private static int NUM_FALSE = 0;
+	
+	private static String specialDate [] = {
+			"today", "tomorrow", "afternoon",
+			"noon", "evenning","night",
+			"morning","week","month"
+			};
+	
 	
 	private static final List<String> DATE_POSSIBLE_FORMAT = Collections.unmodifiableList(Arrays.asList(
 			"d/M/y", "d/M/yyyy", "d/MM/yy","d/MMM/yy", "d/MMM/yyyy",
@@ -46,21 +68,21 @@ public class TNotesParserDate {
 		String monthStr = capTheFirstChar(monthInput);
 		String monthString = new String();
 		Month month = null;
+		
 		for (String monthFormat : MONTH_POSSIBLE_FORMAT) {
 			month = compareMonthFormat(monthStr, monthFormat);
 			if (month != null) {
 				monthString =  month.toString();
 			}
 			else{
-				monthString =  "";
+				monthString =  MESSAGE_NULL_STRING;
 			}
-	}
-		//System.out.println(monthString);
+		}
 		return monthString;
 	}
 	
 	private Month compareMonthFormat(String monthString, String pattern) {
-		assert pattern != null : "not a week month";
+		assert pattern != null : MESSAGE_INVALID_MONTH;
 		try {
 			DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern);
 			Month month = Month.from(formatter.parse(monthString));
@@ -74,33 +96,29 @@ public class TNotesParserDate {
 	 String formatWeekDay(String weekDayInput) {
 		String dayFormat = new String();
 		String weekDay = capTheFirstChar(weekDayInput);
-		if(weekDay.trim().length() <= 4){
+		String weekDayString = new String();
+		DayOfWeek day = null;
+		
+		if(weekDay.trim().length() <= NUM_SHORT_WEEKDAY){
 			dayFormat = WEEKDAY_POSSIBLE_FORMAT.get(0);
 			
 		}else{
 			dayFormat = WEEKDAY_POSSIBLE_FORMAT.get(1);
 		}
 		
-		String weekDayString = new String();
-		DayOfWeek day = null;
-		//System.out.println(weekDay);
-		//for (String dayFormat : WEEKDAY_POSSIBLE_FORMAT) {
-			//System.out.println(dayFormat);
-			day = compareWeekDayFormat(weekDay.trim(), dayFormat);
-			//day = compareWeekDayFormat("Tue", "EE");
-			if (day != null) {
-				weekDayString =  day.toString();
-			}
-			else{
-				weekDayString =  "";
-			}
-	//}
-		//System.out.println(weekDayString);
+		day = compareWeekDayFormat(weekDay.trim(), dayFormat);
+		if (day != null) {
+			weekDayString =  day.toString();
+		}
+		else{
+			weekDayString =  MESSAGE_NULL_STRING;
+		}
+
 		return weekDayString;
 	}
 	
 	private DayOfWeek compareWeekDayFormat(String dateString, String pattern) {
-		assert pattern != null : "not a week day";
+		assert pattern != null : MESSAGE_INVALID_WEEKDAY;
 		try {
 			DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern);
 			DayOfWeek day = DayOfWeek.from(formatter.parse(dateString));
@@ -130,46 +148,48 @@ public class TNotesParserDate {
 	}
 	////////////////////////////////////////////////////////////////////////////////////////////
 	public String formatDate(String inputDate){
-	      LocalDate parsedDate = null;	
-	      String date = new String();
-	      date = inputDate.trim();
-
-	      for (String pattern : DATE_POSSIBLE_FORMAT) {
-	    	  try {
-	  			DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern);
-	  			parsedDate = LocalDate.parse(date, formatter);
-	  		} catch (DateTimeException e) {
-	  			parsedDate = null;
-	  		}
-				if (parsedDate != null) {
-					return parsedDate.toString();
-				}
+	    LocalDate parsedDate = null;	
+		for (String dateFormat : DATE_POSSIBLE_FORMAT) {
+			parsedDate = compareDateFormat(inputDate.trim(), dateFormat);
+			if (parsedDate != null) {
+				return parsedDate.toString();
 			}
-		return "";
+		}
+		return MESSAGE_NULL_STRING;
+	}
+	
+	
+	private LocalDate compareDateFormat(String dateString, String pattern) {
+		assert pattern != null : MESSAGE_INVALID_DATE;	
+		try {
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern);
+			LocalDate date = LocalDate.parse(dateString, formatter);
+			return date;
+		} catch (DateTimeException e) {
+			return null;
+		}
 	}
 	///////////////////////////////////////////////////////////////////////////////////////////
 	public ArrayList<String> checkSpecialDay(String[] arr) {
-		ArrayList<String> list = new ArrayList<String>();
-		String date [] = {"today", "tomorrow", "afternoon","noon", "evenning","night",
-				"morning","week","month", "the next day", "the next month", "the next year"};
+		ArrayList<String> specialDateList = new ArrayList<String>();
 		if(findLastImpt(arr) == 1){
-			for(int i=0;i<date.length;i++){
-				if(arr[arr.length-2].equals(date[i])){
-					list.add(date[i]);
-					return list;
+			for(int i=0;i<specialDate.length;i++){
+				if(arr[arr.length-2].equals(specialDate[i])){
+					specialDateList.add(specialDate[i]);
+					return specialDateList;
 				}
 			}
 		}
 		else{
-			for(int i=0;i<date.length;i++){
-				if(arr[arr.length-1].equals(date[i])){
-					list.add(date[i]);
-					return list;
+			for(int i=0;i<specialDate.length;i++){
+				if(arr[arr.length-1].equals(specialDate[i])){
+					specialDateList.add(specialDate[i]);
+					return specialDateList;
 				}
 			}
 			
 		}
-		return list;
+		return specialDateList;
 	}
 	//////////////////////////////////////////////////////////////////////////////////////////
 	public int checkDate(String input) {

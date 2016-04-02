@@ -223,6 +223,13 @@ public class TNotesParserAdd {
 					list.add(query.taskName(taskName).trim());
 					list.add(arr[j].trim());
 					list.add(date.compareWeekDayMonth(arr[j+1]).trim());
+					for(int k = 0; k < arr.length; k++){
+					if(arr[k].equals("for")){
+						for(int i=k;i<arr.length;i++){
+							list.add(arr[i].trim());
+						}
+					}
+					}
 				}else{	
 					list.add(arr[j].trim());
 					
@@ -232,6 +239,14 @@ public class TNotesParserAdd {
 					} else {
 						list.add(dayString);
 					}
+					for(int k = 0; k < arr.length; k++){
+					if(arr[k].equals("for")){
+						for(int i=k;i<arr.length;i++){
+							list.add(arr[i].trim());
+						}
+					}
+					}
+					
 				}
 			}
 			
@@ -276,7 +291,7 @@ public class TNotesParserAdd {
 		}
 
 		//System.out.println(timeList);
-	if(timeList.size() == 2 && time.compareTime(timeList).get(0).equals("Invalid time range")){
+	if(timeList.size() == 2  && dateList.size() == 0 && time.compareTime(timeList).get(0).equals("Invalid time range")){
 		//System.out.println(timeList);
 		list.clear();
 		list.add("Invalid time range");
