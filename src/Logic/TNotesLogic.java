@@ -206,6 +206,11 @@ public class TNotesLogic {
 				}
 			}
 			if (currentFile.getIsRecurring()) {
+				String taskDetails = currentFile.getDetails();
+				taskDetails += " every" + recurArgument;
+				System.out.println(taskDetails);
+				currentFile.setDetails(taskDetails);
+				
 				DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 				ArrayList<String> dateList = new ArrayList<String>();
 				if (recurArgument.equals("day")) {
