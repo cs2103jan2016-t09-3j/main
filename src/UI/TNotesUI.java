@@ -185,16 +185,16 @@ public class TNotesUI {
 					result += String.format("Things to note: \"%s\"\n", taskFile.getDetails().trim());
 				}
 
-				if (taskFile.getIsRecurring()) {
-					int everyIndex = 0;
-					int displayIndex = 0;
-
-					for (int i = 0; i < userCommandSplitCopy.size(); i++) {
-						everyIndex = userCommandSplitCopy.indexOf("every");
-						displayIndex = everyIndex + 1;
-					}
-					result += String.format("Note: It recurs every %s\n", userCommandSplitCopy.get(displayIndex));
-				}
+//				if (taskFile.getIsRecurring()) {
+//					int everyIndex = 0;
+//					int displayIndex = 0;
+//
+//					for (int i = 0; i < userCommandSplitCopy.size(); i++) {
+//						everyIndex = userCommandSplitCopy.indexOf("every");
+//						displayIndex = everyIndex + 1;
+//					}
+//					result += String.format("Note: It recurs every %s\n", userCommandSplitCopy.get(displayIndex));
+//				}
 
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
