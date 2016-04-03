@@ -82,7 +82,7 @@ public class TNotesLogic {
 			while (aListIterator.hasNext()) {
 				String details = aListIterator.next();
 				if (!details.contains(":") && !details.contains("-")) {
-					currentFile.setDetails(details);
+					currentFile.setDetails(details + ".");
 					aListIterator.remove();
 				}
 			}
@@ -207,7 +207,7 @@ public class TNotesLogic {
 			}
 			if (currentFile.getIsRecurring()) {
 				String taskDetails = currentFile.getDetails();
-				taskDetails += ". It recurs every " + recurArgument;
+				taskDetails += " It recurs every " + recurArgument;
 				System.out.println(taskDetails);
 				currentFile.setDetails(taskDetails);
 				
@@ -647,6 +647,10 @@ public class TNotesLogic {
 		return allTaskList;
 	}
 
+	public ArrayList<TaskFile> sortTask(ArrayList<TaskFile> currentList){
+		Collections.sort(currentList, new NameComparator());
+		return currentList;
+	}
 	// sort date
 	public ArrayList<TaskFile> sortDateTask() throws Exception {
 		ArrayList<String> masterList = storage.readFromMasterFile();
