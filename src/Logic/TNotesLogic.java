@@ -207,7 +207,7 @@ public class TNotesLogic {
 			}
 			if (currentFile.getIsRecurring()) {
 				String taskDetails = currentFile.getDetails();
-				taskDetails += " every" + recurArgument;
+				taskDetails += ". It recurs every " + recurArgument;
 				System.out.println(taskDetails);
 				currentFile.setDetails(taskDetails);
 				
