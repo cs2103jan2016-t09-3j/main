@@ -237,12 +237,12 @@ public class TNotesParserDate {
 			Date dateOne = dateformat.parse(dateList.get(NUM_FIRST_WORD));
 			Date dateTwo = dateformat.parse(dateList.get(NUM_SECOND_WORD));
 			try{
-			if (dateOne.after(dateTwo) || dateOne.equals(dateTwo)) {
+			if (dateOne.after(dateTwo) ) {
 				dateList.clear();
 				dateList.add(MESSAGE_INVALID_DATE_RANGE);
 			    return dateList;
 			  
-			}else if (dateOne.before(dateTwo)) {
+			}else if (dateOne.before(dateTwo) || dateOne.equals(dateTwo)) {
 			  
 			    return dateList;  
 			}

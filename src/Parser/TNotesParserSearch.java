@@ -6,8 +6,6 @@ public class TNotesParserSearch {
 	
 	private static final int NUM_INITIALISATION = 1;
 	
-	//private ArrayList<String> list = new ArrayList<String>();
-	
 		public ArrayList <String> searchCommand(String[] arr){
 			ArrayList<String> list = new ArrayList<String>();
 			

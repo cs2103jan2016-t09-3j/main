@@ -1,10 +1,6 @@
 package Parser;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import org.ocpsoft.prettytime.nlp.PrettyTimeParser;
 
 
 public class TNotesParserAdd {
@@ -20,12 +16,11 @@ public class TNotesParserAdd {
 	
 	
 	public ArrayList<String> addCommand(String[] arr) throws ParseException{
-		String details = new String();
 		ArrayList<String> list = new ArrayList<String>();
 		ArrayList<String> dateList = new ArrayList<String>();
 		ArrayList<String> timeList = new ArrayList<String>();
 		String titleOrig = new String();
-		String thisString = new String();
+		int indexAt = 0;
 		
 		for(int i=0;i<arr.length;i++){
 			if(time.checkTime(arr[i])==1){
@@ -46,156 +41,32 @@ public class TNotesParserAdd {
 			titleOrig = query.taskNameString(arr, arr.length).trim();
 			
 		}
-		//System.out.println(titleOrig);
 		for (int j = 0; j < arr.length; j++) {
-///////////////////////////////////////////////////////////////////////////////////////	
 			//add call mom due every Tue(can be month) at 12:00 important
 			if (arr[j].equals("due")) {
-				if((arr[j+1].equals("every")||arr[j+1].equals("next"))&& isKeyWord(arr[j+2]) == 1){
-					list.add(query.taskNameString(arr, j).trim());
-					list.add(arr[j+1].trim());
-					list.add(date.compareWeekDayMonth(arr[j+2]).trim());
-				//add call mom due this week(variable)
-				}else if(arr[j+1].equals("this")&& isKeyWord(arr[j+2]) == 1){
-					list.add(query.taskNameString(arr, j).trim());
-					thisString = "this"+" "+ date.compareWeekDayMonth(arr[j+2]);
-					list.add(thisString.trim());
-				}
-				//add call mom due time/date
-				else if(isKeyWord(arr[j+1]) == 1){
-					if(time.checkTime(arr[j+1])==1){
-						list.add(query.taskNameString(arr, j).trim());
-						if(arr.length>j+2){
-							list.add(time.formatTime(arr[j + 1]+ 
-									time.isAMPM(arr[j+2])).toString().trim());
-//							timeList.add(formatTime(arr[j + 1]+ 
-//									isAMPM(arr[j+2])).toString().trim());
-						}
-						else{
-							list.add(time.formatTime(arr[j + 1]).toString().trim());
-//							timeList.add(formatTime(arr[j + 1]).toString().trim());
-						}
-						
-					}else if(time.checkTime(arr[j+1])==0){
-						list.add(query.taskNameString(arr, j).trim());
-						list.add(date.compareWeekDayMonth(arr[j + 1]).trim());
-						//list.add(compareWeekDayMonth("Jul").trim());
-						//list.add(formatDate(arr[j + 1]).trim());
-					}
-					
-				}
-///////////////////////////////////////////////////////////////////////////////////////	
-			} else if (arr[j].equals("at")&& isKeyWord(arr[j+1]) == 1) {
+				list.addAll(keyWordDue(arr, j));	
 				
-				if(query.onlyKeyAt(arr) == 1 && time.checkTime(arr[j+1])==1){
-					list.add(query.taskNameString(arr, arr.length-2).trim());
-					if(arr.length >= j+3){
-						list.add(time.formatTime(arr[j + 1]+ 
-								time.isAMPM(arr[j+2])).toString().trim());
-					}
-					else{
-						list.add(time.formatTime(arr[j+1]).toString());
-					}
-				}else if(query.onlyKeyAt(arr) == 1 && time.checkTime(arr[j+1])==0){
-					list.add(query.taskNameString(arr, arr.length-2).trim());
-					list.add(date.compareWeekDayMonth(arr[j+1]).trim());
-					
-				}else if(query.onlyKeyAt(arr) == 0){
-					if(arr.length >= j+3){
-						list.add(time.formatTime(arr[j + 1]+ 
-								time.isAMPM(arr[j+2])).toString().trim());
-					}
-					else{
-						list.add(time.formatTime(arr[j+1]).toString());
-					}
-				}
-///////////////////////////////////////////////////////////////////////////////////////	
 			} else if(arr[j].equals("from")&& isKeyWord(arr[j+1]) == 1){
-				list.add(query.taskNameString(arr, j).trim());
-				//from time/date
-				if(time.checkTime(arr[j+1])==0){
-					list.add(date.compareWeekDayMonth(arr[j + 1]).trim());
-				}
-				else if(time.checkTime(arr[j+1])==1){
-					if(arr.length >= j+3){
-						list.add(time.formatTime(arr[j + 1]+ time.isAMPM(arr[j+2])).toString().trim());
-					}
-					else{
-						list.add(time.formatTime(arr[j+1]).toString());
-					}
-				}
-///////////////////////////////////////////////////////////////////////////////////////	
+				list.addAll(keyWordFrom(arr, j));
+
 			}else if(arr[j].equals("to")&& isKeyWord(arr[j+1]) == 1){
-				if(time.checkTime(arr[j+1])==0){
-					list.add(date.compareWeekDayMonth(arr[j + 1]).trim());
-				}
-				else if(time.checkTime(arr[j+1])==1){
-					if(arr.length >= j+3){
-						list.add(time.formatTime(arr[j + 1]+ 
-								time.isAMPM(arr[j+2])).toString().trim());
-					}
-					else{
-						list.add(time.formatTime(arr[j+1]).toString());
-					}
-				}
-///////////////////////////////////////////////////////////////////////////////////////	
+				list.addAll(keyWordTo(arr, j));
+
 			}else if(arr[j].equals("details")){
 				//add call mom details tell her buy apple(debug)
-				if(query.onlyKeyDetails(arr) == 1){
-					list.add(query.taskNameString(arr, j).trim());
-					for (int num = j+1; num < arr.length; num++) {
-						details += "" + arr[num] + " ";
-					}
-					list.add(details.trim());
-					break;
-				}
-				//add call mom ......details tell her buy apple
-				else{
-					for (int num = j+1; num < arr.length; num++) {
-						details += "" + arr[num] + " ";
-					}
-					list.add(details.trim());
-					break;
-				}
-				
-///////////////////////////////////////////////////////////////////////////////////////	
+				list.addAll(keyWordDetails(arr, j));
+				break;
 			//add call mom on Tues(always week day)
 			}else if(arr[j].equals("on")&& isKeyWord(arr[j+1]) == 1){
 				list.add(query.taskNameString(arr, j).trim());
 				list.add(date.formatWeekDay(arr[j+1]).trim());
-///////////////////////////////////////////////////////////////////////////////////////	
-			}else if(arr[j].equals("every") && !arr[j-1].equals("due")&& isKeyWord(arr[j+1]) == 1){
 				
-				if(query.onlyKeyEvery(arr) == 1){
-					list.add(query.taskNameString(arr, j).trim());
-					list.add(arr[j].trim());
-					list.add(date.compareWeekDayMonth(arr[j+1]).trim());
-					for(int k = 0; k < arr.length; k++){
-					if(arr[k].equals("for")){
-						for(int i=k;i<arr.length;i++){
-							list.add(arr[i].trim());
-						}
-					}
-					}
-				}else{	
-					list.add(arr[j].trim());
-					
-					String dayString = date.formatWeekDay(arr[j+1].trim());
-					if(dayString.isEmpty()) {
-						list.add(date.compareWeekDayMonth(arr[j+1].trim()));
-					} else {
-						list.add(dayString);
-					}
-					for(int k = 0; k < arr.length; k++){
-					if(arr[k].equals("for")){
-						for(int i=k;i<arr.length;i++){
-							list.add(arr[i].trim());
-						}
-					}
-					}
-					
-				}
-			}
+			}else if (arr[j].equals("at")&& isKeyWord(arr[j+1]) == 1) {
+				indexAt = j;
+				list.addAll(keyWordAt(arr, j));
+				
+			}else if(arr[j].equals("every") && !arr[j-1].equals("due")&& isKeyWord(arr[j+1]) == 1){
+				list.addAll(keyWordEvery(arr, j));			}
 			
 		}
 		//add i want to buy the house tomorrow
@@ -233,6 +104,8 @@ public class TNotesParserAdd {
 			
 			
 		}
+		
+
 
 		//System.out.println(timeList);
 	if(timeList.size() == 2  && dateList.size() == 0 && time.compareTime(timeList).get(0).equals("Invalid time range")){
@@ -251,8 +124,155 @@ public class TNotesParserAdd {
 		list.add("important");
 	}
 	//System.out.println(list);
+	
+	//System.out.println(list.size());
+	if(timeList.size()==1 && list.size() == 1){
+		list.add(0, query.taskNameString(arr, indexAt).trim());
+	}
 	return list;
 	}
+	
+	///////////////////////////////////////////////////////////////////////
+	public ArrayList<String> keyWordDue( String arr[], int j){
+		ArrayList <String> list = new ArrayList <String>();
+		String thisString = new String();
+		if((arr[j+1].equals("every")||arr[j+1].equals("next"))&& isKeyWord(arr[j+2]) == 1){
+			list.add(query.taskNameString(arr, j).trim());
+			list.add(arr[j+1].trim());
+			list.add(date.compareWeekDayMonth(arr[j+2]).trim());
+		//add call mom due this week(variable)
+		}else if(arr[j+1].equals("this")&& isKeyWord(arr[j+2]) == 1){
+			list.add(query.taskNameString(arr, j).trim());
+			thisString = "this"+" "+ date.compareWeekDayMonth(arr[j+2]);
+			list.add(thisString.trim());
+		}
+		//add call mom due time/date
+		else if(isKeyWord(arr[j+1]) == 1){
+			if(time.checkTime(arr[j+1])==1){
+				list.add(query.taskNameString(arr, j).trim());
+				if(arr.length>j+2){
+					list.add(time.formatTime(arr[j + 1]+ 
+							time.isAMPM(arr[j+2])).toString().trim());
+				}
+				else{
+					list.add(time.formatTime(arr[j + 1]).toString().trim());
+				}
+				
+			}else if(time.checkTime(arr[j+1])==0){
+				list.add(query.taskNameString(arr, j).trim());
+				list.add(date.compareWeekDayMonth(arr[j + 1]).trim());
+			}		
+		}
+		return list;
+		
+	}
+	public ArrayList<String> keyWordAt(String arr[], int j){
+		ArrayList <String> list = new ArrayList <String>();
+		if(query.onlyKeyAt(arr) == 1 && time.checkTime(arr[j+1])==1){
+			list.add(query.taskNameString(arr, j).trim());
+			if(arr.length >= j+3){
+				list.add(time.formatTime(arr[j + 1]+ 
+						time.isAMPM(arr[j+2])).toString().trim());
+			}
+			else{
+				list.add(time.formatTime(arr[j+1]).toString());
+			}
+		}else if(query.onlyKeyAt(arr) == 1 && time.checkTime(arr[j+1])==0){
+			list.add(query.taskNameString(arr, arr.length-2).trim());
+			list.add(date.compareWeekDayMonth(arr[j+1]).trim());
+			
+		}
+		else if(query.onlyKeyAt(arr) == 0){
+			if(arr.length >= j+3){
+				list.add(time.formatTime(arr[j + 1]+ 
+						time.isAMPM(arr[j+2])).toString().trim());
+			}
+			else{
+				list.add(time.formatTime(arr[j+1]).toString());
+			}
+
+		}
+		
+		return list;
+	}
+	
+	public ArrayList<String> keyWordFrom(String arr[], int j){
+		ArrayList <String> list = new ArrayList <String>();
+		list.add(query.taskNameString(arr, j).trim());
+		//from time/date
+		if(time.checkTime(arr[j+1])==0){
+			list.add(date.compareWeekDayMonth(arr[j + 1]).trim());
+		}
+		else if(time.checkTime(arr[j+1])==1){
+			if(arr.length >= j+3){
+				list.add(time.formatTime(arr[j + 1]+ time.isAMPM(arr[j+2])).toString().trim());
+			}
+			else{
+				list.add(time.formatTime(arr[j+1]).toString());
+			}
+		}
+		return list;
+		
+	}
+	public ArrayList<String> keyWordTo(String arr[], int j){
+		ArrayList <String> list = new ArrayList <String>();
+		if(time.checkTime(arr[j+1])==0){
+			list.add(date.compareWeekDayMonth(arr[j + 1]).trim());
+		}
+		else if(time.checkTime(arr[j+1])==1){
+			if(arr.length >= j+3){
+				list.add(time.formatTime(arr[j + 1]+ 
+						time.isAMPM(arr[j+2])).toString().trim());
+			}
+			else{
+				list.add(time.formatTime(arr[j+1]).toString());
+			}
+		}
+		return list;
+	}
+	public ArrayList<String> keyWordDetails(String arr[], int j){
+		ArrayList <String> list = new ArrayList <String>();
+		String details = new String();
+		if(query.onlyKeyDetails(arr) == 1){
+			list.add(query.taskNameString(arr, j).trim());
+			for (int num = j+1; num < arr.length; num++) {
+				details += "" + arr[num] + " ";
+			}
+			list.add(details.trim());
+		}
+		//add call mom ......details tell her buy apple
+		else{
+			for (int num = j+1; num < arr.length; num++) {
+				details += "" + arr[num] + " ";
+			}
+			list.add(details.trim());
+		}
+		return list;
+	}
+	
+	public ArrayList<String> keyWordEvery(String arr[], int j){
+		ArrayList <String> list = new ArrayList <String>();
+			list.add(query.taskNameString(arr, j).trim());
+			list.add(arr[j].trim());
+			
+			String dayString = date.formatWeekDay(arr[j+1].trim());
+			if(dayString.isEmpty()) {
+				list.add(date.compareWeekDayMonth(arr[j+1].trim()));
+			} else {
+				list.add(dayString.trim());
+			}
+			for(int k = 0; k < arr.length; k++){
+			if(arr[k].equals("for")){
+				for(int i=k;i<arr.length;i++){
+					list.add(arr[i].trim());
+				}
+			}
+			}
+			
+		//}
+		return list;
+	}
+	
 //////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////

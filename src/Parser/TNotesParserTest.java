@@ -4,7 +4,6 @@ import static org.junit.Assert.assertEquals;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 
 import org.junit.Test;
@@ -92,7 +91,14 @@ public class TNotesParserTest {
 			Arrays.asList("add", "call mom", "every", "JULY", "for", "2", "week");
 	private static final List<String> listAdd30 = 
 			Arrays.asList("add", "call mom", "2016-02-02", "13:00", "2016-03-03", "12:00", "at to due from");
-	
+	private static final List<String> listAdd31 = 
+			Arrays.asList("add", "due at from to every", "12:00");
+	private static final List<String> listAdd32 = 
+			Arrays.asList("add", "due at from to every", "12:00", "13:00");
+	private static final List<String> listAdd33 = 
+			Arrays.asList("add", "due at from to","every", "TUESDAY");
+	private static final List<String> listAdd34 = 
+			Arrays.asList("add", "fetch kid from school", "13:00");
 	///////////////////////////////////////////////////////////////////////////
 	private static final List<String> listEdit1 = 
 			Arrays.asList("edit", "call mom", "status", "done");
@@ -129,6 +135,8 @@ public class TNotesParserTest {
 			Arrays.asList("delete directory", "c:/file");
 	private static final List<String> listDelete2 = 
 			Arrays.asList("delete", "buy red apple");
+	private static final List<String> listDelete3 = 
+			Arrays.asList("delete", "all");
 	////////////////////////////////////////////////////////////////////////////
 	private static final List<String> listChange1 = 
 			Arrays.asList("change directory", "c:/file");
@@ -246,7 +254,7 @@ public class TNotesParserTest {
 				System.out.println("26. add call mom from 2-2-2016 at 12:00 to 3-3-2016 at 13:00 details at to due from");
 		assertEquals("i want to test", listAdd27, 
 				tester.checkCommand("add call mom 3pm 2-2-2016"));
-				System.out.println("27. add call mom 3pm 2-2-2016");
+				System.out.println("27. add call mom 3pm 2-2-2016(without key word)");
 		assertEquals("i want to test", listAdd28, 
 				tester.checkCommand("add call mom every jul"));
 				System.out.println("28. add call mom every jul");
@@ -256,9 +264,20 @@ public class TNotesParserTest {
 		assertEquals("i want to test", listAdd30, 
 				tester.checkCommand("add call mom from 2-2-2016 at 13:00 to 3-3-2016 at 12:00 details at to due from"));
 				System.out.println("30. add call mom from 2-2-2016 at 13:00 to 3-3-2016 at 12:00 details at to due from");
-					
+		assertEquals("i want to test", listAdd31, 
+				tester.checkCommand("add due at from to every due 12:00"));
+				System.out.println("31. add due at from to every due 12:00");	
+		assertEquals("i want to test", listAdd32, 
+				tester.checkCommand("add due at from to every from 12:00 to 13:00"));
+				System.out.println("32. add due at from to every from 12:00 to 13:00");	
+		assertEquals("i want to test", listAdd33, 
+				tester.checkCommand("add due at from to every tue"));
+				System.out.println("33. add due at from to every tue");
+		assertEquals("i want to test", listAdd34, 
+				tester.checkCommand("add fetch kid from school at 1pm"));
+				System.out.println("34. add fetch kid from school at 1pm");
+			
 				
-
 	}
 	@Test
 	public void checkCommandEdit() throws ParseException{
@@ -318,6 +337,8 @@ public class TNotesParserTest {
 		System.out.println("1. delete directory c:/file");			
 		assertEquals("i want to test", listDelete2, tester.checkCommand("delete buy red apple"));
 		System.out.println("1. delete buy red apple");	
+		assertEquals("i want to test", listDelete3, tester.checkCommand("delete all"));
+		System.out.println("1. delete all");	
 	}
 	
 	@Test

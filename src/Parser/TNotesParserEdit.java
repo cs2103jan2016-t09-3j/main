@@ -12,20 +12,20 @@ public class TNotesParserEdit {
 		date = new TNotesParserDate();
 		query = new TNotesParserQuery();
 	}
+	
+	private static int NUM_NEXT_STR = 1;
+	private static int NUM_START_FROM_SECOND_STR = 1;
+	private static final int NUM_INTIALISATION = 0;
+	
 	public ArrayList<String> editCommand(String[] arr){
 		ArrayList<String> list = new ArrayList<String>();
-		ArrayList<Object> taskName = new ArrayList<Object>();
 		String details = new String();
 		String newName = new String();
-		//System.out.println(arr[3]);
-		for (int  f= 1;  f< arr.length ; f++){
+		for (int  f= NUM_START_FROM_SECOND_STR;  f< arr.length ; f++){
 			if (arr[f].equals("details")) {
-				taskName.clear();
-				taskName.add(arr);
-				taskName.add(f);
-				list.add(query.taskName(taskName).trim());
+				list.add(NUM_INTIALISATION, query.taskNameString(arr, f).trim());
 				list.add(arr[f]);//"details"
-				for(int i = f+1; i<arr.length; i++){
+				for(int i = f+NUM_NEXT_STR; i<arr.length; i++){
 					details +=arr[i]+" ";
 				}
 				
@@ -33,48 +33,33 @@ public class TNotesParserEdit {
 					
 				}
 			else if(arr[f].equals("status")){
-				taskName.clear();
-				taskName.add(arr);
-				taskName.add(f);
-				list.add(query.taskName(taskName).trim());
+				list.add(NUM_INTIALISATION, query.taskNameString(arr, f).trim());
 				list.add(arr[f].trim());
-				list.add(arr[f+1].trim());
+				list.add(arr[f+NUM_NEXT_STR].trim());
 			}
 			else if(arr[f].equals("startTime") || arr[f].equals("endTime") || arr[f].equals("time")){
-				taskName.clear();
-				taskName.add(arr);
-				taskName.add(f);
-				list.add(query.taskName(taskName).trim());
+				list.add(NUM_INTIALISATION, query.taskNameString(arr, f).trim());
 				list.add(arr[f]);
-				list.add(time.formatTime(arr[f+1]).toString());
+				list.add(time.formatTime(arr[f+NUM_NEXT_STR]).toString());
 			}
 			else if(arr[f].equals("startDate") || arr[f].equals("endDate") ||arr[f].equals("date")){
-				taskName.clear();
-				taskName.add(arr);
-				taskName.add(f);
-				list.add(query.taskName(taskName).trim());
+				list.add(NUM_INTIALISATION, query.taskNameString(arr, f).trim());
 				list.add(arr[f]);
-				list.add(date.formatDate(arr[f+1]));
+				list.add(date.formatDate(arr[f+NUM_NEXT_STR]));
 			}
 			else if(arr[f].equals("name")){
-				taskName.clear();
-				taskName.add(arr);
-				taskName.add(f);
-				list.add(query.taskName(taskName).trim());
+				list.add(NUM_INTIALISATION, query.taskNameString(arr, f).trim());
 				list.add(arr[f]);
-				for(int j = f+1; j<arr.length; j++){
+				for(int j = f+NUM_NEXT_STR; j<arr.length; j++){
 				
 					newName += arr[j]+ " ";	
 				}
 				list.add(newName.trim());	
 			}
 			else if(arr[f].equals("importance")){
-				taskName.clear();
-				taskName.add(arr);
-				taskName.add(f);
-				list.add(query.taskName(taskName).trim());
+				list.add(NUM_INTIALISATION, query.taskNameString(arr, f).trim());
 				list.add(arr[f]);
-				list.add(arr[f+1]);
+				list.add(arr[f+NUM_NEXT_STR]);
 			}
 		}
 		if(list.isEmpty()){
@@ -82,5 +67,6 @@ public class TNotesParserEdit {
 		}
 		return list;
 	}
+	
 
 }

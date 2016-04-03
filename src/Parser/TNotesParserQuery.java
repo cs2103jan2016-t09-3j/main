@@ -2,81 +2,87 @@ package Parser;
 
 import java.util.ArrayList;
 
-
-
-
 public class TNotesParserQuery {
+	private static final String MESSAGE_ISLETTER = "[a-zA-Z]+";
+	
+	private static int NUM_LAST_ARR_STR = 1;
+	private static int NUM_INITIALISATION = 0;
+	private static int NUM_TRUE = 1;
+	private static int NUM_FALSE = 0;
+	private static int NUM_START_FROM_SECOND_STR = 1;
 	
 
-	private static final String ARR_IMPORTANT [] = {"impt","important","importance",
-			   "compulsory", "must do", "essential",
-			   "indispensable"};
+	private static final String ARR_IMPORTANT [] = {
+			"impt","important","importance",
+			"compulsory", "must do", "essential",
+			"indispensable"};
+	
 	public int afterBeforeExit(String arr[]){
-		int index = 0;
-		for(int i=0;i<arr.length;i++){
+		int index = NUM_INITIALISATION;
+		for(int i=NUM_INITIALISATION;i<arr.length;i++){
 			if(arr[i].equals("after") ||arr[i].equals("before")){
-				index = 1;
+				index = NUM_TRUE;
 			}
 		}
 		return index;
 	}
 	public int findLastImpt(String[] arr){
-		int index = 0;
-		for(int j=0;j<ARR_IMPORTANT.length;j++){
-			if(arr[arr.length-1].equals(ARR_IMPORTANT[j])){
-				index = 1;
+		int index = NUM_INITIALISATION;
+		for(int j=NUM_INITIALISATION;j<ARR_IMPORTANT.length;j++){
+			if(arr[arr.length-NUM_LAST_ARR_STR].equals(ARR_IMPORTANT[j])){
+				index = NUM_TRUE;
 			}
 		}
 		return index;
 	}
 	public String taskNameFloat(String[] arr) {
 		String task = new String();
-		for(int j=1;j<arr.length;j++ ){
+		for(int j=NUM_START_FROM_SECOND_STR;j<arr.length;j++ ){
 			task += arr[j] + " ";
 		}	
 		return task;
 	}
 
 	public int checkViewTo(String[] arr) {
-		for(int i =0; i<arr.length;i++){
+		for(int i =NUM_INITIALISATION; i<arr.length;i++){
 			if(arr[i].equals("to")){
-				return 1;
+				return NUM_TRUE;
 			}
 		}
-		return 0;
+		return NUM_FALSE;
 	}
-	public int onlyKeyAt(String[] arr) {
-		for(int i=0;i<arr.length;i++){
+	public int onlyKeyAt(String [] arr) {
+		for(int i=NUM_INITIALISATION;i<arr.length;i++){
 			if(arr[i].equals("due") || arr[i].equals("from") || arr[i].equals("details")){
-				return 0;
+				return NUM_FALSE;
 			}
 		}
-		return 1;
+		return NUM_TRUE;
 	}
 	public int onlyKeyDetails(String[] arr) {
-		for(int i=0;i<arr.length;i++){
+		for(int i=NUM_INITIALISATION;i<arr.length;i++){
 			if(arr[i].equals("due") || arr[i].equals("from")||
 					arr[i].equals("at") || arr[i].equals("to")){
-				return 0;
+				return NUM_FALSE;
 			}
 		}
-		return 1;
+		return NUM_TRUE;
 	}
 	public int onlyKeyEvery(String[] arr) {
-		for(int i=0;i<arr.length;i++){
+		for(int i=NUM_INITIALISATION;i<arr.length;i++){
 			if(arr[i].equals("due") || arr[i].equals("from")||
 					arr[i].equals("at") || arr[i].equals("to")){
-				return 0;
+				return NUM_FALSE;
 			}
 		}
-		return 1;
+		return NUM_TRUE;
 	}
 	public int findImpt(String[] arr){
-		int index = 0;
-		for (int i=0;i<arr.length;i++){
-			for(int j=0;j<ARR_IMPORTANT.length;j++){
+		int index = NUM_INITIALISATION;
+		for (int i=NUM_INITIALISATION;i<arr.length;i++){
+			for(int j=NUM_INITIALISATION;j<ARR_IMPORTANT.length;j++){
 				if(arr[i].equals(ARR_IMPORTANT[j])){
-					index = 1;
+					index = NUM_TRUE;
 					//return index;
 				}
 			}
@@ -86,22 +92,15 @@ public class TNotesParserQuery {
 		
 	}
 	public int isLetters(String nextString) {
-		if (nextString.matches("[a-zA-Z]+")) {
-			return 1;
+		if (nextString.matches(MESSAGE_ISLETTER)) {
+			return NUM_TRUE;
 		} else {
-			return 0;
+			return NUM_FALSE;
 		}
-	}
-	public String taskName(ArrayList<Object> list){
-		String task = new String();
-		for(int i =1;i<((int) list.get(1)) ;i++){
-			task += ((String[])list.get(0))[i]+" ";
-		}		
-		return task;
 	}
 	public String taskNameString(String arr[], int count){
 		String task = new String();
-		for(int i =1;i<count ;i++){
+		for(int i =NUM_START_FROM_SECOND_STR;i<count ;i++){
 			task += arr[i]+" ";
 		}		
 		return task;
