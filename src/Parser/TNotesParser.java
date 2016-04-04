@@ -33,18 +33,15 @@ public class TNotesParser {
 		view = new TNotesParserView();
 		edit = new TNotesParserEdit();
 	}
-	//private ArrayList<String> list = new ArrayList<String>();
 	public static void main(String[] args) throws ParseException{
 		TNotesParser parser = new TNotesParser();
 		parser.execute();
-		//System.out.println("haha");
 		
 	}
 	public void execute() throws ParseException{
-		//Month month = Month.august;
 		String output = new String();
 		String input = new String();  
-		input = "edit call from to due at  mom details buy apple";
+		input = "view do ee2024";
 		for (int i = 0; i < checkCommand(input).size(); i++){
 			output = checkCommand(input).get(i);
 			System.out.println(output);
@@ -55,7 +52,6 @@ public class TNotesParser {
 	
 	public ArrayList<String> checkCommand(String inputString) throws ParseException {
 		ArrayList<String> list = new ArrayList<String>();
-		
 		String arr[] = inputString.split(" ");
 		String firstWord = arr[0].toLowerCase();
 		
@@ -66,7 +62,8 @@ public class TNotesParser {
 				list.addAll(add.addCommand(arr));
 				//System.out.println(list);
 				
-				return list;
+				//return list;
+				break;
 			case "view" :
 				
 				list.add(firstWord);

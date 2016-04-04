@@ -17,14 +17,26 @@ public class TNotesParserQuery {
 			"compulsory", "must do", "essential",
 			"indispensable"};
 	
-	public int afterBeforeExit(String arr[]){
-		int index = NUM_INITIALISATION;
+	public int checkAfterBefore(String arr[]){
+		int indexThe = NUM_INITIALISATION;
+		int indexKey = NUM_INITIALISATION;
 		for(int i=NUM_INITIALISATION;i<arr.length;i++){
-			if(arr[i].equals("after") ||arr[i].equals("before")){
-				index = NUM_TRUE;
+			if(arr[i].equals("the")){
+				indexThe = i;
 			}
 		}
-		return index;
+		for(int j=NUM_INITIALISATION;j<arr.length;j++){
+			if(arr[j].equals("after") ||arr[j].equals("before")){
+				indexKey = j;
+			}
+		}
+		
+		if(indexThe<indexKey){
+			return NUM_TRUE;
+		}
+		else{
+			return NUM_FALSE;
+		}
 	}
 	public int findLastImpt(String[] arr){
 		int index = NUM_INITIALISATION;
@@ -50,23 +62,6 @@ public class TNotesParserQuery {
 			}
 		}
 		return NUM_FALSE;
-	}
-	public int onlyKeyAt(String [] arr) {
-		for(int i=NUM_INITIALISATION;i<arr.length;i++){
-			if(arr[i].equals("due") || arr[i].equals("from") || arr[i].equals("details")){
-				return NUM_FALSE;
-			}
-		}
-		return NUM_TRUE;
-	}
-	public int onlyKeyDetails(String[] arr) {
-		for(int i=NUM_INITIALISATION;i<arr.length;i++){
-			if(arr[i].equals("due") || arr[i].equals("from")||
-					arr[i].equals("at") || arr[i].equals("to")){
-				return NUM_FALSE;
-			}
-		}
-		return NUM_TRUE;
 	}
 	public int onlyKeyEvery(String[] arr) {
 		for(int i=NUM_INITIALISATION;i<arr.length;i++){

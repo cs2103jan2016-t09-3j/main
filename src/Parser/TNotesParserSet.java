@@ -2,6 +2,7 @@ package Parser;
 import java.util.ArrayList;
 
 public class TNotesParserSet {
+	private static final String MESSAGE_SPACE = " ";
 	
 	private static final int NUM_INITIALISATION = 1;
 	private static final int NUM_INITIALISATION_ZERO = 0;
@@ -9,7 +10,6 @@ public class TNotesParserSet {
 	private static final int NUM_TRUE = 1;
 	private static final int NUM_FALSE = 0;
 	
-	//private ArrayList<String> list = new ArrayList<String>();
 	
 	private static final String ARR_STATUS [] = {"done", "undone", "complete", "incomplete"};
 	
@@ -18,7 +18,7 @@ public class TNotesParserSet {
 		String title = new String();
 		if(checkDone(arr[arr.length-NUM_DECREMENTATION]) == NUM_TRUE){
 			for(int i = NUM_INITIALISATION; i<arr.length-NUM_DECREMENTATION;i++){
-				title += arr[i] + " ";
+				title += arr[i] + MESSAGE_SPACE;
 			}
 			list.add(title.trim());
 			list.add(arr[arr.length-NUM_DECREMENTATION].trim());

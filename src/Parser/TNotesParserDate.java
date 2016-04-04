@@ -206,9 +206,7 @@ public class TNotesParserDate {
 	public int checkDate(String input) {
 		int inputCharLength = input.trim().length();
 		for(int i =NUM_INITIALISATION; i<inputCharLength; i++){
-			if((input.charAt(i) == '.' || input.charAt(i) == '-' 
-					||inputCharLength <= NUM_MAX_DATE_LENGTH) 
-					&& isLetters(input) == NUM_FALSE){
+			if(input.charAt(i) == '.' || input.charAt(i) == '-' ){
 				return NUM_TRUE;//if the input is time
 			}
 		}
@@ -217,7 +215,7 @@ public class TNotesParserDate {
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 		public String compareWeekDayMonth(String inputDay){
-			//inputDay = capTheFirstChar(inputDay);
+			//System.out.println(inputDay);
 		if(!formatWeekDay(inputDay).equals(MESSAGE_NULL_STRING)){
 			return formatWeekDay(inputDay);
 		}

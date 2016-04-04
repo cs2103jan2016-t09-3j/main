@@ -7,19 +7,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Test;
-
-//the first letter of the month must be a capital letter
-//date cannot be separated by space(will be changed)
-//format for month is not stable
-////////////////////////////////////////////////////////
-
-/*command word: sort
- * sort time by name
- * sort today by importance
- * sort 2-2-2 by importance
- * sort today by title
- * 
- */
 //very for 2 weeks
 //for a month
 //for 6 day
@@ -32,7 +19,7 @@ public class TNotesParserTest {
 	private static final List<String> listAdd2 = 
 			Arrays.asList("add", "call mom", "2016-03-02", "15:00","19:00");
 	private static final List<String> listAdd3 = 
-			Arrays.asList("add", "15:00", "tell her buy apple");
+			Arrays.asList("add","call mom", "15:00", "tell her buy apple");
 	private static final List<String> listAdd4 = 
 			Arrays.asList("add", "call mom", "tell her buy apple");
 	private static final List<String> listAdd5 = 
@@ -92,13 +79,17 @@ public class TNotesParserTest {
 	private static final List<String> listAdd30 = 
 			Arrays.asList("add", "call mom", "2016-02-02", "13:00", "2016-03-03", "12:00", "at to due from");
 	private static final List<String> listAdd31 = 
-			Arrays.asList("add", "due at from to every", "12:00");
+			Arrays.asList("add", "due at from to", "12:00");
 	private static final List<String> listAdd32 = 
-			Arrays.asList("add", "due at from to every", "12:00", "13:00");
+			Arrays.asList("add", "due at from to", "12:00", "13:00");
 	private static final List<String> listAdd33 = 
-			Arrays.asList("add", "due at from to","every", "TUESDAY");
+			Arrays.asList("add", "due at from","week","every", "TUESDAY");
 	private static final List<String> listAdd34 = 
 			Arrays.asList("add", "fetch kid from school", "13:00");
+	private static final List<String> listAdd35 = 
+			Arrays.asList("add", "2");
+	private static final List<String> listAdd36 = 
+			Arrays.asList("add", "do EE2024");
 	///////////////////////////////////////////////////////////////////////////
 	private static final List<String> listEdit1 = 
 			Arrays.asList("edit", "call mom", "status", "done");
@@ -127,6 +118,10 @@ public class TNotesParserTest {
 			Arrays.asList("view","next", "month");
 	private static final List<String> listView9 = 
 			Arrays.asList("view","next" ,"FEBRUARY");
+	private static final List<String> listView10 = 
+			Arrays.asList("view","2");
+	private static final List<String> listView11 = 
+			Arrays.asList("view","notes");
 	////////////////////////////////////////////////////////////////////////////
 	private static final List<String> listSet1 = 
 			Arrays.asList("set", "call mom", "complete");
@@ -168,8 +163,8 @@ public class TNotesParserTest {
 		
 		
 		assertEquals("i want to test", listAdd3, 
-		tester.checkCommand("add call mom at 300pm details tell her buy apple"));
-		System.out.println("3. add call mom at 300pm details tell her buy apple(debug)");
+		tester.checkCommand("add call mom at 3:00pm details tell her buy apple"));
+		System.out.println("3. add call mom at 3:00pm details tell her buy apple(debug)");
 		
 		assertEquals("i want to test", listAdd4, 
 		tester.checkCommand("add call mom details tell her buy apple"));
@@ -188,12 +183,12 @@ public class TNotesParserTest {
 		System.out.println("7. add call mom every tue(small letter)");
 		
 		assertEquals("i want to test", listAdd8, 
-				tester.checkCommand("add call mom due 2-3-2016 at 300pm"));
-				System.out.println("8. add call mom due 2-3-2016 at 300pm");
+				tester.checkCommand("add call mom due 2-3-2016 at 3:00pm"));
+				System.out.println("8. add call mom due 2-3-2016 at 3:00pm");
 				
 		assertEquals("i want to test", listAdd9, 
-				tester.checkCommand("add call mom due 2-3-2016 at 300 pm"));
-				System.out.println("9. add call mom due 2-3-2016 at 300 pm");
+				tester.checkCommand("add call mom due 2-3-2016 at 3:00 pm"));
+				System.out.println("9. add call mom due 2-3-2016 at 3:00 pm");
 				
 		assertEquals("i want to test", listAdd10, 
 				tester.checkCommand("add call important mom due 2-2-2016 at 12:00"));
@@ -265,18 +260,25 @@ public class TNotesParserTest {
 				tester.checkCommand("add call mom from 2-2-2016 at 13:00 to 3-3-2016 at 12:00 details at to due from"));
 				System.out.println("30. add call mom from 2-2-2016 at 13:00 to 3-3-2016 at 12:00 details at to due from");
 		assertEquals("i want to test", listAdd31, 
-				tester.checkCommand("add due at from to every due 12:00"));
-				System.out.println("31. add due at from to every due 12:00");	
+				tester.checkCommand("add due at from to due 12:00"));
+				System.out.println("31. add due at from to due 12:00");	
 		assertEquals("i want to test", listAdd32, 
-				tester.checkCommand("add due at from to every from 12:00 to 13:00"));
-				System.out.println("32. add due at from to every from 12:00 to 13:00");	
+				tester.checkCommand("add due at from to from 12:00 to 13:00"));
+				System.out.println("32. add due at from to from 12:00 to 13:00");	
 		assertEquals("i want to test", listAdd33, 
-				tester.checkCommand("add due at from to every tue"));
+				tester.checkCommand("add due at from to week every tue"));
 				System.out.println("33. add due at from to every tue");
 		assertEquals("i want to test", listAdd34, 
 				tester.checkCommand("add fetch kid from school at 1pm"));
 				System.out.println("34. add fetch kid from school at 1pm");
-			
+		assertEquals("i want to test", listAdd35, 
+				tester.checkCommand("add 2"));
+				System.out.println("35. add 2");
+		assertEquals("i want to test", listAdd36, 
+				tester.checkCommand("add do EE2024"));
+				System.out.println("36. add do EE2024");
+				
+	
 				
 	}
 	@Test
@@ -319,6 +321,10 @@ public class TNotesParserTest {
 		System.out.println("8. view next month");	
 		assertEquals("i want to test", listView9, tester.checkCommand("view next Feb"));
 		System.out.println("9. view next Feb");
+		assertEquals("i want to test", listView10, tester.checkCommand("view 2"));
+		System.out.println("10. view 2");
+		assertEquals("i want to test", listView11, tester.checkCommand("view notes"));
+		System.out.println("11. view notes");
 	}
 	
 	@Test

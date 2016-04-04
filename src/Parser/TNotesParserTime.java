@@ -34,6 +34,8 @@ public class TNotesParserTime {
 	private static int NUM_SECOND_WORD = 1;
 	private static int NUM_MAX_TIME_LENGTH = 5;
 	private static int NUM_FIRST_CHAR = 0;
+	private static int NUM_LAST_CHAR = 1;
+	private static int NUM_SECOND_LAST_CHAR = 2;
 	private static int NUM_SUBSTRACTIO = 1;
 	private static int NUM_START_FROM_SECOND_STR = 1;
 	
@@ -103,7 +105,10 @@ public class TNotesParserTime {
 	public int checkTime(String input) {
 		int inputCharLength = input.trim().length();
 		for(int i =NUM_INITIALISATION; i<inputCharLength; i++){
-			if((input.charAt(i) == ':' || inputCharLength <= NUM_MAX_TIME_LENGTH) 
+			if((input.charAt(i) == ':' || 
+					(Character.toString(input.charAt(inputCharLength-NUM_LAST_CHAR)).equals("m")) &&
+					(Character.toString(input.charAt(inputCharLength-NUM_SECOND_LAST_CHAR)).equals("p") ||
+							Character.toString(input.charAt(inputCharLength-2)).equals("a")))
 					&& isLetters(Character.toString(input.charAt(NUM_FIRST_CHAR))) == NUM_FALSE){
 				return NUM_TRUE;
 			}
