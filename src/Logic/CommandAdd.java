@@ -13,16 +13,17 @@ import java.util.Iterator;
 
 import Object.RecurringTaskFile;
 import Object.TaskFile;
+import Storage.TNotesStorage;
 
 public class CommandAdd extends TNotesLogic {
+	TNotesStorage storage;
 	
 	public CommandAdd() throws Exception {
-	
+		TNotesStorage storage = TNotesStorage.getInstance();
 	}
 
 	public TaskFile addTask(ArrayList<String> fromParser) throws Exception {
 		try {
-			fromParser.remove(0);
 			System.out.println("addcheck " + fromParser.toString());
 			ArrayList<String> stringList = storage.readFromMasterFile();
 			TaskFile currentFile = new TaskFile();

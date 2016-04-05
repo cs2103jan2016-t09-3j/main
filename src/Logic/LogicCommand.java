@@ -6,21 +6,31 @@ import Object.TaskFile;
 
 public class LogicCommand {
 	private String commandType;
-	private TaskFile task;
+	private TaskFile currentTask;
+	private TaskFile oldTask;
 
 	public LogicCommand(String command) {
 		commandType = command;
-		this.task = new TaskFile();
+		this.currentTask = new TaskFile();
+		this.oldTask = new TaskFile();
 	}
 
-	public TaskFile getTask() {
-		return task;
+	public TaskFile getCurrentTask() {
+		return currentTask;
 	}
 
-	public void setTask(TaskFile task) {
-		this.task = task;
+	public void setCurrentTask(TaskFile currentTask) {
+		this.currentTask = currentTask;
 	}
 
+	public TaskFile getOldTask() {
+		return oldTask;
+	}
+
+	public void setOldTask(TaskFile oldTask) {
+		this.oldTask = oldTask;
+	}
+	
 	public String getCommandType() {
 		return commandType;
 	}

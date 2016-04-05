@@ -1,4 +1,4 @@
-package Logic;
+    package Logic;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -12,58 +12,32 @@ import Storage.TNotesStorage;
 
 public class CommandView {
 	TNotesStorage storage;
-	
-	public CommandView() throws Exception{
+
+	public CommandView() throws Exception {
 		TNotesStorage storage = TNotesStorage.getInstance();
 	}
-	
-	public ArrayList<String> sortViewTypes(ArrayList<String> fromParser) {
-		ArrayList<String> stringList = new ArrayList<String>();
-		String viewType = fromParser.get(1);
-		if (fromParser.size() == 3) {
-			stringList.add("isViewManyList");
-		} else if (viewType.contains("-") || viewType.contains("today")
-				|| (viewType.contains("monday") || (viewType.contains("tuesday")) || (viewType.contains("wednesday"))
-						|| (viewType.contains("thursday")) || (viewType.contains("friday"))
-						|| (viewType.contains("saturday")) || (viewType.contains("sunday")))) {
-			stringList.add("isViewDateList");
+
+	public ArrayList<TaskFile> view(ArrayList<String> fromParser) throws Exception {
+		ArrayList<TaskFile> newTaskList = new ArrayList<TaskFile>();
+		int listSize = fromParser.size();
+		if (fromParser.get((listSize) - 1).equals("isViewManyList")) {
+			return viewManyDatesList(fromParser);
+		} else if (fromParser.get((listSize) - 1).equals("isViewDateList")) {
+			return viewDateList(fromParser.get(0));
+		} else if (fromParser.get((listSize) - 1).equals("notes")) {
+			return viewFloatingList();
 		} else {
-			stringList.add("isViewTask");
+			newTaskList.add(viewTask(fromParser.get(0)));
+			return newTaskList;
 		}
-		return stringList;
 	}
 
-	public ArrayList<TaskFile> displayList() throws Exception {
-		ArrayList<String> stringList = storage.readFromMasterFile();
-		ArrayList<TaskFile> taskToBeDisplayed = new ArrayList<TaskFile>();
-
-		for (String text : stringList) {
-			TaskFile currentFile = storage.getTaskFileByName(text);
-			if (currentFile.getIsRecurring()) {
-				continue;
-			}
-			if (!currentFile.getIsDone()) {
-				String name = currentFile.getName();
-				if (name.contains("_")) {
-					String formatterName = name.substring(0, name.indexOf("_"));
-					currentFile.setName(formatterName);
-				}
-				taskToBeDisplayed.add(currentFile);
-			}
-
-		}
-		return taskToBeDisplayed;
-	}
-
-	public TaskFile viewTask(String taskToBeDisplayed) throws Exception {
+	private TaskFile viewTask(String taskToBeDisplayed) throws Exception {
 		ArrayList<String> stringList = storage.readFromMasterFile();
 
 		for (String text : stringList) {
-
 			TaskFile currentFile = storage.getTaskFileByName(text);
-
 			if (currentFile.getName().equals(taskToBeDisplayed.trim())) {
-
 				return currentFile;
 			}
 		}
@@ -71,7 +45,7 @@ public class CommandView {
 		return null;
 	}
 
-	public ArrayList<TaskFile> viewManyDatesList(ArrayList<String> dates) throws Exception {
+	private ArrayList<TaskFile> viewManyDatesList(ArrayList<String> dates) throws Exception {
 		Date startDate;
 		Date endDate;
 		Calendar cal = Calendar.getInstance();
@@ -80,8 +54,8 @@ public class CommandView {
 		ArrayList<Date> listOfDates = new ArrayList<Date>();
 		ArrayList<TaskFile> taskListToBeDisplayed = new ArrayList<TaskFile>();
 
-		startDate = df.parse(dates.get(1));
-		endDate = df.parse(dates.get(2));
+		startDate = df.parse(dates.get(0));
+		endDate = df.parse(dates.get(1));
 		listOfDates.add(startDate);
 		cal.setTime(startDate);
 		while (!startDate.equals(endDate)) {
@@ -113,7 +87,7 @@ public class CommandView {
 
 	// show the task by date
 	// take in a date string?
-	public ArrayList<TaskFile> viewDateList(String date) throws Exception {
+	private ArrayList<TaskFile> viewDateList(String date) throws Exception {
 		if (date.trim().equals("today")) {
 			Calendar cal = Calendar.getInstance();
 			DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
@@ -145,9 +119,8 @@ public class CommandView {
 		return taskListToBeDisplayed;
 	}
 
-
-	public ArrayList<TaskFile> viewFloatingList() throws Exception {
-		ArrayList<String> stringList = storage.readFromFloatingListFile();
+	private ArrayList<TaskFile> viewFloatingList() throws Exception {
+		ArrayList<String> stringList = storage.readFromFloatingFile();
 		ArrayList<TaskFile> taskListToBeDisplayed = new ArrayList<TaskFile>();
 		for (String text : stringList) {
 			TaskFile currentFile = storage.getTaskFileByName(text);
@@ -158,7 +131,7 @@ public class CommandView {
 		return taskListToBeDisplayed;
 	}
 
-	public String compareDates(String dates) {
+	private String compareDates(String dates) {
 		Calendar cal = Calendar.getInstance();
 		DateFormat df = new SimpleDateFormat("EEE");
 		DateFormat dF = new SimpleDateFormat("yyyy-MM-dd");

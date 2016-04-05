@@ -2,12 +2,13 @@ package Logic;
 
 import java.util.*;
 
+import Object.NameComparator;
 import Object.TaskFile;
 import Storage.TNotesStorage;
 
 public class LogicUnit {
-	Stack<LogicCommand> doCommand = new Stack<LogicCommand>();
-	Stack<LogicCommand> undoCommand = new Stack<LogicCommand>();
+	Stack<LogicCommand> doCommandStack = new Stack<LogicCommand>();
+	Stack<LogicCommand> undoCommandtStack = new Stack<LogicCommand>();
 	ArrayList<String> taskDetails = new ArrayList<String>();
 
 	TNotesStorage storage;
@@ -21,99 +22,163 @@ public class LogicUnit {
 		storage = TNotesStorage.getInstance();
 	}
 		
-	public TaskFile addTask(ArrayList<String> fromParser) {
+	public TaskFile addTask(ArrayList<String> fromParser) throws Exception {
 		String commandChecker = fromParser.remove(0);
-		LogicCommand newCommand = new LogicCommand(fromParser.get(0));
-		TaskFile newTask = new TaskFile(comAdd.whichAdd(fromParser));
-		newCommand.setCommandType(commandChecker);
-		newCommand.setTask(newTask);
-		doCommand.push(newCommand);
-		emptyStack();
+		LogicCommand newCommand = new LogicCommand(commandChecker);
+		TaskFile newTask = comAdd.addTask(fromParser);
+		newCommand.setCurrentTask(newTask);
+		doCommandStack.push(newCommand);
+		emptyUndoStack();
 		return newTask;
 	}
 
 	public TaskFile deleteTask(ArrayList<String> fromParser) throws Exception {
 		String commandChecker = fromParser.remove(0);
-		LogicCommand newCommand = new LogicCommand(fromParser.get(0));
-		TaskFile newTask = new TaskFile(comDelete.deleteTask(fromParser));
-		newCommand.setCommandType(commandChecker);
-		newCommand.setTask(newTask);
-		doCommand.push(newCommand);
-		emptyStack();
+		LogicCommand newCommand = new LogicCommand(commandChecker);
+		TaskFile newTask = comDelete.delete(fromParser);
+		newCommand.setCurrentTask(newTask);
+		doCommandStack.push(newCommand);
+		emptyUndoStack();
 		return newTask;
 	}
+	public ArrayList<TaskFile> deleteIndex(ArrayList<TaskFile> currentList, int num) throws Exception {
+		LogicCommand newCommand = new LogicCommand("delete");
+		TaskFile removedTask = currentList.remove(num - 1);
+		newCommand.setCurrentTask(removedTask);
+		doCommandStack.push(newCommand);
+		storage.deleteTask(removedTask.getName());
+		emptyUndoStack();
+		return currentList;
+	}
 
-	public TaskFile editTask(ArrayList<String> fromParser) {
+	public TaskFile editTask(ArrayList<String> fromParser) throws Exception {
 		String commandChecker = fromParser.remove(0);
-		LogicCommand newCommand = new LogicCommand(fromParser.get(0));
-		TaskFile newTask = new TaskFile(comEdit.whichEdit(fromParser));
-		newCommand.setCommandType(commandChecker);
-		newCommand.setTask(newTask);
-		doCommand.push(newCommand);
-		emptyStack();
+		String title = fromParser.get(0).trim();
+		LogicCommand newCommand = new LogicCommand(commandChecker);
+		newCommand.setOldTask(storage.getTaskFileByName(title));
+		TaskFile newTask = comEdit.edit(fromParser);
+		newCommand.setCurrentTask(newTask);
+		doCommandStack.push(newCommand);
+		emptyUndoStack();
 		return newTask;
 	}
-
-	public ArrayList<TaskFile> sortTask(ArrayList<String> fromParser) {
+	
+	public ArrayList<TaskFile> viewTask(ArrayList<String> fromParser) throws Exception {
 		fromParser.remove(0);
-		ArrayList<TaskFile> newTaskList = new ArrayList<TaskFile>(comSort.whichSort(fromParser));
-		return newTaskList;
+		return comView.view(fromParser);
+	}
+	public TaskFile viewByIndex(ArrayList<TaskFile> currentList, int num)throws Exception{
+		TaskFile removedTask = currentList.get(num - 1);
+		return removedTask;
+}
+	public ArrayList<String> sortViewTypes(ArrayList<String> fromParser) {
+		String viewType = fromParser.get(1);
+		if (fromParser.size() == 3) {
+			fromParser.add("isViewManyList");
+			return fromParser;
+		} else if (viewType.contains("-") || viewType.contains("today")
+				|| (viewType.contains("monday") || (viewType.contains("tuesday")) || (viewType.contains("wednesday"))
+						|| (viewType.contains("thursday")) || (viewType.contains("friday"))
+						|| (viewType.contains("saturday")) || (viewType.contains("sunday")))) {
+			fromParser.add("isViewDateList");
+			return fromParser;
+		} else if(viewType.equals("notes")){
+			fromParser.add("isViewFloating");
+			return fromParser;
+		}else{
+			fromParser.add("isViewTask");
+			return fromParser;
+		}
+	}
+	public ArrayList<TaskFile> sortTask(ArrayList<TaskFile> currentList){
+		Collections.sort(currentList, new NameComparator());
+		return currentList;
 	}
 
-	public ArrayList<TaskFile> viewTask(ArrayList<String> fromParser) {
-		fromParser.remove(0);
-		ArrayList<TaskFile> newTaskList = new ArrayList<TaskFile>(comView.whichView(fromParser));
-		return newTaskList;
-	}
-
-	public TaskFile undoCall() {
-		if (doCommand.isEmpty()) {
-			System.out.println("No task in List");
-			return null;
+	public TaskFile undoCall() throws Exception {
+		if (doCommandStack.isEmpty()) {
+			throw new Exception("No task to undo");
 		} else {
-			LogicCommand currentCommand = doCommand.pop();
+			LogicCommand currentCommand = doCommandStack.pop();
 			String commandType = currentCommand.getCommandType();
-			TaskFile newTask = new TaskFile(currentCommand.getTask());
+			TaskFile newTask = new TaskFile(currentCommand.getCurrentTask());
 			if (commandType.equals("add")) {
-				newTask = currentCommand.getTask();
-				storage.deleteTask(currentCommand.getTask().getName());
+				newTask = currentCommand.getCurrentTask();
+				storage.deleteTask(currentCommand.getCurrentTask().getName());
 			} else if (commandType.equals("delete")) {
-				storage.addTask(currentCommand.getTask());
+				storage.addTask(currentCommand.getCurrentTask());
 			} else if (commandType.equals("edit")) {
-				storage.deleteTask(currentCommand.getTask().getName());
-				storage.addTask(comEdit.getOldTask());
+				storage.deleteTask(currentCommand.getCurrentTask().getName());
+				storage.addTask(currentCommand.getOldTask());
 			} else {
-				System.out.println("task did not pass through checker");
+				throw new Exception("cannot be undone");
 			}
-			undoCommand.push(currentCommand);
+			undoCommandtStack.push(currentCommand);
 			return newTask;
 		}
 	}
 
-	public TaskFile redoCall() {
-		if (undoCommand.isEmpty()) {
-			System.out.println("No task in List");
-			return null;
+	public TaskFile redoCall() throws Exception {
+		if (undoCommandtStack.isEmpty()) {
+			throw new Exception("No task to redo");
 		} else {
-			LogicCommand currentCommand = undoCommand.pop();
+			LogicCommand currentCommand = undoCommandtStack.pop();
 			String commandType = currentCommand.getCommandType();
+			TaskFile newTask = new TaskFile(currentCommand.getCurrentTask());
 			if (commandType.equals("add")) {
-				storage.addTask(currentCommand.getTask());
+				storage.addTask(currentCommand.getCurrentTask());
 			} else if (commandType.equals("delete")) {
-				storage.deleteTask(currentCommand.getTask().getName());
+				storage.deleteTask(currentCommand.getCurrentTask().getName());
 			} else if (commandType.equals("edit")) {
-				storage.deleteTask(currentCommand.getTask().getName());
-				storage.addTask(comEdit.getOldTask());
+				storage.deleteTask(currentCommand.getOldTask().getName());
+				storage.addTask(currentCommand.getCurrentTask());
 			} else {
-				System.out.println("task did not pass through checker");
+				throw new Exception("cannot be redone");
 			}
-			doCommand.push(currentCommand);
-			return TaskFile;
+			doCommandStack.push(currentCommand);
+			return newTask;
 		}
 	}
-	private void emptyStack(){
-		while(!undoCommand.isEmpty()){
-			undoCommand.pop();
+	public boolean setStatus(String taskName, boolean status) throws Exception {
+		TaskFile newTask = storage.getTaskFileByName(taskName);
+		storage.deleteTask(newTask.getName());
+		newTask.setIsDone(status);
+		storage.addTask(newTask);
+		if (newTask.getIsDone()) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	public ArrayList<TaskFile> callOverdueTasks() throws Exception {
+		ArrayList<TaskFile> listOfOverdueTasks = storage.retrieveOverdueTasks();
+		for (TaskFile newTask : listOfOverdueTasks) {
+			if (newTask.getName().contains("_")) {
+				String formatterName = newTask.getName().substring(0, newTask.getName().indexOf("_"));
+				newTask.setName(formatterName);
+			}
+		}
+		if (listOfOverdueTasks.isEmpty()) {
+			throw new Exception("    ====NO OVERDUE TASKS====\n");
+		}
+		return listOfOverdueTasks;
+	}
+	public boolean changeDirectory(String directoryName) throws Exception {
+		return storage.setNewDirectory(directoryName);
+	}
+
+	public boolean deleteDirectory(String directory) {
+		if (storage.deleteDirectory(directory)) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	
+	private void emptyUndoStack(){
+		while(!undoCommandtStack.isEmpty()){
+			undoCommandtStack.pop();
 		}
 	}
 }

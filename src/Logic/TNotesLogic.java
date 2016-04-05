@@ -305,27 +305,27 @@ public class TNotesLogic {
 
 	// currently gets a array list String, converts to array list taskFile, then
 	// checks if any is done. returns new array list without done task/
-	public ArrayList<TaskFile> displayList() throws Exception {
-		ArrayList<String> stringList = storage.readFromMasterFile();
-		ArrayList<TaskFile> taskToBeDisplayed = new ArrayList<TaskFile>();
-
-		for (String text : stringList) {
-			TaskFile currentFile = storage.getTaskFileByName(text);
-			if (currentFile.getIsRecurring()) {
-				continue;
-			}
-			if (!currentFile.getIsDone()) {
-				String name = currentFile.getName();
-				if (name.contains("_")) {
-					String formatterName = name.substring(0, name.indexOf("_"));
-					currentFile.setName(formatterName);
-				}
-				taskToBeDisplayed.add(currentFile);
-			}
-
-		}
-		return taskToBeDisplayed;
-	}
+//	public ArrayList<TaskFile> displayList() throws Exception {
+//		ArrayList<String> stringList = storage.readFromMasterFile();
+//		ArrayList<TaskFile> taskToBeDisplayed = new ArrayList<TaskFile>();
+//
+//		for (String text : stringList) {
+//			TaskFile currentFile = storage.getTaskFileByName(text);
+//			if (currentFile.getIsRecurring()) {
+//				continue;
+//			}
+//			if (!currentFile.getIsDone()) {
+//				String name = currentFile.getName();
+//				if (name.contains("_")) {
+//					String formatterName = name.substring(0, name.indexOf("_"));
+//					currentFile.setName(formatterName);
+//				}
+//				taskToBeDisplayed.add(currentFile);
+//			}
+//
+//		}
+//		return taskToBeDisplayed;
+//	}
 
 	public ArrayList<String> sortViewTypes(ArrayList<String> fromParser) {
 		ArrayList<String> stringList = new ArrayList<String>();
@@ -345,6 +345,10 @@ public class TNotesLogic {
 
 	// Show the details of a single task
 	// will take in the name of the task,
+	public TaskFile viewByIndex(ArrayList<TaskFile> currentList, int num)throws Exception{
+			TaskFile removedTask = currentList.get(num - 1);
+			return removedTask;
+	}
 	public TaskFile viewTask(String taskToBeDisplayed) throws Exception {
 		ArrayList<String> stringList = storage.readFromMasterFile();
 
