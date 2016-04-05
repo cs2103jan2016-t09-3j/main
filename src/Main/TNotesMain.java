@@ -2,7 +2,7 @@ package Main;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-import UI.TNotesUI;
+import tnote.ui.TNotesUI;
 
 public class TNotesMain {
 	
