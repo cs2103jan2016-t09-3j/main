@@ -45,9 +45,10 @@ public class TNotesUI {
 		try{
 		ArrayList<TaskFile> arrOverdue = new ArrayList<TaskFile> ();
 		arrOverdue = logic.callOverdueTasks();
-		overDueString += "          ====OVERDUE===\n";
+		overDueString += "                ====OVERDUE===\n";
 		for (int i = 0; i < arrOverdue.size(); i++) {
-			overDueString += i + 1 + ". " + arrOverdue.get(i).getName() + "\n";
+			overDueString += i + 1 + ". [" + arrOverdue.get(i).getStartTime() + "] [" + arrOverdue.get(i).getStartDate() + "] "
+		+ arrOverdue.get(i).getName() + "\n";
 			} 
 		}catch (Exception e) {
 			overDueString = e.getMessage();
@@ -57,27 +58,32 @@ public class TNotesUI {
 	}
 
 	public String displayFloats() {
-		String floatString = "";
+		String floatString;
 		try {
 			if (logic.hasFloatingList()) {
 			ArrayList<TaskFile> arrFloat = new ArrayList<TaskFile>();
 			arrFloat = logic.viewFloatingList();
 			
-				floatString = "          ====NOTES====\n";
+				floatString = "     ====NOTES====\n";
 				for (int i = 0; i < arrFloat.size(); i++) {
-					floatString += i + 1 + ". " + arrFloat.get(i).getName() + "\n";
+					floatString += i + 1 + ". "; 
+							if (arrFloat.get(i).getImportance()){
+								floatString += "[IMPORTANT] ";
+							}
+							else {
+							floatString += arrFloat.get(i).getName() + "\n";
+							}
 				}
-				floatString = "\n";
+				floatString += "\n";
 			}
 			else {
-				floatString = "          ====NO NOTES====\n\n";
+				floatString = "               ====NO NOTES====\n\n";
 			}
 			
 		} catch (Exception e) {
 			floatString = e.getMessage();
 		}
-		
-		
+				
 		return floatString;
 	}
 
@@ -88,7 +94,7 @@ public class TNotesUI {
 
 		try {
 			todaySchedule = logic.viewDateList("today");
-			schedule = "                                             ====TODAY's Schedule====\n";
+			schedule = "                                         ====TODAY's Schedule====\n";
 			for (int i = 0; i < todaySchedule.size(); i++) {
 
 				if (todaySchedule.get(i).getIsDeadline()) {
@@ -179,16 +185,16 @@ public class TNotesUI {
 					result += String.format("Things to note: \"%s\"\n", taskFile.getDetails().trim());
 				}
 
-				if (taskFile.getIsRecurring()) {
-					int everyIndex = 0;
-					int displayIndex = 0;
-
-					for (int i = 0; i < userCommandSplitCopy.size(); i++) {
-						everyIndex = userCommandSplitCopy.indexOf("every");
-						displayIndex = everyIndex + 1;
-					}
-					result += String.format("Note: It recurs every %s\n", userCommandSplitCopy.get(displayIndex));
-				}
+//				if (taskFile.getIsRecurring()) {
+//					int everyIndex = 0;
+//					int displayIndex = 0;
+//
+//					for (int i = 0; i < userCommandSplitCopy.size(); i++) {
+//						everyIndex = userCommandSplitCopy.indexOf("every");
+//						displayIndex = everyIndex + 1;
+//					}
+//					result += String.format("Note: It recurs every %s\n", userCommandSplitCopy.get(displayIndex));
+//				}
 
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
@@ -237,7 +243,7 @@ public class TNotesUI {
 							taskFile.getName(), oldTaskFile.getStartTime(), taskFile.getStartTime());
 				}
 				if (editType.equals("endTime")) {
-					result = String.format("You have chaned the end time in \"%s\" from [%s] to [%s]!\n",
+					result = String.format("You have changed the end time in \"%s\" from [%s] to [%s]!\n",
 							taskFile.getName(), oldTaskFile.getEndTime(), taskFile.getEndTime());
 				}
 				if (editType.equals("date") || editType.equals("startDate")) {

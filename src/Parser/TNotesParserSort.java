@@ -5,9 +5,6 @@ import java.util.ArrayList;
 
 public class TNotesParserSort{
 	
-	// Class attributes
-	//private static ArrayList<String> sortList;
-	
 	private static final String KEYWORD_BY = "by";
 	
 	private static final int NUM_FIRST_SORT_TYPE = 1;

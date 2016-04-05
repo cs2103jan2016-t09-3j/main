@@ -15,7 +15,6 @@ public class LogicUnit {
 	CommandAdd comAdd = new CommandAdd();
 	CommandDelete comDelete = new CommandDelete();
 	CommandEdit comEdit = new CommandEdit();
-	CommandSort comSort = new CommandSort();
 	CommandView comView = new CommandView();
 	
 	public LogicUnit() throws Exception{
@@ -33,7 +32,7 @@ public class LogicUnit {
 		return newTask;
 	}
 
-	public TaskFile deleteTask(ArrayList<String> fromParser) {
+	public TaskFile deleteTask(ArrayList<String> fromParser) throws Exception {
 		String commandChecker = fromParser.remove(0);
 		LogicCommand newCommand = new LogicCommand(fromParser.get(0));
 		TaskFile newTask = new TaskFile(comDelete.deleteTask(fromParser));

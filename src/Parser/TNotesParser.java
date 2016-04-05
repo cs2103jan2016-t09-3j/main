@@ -1,26 +1,7 @@
 package Parser;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.List;
-import java.util.Locale;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.DateTimeException;
-import java.time.DayOfWeek;
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.Month;
-import java.time.format.DateTimeFormatter;
-import java.util.List;
-import java.util.Arrays;
-import org.ocpsoft.prettytime.nlp.PrettyTimeParser;
-import org.ocpsoft.prettytime.shade.org.antlr.runtime.EarlyExitException;
 
-
-//import TNotesParser.KeyWord;
 
 public class TNotesParser {
 	
@@ -28,15 +9,12 @@ public class TNotesParser {
 		public Object parse(String input);
 	}
 	
-	enum KeyWord {
-		FROM, TO, AT, BY, DUE
-	};	
 	public static ArrayList<String> timeList = new ArrayList<String>();
 	TNotesParserAdd add;
 	TNotesParserChange change;
 	TNotesParserDelete delete;
 	TNotesParserSet set;
-	private TNotesParserSort sort;
+	TNotesParserSort sort;
 	TNotesParserSearch search;
 	TNotesParserTime time;
 	TNotesParserDate date;
@@ -48,25 +26,22 @@ public class TNotesParser {
 		change = new TNotesParserChange();
 		delete = new TNotesParserDelete();
 		set = new TNotesParserSet();
-		this.sort = new TNotesParserSort();
+		sort = new TNotesParserSort();
 		search = new TNotesParserSearch();
 		time = new TNotesParserTime();
 		date = new TNotesParserDate();
 		view = new TNotesParserView();
 		edit = new TNotesParserEdit();
 	}
-	//private ArrayList<String> list = new ArrayList<String>();
 	public static void main(String[] args) throws ParseException{
 		TNotesParser parser = new TNotesParser();
 		parser.execute();
-		//System.out.println("haha");
 		
 	}
 	public void execute() throws ParseException{
-		//Month month = Month.august;
 		String output = new String();
 		String input = new String();  
-		input = "add buggs every Mon for 2 week";
+		input = "view do ee2024";
 		for (int i = 0; i < checkCommand(input).size(); i++){
 			output = checkCommand(input).get(i);
 			System.out.println(output);
@@ -77,7 +52,6 @@ public class TNotesParser {
 	
 	public ArrayList<String> checkCommand(String inputString) throws ParseException {
 		ArrayList<String> list = new ArrayList<String>();
-		
 		String arr[] = inputString.split(" ");
 		String firstWord = arr[0].toLowerCase();
 		
@@ -88,7 +62,8 @@ public class TNotesParser {
 				list.addAll(add.addCommand(arr));
 				//System.out.println(list);
 				
-				return list;
+				//return list;
+				break;
 			case "view" :
 				
 				list.add(firstWord);

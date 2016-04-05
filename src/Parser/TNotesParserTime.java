@@ -6,21 +6,45 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-
 import org.ocpsoft.prettytime.nlp.PrettyTimeParser;
 
 public class TNotesParserTime {
-
 	
-	public static ArrayList<String> timeList = new ArrayList<String>();
-	private static final List<String> TIME_POSSIBLE_FORMAT = Arrays.asList(
+	private static final String MESSAGE_INVALID_TIME = "Invalid time!";
+	private static final String MESSAGE_INVALID_TIME_PARSE = "Invalid parsed time!";
+	private static final String MESSAGE_INVALID_TIME_PATTERN = "Invalid time pattern!";
+	private static final String MESSAGE_INVALID_WEEKDAY = "Invalid weekday!";
+	private static final String MESSAGE_INVALID_DATE = "invalid date!";
+	private static final String MESSAGE_ISLETTER = "[a-zA-Z]+";
+	private static final String MESSAGE_NULL_STRING = "";
+	private static final String MESSAGE_INVALID_TIME_RANGE = "Invalid time range!";
+	private static final String MESSAGE_STANDARD_DATE_FORMAT = "yyyy-MM-dd";
+	private static final String MESSAGE_STANDARD_DATE_TIME_FORMAT = "E, y-M-d 'at' h:m:s a z";
+	
+	private static int NUM_GET_FIRST_DATE = 0;
+	private static int NUM_LAST_ARR_STR = 1;
+	private static int NUM_LAST_TWO_ARR_STR = 2;
+	private static int NUM_INITIALISATION = 0;
+	private static int NUM_TRUE = 1;
+	private static int NUM_FALSE = 0;
+	private static int NUM_FIRST_WORD = 0;
+	private static int NUM_SECOND_WORD = 1;
+	private static int NUM_MAX_TIME_LENGTH = 5;
+	private static int NUM_FIRST_CHAR = 0;
+	private static int NUM_LAST_CHAR = 1;
+	private static int NUM_SECOND_LAST_CHAR = 2;
+	private static int NUM_SUBSTRACTIO = 1;
+	private static int NUM_START_FROM_SECOND_STR = 1;
+	
+	private static final List<String> TIME_POSSIBLE_FORMAT = Collections.unmodifiableList(Arrays.asList(
 			"h:mm", "hh:m", "hh:mm","HH:mm",
 			"H:MM", "HH:M", "HH:MM",
 			"h:mma", "hh:ma", "hh:mma",
 			"H:MMA", "HH:MA", "HH:MMA",
-			"H:mma", "HH:ma", "HH:ma","ha",
+			"H:mma", "HH:ma", "HH:ma","ha","h a",
 			"h:mm a", "hh:m a", "hh:mm a",
 			"H:MM A", "HH:M A", "HH:MM A",
 			"H:mm a", "HH:m a", "HH:m a",
@@ -43,19 +67,18 @@ public class TNotesParserTime {
 			"h.mm a", "hh.m a", "hh.mm a",
 			"H.MM A", "HH.M A", "HH.MM A",
 			"H.mm a", "HH.m a", "HH.m a"
-			);
+			));
 	
 	public String formatTime(String time) {
+		ArrayList<String> timeList = new ArrayList<String>();
 		
-		assert time != null : "not a time";
+		assert time != null : MESSAGE_INVALID_TIME;
 		time = time.toUpperCase();
-		
 		timeList.addAll(TIME_POSSIBLE_FORMAT);
 		LocalTime parsedTime = null;
-		assert parsedTime != null: "not a time2333";
+		assert parsedTime != null: MESSAGE_INVALID_TIME_PARSE;
 		
-		for (String timeFormat : timeList) {
-			
+		for (String timeFormat : timeList) {		
 			parsedTime = compareTimeFormat(time, timeFormat);
 			
 			if (parsedTime != null) {
@@ -63,11 +86,11 @@ public class TNotesParserTime {
 			}
 		}
 	
-		return "";
+		return MESSAGE_NULL_STRING;
 	}
 	
 	private LocalTime compareTimeFormat(String timeString, String pattern) {
-		assert pattern != null : "no such pattern";
+		assert pattern != null : MESSAGE_INVALID_TIME_PATTERN;
 		LocalTime time = null;
 		try {
 			DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern);
@@ -78,23 +101,28 @@ public class TNotesParserTime {
 		}
 	
 	}
+	////////////////////////////////////////////////////////////////////////////////////
 	public int checkTime(String input) {
 		int inputCharLength = input.trim().length();
-		for(int i =0; i<inputCharLength; i++){
-			if((input.charAt(i) == ':' || inputCharLength <= 5) 
-					&& isLetters(Character.toString(input.charAt(0))) == 0){
-				return 1;//if the input is time
+		for(int i =NUM_INITIALISATION; i<inputCharLength; i++){
+			if((input.charAt(i) == ':' || 
+					(Character.toString(input.charAt(inputCharLength-NUM_LAST_CHAR)).equals("m")) &&
+					(Character.toString(input.charAt(inputCharLength-NUM_SECOND_LAST_CHAR)).equals("p") ||
+							Character.toString(input.charAt(inputCharLength-2)).equals("a")))
+					&& isLetters(Character.toString(input.charAt(NUM_FIRST_CHAR))) == NUM_FALSE){
+				return NUM_TRUE;
 			}
 		}
-		return 0 ;
+		return NUM_FALSE ;
 	}
+	
 	public String formatAMPM(String[] arr) {
 		String time = new String();
-		for(int j=1;j<arr.length;j++ ){
-			if(!isAMPM(arr[j]).equals("")){
-				time = arr[j-1] +" " + arr[j];
+		for(int j=NUM_START_FROM_SECOND_STR;j<arr.length;j++ ){
+			if(!isAMPM(arr[j]).equals(MESSAGE_NULL_STRING)){
+				time = arr[j-NUM_LAST_ARR_STR] +" " + arr[j];
 			}else{
-				time = arr[j-1];
+				time = arr[j-NUM_LAST_ARR_STR];
 			}
 		}	
 		return time;
@@ -109,7 +137,7 @@ public class TNotesParserTime {
 			
 			if(firstTime >= secondTime) {
 				list.clear();
-				list.add("Invalid time range");
+				list.add(MESSAGE_INVALID_TIME_RANGE);
 				return list;
 			} else {
 				return list;
@@ -117,7 +145,7 @@ public class TNotesParserTime {
 		
 		} else if(firstTime > secondTime){
 			list.clear();
-			list.add("Invalid time range");
+			list.add(MESSAGE_INVALID_TIME_RANGE);
 			return list;
 		}
 		else{
@@ -127,10 +155,10 @@ public class TNotesParserTime {
 		
 	}
 	public int isLetters(String nextString) {
-		if (nextString.matches("[a-zA-Z]+")) {
-			return 1;
+		if (nextString.matches(MESSAGE_ISLETTER)) {
+			return NUM_TRUE;
 		} else {
-			return 0;
+			return NUM_FALSE;
 		}
 	}
 	public String isAMPM(String atDatePMAM){
@@ -151,9 +179,9 @@ public class TNotesParserTime {
 		try{
 		List<Date> dates = new PrettyTimeParser().parse(input);
 	    Date date = new Date();
-	    date =dates.get(0);
-	    SimpleDateFormat dateFormatter = new SimpleDateFormat("E, y-M-d 'at' h:m:s a z");
-	    dateFormatter = new SimpleDateFormat("yyyy-MM-d");
+	    date =dates.get(NUM_GET_FIRST_DATE);
+	    SimpleDateFormat dateFormatter = new SimpleDateFormat(MESSAGE_STANDARD_DATE_TIME_FORMAT);
+	    dateFormatter = new SimpleDateFormat(MESSAGE_STANDARD_DATE_FORMAT);
 	    return dateFormatter.format(date);
 		}catch(Exception e){
 			return null;

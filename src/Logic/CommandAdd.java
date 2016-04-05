@@ -4,50 +4,68 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Iterator;
 
+import Object.RecurringTaskFile;
 import Object.TaskFile;
 
 public class CommandAdd extends TNotesLogic {
-
-	public TaskFile whichAdd(ArrayList<String> fromParser){
-		if(fromParser.contains("every")){
-			return addRecurTask(fromParser);
-		}
-		else{
-			return addTask(fromParser);
-		}
+	
+	public CommandAdd() throws Exception {
+	
 	}
 
-	public TaskFile addRecurTask(ArrayList<String> fromParser) {
-		TaskFile newTask = new TaskFile();
-		return newTask;
-	}
-
-	public TaskFile addTask(ArrayList<String> fromParser) {
+	public TaskFile addTask(ArrayList<String> fromParser) throws Exception {
 		try {
-			// System.out.println("addcheck " + fromParser.toString());
-
+			fromParser.remove(0);
+			System.out.println("addcheck " + fromParser.toString());
 			ArrayList<String> stringList = storage.readFromMasterFile();
 			TaskFile currentFile = new TaskFile();
 			String importance = new String();
 			String recurArgument = new String();
+			Calendar cal = Calendar.getInstance();
 
 			assertNotEquals(0, fromParser.size());
 			currentFile.setName(fromParser.remove(0).trim());
 
 			if (fromParser.contains("important")) {
-				importance = fromParser.remove(fromParser.indexOf("important"));
-				currentFile.setImportance(importance);
+				fromParser.remove(fromParser.indexOf("important"));
+				currentFile.setImportance(true);
 			}
 
 			if (fromParser.contains("every")) {
 				int indexOfRecurKeyWord = fromParser.indexOf("every");
-				recurArgument = fromParser.remove(indexOfRecurKeyWord + 1);
+				recurArgument = fromParser.remove(indexOfRecurKeyWord + 1).toLowerCase();
 				fromParser.remove("every");
 				currentFile.setIsRecurr(true);
+			}
+			if (fromParser.contains("today")) {
+				DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+				String date = df.format(cal.getTime());
+				fromParser.set(fromParser.indexOf("today"), date);
+			}
+			if (fromParser.contains("tomorrow")) {
+				DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+				String date = df.format(cal.getTime()).toLowerCase();
+				cal.add(Calendar.DATE, 1);
+				cal.add(Calendar.DATE, 1);
+				date = df.format(cal.getTime()).toLowerCase();
+				fromParser.set(fromParser.indexOf("tomorrow"), date);
+			}
+
+			for (int i = 0; i < fromParser.size(); i++) {
+				String day = fromParser.get(i);
+				if (day.equals("monday") || (day.equals("tuesday")) || (day.equals("wednesday"))
+						|| (day.equals("thursday")) || (day.equals("friday")) || (day.equals("saturday"))
+						|| (day.equals("sunday"))) {
+					String date = compareDates(day);
+					fromParser.set(i, date);
+				}
 			}
 
 			// System.out.println("adcheck 2" + fromParser.toString());
@@ -90,7 +108,7 @@ public class CommandAdd extends TNotesLogic {
 						currentFile.setEndDate(fromParser.get(1));
 					} else {
 						assertTrue(fromParser.get(1).contains(":"));
-						currentFile.setStartTime(fromParser.get(1));
+						currentFile.setEndTime(fromParser.get(1));
 					}
 
 				}
@@ -106,7 +124,7 @@ public class CommandAdd extends TNotesLogic {
 							currentFile.setEndDate(fromParser.get(2));
 						} else {
 							assertTrue(fromParser.get(2).contains(":"));
-							currentFile.setStartTime(fromParser.get(2));
+							currentFile.setEndTime(fromParser.get(2));
 						}
 
 					} else {
@@ -149,6 +167,19 @@ public class CommandAdd extends TNotesLogic {
 
 			default:
 				assertEquals(0, fromParser.size());
+				if (!recurArgument.isEmpty()) {
+					DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+					String date;
+					if (recurArgument.equals("day")) {
+						date = df.format(cal.getTime());
+					} else if (recurArgument.contains("day")) {
+						date = compareDates(recurArgument);
+					} else {
+						date = df.format(cal.getTime());
+					}
+					currentFile.setStartDate(date);
+
+				}
 			}
 			currentFile.setUpTaskFile();
 
@@ -165,6 +196,50 @@ public class CommandAdd extends TNotesLogic {
 					}
 				}
 			}
+			if (currentFile.getIsRecurring()) {
+				String taskDetails = currentFile.getDetails();
+				taskDetails += ". It recurs every " + recurArgument;
+				System.out.println(taskDetails);
+				currentFile.setDetails(taskDetails);
+				
+				DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+				ArrayList<String> dateList = new ArrayList<String>();
+				if (recurArgument.equals("day")) {
+					for (int i = 0; i < 14; i++) {
+						dateList.add(df.format(cal.getTime()));
+						cal.add(Calendar.DATE, 1);
+					}
+				} else if (recurArgument.equals("week")) {
+					for (int i = 0; i < 8; i++) {
+						dateList.add(df.format(cal.getTime()));
+						cal.add(Calendar.WEEK_OF_YEAR, 1);
+					}
+
+				} else if (recurArgument.equals("month")) {
+					for (int i = 0; i < 12; i++) {
+						dateList.add(df.format(cal.getTime()));
+						cal.add(Calendar.MONTH, 1);
+					}
+
+				} else {
+					recurArgument.contains("day");
+					String date = compareDates(recurArgument);
+					currentFile.setStartDate(date);
+					Date dateToStart = df.parse(date);
+					cal.setTime(dateToStart);
+
+					for (int i = 0; i < 8; i++) {
+						dateList.add(df.format(cal.getTime()));
+						cal.add(Calendar.WEEK_OF_YEAR, 1);
+					}
+				}
+
+				RecurringTaskFile recurTask = new RecurringTaskFile(currentFile);
+				recurTask.addRecurringStartDate(dateList);
+				storage.addRecurringTask(recurTask);
+				return currentFile;
+			}
+
 			if (storage.addTask(currentFile)) {
 				return currentFile;
 			} else {
@@ -176,7 +251,5 @@ public class CommandAdd extends TNotesLogic {
 			// throw instead of return
 			return null;
 		}
-
 	}
 }
-

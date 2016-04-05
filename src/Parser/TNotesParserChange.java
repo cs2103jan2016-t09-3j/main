@@ -10,9 +10,9 @@ public class TNotesParserChange {
 	private static final int NUM_INITIALISATION = 1;
 	private static final int NUM_INCREMENTATION = 1;
 	
-	private ArrayList<String> list = new ArrayList<String>();
 	
 	public ArrayList <String> changeCommand(String[] arr){
+		ArrayList<String> list = new ArrayList<String>();
 		
 		list.add(KEYWORD_CHANGE_DIRECTORY);
 		for (int  i= NUM_INITIALISATION;  i< arr.length ; i++){

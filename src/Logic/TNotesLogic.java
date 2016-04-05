@@ -82,7 +82,7 @@ public class TNotesLogic {
 			while (aListIterator.hasNext()) {
 				String details = aListIterator.next();
 				if (!details.contains(":") && !details.contains("-")) {
-					currentFile.setDetails(details);
+					currentFile.setDetails(details + ".");
 					aListIterator.remove();
 				}
 			}
@@ -206,6 +206,11 @@ public class TNotesLogic {
 				}
 			}
 			if (currentFile.getIsRecurring()) {
+				String taskDetails = currentFile.getDetails();
+				taskDetails += " It recurs every " + recurArgument;
+				System.out.println(taskDetails);
+				currentFile.setDetails(taskDetails);
+				
 				DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 				ArrayList<String> dateList = new ArrayList<String>();
 				if (recurArgument.equals("day")) {
@@ -435,7 +440,7 @@ public class TNotesLogic {
 		ArrayList<TaskFile> taskListToBeDisplayed = new ArrayList<TaskFile>();
 		for (String text : stringList) {
 			TaskFile currentFile = storage.getTaskFileByName(text);
-			if (currentFile.getIsTask()) {
+			if (currentFile.getIsTask()&& !currentFile.getIsDone()) {
 				taskListToBeDisplayed.add(currentFile);
 			}
 		}
@@ -642,6 +647,10 @@ public class TNotesLogic {
 		return allTaskList;
 	}
 
+	public ArrayList<TaskFile> sortTask(ArrayList<TaskFile> currentList){
+		Collections.sort(currentList, new NameComparator());
+		return currentList;
+	}
 	// sort date
 	public ArrayList<TaskFile> sortDateTask() throws Exception {
 		ArrayList<String> masterList = storage.readFromMasterFile();
