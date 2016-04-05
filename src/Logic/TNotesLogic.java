@@ -431,7 +431,7 @@ public class TNotesLogic {
 	}
 
 	public ArrayList<TaskFile> viewFloatingList() throws Exception {
-		ArrayList<String> stringList = storage.readFromFloatingListFile();
+		ArrayList<String> stringList = storage.readFromFloatingFile();
 		ArrayList<TaskFile> taskListToBeDisplayed = new ArrayList<TaskFile>();
 		for (String text : stringList) {
 			TaskFile currentFile = storage.getTaskFileByName(text);
@@ -619,7 +619,7 @@ public class TNotesLogic {
 	}
 
 	public boolean hasFloatingList() throws Exception {
-		ArrayList<String> list = storage.readFromFloatingListFile();
+		ArrayList<String> list = storage.readFromFloatingFile();
 		if (list.isEmpty()) {
 			return false;
 		} else {
