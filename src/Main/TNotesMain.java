@@ -21,7 +21,12 @@ public class TNotesMain {
 		while(true){
 		String userInput = sc.nextLine();
 		
-		update = tNote.executeCommand(userInput);
+		try {
+			update = tNote.executeCommand(userInput);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		result += tNote.displaySchedule();
 		result += update;
 		

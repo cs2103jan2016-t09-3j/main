@@ -96,7 +96,12 @@ public class TNotesOverviewController {
     	String floatList = ""; 
     	String overDueList = "";
     	
-    	update = tNote.executeCommand(userInput.getText()); 
+    	try {
+			update = tNote.executeCommand(userInput.getText());
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
     	overDueList = tNote.displayOverdueTasks();
     	floatList = tNote.displayFloats();
     	result = tNote.displaySchedule();

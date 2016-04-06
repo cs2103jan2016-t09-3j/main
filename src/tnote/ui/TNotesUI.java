@@ -131,7 +131,7 @@ public class TNotesUI {
 		return schedule;
 	}
 
-	public String executeCommand(String userInput) {
+	public String executeCommand(String userInput) throws Exception {
 		ArrayList<String> userCommandSplit = new ArrayList<String>();
 		try {
 			userCommandSplit = parser.checkCommand(userInput);
