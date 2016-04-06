@@ -97,14 +97,61 @@ public class TNotesLogic {
 		return taskListToBeDisplayed;
 	}
 
-	public ArrayList<TaskFile> viewTask(ArrayList<String> fromParser) throws Exception {
-		fromParser.remove(0);
-		return comView.view(fromParser);
-	}
-
 	public TaskFile viewByIndex(ArrayList<TaskFile> currentList, int num) throws Exception {
 		TaskFile removedTask = currentList.get(num - 1);
 		return removedTask;
+	}
+	public TaskFile viewTask(String taskToBeDisplayed) throws Exception {
+		ArrayList<String> stringList = storage.readFromMasterFile();
+	
+		for (String text : stringList) {
+			TaskFile currentFile = storage.getTaskFileByName(text);
+			if (currentFile.getName().equals(taskToBeDisplayed.trim())) {
+				return currentFile;
+			}
+		}
+		// taskFile not found
+		return null;
+	}
+
+	public ArrayList<TaskFile> viewManyDatesList(ArrayList<String> dates) throws Exception {
+		Date startDate;
+		Date endDate;
+		Calendar cal = Calendar.getInstance();
+		DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+		ArrayList<String> stringList = storage.readFromMasterFile();
+		ArrayList<Date> listOfDates = new ArrayList<Date>();
+		ArrayList<TaskFile> taskListToBeDisplayed = new ArrayList<TaskFile>();
+
+		startDate = df.parse(dates.get(0));
+		endDate = df.parse(dates.get(1));
+		listOfDates.add(startDate);
+		cal.setTime(startDate);
+		while (!startDate.equals(endDate)) {
+			cal.add(Calendar.DATE, 1);
+			startDate = cal.getTime();
+			listOfDates.add(startDate);
+		}
+		for (Date date : listOfDates) {
+			String dateString = df.format(date);
+			for (String text : stringList) {
+				TaskFile currentFile = storage.getTaskFileByName(text);
+				if (currentFile.getIsRecurring() || currentFile.getIsDone()) {
+					continue;
+				}
+				if (currentFile.getStartDate().equals(dateString.trim())) {
+					String name = currentFile.getName();
+					if (name.contains("_")) {
+						String formatterName = name.substring(0, name.indexOf("_"));
+						currentFile.setName(formatterName);
+					}
+					taskListToBeDisplayed.add(currentFile);
+				}
+			}
+		}
+
+		Collections.sort(taskListToBeDisplayed);
+		return taskListToBeDisplayed;
 	}
 
 	public ArrayList<String> sortViewTypes(ArrayList<String> fromParser) {
