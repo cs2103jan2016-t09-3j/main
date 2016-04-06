@@ -1,6 +1,7 @@
 package tnote.log;
 
 import java.util.logging.FileHandler;
+import java.util.logging.LogManager;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 
@@ -13,6 +14,7 @@ public class TNoteLogger {
 	
 	
 	public static void setUp() throws Exception {
+		LogManager.getLogManager().reset();
 		fileTxt = new FileHandler("TNoteLog.log", true);
 		formatterTxt = new SimpleFormatter();
 		logger = Logger.getGlobal();

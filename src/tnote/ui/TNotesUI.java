@@ -572,16 +572,20 @@ public class TNotesUI {
 			break;
 
 		case UNDO_COMMAND:
+			
 			LogicCommand logicCommandUndo;
 			String commandEnteredUndo;
 			TaskFile taskFileUndo;
 			String taskNameUndo;
-			
-			logicCommandUndo = logic.undo();
-			commandEnteredUndo = logicCommandUndo.getCommandType();
-			taskFileUndo = logicCommandUndo.getOldTask();
-			taskNameUndo = taskFileUndo.getName();
-			result = "You have undone " + commandEnteredUndo + " " + taskNameUndo + "\n";
+			try {
+				logicCommandUndo = logic.undo();
+				commandEnteredUndo = logicCommandUndo.getCommandType();
+				taskFileUndo = logicCommandUndo.getOldTask();
+				taskNameUndo = taskFileUndo.getName();
+				result = "You have undone " + commandEnteredUndo + " " + taskNameUndo + "\n";
+			} catch (Exception e) {
+				result = e.getMessage();
+			}
 			break;
 
 		case REDO_COMMAND:
@@ -589,12 +593,15 @@ public class TNotesUI {
 			String commandEnteredRedo;
 			TaskFile taskFileRedo;
 			String taskNameRedo;
-			
-			logicCommandRedo = logic.redo();
-			commandEnteredRedo = logicCommandRedo.getCommandType();
-			taskFileRedo = logicCommandRedo.getCurrentTask();
-			taskNameRedo = taskFileRedo.getName();
-			result = "You have redone " + commandEnteredRedo + " " + taskNameRedo + "\n";
+			try {
+				logicCommandRedo = logic.redo();
+				commandEnteredRedo = logicCommandRedo.getCommandType();
+				taskFileRedo = logicCommandRedo.getCurrentTask();
+				taskNameRedo = taskFileRedo.getName();
+				result = "You have redone " + commandEnteredRedo + " " + taskNameRedo + "\n";
+			} catch (Exception e) {
+				result = e.getMessage();
+			}
 			break;
 
 		case INVALID:
@@ -640,11 +647,11 @@ public class TNotesUI {
 		} else if (checkCommand(commandString, "sort")) {
 			return COMMAND_TYPE.SORT_COMMAND;
 		} else if (checkCommand(commandString, "help")) {
-			return COMMAND_TYPE.UNDO_COMMAND;
-		} else if (checkCommand(commandString, "undo")) {
-			return COMMAND_TYPE.REDO_COMMAND;
-		} else if (checkCommand(commandString, "redo")) {
 			return COMMAND_TYPE.HELP_COMMAND;
+		} else if (checkCommand(commandString, "undo")) {
+			return COMMAND_TYPE.UNDO_COMMAND;
+		} else if (checkCommand(commandString, "redo")) {
+			return COMMAND_TYPE.REDO_COMMAND;
 		} else if (checkCommand(commandString, "exit")) {
 			return COMMAND_TYPE.EXIT;
 		}

@@ -7,6 +7,7 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.Stack;
 
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertEquals;
@@ -16,13 +17,18 @@ import tnote.object.NameComparator;
 import tnote.object.RecurringTaskFile;
 import tnote.object.TaskFile;
 import tnote.storage.TNotesStorage;
+import tnote.util.TimeClashException;
 
 public class TNotesLogic {
 	TNotesStorage storage;
 	ArrayList<TaskFile> taskList = new ArrayList<TaskFile>();
+	Stack<LogicCommand> undoStack;
+	Stack<LogicCommand> redoStack;
 
 	public TNotesLogic() throws Exception {
 		storage = TNotesStorage.getInstance();
+		undoStack = new Stack<LogicCommand>();
+		redoStack = new Stack<LogicCommand>();
 	}
 	// compare calender to compare timings for various taskfiles.
 	// for blocking out timings, need to check if the timing for task to be
@@ -30,7 +36,7 @@ public class TNotesLogic {
 
 	public TaskFile addTask(ArrayList<String> fromParser) throws Exception {
 		try {
-			fromParser.remove(0);
+			String commandWord = fromParser.remove(0);
 			System.out.println("addcheck " + fromParser.toString());
 			ArrayList<String> stringList = storage.readFromMasterFile();
 			TaskFile currentFile = new TaskFile();
@@ -52,6 +58,10 @@ public class TNotesLogic {
 				int indexOfRecurKeyWord = fromParser.indexOf("every");
 				recurArgument = fromParser.remove(indexOfRecurKeyWord + 1).toLowerCase();
 				fromParser.remove("every");
+				if((fromParser.size() > indexOfRecurKeyWord) && (fromParser.get(indexOfRecurKeyWord +1).equals("for"))) {
+					recurNumDuration = fromParser.remove(indexOfRecurKeyWord +2);
+					recurDuration = fromParser.remove(indexOfRecurKeyWord + 2);
+				}
 				// for(String text : fromParser){
 				// if(text.equals("for")){
 				// recurDuration = fromParser.remove(fromParser.size() - 1);
@@ -76,7 +86,7 @@ public class TNotesLogic {
 			}
 
 			for (int i = 0; i < fromParser.size(); i++) {
-				String day = fromParser.get(i);
+				String day = fromParser.get(i).toLowerCase();
 				if (day.equals("monday") || (day.equals("tuesday")) || (day.equals("wednesday"))
 						|| (day.equals("thursday")) || (day.equals("friday")) || (day.equals("saturday"))
 						|| (day.equals("sunday"))) {
@@ -95,7 +105,6 @@ public class TNotesLogic {
 				}
 			}
 
-			System.err.println(fromParser.toString());
 			switch (fromParser.size()) {
 			case 1:
 
@@ -208,7 +217,7 @@ public class TNotesLogic {
 					if (savedTask.getIsMeeting()) {
 						if (hasTimingClash(currentFile, savedTask)) {
 							// task clashes, should not add
-							return null;
+							throw new TimeClashException("There is a time clash", currentFile.getName(), savedTask.getName());
 						}
 					}
 				}
@@ -221,6 +230,9 @@ public class TNotesLogic {
 
 				DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 				ArrayList<String> dateList = new ArrayList<String>();
+				ArrayList<String> endDateList = new ArrayList<String>();
+				
+				
 				if (recurArgument.equals("day")) {
 					if (recurDuration.contains("day")) {
 						for (int i = 0; i < Integer.parseInt(recurNumDuration); i++) {
@@ -259,8 +271,13 @@ public class TNotesLogic {
 							dateList.add(df.format(cal.getTime()));
 							cal.add(Calendar.WEEK_OF_YEAR, 1);
 						}
-					} else {
+					} else if (recurDuration.contains("month")){
 						for (int i = 0; i < (Integer.parseInt(recurNumDuration) * 4); i++) {
+							dateList.add(df.format(cal.getTime()));
+							cal.add(Calendar.WEEK_OF_YEAR, 1);
+						}
+					} else {
+						for (int i = 0; i < 10; i++) {
 							dateList.add(df.format(cal.getTime()));
 							cal.add(Calendar.WEEK_OF_YEAR, 1);
 						}
@@ -300,10 +317,13 @@ public class TNotesLogic {
 				RecurringTaskFile recurTask = new RecurringTaskFile(currentFile);
 				recurTask.addRecurringStartDate(dateList);
 				storage.addRecurringTask(recurTask);
+
+				pushToStack(commandWord, currentFile);
 				return currentFile;
 			}
 
 			if (storage.addTask(currentFile)) {
+				pushToStack(commandWord, currentFile);
 				return currentFile;
 			} else {
 				return null;
@@ -314,6 +334,13 @@ public class TNotesLogic {
 			// throw instead of return
 			return null;
 		}
+	}
+
+	private void pushToStack(String commandWord, TaskFile previousTask) {
+		LogicCommand commandObj = new LogicCommand(commandWord);
+		commandObj.setOldTask(previousTask);
+		undoStack.push(commandObj);
+		redoStack.clear();
 	}
 
 	public String compareDates(String dates) {
@@ -343,17 +370,32 @@ public class TNotesLogic {
 	// it
 	// if i want to hold the main Array list
 	public TaskFile deleteTask(ArrayList<String> fromParser) throws Exception {
-		fromParser.remove(0);
+		String commandWord = fromParser.remove(0);
 		if (fromParser.isEmpty()) {
 			throw new Exception("invalid command");
 		}
-		return storage.deleteTask(fromParser.get(0));
+		TaskFile taskToDelete = storage.getTaskFileByName(fromParser.get(0));
+
+		if (taskToDelete.getIsRecurring()) {
+			return deleteRecurringTask(fromParser);
+		} else {
+			TaskFile taskDeleted = storage.deleteTask(fromParser.get(0));
+			if (taskDeleted != null) {
+				pushToStack(commandWord, taskDeleted);
+				return taskDeleted;
+			} else {
+				return null;
+			}
+		}
 	}
 
 	public ArrayList<TaskFile> deleteIndex(ArrayList<TaskFile> currentList, int num) throws Exception {
+		String commandWord = "delete";
 		TaskFile removedTask = currentList.remove(num - 1);
+
 		storage.deleteTask(removedTask.getName());
 
+		pushToStack(commandWord, removedTask);
 		return currentList;
 	}
 
@@ -401,7 +443,7 @@ public class TNotesLogic {
 	// will take in the name of the task,
 	public TaskFile viewByIndex(ArrayList<TaskFile> currentList, int num) throws Exception {
 		TaskFile removedTask = currentList.get(num - 1);
-		
+
 		return removedTask;
 	}
 
@@ -508,27 +550,38 @@ public class TNotesLogic {
 	}
 
 	public boolean setStatus(String taskName, boolean status) throws Exception {
-		TaskFile newTask = storage.getTaskFileByName(taskName);
-		storage.deleteTask(newTask.getName());
+		String commandWord = "set";
+		TaskFile oldTask = storage.getTaskFileByName(taskName);
+		storage.deleteTask(oldTask.getName());
+		TaskFile newTask = new TaskFile(oldTask);
 		newTask.setIsDone(status);
 		storage.addTask(newTask);
 		if (newTask.getIsDone()) {
+
+			editPushToStack(commandWord, oldTask, newTask);
 			return true;
 		} else {
 			return false;
 		}
 	}
 
+	public void editPushToStack(String commandWord, TaskFile oldTask, TaskFile mostRecentTask) {
+		LogicCommand commandObj = new LogicCommand(commandWord);
+		commandObj.setOldTask(oldTask);
+		commandObj.setCurrentTask(mostRecentTask);
+		undoStack.push(commandObj);
+		redoStack.clear();
+	}
+
 	public TaskFile editTask(ArrayList<String> fromParser) throws Exception {
 
-		fromParser.remove(0);
+		String commandWord = fromParser.remove(0);
 
 		String type = fromParser.get(1).trim();
 		String title = fromParser.get(0).trim();
 		String newText = fromParser.get(2).trim();
-		TaskFile currentFile = storage.getTaskFileByName(title);
-
-		System.err.println(currentFile.getStartDate() + " " + currentFile.getStartTime());
+		TaskFile oldFile = storage.getTaskFileByName(title);
+		TaskFile currentFile = new TaskFile(oldFile);
 
 		if (currentFile.getIsRecurring()) {
 			editRecurringTask(fromParser);
@@ -538,6 +591,7 @@ public class TNotesLogic {
 			currentFile.setName(newText);
 
 			if (storage.addTask(currentFile)) {
+				editPushToStack(commandWord, oldFile, currentFile);
 				return currentFile;
 			} else {
 				System.out.println("did not manage to add to storage");
@@ -547,6 +601,7 @@ public class TNotesLogic {
 			currentFile.setStartTime(newText);
 			currentFile.setUpTaskFile();
 			if (storage.addTask(currentFile)) {
+				editPushToStack(commandWord, oldFile, currentFile);
 				return currentFile;
 			} else {
 				System.out.println("did not manage to add to storage");
@@ -556,6 +611,7 @@ public class TNotesLogic {
 			currentFile.setEndTime(newText);
 			currentFile.setUpTaskFile();
 			if (storage.addTask(currentFile)) {
+				editPushToStack(commandWord, oldFile, currentFile);
 				return currentFile;
 			} else {
 				System.out.println("did not manage to add to storage");
@@ -564,6 +620,7 @@ public class TNotesLogic {
 			storage.deleteTask(title);
 			currentFile.setStartDate(newText);
 			if (storage.addTask(currentFile)) {
+				editPushToStack(commandWord, oldFile, currentFile);
 				return currentFile;
 			} else {
 				System.out.println("did not manage to add to storage");
@@ -572,6 +629,7 @@ public class TNotesLogic {
 			storage.deleteTask(title);
 			currentFile.setEndDate(newText);
 			if (storage.addTask(currentFile)) {
+				editPushToStack(commandWord, oldFile, currentFile);
 				return currentFile;
 			} else {
 				System.out.println("did not manage to add to storage");
@@ -580,6 +638,7 @@ public class TNotesLogic {
 			storage.deleteTask(title);
 			currentFile.setDetails(newText);
 			if (storage.addTask(currentFile)) {
+				editPushToStack(commandWord, oldFile, currentFile);
 				return currentFile;
 			} else {
 				System.out.println("did not manage to add to storage");
@@ -592,6 +651,7 @@ public class TNotesLogic {
 				currentFile.setImportance(false);
 			}
 			if (storage.addTask(currentFile)) {
+				editPushToStack(commandWord, oldFile, currentFile);
 				return currentFile;
 			} else {
 				System.out.println("did not manage to add to storage");
@@ -746,22 +806,22 @@ public class TNotesLogic {
 	// inputs.
 
 	public TaskFile editRecurringTask(ArrayList<String> fromParser) throws Exception {
-
+		String commandWord = "edit";
 		String type = fromParser.get(1).trim();
 		String title = fromParser.get(0).trim();
 		String newText = fromParser.get(2).trim();
-		TaskFile currentFile = storage.getTaskFileByName(title);
+		TaskFile oldFile = storage.getTaskFileByName(title);
+		TaskFile currentFile = new TaskFile(oldFile);
 		RecurringTaskFile recurTask = new RecurringTaskFile(currentFile);
 		ArrayList<String> dateList = storage.getRecurTaskStartDateList(title);
 		recurTask.addRecurringStartDate(dateList);
 
-		System.err.println(currentFile.getStartDate() + " " + currentFile.getStartTime());
-
 		if (type.equals("time")) {
-			storage.deleteTask(title);
+			storage.deleteRecurringTask(title);
 			recurTask.setStartTime(newText);
 
 			if (storage.addRecurringTask(recurTask)) {
+				editPushToStack(commandWord, oldFile, currentFile);
 				return recurTask;
 			} else {
 				throw new Exception("did not add to storage");
@@ -771,6 +831,7 @@ public class TNotesLogic {
 			recurTask.setStartTime(newText);
 
 			if (storage.addRecurringTask(recurTask)) {
+				editPushToStack(commandWord, oldFile, currentFile);
 				return recurTask;
 			} else {
 				throw new Exception("did not add to storage");
@@ -779,6 +840,7 @@ public class TNotesLogic {
 			storage.deleteTask(title);
 			recurTask.setEndTime(newText);
 			if (storage.addRecurringTask(recurTask)) {
+				editPushToStack(commandWord, oldFile, currentFile);
 				return recurTask;
 			} else {
 				throw new Exception("did not add to storage");
@@ -787,6 +849,7 @@ public class TNotesLogic {
 			storage.deleteTask(title);
 			recurTask.setStartDate(newText);
 			if (storage.addRecurringTask(recurTask)) {
+				editPushToStack(commandWord, oldFile, currentFile);
 				return recurTask;
 			} else {
 				throw new Exception("did not add to storage");
@@ -795,6 +858,7 @@ public class TNotesLogic {
 			storage.deleteTask(title);
 			recurTask.setEndDate(newText);
 			if (storage.addRecurringTask(recurTask)) {
+				editPushToStack(commandWord, oldFile, currentFile);
 				return recurTask;
 			} else {
 				throw new Exception("did not add to storage");
@@ -803,6 +867,7 @@ public class TNotesLogic {
 			storage.deleteTask(title);
 			recurTask.setDetails(newText);
 			if (storage.addRecurringTask(recurTask)) {
+				editPushToStack(commandWord, oldFile, currentFile);
 				return recurTask;
 			} else {
 				throw new Exception("did not add to storage");
@@ -815,6 +880,7 @@ public class TNotesLogic {
 				recurTask.setImportance(false);
 			}
 			if (storage.addRecurringTask(recurTask)) {
+				editPushToStack(commandWord, oldFile, currentFile);
 				return currentFile;
 			}
 		} else
@@ -823,11 +889,18 @@ public class TNotesLogic {
 	}
 
 	public TaskFile deleteRecurringTask(ArrayList<String> fromParser) throws Exception {
-		fromParser.remove(0);
+		String commandWord = "delete";
 		if (fromParser.isEmpty()) {
 			throw new Exception("invalid command");
 		}
-		return storage.deleteRecurringTask(fromParser.get(0));
+		TaskFile deletedTask = storage.deleteRecurringTask(fromParser.get(0));
+		if (deletedTask != null) {
+			pushToStack(commandWord, deletedTask);
+
+			return deletedTask;
+		} else {
+			return null;
+		}
 	}
 
 	public ArrayList<TaskFile> callOverdueTasks() throws Exception {
@@ -842,5 +915,55 @@ public class TNotesLogic {
 			throw new Exception("    ====NO OVERDUE TASKS====\n");
 		}
 		return listOfOverdueTasks;
+	}
+
+	public LogicCommand undo() throws Exception {
+		if (!undoStack.empty()) {
+			LogicCommand prevCmd = undoStack.pop();
+			String commandWord = prevCmd.getCommandType();
+			TaskFile prevTask = prevCmd.getOldTask();
+
+			if (commandWord.equals("add")) {
+				storage.deleteTask(prevTask.getName());
+			} else if (commandWord.equals("delete")) {
+				storage.addTask(prevTask);
+			} else if (commandWord.equals("edit") || commandWord.equals("set")) {
+				TaskFile currentTask = prevCmd.getCurrentTask();
+				storage.deleteTask(currentTask.getName());
+				storage.addTask(prevTask);
+			} else {
+				assertEquals("", commandWord);
+			}
+
+			redoStack.push(prevCmd);
+			return prevCmd;
+		} else {
+			throw new Exception("No action to undo");
+		}
+	}
+
+	public LogicCommand redo() throws Exception {
+		if (!redoStack.empty()) {
+			LogicCommand nextCmd = redoStack.pop();
+			String commandWord = nextCmd.getCommandType();
+			TaskFile prevTask = nextCmd.getOldTask();
+
+			if (commandWord.equals("add")) {
+				storage.addTask(prevTask);
+			} else if (commandWord.equals("delete")) {
+				storage.deleteTask(prevTask.getName());
+			} else if (commandWord.equals("edit") || commandWord.equals("set")) {
+				TaskFile currentTask = nextCmd.getCurrentTask();
+				storage.deleteTask(prevTask.getName());
+				storage.addTask(currentTask);
+			} else {
+				assertEquals("", commandWord);
+			}
+
+			undoStack.push(nextCmd);
+			return nextCmd;
+		} else {
+			throw new Exception("No action to redo");
+		}
 	}
 }

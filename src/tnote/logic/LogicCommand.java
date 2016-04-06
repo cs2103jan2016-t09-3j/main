@@ -8,10 +8,7 @@ public class LogicCommand {
 	private String commandType;
 	private TaskFile currentTask;
 	private TaskFile oldTask;
-
-	public LogicCommand() {
-		this("");
-	}
+	
 	
 	public LogicCommand(String command) {
 		commandType = command;
