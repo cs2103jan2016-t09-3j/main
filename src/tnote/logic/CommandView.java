@@ -16,20 +16,13 @@ public class CommandView {
 	public CommandView() throws Exception {
 		TNotesStorage storage = TNotesStorage.getInstance();
 	}
-	public ArrayList<TaskFile> viewForGUI(String date) throws Exception {
-		ArrayList<TaskFile> allList = new ArrayList<TaskFile>();
-		TaskFile newTask = new TaskFile();
-		allList.addAll(viewDateList(date));
-		newTask.setName("floating");
-		allList.add(newTask);
-		allList.addAll(viewFloatingList());
-		newTask.setName("overdue");
-		allList.add(newTask);
-		allList.addAll(callOverdueTasks());
-		return allList;
+	
+	public ArrayList<TaskFile> viewFromFloating() throws Exception{
+		return viewFloatingList();
 	}
-	public ArrayList<TaskFile> viewFromOverdue(){
-		return callOverdueTask();
+	
+	public ArrayList<TaskFile> viewFromOverdue() throws Exception{
+		return callOverdueTasks();
 	}
 
 	public ArrayList<TaskFile> view(ArrayList<String> fromParser) throws Exception {

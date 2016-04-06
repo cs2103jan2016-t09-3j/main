@@ -1,5 +1,7 @@
 package tnote.logic;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 import tnote.object.NameComparator;
@@ -8,7 +10,7 @@ import tnote.storage.TNotesStorage;
 
 public class LogicUnit {
 	Stack<LogicCommand> doCommandStack = new Stack<LogicCommand>();
-	Stack<LogicCommand> undoCommandtStack = new Stack<LogicCommand>();
+	Stack<LogicCommand> undoCommandStack = new Stack<LogicCommand>();
 	ArrayList<String> taskDetails = new ArrayList<String>();
 
 	TNotesStorage storage;
@@ -18,7 +20,7 @@ public class LogicUnit {
 	CommandEdit comEdit = new CommandEdit();
 	CommandView comView = new CommandView();
 
-	public LogicUnit() throws Exception {
+	public TNotesLogic() throws Exception {
 		storage = TNotesStorage.getInstance();
 	}
 
@@ -63,15 +65,93 @@ public class LogicUnit {
 		emptyUndoStack();
 		return newTask;
 	}
-
-	public ArrayList<TaskFile> viewTask(ArrayList<String> fromParser) throws Exception {
-		fromParser.remove(0);
-		return comView.view(fromParser);
+	public ArrayList<TaskFile> viewDateList(String date) throws Exception {
+		if (date.trim().equals("today")) {
+			Calendar cal = Calendar.getInstance();
+			DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+			String today = df.format(cal.getTime());
+			date = today;
+		}
+		if (date.equals("monday") || (date.equals("tuesday")) || (date.equals("wednesday")) || (date.equals("thursday"))
+				|| (date.equals("friday")) || (date.equals("saturday")) || (date.equals("sunday"))) {
+			String whichDay = compareDates(date);
+			date = whichDay;
+		}
+		ArrayList<String> stringList = storage.readFromMasterFile();
+		ArrayList<TaskFile> taskListToBeDisplayed = new ArrayList<TaskFile>();
+		for (String text : stringList) {
+			TaskFile currentFile = storage.getTaskFileByName(text);
+			if (currentFile.getIsRecurring() || currentFile.getIsDone()) {
+				continue;
+			}
+			if (currentFile.getStartDate().equals(date.trim())) {
+				String name = currentFile.getName();
+				if (name.contains("_")) {
+					String formatterName = name.substring(0, name.indexOf("_"));
+					currentFile.setName(formatterName);
+				}
+				taskListToBeDisplayed.add(currentFile);
+			}
+		}
+		Collections.sort(taskListToBeDisplayed);
+		return taskListToBeDisplayed;
 	}
 
 	public TaskFile viewByIndex(ArrayList<TaskFile> currentList, int num) throws Exception {
 		TaskFile removedTask = currentList.get(num - 1);
 		return removedTask;
+	}
+	public TaskFile viewTask(String taskToBeDisplayed) throws Exception {
+		ArrayList<String> stringList = storage.readFromMasterFile();
+	
+		for (String text : stringList) {
+			TaskFile currentFile = storage.getTaskFileByName(text);
+			if (currentFile.getName().equals(taskToBeDisplayed.trim())) {
+				return currentFile;
+			}
+		}
+		// taskFile not found
+		return null;
+	}
+
+	public ArrayList<TaskFile> viewManyDatesList(ArrayList<String> dates) throws Exception {
+		Date startDate;
+		Date endDate;
+		Calendar cal = Calendar.getInstance();
+		DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+		ArrayList<String> stringList = storage.readFromMasterFile();
+		ArrayList<Date> listOfDates = new ArrayList<Date>();
+		ArrayList<TaskFile> taskListToBeDisplayed = new ArrayList<TaskFile>();
+
+		startDate = df.parse(dates.get(0));
+		endDate = df.parse(dates.get(1));
+		listOfDates.add(startDate);
+		cal.setTime(startDate);
+		while (!startDate.equals(endDate)) {
+			cal.add(Calendar.DATE, 1);
+			startDate = cal.getTime();
+			listOfDates.add(startDate);
+		}
+		for (Date date : listOfDates) {
+			String dateString = df.format(date);
+			for (String text : stringList) {
+				TaskFile currentFile = storage.getTaskFileByName(text);
+				if (currentFile.getIsRecurring() || currentFile.getIsDone()) {
+					continue;
+				}
+				if (currentFile.getStartDate().equals(dateString.trim())) {
+					String name = currentFile.getName();
+					if (name.contains("_")) {
+						String formatterName = name.substring(0, name.indexOf("_"));
+						currentFile.setName(formatterName);
+					}
+					taskListToBeDisplayed.add(currentFile);
+				}
+			}
+		}
+
+		Collections.sort(taskListToBeDisplayed);
+		return taskListToBeDisplayed;
 	}
 
 	public ArrayList<String> sortViewTypes(ArrayList<String> fromParser) {
@@ -98,14 +178,63 @@ public class LogicUnit {
 		Collections.sort(currentList, new NameComparator());
 		return currentList;
 	}
+	public TaskFile searchSingleTask(String lineOfText) throws Exception {
+		ArrayList<String> masterList = storage.readFromMasterFile();
+		TaskFile oldTask = new TaskFile();
+		for (String text : masterList) {
+			if (text.equals(lineOfText.trim())) {
+				oldTask = storage.getTaskFileByName(text);
+			}
+		}
+		return oldTask;
+	}
+	public ArrayList<TaskFile> searchTask(ArrayList<String> lineOfText) throws Exception {
+		for (String text : lineOfText) {
+			System.out.println(text);
+		}
+		ArrayList<TaskFile> searchTaskList = new ArrayList<TaskFile>();
+		ArrayList<String> masterList = storage.readFromMasterFile();
+		for (int i = 0; i < lineOfText.size(); i++) {
+			if (lineOfText.size() == 1) {
+				for (String text : masterList) {
+					if (text.contains(lineOfText.get(i))) {
+						searchTaskList.add(storage.getTaskFileByName(text));
+					}
+				}
+			} else {
+				if (lineOfText.get(i).length() < 1) {
+					System.out.println("you are searching null");
+					break;
+				} else if (lineOfText.get(i).length() == 1) {
+					for (String text : masterList) {
+						if (text.startsWith(lineOfText.get(i))) {
+							searchTaskList.add(storage.getTaskFileByName(text));
+						}
+					}
+				} else {
+					for (String text : masterList) {
+						if (text.contains(lineOfText.get(i))) {
+							searchTaskList.add(storage.getTaskFileByName(text));
+						}
+					}
+				}
+			}
+		}
+		for (TaskFile newTask : searchTaskList) {
 
-	public TaskFile undoCall() throws Exception {
+			System.out.println(newTask.getName());
+		}
+		return searchTaskList;
+	}
+
+	public LogicCommand undoCall() throws Exception {
 		if (doCommandStack.isEmpty()) {
 			throw new Exception("No task to undo");
 		} else {
 			LogicCommand currentCommand = doCommandStack.pop();
 			String commandType = currentCommand.getCommandType();
 			TaskFile newTask = new TaskFile(currentCommand.getCurrentTask());
+			TaskFile tempTask = new TaskFile();
 			if (commandType.equals("add")) {
 				if (newTask.getIsRecurring()) {
 					storage.deleteRecurringTask(currentCommand.getCurrentTask().getName());
@@ -118,35 +247,48 @@ public class LogicUnit {
 				if (newTask.getIsRecurring()) {
 					storage.deleteRecurringTask(currentCommand.getCurrentTask().getName());
 					storage.addTask(currentCommand.getOldTask());
+					tempTask = currentCommand.getCurrentTask();
+					currentCommand.setCurrentTask(currentCommand.getOldTask());
+					currentCommand.setOldTask(tempTask);
 				} else {
 					storage.deleteTask(currentCommand.getCurrentTask().getName());
 					storage.addTask(currentCommand.getOldTask());
+					tempTask = currentCommand.getCurrentTask();
+					currentCommand.setCurrentTask(currentCommand.getOldTask());
+					currentCommand.setOldTask(tempTask);
 				}
 			} else if (commandType.equals("set")) {
 				if (newTask.getIsRecurring()) {
 					storage.deleteRecurringTask(currentCommand.getCurrentTask().getName());
 					storage.addTask(currentCommand.getOldTask());
+					tempTask = currentCommand.getCurrentTask();
+					currentCommand.setCurrentTask(currentCommand.getOldTask());
+					currentCommand.setOldTask(tempTask);
 				} else {
 					storage.deleteTask(currentCommand.getCurrentTask().getName());
 					storage.addTask(currentCommand.getOldTask());
+					tempTask = currentCommand.getCurrentTask();
+					currentCommand.setCurrentTask(currentCommand.getOldTask());
+					currentCommand.setOldTask(tempTask);
 				}
 			} else if (commandType.equals("change")) {
 				storage.setNewDirectory(currentCommand.getOldTask().getName());
 			} else {
 				throw new Exception("cannot be undone");
 			}
-			undoCommandtStack.push(currentCommand);
-			return newTask;
+			undoCommandStack.push(currentCommand);
+			return undoCommandStack.peek();
 		}
 	}
 
-	public TaskFile redoCall() throws Exception {
-		if (undoCommandtStack.isEmpty()) {
+	public LogicCommand redoCall() throws Exception {
+		if (undoCommandStack.isEmpty()) {
 			throw new Exception("No task to redo");
 		} else {
-			LogicCommand currentCommand = undoCommandtStack.pop();
+			LogicCommand currentCommand = undoCommandStack.pop();
 			String commandType = currentCommand.getCommandType();
 			TaskFile newTask = new TaskFile(currentCommand.getCurrentTask());
+			TaskFile tempTask = new TaskFile();
 			if (commandType.equals("add")) {
 				storage.addTask(currentCommand.getCurrentTask());
 			} else if (commandType.equals("delete")) {
@@ -159,17 +301,29 @@ public class LogicUnit {
 				if (newTask.getIsRecurring()) {
 					storage.deleteRecurringTask(currentCommand.getOldTask().getName());
 					storage.addTask(currentCommand.getCurrentTask());
+					tempTask = currentCommand.getCurrentTask();
+					currentCommand.setCurrentTask(currentCommand.getOldTask());
+					currentCommand.setOldTask(tempTask);
 				} else {
 					storage.deleteTask(currentCommand.getOldTask().getName());
 					storage.addTask(currentCommand.getCurrentTask());
+					tempTask = currentCommand.getCurrentTask();
+					currentCommand.setCurrentTask(currentCommand.getOldTask());
+					currentCommand.setOldTask(tempTask);
 				}
 			} else if (commandType.equals("set")) {
 				if (newTask.getIsRecurring()) {
 					storage.deleteRecurringTask(currentCommand.getOldTask().getName());
 					storage.addTask(currentCommand.getCurrentTask());
+					tempTask = currentCommand.getCurrentTask();
+					currentCommand.setCurrentTask(currentCommand.getOldTask());
+					currentCommand.setOldTask(tempTask);
 				} else {
 					storage.deleteTask(currentCommand.getOldTask().getName());
 					storage.addTask(currentCommand.getCurrentTask());
+					tempTask = currentCommand.getCurrentTask();
+					currentCommand.setCurrentTask(currentCommand.getOldTask());
+					currentCommand.setOldTask(tempTask);
 				}
 			} else if (commandType.equals("change")) {
 				storage.setNewDirectory(currentCommand.getCurrentTask().getName());
@@ -177,7 +331,7 @@ public class LogicUnit {
 				throw new Exception("cannot be redone");
 			}
 			doCommandStack.push(currentCommand);
-			return newTask;
+			return doCommandStack.peek();
 		}
 	}
 
@@ -253,20 +407,20 @@ public class LogicUnit {
 		}
 	}
 
-	protected boolean hasTimingClash(TaskFile currentFile, TaskFile savedTask) {
-		return ((currentFile.getStartCal().before(savedTask.getEndCal())
-				&& currentFile.getEndCal().after(savedTask.getEndCal()))
-				|| (currentFile.getStartCal().after(savedTask.getStartCal())
-						&& currentFile.getEndCal().before(savedTask.getEndCal()))
-				|| (currentFile.getStartCal().after(savedTask.getStartCal())
-						&& currentFile.getStartCal().before(savedTask.getEndCal()))
-				|| (currentFile.getEndCal().after(savedTask.getStartCal())
-						&& currentFile.getEndCal().before(savedTask.getEndCal())));
-	}
-
 	private void emptyUndoStack() {
-		while (!undoCommandtStack.isEmpty()) {
-			undoCommandtStack.pop();
+		while (!undoCommandStack.isEmpty()) {
+			undoCommandStack.pop();
 		}
+	}
+	private String compareDates(String dates) {
+		Calendar cal = Calendar.getInstance();
+		DateFormat df = new SimpleDateFormat("EEE");
+		DateFormat dF = new SimpleDateFormat("yyyy-MM-dd");
+		String date = df.format(cal.getTime()).toLowerCase();
+		while (!dates.contains(date)) {
+			cal.add(Calendar.DATE, 1);
+			date = df.format(cal.getTime()).toLowerCase();
+		}
+		return dF.format(cal.getTime());
 	}
 }
