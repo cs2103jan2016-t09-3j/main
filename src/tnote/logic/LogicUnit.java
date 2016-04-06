@@ -172,7 +172,7 @@ public class LogicUnit {
 					storage.addTask(currentCommand.getCurrentTask());
 				}
 			} else if (commandType.equals("change")) {
-					storage.setNewDirectory(currentCommand.getCurrentTask().getName());
+				storage.setNewDirectory(currentCommand.getCurrentTask().getName());
 			} else {
 				throw new Exception("cannot be redone");
 			}
@@ -211,6 +211,27 @@ public class LogicUnit {
 		return listOfOverdueTasks;
 	}
 
+	public ArrayList<TaskFile> viewFloatingList() throws Exception {
+		ArrayList<String> stringList = storage.readFromFloatingFile();
+		ArrayList<TaskFile> taskListToBeDisplayed = new ArrayList<TaskFile>();
+		for (String text : stringList) {
+			TaskFile currentFile = storage.getTaskFileByName(text);
+			if (currentFile.getIsTask() && !currentFile.getIsDone()) {
+				taskListToBeDisplayed.add(currentFile);
+			}
+		}
+		return taskListToBeDisplayed;
+	}
+
+	public boolean hasFloatingList() throws Exception {
+		ArrayList<String> list = storage.readFromFloatingFile();
+		if (list.isEmpty()) {
+			return false;
+		} else {
+			return true;
+		}
+	}
+
 	public boolean changeDirectory(String directoryName) throws Exception {
 		String commandChecker = "change";
 		LogicCommand newCommand = new LogicCommand(commandChecker);
@@ -230,6 +251,17 @@ public class LogicUnit {
 		} else {
 			return false;
 		}
+	}
+
+	protected boolean hasTimingClash(TaskFile currentFile, TaskFile savedTask) {
+		return ((currentFile.getStartCal().before(savedTask.getEndCal())
+				&& currentFile.getEndCal().after(savedTask.getEndCal()))
+				|| (currentFile.getStartCal().after(savedTask.getStartCal())
+						&& currentFile.getEndCal().before(savedTask.getEndCal()))
+				|| (currentFile.getStartCal().after(savedTask.getStartCal())
+						&& currentFile.getStartCal().before(savedTask.getEndCal()))
+				|| (currentFile.getEndCal().after(savedTask.getStartCal())
+						&& currentFile.getEndCal().before(savedTask.getEndCal())));
 	}
 
 	private void emptyUndoStack() {

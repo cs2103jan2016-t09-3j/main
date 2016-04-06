@@ -253,4 +253,15 @@ public class CommandAdd extends TNotesLogic {
 			return null;
 		}
 	}
+	public String compareDates(String dates) {
+		Calendar cal = Calendar.getInstance();
+		DateFormat df = new SimpleDateFormat("EEE");
+		DateFormat dF = new SimpleDateFormat("yyyy-MM-dd");
+		String date = df.format(cal.getTime()).toLowerCase();
+		while (!dates.contains(date)) {
+			cal.add(Calendar.DATE, 1);
+			date = df.format(cal.getTime()).toLowerCase();
+		}
+		return dF.format(cal.getTime());
+	}
 }
