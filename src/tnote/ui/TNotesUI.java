@@ -11,7 +11,8 @@ import tnote.parser.TNotesParser;
 public class TNotesUI {
 
 	enum COMMAND_TYPE {
-		ADD_COMMAND, CHANGE_DIRECTORY, DELETE_DIRECTORY, EDIT_COMMAND, DELETE_COMMAND, VIEW_COMMAND, INVALID, SET_COMMAND, SEARCH_COMMAND, SORT_COMMAND, HELP_COMMAND, EXIT
+		ADD_COMMAND, CHANGE_DIRECTORY, DELETE_DIRECTORY, EDIT_COMMAND, DELETE_COMMAND, VIEW_COMMAND, INVALID, SET_COMMAND, 
+		SEARCH_COMMAND, SORT_COMMAND, HELP_COMMAND, EXIT, UNDO_COMMAND, REDO_COMMAND
 	}
 
 	TNotesParser parser;
@@ -547,7 +548,15 @@ public class TNotesUI {
 				}
 			}
 			break;
-
+			
+		case UNDO_COMMAND:
+			
+			break;
+		
+		case REDO_COMMAND:
+			
+			break;
+			
 		case INVALID:
 			result = "Invalid command entered.\n";
 			result += "Please enter \"Help\" to show a list of available commands.\n";
@@ -591,6 +600,10 @@ public class TNotesUI {
 		} else if (checkCommand(commandString, "sort")) {
 			return COMMAND_TYPE.SORT_COMMAND;
 		} else if (checkCommand(commandString, "help")) {
+			return COMMAND_TYPE.UNDO_COMMAND;
+		} else if (checkCommand(commandString, "undo")) {
+			return COMMAND_TYPE.REDO_COMMAND;
+		} else if (checkCommand(commandString, "redo")) {
 			return COMMAND_TYPE.HELP_COMMAND;
 		} else if (checkCommand(commandString, "exit")) {
 			return COMMAND_TYPE.EXIT;
