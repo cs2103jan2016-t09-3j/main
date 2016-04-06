@@ -1,15 +1,26 @@
 package tnote.parser;
 import java.util.ArrayList;
-import java.text.ParseException;
 
-
+/**
+ * This class manages the input String entered by the user, split the string
+ * according to space an identify the commands
+ * 
+ * It retrieves the contents after identified command word and pass it to the
+ * UI class. It manages the input into their individual command and put
+ * into their respected classes.
+ * 
+ */
 public class TNotesParser {
+	private static final String MESSAGE_INVALID_COMMAND = "Invalid command has been entered!";
+	private static final String MESSAGE_NULL_INPUTSTRING = "Null inputString is passed in!";	
+	private static final String MESSAGE_NULL_STRING = " ";
 	
-	public interface Parser {
-		public Object parse(String input);
+	private static int NUM_FIRST_WORD = 0;
+	
+	enum TNotesParserCommandWords {
+		ADD, VIEW, EDIT, DELETE, SEARCH, SORT, HELP, EXIT, SET, CHANGE
+
 	}
-	
-	public static ArrayList<String> timeList = new ArrayList<String>();
 	TNotesParserAdd add;
 	TNotesParserChange change;
 	TNotesParserDelete delete;
@@ -33,15 +44,22 @@ public class TNotesParser {
 		view = new TNotesParserView();
 		edit = new TNotesParserEdit();
 	}
-	public static void main(String[] args) throws ParseException{
+	
+
+	public interface Parser {
+		public Object parse(String input);
+	}
+	
+	public static void main(String[] args) throws Exception{
 		TNotesParser parser = new TNotesParser();
 		parser.execute();
 		
 	}
-	public void execute() throws ParseException{
+
+	public void execute() throws Exception{
 		String output = new String();
 		String input = new String();  
-		input = "view do ee2024";
+		input = "add call mom due 3pm every day for weeks";
 		for (int i = 0; i < checkCommand(input).size(); i++){
 			output = checkCommand(input).get(i);
 			System.out.println(output);
@@ -49,80 +67,91 @@ public class TNotesParser {
 	}
 	
 	
-	
-	public ArrayList<String> checkCommand(String inputString) throws ParseException {
+	/**
+	 * Return an ArrayList that contains all the contents.
+	 * If valid task commands are found, contents in the list are updated.
+	 * 
+	 * @param inputString	An string input from the user.
+	 * @return	An ArrayList of String that are in their respective positions
+	 * @throws Exception 
+	 * 				- Error message will be thrown for invalid commands
+	 */
+	public ArrayList<String> checkCommand(String inputString) throws Exception{
 		ArrayList<String> list = new ArrayList<String>();
-		String arr[] = inputString.split(" ");
-		String firstWord = arr[0].toLowerCase();
+		assert inputString != "" : MESSAGE_NULL_INPUTSTRING;	
+		try{
+			
+			String arr[] = inputString.split(MESSAGE_NULL_STRING);
+			String firstWord = arr[NUM_FIRST_WORD].toUpperCase();
+			TNotesParserCommandWords getFirstWordValue = TNotesParserCommandWords.valueOf(firstWord);
+		switch(getFirstWordValue){
 		
-		switch(firstWord){
-			case "add" :
+			case ADD :
 
-				list.add(firstWord);
+				list.add(firstWord.toLowerCase());
 				list.addAll(add.addCommand(arr));
-				//System.out.println(list);
 				
-				//return list;
 				break;
-			case "view" :
+			case VIEW :
 				
-				list.add(firstWord);
+				list.add(firstWord.toLowerCase());
 				list.addAll(view.viewCommand(arr));
 				
 				return list;
-			case "edit" :
+			case EDIT :
 				
-				list.add(firstWord);
+				list.add(firstWord.toLowerCase());
 				list.addAll(edit.editCommand(arr));
 				
 				return list;	
-			case "delete" :
+			case DELETE :
 				
 				list.addAll(delete.deleteCommand(arr));
 				
 				return list;
-			case "search" :
+			case SEARCH :
 				
-				list.add(firstWord);
+				list.add(firstWord.toLowerCase());
 				list.addAll(search.searchCommand(arr));
 				
 				return list;
-			case "sort" :
+			case SORT :
 				
-				list.add(firstWord);
+				list.add(firstWord.toLowerCase());
 				list.addAll(sort.sortCommand(arr));
 				
-				//return list;
 				break;
-			case "help" :
+			case HELP :
 				
-				list.add(firstWord);
-				
-				return list;
-			case "exit" :
-				
-				list.add(firstWord);
+				list.add(firstWord.toLowerCase());
 				
 				return list;
-			case "set" :
+			case EXIT :
 				
-				list.add(firstWord);
+				list.add(firstWord.toLowerCase());
+				
+				return list;
+			case SET :
+				
+				list.add(firstWord.toLowerCase());
 				list.addAll(set.setCommand(arr));
 				
 				return list;
-			case "change" :
+			case CHANGE :
 				
 				list.addAll(change.changeCommand(arr));
 				
-				//return list;
-				break;
-				
-			//default :
-				// throw new ParseException("Invald Command!");
+				break;		
+			default:
+				throw new Exception(MESSAGE_INVALID_COMMAND);
+
+			}
+		} catch (Exception e) {
+			System.out.println(MESSAGE_INVALID_COMMAND);
 		}
+		
 		return list;
 
 		
 	}
-
 }

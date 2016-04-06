@@ -11,13 +11,24 @@ import java.util.Date;
 import java.util.List;
 import org.ocpsoft.prettytime.nlp.PrettyTimeParser;
 
+/**
+ * This class manages all the inputs related to time.
+ * 
+ * It format all the time inputs in to a fixed one, state the range and translate
+ * the time date natural language into specific one. 
+ * 
+ * It retrieves the input time and pass it to the
+ * rest of the Parser classes.class. 
+ * 
+ */
+
 public class TNotesParserTime {
 	
 	private static final String MESSAGE_INVALID_TIME = "Invalid time!";
-	private static final String MESSAGE_INVALID_TIME_PARSE = "Invalid parsed time!";
 	private static final String MESSAGE_INVALID_TIME_PATTERN = "Invalid time pattern!";
-	private static final String MESSAGE_INVALID_WEEKDAY = "Invalid weekday!";
-	private static final String MESSAGE_INVALID_DATE = "invalid date!";
+	private static final String MESSAGE_NULL_TIME = "Null input time!";
+	private static final String MESSAGE_NULL_TIME_LIST = "Null time input ArrayList";
+	private static final String MESSAGE_EMPTY_INPUT = "Empty natural language input";
 	private static final String MESSAGE_ISLETTER = "[a-zA-Z]+";
 	private static final String MESSAGE_NULL_STRING = "";
 	private static final String MESSAGE_INVALID_TIME_RANGE = "Invalid time range!";
@@ -25,19 +36,12 @@ public class TNotesParserTime {
 	private static final String MESSAGE_STANDARD_DATE_TIME_FORMAT = "E, y-M-d 'at' h:m:s a z";
 	
 	private static int NUM_GET_FIRST_DATE = 0;
-	private static int NUM_LAST_ARR_STR = 1;
-	private static int NUM_LAST_TWO_ARR_STR = 2;
 	private static int NUM_INITIALISATION = 0;
 	private static int NUM_TRUE = 1;
 	private static int NUM_FALSE = 0;
-	private static int NUM_FIRST_WORD = 0;
-	private static int NUM_SECOND_WORD = 1;
-	private static int NUM_MAX_TIME_LENGTH = 5;
 	private static int NUM_FIRST_CHAR = 0;
 	private static int NUM_LAST_CHAR = 1;
 	private static int NUM_SECOND_LAST_CHAR = 2;
-	private static int NUM_SUBSTRACTIO = 1;
-	private static int NUM_START_FROM_SECOND_STR = 1;
 	
 	private static final List<String> TIME_POSSIBLE_FORMAT = Collections.unmodifiableList(Arrays.asList(
 			"h:mm", "hh:m", "hh:mm","HH:mm",
@@ -69,14 +73,21 @@ public class TNotesParserTime {
 			"H.mm a", "HH.m a", "HH.m a"
 			));
 	
-	public String formatTime(String time) {
+	/**
+	 * Return an String that has the correct format of time.
+	 * If valid time is found, contents in the list are updated.
+	 * 
+	 * @param time	An time input from the user.
+	 * @return	Time with the correct format
+	 * @throws DateTimeException A null exception will be thrown 
+	 */
+	public String formatTime(String time){
 		ArrayList<String> timeList = new ArrayList<String>();
 		
 		assert time != null : MESSAGE_INVALID_TIME;
 		time = time.toUpperCase();
 		timeList.addAll(TIME_POSSIBLE_FORMAT);
 		LocalTime parsedTime = null;
-		assert parsedTime != null: MESSAGE_INVALID_TIME_PARSE;
 		
 		for (String timeFormat : timeList) {		
 			parsedTime = compareTimeFormat(time, timeFormat);
@@ -101,14 +112,25 @@ public class TNotesParserTime {
 		}
 	
 	}
-	////////////////////////////////////////////////////////////////////////////////////
+	/**
+	 * Return an integer that will indicate if the input String is a
+	 * valid time.
+	 * If valid time is found, contents in the list are updated.
+	 * 
+	 * The time formats that can be identify by this methods
+	 * are those contains ":" or contains am pm
+	 * 
+	 * @param input	An time input from the user.
+	 * @return	Integer that is either 1 or 0
+	 */
 	public int checkTime(String input) {
+		assert input != null : MESSAGE_NULL_TIME;
 		int inputCharLength = input.trim().length();
 		for(int i =NUM_INITIALISATION; i<inputCharLength; i++){
 			if((input.charAt(i) == ':' || 
 					(Character.toString(input.charAt(inputCharLength-NUM_LAST_CHAR)).equals("m")) &&
 					(Character.toString(input.charAt(inputCharLength-NUM_SECOND_LAST_CHAR)).equals("p") ||
-							Character.toString(input.charAt(inputCharLength-2)).equals("a")))
+					 Character.toString(input.charAt(inputCharLength-2)).equals("a")))
 					&& isLetters(Character.toString(input.charAt(NUM_FIRST_CHAR))) == NUM_FALSE){
 				return NUM_TRUE;
 			}
@@ -116,18 +138,17 @@ public class TNotesParserTime {
 		return NUM_FALSE ;
 	}
 	
-	public String formatAMPM(String[] arr) {
-		String time = new String();
-		for(int j=NUM_START_FROM_SECOND_STR;j<arr.length;j++ ){
-			if(!isAMPM(arr[j]).equals(MESSAGE_NULL_STRING)){
-				time = arr[j-NUM_LAST_ARR_STR] +" " + arr[j];
-			}else{
-				time = arr[j-NUM_LAST_ARR_STR];
-			}
-		}	
-		return time;
-	}
+	/**
+	 * Return an ArrayList that either contains the correct time format or
+	 * the error message.
+	 * 
+	 * @param list	An time input ArrayList from the user.
+	 * @return	updated ArrayList
+	 */
 	public ArrayList<String> compareTime(ArrayList<String> list){
+		
+		assert list != null : MESSAGE_NULL_TIME_LIST;
+		
 		int firstTime = Integer.parseInt(list.get(0).substring(0,2));
 		int secondTime = Integer.parseInt(list.get(1).substring(0,2));
 		
@@ -154,13 +175,22 @@ public class TNotesParserTime {
 		}
 		
 	}
-	public int isLetters(String nextString) {
+	private int isLetters(String nextString) {
 		if (nextString.matches(MESSAGE_ISLETTER)) {
 			return NUM_TRUE;
 		} else {
 			return NUM_FALSE;
 		}
 	}
+	/**
+	 * Return an String that contains the exact time and date
+	 * This method will recognize the natural languages that entered by the user 
+	 * which indicate the time and date 
+	 * 
+	 * @param input	The String entered by the user
+	 * @return	the exact date after formating
+	 * @throws Exception that returns null
+	 */
 	public String isAMPM(String atDatePMAM){
 		switch(atDatePMAM){
 			case "am" :
@@ -175,14 +205,24 @@ public class TNotesParserTime {
 				return "";
 		}	
 	}
-	public String prettyTime(String input){
+	/**
+	 * Return an String that contains the exact time and date
+	 * This method will recognize the natural languages that entered by the user 
+	 * which indicate the time and date 
+	 * 
+	 * @param input	The String entered by the user
+	 * @return	the exact date after formating
+	 * @throws Exception that returns null
+	 */
+	protected String prettyTime(String input){
+		assert input != "" : MESSAGE_EMPTY_INPUT;
 		try{
-		List<Date> dates = new PrettyTimeParser().parse(input);
-	    Date date = new Date();
-	    date =dates.get(NUM_GET_FIRST_DATE);
-	    SimpleDateFormat dateFormatter = new SimpleDateFormat(MESSAGE_STANDARD_DATE_TIME_FORMAT);
-	    dateFormatter = new SimpleDateFormat(MESSAGE_STANDARD_DATE_FORMAT);
-	    return dateFormatter.format(date);
+			List<Date> dates = new PrettyTimeParser().parse(input);
+			Date date = new Date();
+			date =dates.get(NUM_GET_FIRST_DATE);
+			SimpleDateFormat dateFormatter = new SimpleDateFormat(MESSAGE_STANDARD_DATE_TIME_FORMAT);
+			dateFormatter = new SimpleDateFormat(MESSAGE_STANDARD_DATE_FORMAT);
+			return dateFormatter.format(date);
 		}catch(Exception e){
 			return null;
 		}

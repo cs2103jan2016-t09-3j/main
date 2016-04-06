@@ -1,3 +1,6 @@
+//<<<<<<< HEAD:src/Parser/TNotesParserDate.java
+//package Parser;
+
 package tnote.parser;
 import java.io.IOException;
 import java.text.ParseException;
@@ -13,16 +16,26 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-
+/**
+ * This class manages all the inputs related to date.
+ * 
+ * It format all the date inputs in to a fixed one and state the range.
+ * The formats include date
+ * 
+ * It retrieves the input date and pass it to the
+ * rest of the Parser classes.class. 
+ * 
+ */
 public class TNotesParserDate {
 	
 	
 	private static final String MESSAGE_INVALID_MONTH = "Invalid month!";
 	private static final String MESSAGE_INVALID_WEEKDAY = "Invalid weekday!";
-	private static final String MESSAGE_INVALID_DATE = "invalid date!";
+	private static final String MESSAGE_INVALID_DATE_FORMAT = "invalid date!";
 	private static final String MESSAGE_ISLETTER = "[a-zA-Z]+";
 	private static final String MESSAGE_NULL_STRING = "";
 	private static final String MESSAGE_INVALID_DATE_RANGE = "Invalid date range!";
+	private static final String MESSAGE_INVALID_DATE = "Invalid date range";
 	private static final String MESSAGE_STANDARD_DATE_FORMAT ="yyyy-MM-dd";
 	
 	private static int NUM_SHORT_WEEKDAY = 4;
@@ -33,7 +46,6 @@ public class TNotesParserDate {
 	private static int NUM_FALSE = 0;
 	private static int NUM_FIRST_WORD = 0;
 	private static int NUM_SECOND_WORD = 1;
-	private static int NUM_MAX_DATE_LENGTH = 8;
 	private static int NUM_FIRST_CHAR = 0;
 	private static int NUM_SUBSTRING_RANGE = 1;
 	private static int NUM_START_FROM_SECOND_STR = 1;
@@ -75,7 +87,15 @@ public class TNotesParserDate {
 			"MMM"
 			));
 
-	String formatMonth(String monthInput) {
+	/**
+	 * Return an String that has the correct format of month.
+	 * If valid month is found, contents in the list are updated.
+	 * 
+	 * @param monthInPUT	An month input from the user.
+	 * @return	Month with the correct format
+	 * @throws DateTimeException A null exception will be thrown 
+	 */
+	public String formatMonth(String monthInput) {
 		String monthStr = capTheFirstChar(monthInput);
 		String monthString = new String();
 		Month month = null;
@@ -103,7 +123,14 @@ public class TNotesParserDate {
 		}
 	}
 	
-	////////////////////////////////////////////////////////////////////////
+	/**
+	 * Return an String that has the correct format of week days.
+	 * If valid week days is found, contents in the list are updated.
+	 * 
+	 * @param weekDayInput	An week days input from the user.
+	 * @return	week days with the correct format
+	 * @throws DateTimeException A null exception will be thrown 
+	 */
 	 String formatWeekDay(String weekDayInput) {
 		String dayFormat = new String();
 		String weekDay = capTheFirstChar(weekDayInput);
@@ -138,7 +165,14 @@ public class TNotesParserDate {
 			return null;
 		}
 	}
-	///////////////////////////////////////////////////////////////////////////////////
+	/**
+	 * Return an String that has the correct format of special days.
+	 * If valid special days is found, contents in the list are updated.
+	 * 
+	 * @param date	An special days input from the user.
+	 * @return	special days with the correct format
+	 * 			-"" will be returned if there is no special days
+	 */
 	public String formatSpecialDay(String date){
 		switch(date.toLowerCase()){
 			case "today" :
@@ -157,7 +191,14 @@ public class TNotesParserDate {
 				return "";
 		}	
 	}
-	////////////////////////////////////////////////////////////////////////////////////////////
+	/**
+	 * Return an String that has the correct format of date.
+	 * If valid date is found, contents in the list are updated.
+	 * 
+	 * @param inoutDate	An date input from the user.
+	 * @return	date with the correct format
+	 * @throws DateTimeException A null exception will be thrown 
+	 */
 	public String formatDate(String inputDate){
 	    LocalDate parsedDate = null;	
 		for (String dateFormat : DATE_POSSIBLE_FORMAT) {
@@ -180,42 +221,36 @@ public class TNotesParserDate {
 			return null;
 		}
 	}
-	///////////////////////////////////////////////////////////////////////////////////////////
-	public ArrayList<String> checkSpecialDay(String[] arr) {
-		ArrayList<String> specialDateList = new ArrayList<String>();
-		if(findLastImpt(arr) == NUM_TRUE){
-			for(int i=NUM_START_FROM_SECOND_STR;i<specialDate.length;i++){
-				if(arr[arr.length- NUM_LAST_TWO_ARR_STR].equals(specialDate[i])){
-					specialDateList.add(specialDate[i]);
-					return specialDateList;
-				}
-			}
-		}
-		else{
-			for(int i=NUM_INITIALISATION;i<specialDate.length;i++){
-				if(arr[arr.length- NUM_LAST_ARR_STR].equals(specialDate[i])){
-					specialDateList.add(specialDate[i]);
-					return specialDateList;
-				}
-			}
-			
-		}
-		return specialDateList;
-	}
-	//////////////////////////////////////////////////////////////////////////////////////////
+	/**
+	 * Return an integer that will indicate if the input String is a
+	 * valid date.
+	 * If valid date is found, contents in the list are updated.
+	 * 
+	 * The date formats that can be identify by this methods
+	 * are those contains "." or "-"
+	 * 
+	 * @param input	An time input from the user.
+	 * @return	Integer that is either 1 or 0
+	 */
 	public int checkDate(String input) {
+		assert input != null : MESSAGE_INVALID_DATE_FORMAT;
 		int inputCharLength = input.trim().length();
 		for(int i =NUM_INITIALISATION; i<inputCharLength; i++){
 			if(input.charAt(i) == '.' || input.charAt(i) == '-' ){
-				return NUM_TRUE;//if the input is time
+				return NUM_TRUE;
 			}
 		}
 		return NUM_FALSE ;
 	}
 	
-	//////////////////////////////////////////////////////////////////////////////////////////
-		public String compareWeekDayMonth(String inputDay){
-			//System.out.println(inputDay);
+	/**
+	 * Return an ArrayList that either contains the correct date format or
+	 * the original string
+	 * 
+	 * @param inputDay	An date input ArrayList from the user.
+	 * @return	updated inputDate
+	 */
+	public String compareWeekDayMonth(String inputDay){
 		if(!formatWeekDay(inputDay).equals(MESSAGE_NULL_STRING)){
 			return formatWeekDay(inputDay);
 		}
@@ -230,44 +265,39 @@ public class TNotesParserDate {
 		}
 		return inputDay;
 	}
-		public ArrayList<String> compareDate(ArrayList<String> dateList) throws ParseException{
-			SimpleDateFormat dateformat = new SimpleDateFormat(MESSAGE_STANDARD_DATE_FORMAT);
-			Date dateOne = dateformat.parse(dateList.get(NUM_FIRST_WORD));
-			Date dateTwo = dateformat.parse(dateList.get(NUM_SECOND_WORD));
-			try{
-			if (dateOne.after(dateTwo) ) {
-				dateList.clear();
-				dateList.add(MESSAGE_INVALID_DATE_RANGE);
-			    return dateList;
-			  
-			}else if (dateOne.before(dateTwo) || dateOne.equals(dateTwo)) {
-			  
-			    return dateList;  
-			}
-			}catch (DateTimeException e) {
-				return dateList;
-			}
-			return dateList;	
+	
+	/**
+	 * Return an ArrayList that either contains the correct date format or
+	 * the error message.
+	 * 
+	 * @param dateList	An time input ArrayList from the user.
+	 * @return	updated ArrayList
+	 * @throws DateTimeException
+	 */
+	public ArrayList<String> compareDate(ArrayList<String> dateList) throws ParseException{
+		SimpleDateFormat dateformat = new SimpleDateFormat(MESSAGE_STANDARD_DATE_FORMAT);
+		Date dateOne = dateformat.parse(dateList.get(NUM_FIRST_WORD));
+		Date dateTwo = dateformat.parse(dateList.get(NUM_SECOND_WORD));
+		try{
+		if (dateOne.after(dateTwo) ) {
+			dateList.clear();
+			dateList.add(MESSAGE_INVALID_DATE_RANGE);
+		    return dateList;
+		  
+		}else if (dateOne.before(dateTwo) || dateOne.equals(dateTwo)) {
+		  
+		    return dateList;  
+		}
+		}catch (DateTimeException e) {
+			return dateList;
+		}
+		return dateList;	
 
-		}
-		public int findLastImpt(String[] arr){
-			for(int i=NUM_INITIALISATION;i<ARR_IMPORTANT.length;i++){
-				if(arr[arr.length-NUM_LAST_ARR_STR].equals(ARR_IMPORTANT[i])){
-					return NUM_TRUE;
-				}
-			}
-			return NUM_FALSE;
-		}
-		public int isLetters(String nextString) {
-			if (nextString.matches(MESSAGE_ISLETTER)) {
-				return NUM_TRUE;
-			} 
-			else {
-				return NUM_FALSE;
-			}
-		}
-		public String capTheFirstChar(String dayMonth) {
-			return Character.toString(dayMonth.charAt(NUM_FIRST_CHAR)).toUpperCase() + dayMonth.substring(NUM_SUBSTRING_RANGE);
-		}
+	}
+
+	private String capTheFirstChar(String dayMonth) {
+		return Character.toString(dayMonth.charAt(NUM_FIRST_CHAR)).toUpperCase() + dayMonth.substring(NUM_SUBSTRING_RANGE);
+	}
+		
 		
 }

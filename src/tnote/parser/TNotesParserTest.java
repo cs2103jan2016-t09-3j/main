@@ -145,7 +145,7 @@ public class TNotesParserTest {
 			Arrays.asList("sort", "name");
 	
 	@Test
-	public void checkCommandExit() throws ParseException{
+	public void checkCommandExit() throws Exception{
 		TNotesParser tester = new TNotesParser(); 		
 		listExit.add("exit");
 		assertEquals("i want to test", listExit, tester.checkCommand("exit"));
@@ -153,7 +153,7 @@ public class TNotesParserTest {
 	}
 	
 	@Test
-	public void checkCommandAdd() throws ParseException{
+	public void checkCommandAdd() throws Exception{
 		TNotesParser tester = new TNotesParser(); 		
 		assertEquals("i want to test", listAdd1, tester.checkCommand("add call mom at 1pm"));
 		System.out.println("1. add call mom at 1pm (debug)");	
@@ -282,7 +282,7 @@ public class TNotesParserTest {
 				
 	}
 	@Test
-	public void checkCommandEdit() throws ParseException{
+	public void checkCommandEdit() throws Exception{
 		
 		TNotesParser tester = new TNotesParser(); 		
 		assertEquals("i want to test", listEdit1, tester.checkCommand("edit call mom status done"));
@@ -300,7 +300,7 @@ public class TNotesParserTest {
 	}
 	
 	@Test
-	public void checkCommandView() throws ParseException{
+	public void checkCommandView() throws Exception{
 		
 		TNotesParser tester = new TNotesParser(); 		
 		assertEquals("i want to test", listView1, tester.checkCommand("view 2-3-2016 to 4-3-2016"));
@@ -328,7 +328,7 @@ public class TNotesParserTest {
 	}
 	
 	@Test
-	public void checkCommandSet() throws ParseException{
+	public void checkCommandSet() throws Exception{
 		
 		TNotesParser tester = new TNotesParser(); 		
 		assertEquals("i want to test", listSet1, tester.checkCommand("set call mom complete"));
@@ -336,7 +336,7 @@ public class TNotesParserTest {
 	}
 	
 	@Test
-	public void checkCommandDelete() throws ParseException{
+	public void checkCommandDelete() throws Exception{
 		
 		TNotesParser tester = new TNotesParser(); 		
 		assertEquals("i want to test", listDelete1, tester.checkCommand("delete directory c:/file"));
@@ -348,21 +348,21 @@ public class TNotesParserTest {
 	}
 	
 	@Test
-	public void checkCommandChange() throws ParseException{
+	public void checkCommandChange() throws Exception{
 		
 		TNotesParser tester = new TNotesParser(); 		
 		assertEquals("i want to test", listChange1, tester.checkCommand("change directory location to c:/file"));
 		System.out.println("1. change directory location to c:/file");	
 	}
 	@Test
-	public void checkCommandSearch() throws ParseException{
+	public void checkCommandSearch() throws Exception{
 		
 		TNotesParser tester = new TNotesParser(); 		
 		assertEquals("i want to test", listSearch1, tester.checkCommand("search call mom"));
 		System.out.println("1. search call mom");	
 	}
 	@Test
-	public void checkCommandSort() throws ParseException{
+	public void checkCommandSort() throws Exception{
 		
 		TNotesParser tester = new TNotesParser(); 		
 		assertEquals("i want to test", listSort1, tester.checkCommand("sort by importance"));
