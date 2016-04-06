@@ -10,7 +10,7 @@ import tnote.storage.TNotesStorage;
 
 public class TNotesLogic {
 	Stack<LogicCommand> doCommandStack = new Stack<LogicCommand>();
-	Stack<LogicCommand> undoCommandtStack = new Stack<LogicCommand>();
+	Stack<LogicCommand> undoCommandStack = new Stack<LogicCommand>();
 	ArrayList<String> taskDetails = new ArrayList<String>();
 
 	TNotesStorage storage;
@@ -24,24 +24,24 @@ public class TNotesLogic {
 		storage = TNotesStorage.getInstance();
 	}
 
-	public LogicCommand addTask(ArrayList<String> fromParser) throws Exception {
+	public TaskFile addTask(ArrayList<String> fromParser) throws Exception {
 		String commandChecker = fromParser.remove(0);
 		LogicCommand newCommand = new LogicCommand(commandChecker);
 		TaskFile newTask = comAdd.add(fromParser);
 		newCommand.setCurrentTask(newTask);
 		doCommandStack.push(newCommand);
 		emptyUndoStack();
-		return doCommandStack.peek();
+		return newTask;
 	}
 
-	public LogicCommand deleteTask(ArrayList<String> fromParser) throws Exception {
+	public TaskFile deleteTask(ArrayList<String> fromParser) throws Exception {
 		String commandChecker = fromParser.remove(0);
 		LogicCommand newCommand = new LogicCommand(commandChecker);
 		TaskFile newTask = comDelete.delete(fromParser);
 		newCommand.setCurrentTask(newTask);
 		doCommandStack.push(newCommand);
 		emptyUndoStack();
-		return doCommandStack.peek();
+		return newTask;
 	}
 
 	public ArrayList<TaskFile> deleteIndex(ArrayList<TaskFile> currentList, int num) throws Exception {
@@ -54,7 +54,7 @@ public class TNotesLogic {
 		return currentList;
 	}
 
-	public LogicCommand editTask(ArrayList<String> fromParser) throws Exception {
+	public TaskFile editTask(ArrayList<String> fromParser) throws Exception {
 		String commandChecker = fromParser.remove(0);
 		String title = fromParser.get(0).trim();
 		LogicCommand newCommand = new LogicCommand(commandChecker);
@@ -63,7 +63,7 @@ public class TNotesLogic {
 		newCommand.setCurrentTask(newTask);
 		doCommandStack.push(newCommand);
 		emptyUndoStack();
-		return doCommandStack.peek();
+		return newTask;
 	}
 	public ArrayList<TaskFile> viewDateList(String date) throws Exception {
 		if (date.trim().equals("today")) {
@@ -180,13 +180,14 @@ public class TNotesLogic {
 		return searchTaskList;
 	}
 
-	public TaskFile undoCall() throws Exception {
+	public LogicCommand undoCall() throws Exception {
 		if (doCommandStack.isEmpty()) {
 			throw new Exception("No task to undo");
 		} else {
 			LogicCommand currentCommand = doCommandStack.pop();
 			String commandType = currentCommand.getCommandType();
 			TaskFile newTask = new TaskFile(currentCommand.getCurrentTask());
+			TaskFile tempTask = new TaskFile();
 			if (commandType.equals("add")) {
 				if (newTask.getIsRecurring()) {
 					storage.deleteRecurringTask(currentCommand.getCurrentTask().getName());
@@ -199,35 +200,48 @@ public class TNotesLogic {
 				if (newTask.getIsRecurring()) {
 					storage.deleteRecurringTask(currentCommand.getCurrentTask().getName());
 					storage.addTask(currentCommand.getOldTask());
+					tempTask = currentCommand.getCurrentTask();
+					currentCommand.setCurrentTask(currentCommand.getOldTask());
+					currentCommand.setOldTask(tempTask);
 				} else {
 					storage.deleteTask(currentCommand.getCurrentTask().getName());
 					storage.addTask(currentCommand.getOldTask());
+					tempTask = currentCommand.getCurrentTask();
+					currentCommand.setCurrentTask(currentCommand.getOldTask());
+					currentCommand.setOldTask(tempTask);
 				}
 			} else if (commandType.equals("set")) {
 				if (newTask.getIsRecurring()) {
 					storage.deleteRecurringTask(currentCommand.getCurrentTask().getName());
 					storage.addTask(currentCommand.getOldTask());
+					tempTask = currentCommand.getCurrentTask();
+					currentCommand.setCurrentTask(currentCommand.getOldTask());
+					currentCommand.setOldTask(tempTask);
 				} else {
 					storage.deleteTask(currentCommand.getCurrentTask().getName());
 					storage.addTask(currentCommand.getOldTask());
+					tempTask = currentCommand.getCurrentTask();
+					currentCommand.setCurrentTask(currentCommand.getOldTask());
+					currentCommand.setOldTask(tempTask);
 				}
 			} else if (commandType.equals("change")) {
 				storage.setNewDirectory(currentCommand.getOldTask().getName());
 			} else {
 				throw new Exception("cannot be undone");
 			}
-			undoCommandtStack.push(currentCommand);
-			return newTask;
+			undoCommandStack.push(currentCommand);
+			return undoCommandStack.peek();
 		}
 	}
 
-	public TaskFile redoCall() throws Exception {
-		if (undoCommandtStack.isEmpty()) {
+	public LogicCommand redoCall() throws Exception {
+		if (undoCommandStack.isEmpty()) {
 			throw new Exception("No task to redo");
 		} else {
-			LogicCommand currentCommand = undoCommandtStack.pop();
+			LogicCommand currentCommand = undoCommandStack.pop();
 			String commandType = currentCommand.getCommandType();
 			TaskFile newTask = new TaskFile(currentCommand.getCurrentTask());
+			TaskFile tempTask = new TaskFile();
 			if (commandType.equals("add")) {
 				storage.addTask(currentCommand.getCurrentTask());
 			} else if (commandType.equals("delete")) {
@@ -240,17 +254,29 @@ public class TNotesLogic {
 				if (newTask.getIsRecurring()) {
 					storage.deleteRecurringTask(currentCommand.getOldTask().getName());
 					storage.addTask(currentCommand.getCurrentTask());
+					tempTask = currentCommand.getCurrentTask();
+					currentCommand.setCurrentTask(currentCommand.getOldTask());
+					currentCommand.setOldTask(tempTask);
 				} else {
 					storage.deleteTask(currentCommand.getOldTask().getName());
 					storage.addTask(currentCommand.getCurrentTask());
+					tempTask = currentCommand.getCurrentTask();
+					currentCommand.setCurrentTask(currentCommand.getOldTask());
+					currentCommand.setOldTask(tempTask);
 				}
 			} else if (commandType.equals("set")) {
 				if (newTask.getIsRecurring()) {
 					storage.deleteRecurringTask(currentCommand.getOldTask().getName());
 					storage.addTask(currentCommand.getCurrentTask());
+					tempTask = currentCommand.getCurrentTask();
+					currentCommand.setCurrentTask(currentCommand.getOldTask());
+					currentCommand.setOldTask(tempTask);
 				} else {
 					storage.deleteTask(currentCommand.getOldTask().getName());
 					storage.addTask(currentCommand.getCurrentTask());
+					tempTask = currentCommand.getCurrentTask();
+					currentCommand.setCurrentTask(currentCommand.getOldTask());
+					currentCommand.setOldTask(tempTask);
 				}
 			} else if (commandType.equals("change")) {
 				storage.setNewDirectory(currentCommand.getCurrentTask().getName());
@@ -258,7 +284,7 @@ public class TNotesLogic {
 				throw new Exception("cannot be redone");
 			}
 			doCommandStack.push(currentCommand);
-			return newTask;
+			return doCommandStack.peek();
 		}
 	}
 
@@ -346,8 +372,8 @@ public class TNotesLogic {
 	}
 
 	private void emptyUndoStack() {
-		while (!undoCommandtStack.isEmpty()) {
-			undoCommandtStack.pop();
+		while (!undoCommandStack.isEmpty()) {
+			undoCommandStack.pop();
 		}
 	}
 	private String compareDates(String dates) {

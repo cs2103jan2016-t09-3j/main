@@ -1,0 +1,4 @@
+Apr 06, 2016 4:24:44 PM tnote.storage.StorageDirectoryHandler <init>
+WARNING: test Warning in Directory
+Apr 06, 2016 4:24:44 PM tnote.storage.TNotesStorage <init>
+INFO: TNoteStorage setup complete

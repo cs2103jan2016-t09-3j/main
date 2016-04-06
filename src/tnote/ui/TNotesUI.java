@@ -11,7 +11,8 @@ import tnote.parser.TNotesParser;
 public class TNotesUI {
 
 	enum COMMAND_TYPE {
-		ADD_COMMAND, CHANGE_DIRECTORY, DELETE_DIRECTORY, EDIT_COMMAND, DELETE_COMMAND, VIEW_COMMAND, INVALID, SET_COMMAND, SEARCH_COMMAND, SORT_COMMAND, HELP_COMMAND, EXIT
+		ADD_COMMAND, CHANGE_DIRECTORY, DELETE_DIRECTORY, EDIT_COMMAND, DELETE_COMMAND, VIEW_COMMAND, INVALID, SET_COMMAND, 
+		SEARCH_COMMAND, SORT_COMMAND, HELP_COMMAND, EXIT, UNDO_COMMAND, REDO_COMMAND
 	}
 
 	TNotesParser parser;
@@ -498,56 +499,64 @@ public class TNotesUI {
 		case SORT_COMMAND:
 			ArrayList<TaskFile> arrSort = new ArrayList<TaskFile>();
 			String sortType = userCommandSplit.get(1).trim();
-
-			if (sortType.equals("importance")) {
-				result = "I have sorted everything by importance for you. Do first things first!\n\n";
-
-				try {
-					viewList = logic.sortImportTask();
-					result = String.format("Your schedule for %s:\n", userCommandSplit.get(1));
-					for (int i = 0; i < viewList.size(); i++) {
-						if (viewList.get(i).getIsMeeting()) {
-							result += i + 1 + ". " + "[" + viewList.get(i).getStartTime() + "]-" + "["
-									+ viewList.get(i).getEndTime() + "]";
-						}
-						if (viewList.get(i).getIsDeadline()) {
-							result += i + 1 + ". " + "[" + viewList.get(i).getStartTime() + "]";
-						}
-						if (viewList.get(i).getImportance()) {
-							result += "[IMPORTANT] ";
-						}
-						result += String.format(" %s\n", viewList.get(i).getName());
-					}
-					
-					
-					
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					result = e.getMessage();
-				}
-			}
-
-			if (sortType.equals("name")) {
-				result = "I have sorted everything by name for you! I'm so amazing, what would you do without me!";
-				try {
-					arrSort = logic.sortNameTask();
-
-					result += String.format("You new schedule for %s: \n\n", userCommandSplit.get(1));
-
-					for (int i = 0; i < arrSort.size(); i++) {
-						result += i + 1 + ". " + "[" + arrSort.get(i).getStartTime() + "] ";
-						if (arrSort.get(i).getImportance()) {
-							result += "[IMPORTANT] ";
-						}
-						result += "[" + arrSort.get(i).getName() + "]\n";
-					}
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					result = e.getMessage();
-				}
-			}
+//
+//			if (sortType.equals("importance")) {
+//				result = "I have sorted everything by importance for you. Do first things first!\n\n";
+//
+//				try {
+//					viewList = logic.sortImportTask();
+//					result = String.format("Your schedule for %s:\n", userCommandSplit.get(1));
+//					for (int i = 0; i < viewList.size(); i++) {
+//						if (viewList.get(i).getIsMeeting()) {
+//							result += i + 1 + ". " + "[" + viewList.get(i).getStartTime() + "]-" + "["
+//									+ viewList.get(i).getEndTime() + "]";
+//						}
+//						if (viewList.get(i).getIsDeadline()) {
+//							result += i + 1 + ". " + "[" + viewList.get(i).getStartTime() + "]";
+//						}
+//						if (viewList.get(i).getImportance()) {
+//							result += "[IMPORTANT] ";
+//						}
+//						result += String.format(" %s\n", viewList.get(i).getName());
+//					}
+//					
+//					
+//					
+//				} catch (Exception e) {
+//					// TODO Auto-generated catch block
+//					result = e.getMessage();
+//				}
+//			}
+//
+//			if (sortType.equals("name")) {
+//				result = "I have sorted everything by name for you! I'm so amazing, what would you do without me!";
+//				try {
+//					arrSort = logic.sortNameTask();
+//
+//					result += String.format("You new schedule for %s: \n\n", userCommandSplit.get(1));
+//
+//					for (int i = 0; i < arrSort.size(); i++) {
+//						result += i + 1 + ". " + "[" + arrSort.get(i).getStartTime() + "] ";
+//						if (arrSort.get(i).getImportance()) {
+//							result += "[IMPORTANT] ";
+//						}
+//						result += "[" + arrSort.get(i).getName() + "]\n";
+//					}
+//				} catch (Exception e) {
+//					// TODO Auto-generated catch block
+//					result = e.getMessage();
+//				}
+//			}
 			break;
-
+			
+		case UNDO_COMMAND:
+			
+			break;
+		
+		case REDO_COMMAND:
+			
+			break;
+			
 		case INVALID:
 			result = "Invalid command entered.\n";
 			result += "Please enter \"Help\" to show a list of available commands.\n";
@@ -591,6 +600,10 @@ public class TNotesUI {
 		} else if (checkCommand(commandString, "sort")) {
 			return COMMAND_TYPE.SORT_COMMAND;
 		} else if (checkCommand(commandString, "help")) {
+			return COMMAND_TYPE.UNDO_COMMAND;
+		} else if (checkCommand(commandString, "undo")) {
+			return COMMAND_TYPE.REDO_COMMAND;
+		} else if (checkCommand(commandString, "redo")) {
 			return COMMAND_TYPE.HELP_COMMAND;
 		} else if (checkCommand(commandString, "exit")) {
 			return COMMAND_TYPE.EXIT;
