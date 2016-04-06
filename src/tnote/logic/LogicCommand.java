@@ -9,6 +9,9 @@ public class LogicCommand {
 	private TaskFile currentTask;
 	private TaskFile oldTask;
 	
+	private boolean isRecurring;
+	private ArrayList<String> startDates;
+	private ArrayList<String> endDates;
 	
 	public LogicCommand(String command) {
 		commandType = command;
@@ -20,24 +23,48 @@ public class LogicCommand {
 		return currentTask;
 	}
 
-	public void setCurrentTask(TaskFile currentTask) {
-		this.currentTask = currentTask;
-	}
-
 	public TaskFile getOldTask() {
 		return oldTask;
+	}
+	
+	public String getCommandType() {
+		return commandType;
+	}
+	
+	public ArrayList<String> getStartDates() {
+		return startDates;
+	}
+	
+	public ArrayList<String> getEndDates() {
+		return endDates;
+	}
+	
+	public boolean getIsRecurring() {
+		return isRecurring;
+	}
+	
+	public void setCurrentTask(TaskFile currentTask) {
+		this.currentTask = currentTask;
 	}
 
 	public void setOldTask(TaskFile oldTask) {
 		this.oldTask = oldTask;
 	}
 	
-	public String getCommandType() {
-		return commandType;
-	}
-
 	public void setCommandType(String commandType) {
 		this.commandType = commandType;
 	}
-
+	
+	public void setIsRecurring(boolean isRecur) {
+		this.isRecurring = isRecur;
+	}
+	
+	public void setStartDates(ArrayList<String> startDates) {
+		this.startDates = startDates;
+	}
+	
+	public void setEndDates(ArrayList<String> endDates) {
+		this.endDates = endDates;
+	}
+	
 }

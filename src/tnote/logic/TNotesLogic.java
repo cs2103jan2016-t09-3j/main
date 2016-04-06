@@ -58,9 +58,10 @@ public class TNotesLogic {
 				int indexOfRecurKeyWord = fromParser.indexOf("every");
 				recurArgument = fromParser.remove(indexOfRecurKeyWord + 1).toLowerCase();
 				fromParser.remove("every");
-				if((fromParser.size() > indexOfRecurKeyWord) && (fromParser.get(indexOfRecurKeyWord +1).equals("for"))) {
-					recurNumDuration = fromParser.remove(indexOfRecurKeyWord +2);
-					recurDuration = fromParser.remove(indexOfRecurKeyWord + 2);
+				if ((fromParser.size() > indexOfRecurKeyWord) && (fromParser.get(indexOfRecurKeyWord).equals("for"))) {
+					fromParser.remove("for");
+					recurNumDuration = fromParser.remove(indexOfRecurKeyWord);
+					recurDuration = fromParser.remove(indexOfRecurKeyWord);
 				}
 				// for(String text : fromParser){
 				// if(text.equals("for")){
@@ -217,7 +218,8 @@ public class TNotesLogic {
 					if (savedTask.getIsMeeting()) {
 						if (hasTimingClash(currentFile, savedTask)) {
 							// task clashes, should not add
-							throw new TimeClashException("There is a time clash", currentFile.getName(), savedTask.getName());
+							throw new TimeClashException("There is a time clash", currentFile.getName(),
+									savedTask.getName());
 						}
 					}
 				}
@@ -225,39 +227,72 @@ public class TNotesLogic {
 			if (currentFile.getIsRecurring()) {
 				String taskDetails = currentFile.getDetails();
 				taskDetails += " It recurs every " + recurArgument;
+				if (!recurDuration.isEmpty() && !recurNumDuration.isEmpty()) {
+					taskDetails += " for " + recurNumDuration + " " + recurDuration;
+				}
 				System.out.println(taskDetails);
 				currentFile.setDetails(taskDetails);
 
 				DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 				ArrayList<String> dateList = new ArrayList<String>();
 				ArrayList<String> endDateList = new ArrayList<String>();
-				
-				
+				Calendar startCal = (Calendar) currentFile.getStartCal().clone();
+				Calendar endCal = Calendar.getInstance();
+
+				if (currentFile.getIsMeeting()) {
+					endCal.setTime(df.parse(currentFile.getEndDate()));
+				}
+
 				if (recurArgument.equals("day")) {
 					if (recurDuration.contains("day")) {
 						for (int i = 0; i < Integer.parseInt(recurNumDuration); i++) {
-							dateList.add(df.format(cal.getTime()));
-							cal.add(Calendar.DATE, 1);
+							dateList.add(df.format(startCal.getTime()));
+							startCal.add(Calendar.DATE, 1);
+
+							if (currentFile.getIsMeeting()) {
+								endDateList.add(df.format(endCal.getTime()));
+								endCal.add(Calendar.DATE, 1);
+							}
 						}
 					} else if (recurDuration.contains("week")) {
 						for (int i = 0; i < (Integer.parseInt(recurNumDuration) * 7); i++) {
 							dateList.add(df.format(cal.getTime()));
 							cal.add(Calendar.DATE, 1);
+
+							if (currentFile.getIsMeeting()) {
+								endDateList.add(df.format(endCal.getTime()));
+								endCal.add(Calendar.DATE, 1);
+							}
 						}
 					} else if (recurDuration.contains("fortnight")) {
 						for (int i = 0; i < (Integer.parseInt(recurNumDuration) * 14); i++) {
 							dateList.add(df.format(cal.getTime()));
 							cal.add(Calendar.DATE, 1);
+
+							if (currentFile.getIsMeeting()) {
+								endDateList.add(df.format(endCal.getTime()));
+								endCal.add(Calendar.DATE, 1);
+							}
 						}
 					} else if (recurDuration.contains("month")) {
 						for (int i = 0; i < (Integer.parseInt(recurNumDuration) * 30); i++) {
 							dateList.add(df.format(cal.getTime()));
 							cal.add(Calendar.DATE, 1);
+
+							if (currentFile.getIsMeeting()) {
+								endDateList.add(df.format(endCal.getTime()));
+								endCal.add(Calendar.DATE, 1);
+							}
 						}
 					} else {
 						for (int i = 0; i < 12; i++) {
 							dateList.add(df.format(cal.getTime()));
 							cal.add(Calendar.DATE, 1);
+
+							if (currentFile.getIsMeeting()) {
+								endDateList.add(df.format(endCal.getTime()));
+								endCal.add(Calendar.DATE, 1);
+							}
 						}
 					}
 				} else if (recurArgument.equals("week")) {
@@ -265,21 +300,41 @@ public class TNotesLogic {
 						for (int i = 0; i < (Integer.parseInt(recurNumDuration)); i++) {
 							dateList.add(df.format(cal.getTime()));
 							cal.add(Calendar.WEEK_OF_YEAR, 1);
+
+							if (currentFile.getIsMeeting()) {
+								endDateList.add(df.format(endCal.getTime()));
+								endCal.add(Calendar.WEEK_OF_YEAR, 1);
+							}
 						}
 					} else if (recurDuration.contains("fortnight")) {
 						for (int i = 0; i < (Integer.parseInt(recurNumDuration) * 2); i++) {
 							dateList.add(df.format(cal.getTime()));
 							cal.add(Calendar.WEEK_OF_YEAR, 1);
+
+							if (currentFile.getIsMeeting()) {
+								endDateList.add(df.format(endCal.getTime()));
+								endCal.add(Calendar.WEEK_OF_YEAR, 1);
+							}
 						}
-					} else if (recurDuration.contains("month")){
+					} else if (recurDuration.contains("month")) {
 						for (int i = 0; i < (Integer.parseInt(recurNumDuration) * 4); i++) {
 							dateList.add(df.format(cal.getTime()));
 							cal.add(Calendar.WEEK_OF_YEAR, 1);
+
+							if (currentFile.getIsMeeting()) {
+								endDateList.add(df.format(endCal.getTime()));
+								endCal.add(Calendar.WEEK_OF_YEAR, 1);
+							}
 						}
 					} else {
 						for (int i = 0; i < 10; i++) {
 							dateList.add(df.format(cal.getTime()));
 							cal.add(Calendar.WEEK_OF_YEAR, 1);
+
+							if (currentFile.getIsMeeting()) {
+								endDateList.add(df.format(endCal.getTime()));
+								endCal.add(Calendar.WEEK_OF_YEAR, 1);
+							}
 						}
 					}
 
@@ -288,17 +343,32 @@ public class TNotesLogic {
 						for (int i = 0; i < (Integer.parseInt(recurNumDuration)); i++) {
 							dateList.add(df.format(cal.getTime()));
 							cal.add(Calendar.WEEK_OF_YEAR, 2);
+
+							if (currentFile.getIsMeeting()) {
+								endDateList.add(df.format(endCal.getTime()));
+								endCal.add(Calendar.WEEK_OF_YEAR, 2);
+							}
 						}
 					} else {
 						for (int i = 0; i < (Integer.parseInt(recurNumDuration) * 2); i++) {
 							dateList.add(df.format(cal.getTime()));
 							cal.add(Calendar.WEEK_OF_YEAR, 2);
+
+							if (currentFile.getIsMeeting()) {
+								endDateList.add(df.format(endCal.getTime()));
+								endCal.add(Calendar.WEEK_OF_YEAR, 2);
+							}
 						}
 					}
 				} else if (recurArgument.equals("month")) {
 					for (int i = 0; i < (Integer.parseInt(recurNumDuration)); i++) {
 						dateList.add(df.format(cal.getTime()));
 						cal.add(Calendar.MONTH, 1);
+
+						if (currentFile.getIsMeeting()) {
+							endDateList.add(df.format(endCal.getTime()));
+							endCal.add(Calendar.MONTH, 1);
+						}
 					}
 
 				} else {
@@ -308,17 +378,56 @@ public class TNotesLogic {
 					Date dateToStart = df.parse(date);
 					cal.setTime(dateToStart);
 
-					for (int i = 0; i < 8; i++) {
-						dateList.add(df.format(cal.getTime()));
-						cal.add(Calendar.WEEK_OF_YEAR, 1);
+					if (recurDuration.contains("week")) {
+						for (int i = 0; i < (Integer.parseInt(recurNumDuration)); i++) {
+							dateList.add(df.format(cal.getTime()));
+							cal.add(Calendar.WEEK_OF_YEAR, 1);
+
+							if (currentFile.getIsMeeting()) {
+								endDateList.add(df.format(endCal.getTime()));
+								endCal.add(Calendar.WEEK_OF_YEAR, 1);
+							}
+						}
+					} else if (recurDuration.contains("fortnight")) {
+						for (int i = 0; i < (Integer.parseInt(recurNumDuration) * 2); i++) {
+							dateList.add(df.format(cal.getTime()));
+							cal.add(Calendar.WEEK_OF_YEAR, 1);
+
+							if (currentFile.getIsMeeting()) {
+								endDateList.add(df.format(endCal.getTime()));
+								endCal.add(Calendar.WEEK_OF_YEAR, 1);
+							}
+						}
+					} else if (recurDuration.contains("month")) {
+						for (int i = 0; i < (Integer.parseInt(recurNumDuration) * 4); i++) {
+							dateList.add(df.format(cal.getTime()));
+							cal.add(Calendar.WEEK_OF_YEAR, 1);
+
+							if (currentFile.getIsMeeting()) {
+								endDateList.add(df.format(endCal.getTime()));
+								endCal.add(Calendar.WEEK_OF_YEAR, 1);
+							}
+						}
+					} else {
+						for (int i = 0; i < 8; i++) {
+							dateList.add(df.format(cal.getTime()));
+							cal.add(Calendar.WEEK_OF_YEAR, 1);
+
+							if (currentFile.getIsMeeting()) {
+								endDateList.add(df.format(endCal.getTime()));
+								endCal.add(Calendar.WEEK_OF_YEAR, 1);
+							}
+						}
 					}
 				}
 
 				RecurringTaskFile recurTask = new RecurringTaskFile(currentFile);
 				recurTask.addRecurringStartDate(dateList);
+				recurTask.addRecurringEndDate(endDateList);
+
 				storage.addRecurringTask(recurTask);
 
-				pushToStack(commandWord, currentFile);
+				pushToStackRecur(commandWord, currentFile, dateList, endDateList);
 				return currentFile;
 			}
 
@@ -339,6 +448,17 @@ public class TNotesLogic {
 	private void pushToStack(String commandWord, TaskFile previousTask) {
 		LogicCommand commandObj = new LogicCommand(commandWord);
 		commandObj.setOldTask(previousTask);
+		undoStack.push(commandObj);
+		redoStack.clear();
+	}
+
+	private void pushToStackRecur(String commandWord, TaskFile previousTask, ArrayList<String> startDates,
+			ArrayList<String> endDates) {
+		LogicCommand commandObj = new LogicCommand(commandWord);
+		commandObj.setOldTask(previousTask);
+		commandObj.setIsRecurring(true);
+		commandObj.setStartDates(startDates);
+		commandObj.setEndDates(endDates);
 		undoStack.push(commandObj);
 		redoStack.clear();
 	}
@@ -569,6 +689,18 @@ public class TNotesLogic {
 		LogicCommand commandObj = new LogicCommand(commandWord);
 		commandObj.setOldTask(oldTask);
 		commandObj.setCurrentTask(mostRecentTask);
+		undoStack.push(commandObj);
+		redoStack.clear();
+	}
+
+	private void editPushToStackRecur(String commandWord, TaskFile oldTask, TaskFile mostRecentTask,
+			ArrayList<String> startDates, ArrayList<String> endDates) {
+		LogicCommand commandObj = new LogicCommand(commandWord);
+		commandObj.setOldTask(oldTask);
+		commandObj.setCurrentTask(mostRecentTask);
+		commandObj.setIsRecurring(true);
+		commandObj.setStartDates(startDates);
+		commandObj.setEndDates(endDates);
 		undoStack.push(commandObj);
 		redoStack.clear();
 	}
@@ -814,14 +946,30 @@ public class TNotesLogic {
 		TaskFile currentFile = new TaskFile(oldFile);
 		RecurringTaskFile recurTask = new RecurringTaskFile(currentFile);
 		ArrayList<String> dateList = storage.getRecurTaskStartDateList(title);
+		ArrayList<String> endDateList = new ArrayList<String>();
 		recurTask.addRecurringStartDate(dateList);
 
-		if (type.equals("time")) {
+		if (currentFile.getIsMeeting()) {
+			endDateList = storage.getRecurTaskEndDateList(title);
+			recurTask.addRecurringEndDate(endDateList);
+		}
+
+		if (type.equals("name")) {
+			storage.deleteRecurringTask(title);
+			recurTask.setName(newText);
+
+			if (storage.addRecurringTask(recurTask)) {
+				editPushToStackRecur(commandWord, oldFile, currentFile, dateList, endDateList);
+				return currentFile;
+			} else {
+				System.out.println("did not manage to add to storage");
+			}
+		} else if (type.equals("time")) {
 			storage.deleteRecurringTask(title);
 			recurTask.setStartTime(newText);
 
 			if (storage.addRecurringTask(recurTask)) {
-				editPushToStack(commandWord, oldFile, currentFile);
+				editPushToStackRecur(commandWord, oldFile, currentFile, dateList, endDateList);
 				return recurTask;
 			} else {
 				throw new Exception("did not add to storage");
@@ -831,7 +979,7 @@ public class TNotesLogic {
 			recurTask.setStartTime(newText);
 
 			if (storage.addRecurringTask(recurTask)) {
-				editPushToStack(commandWord, oldFile, currentFile);
+				editPushToStackRecur(commandWord, oldFile, currentFile, dateList, endDateList);
 				return recurTask;
 			} else {
 				throw new Exception("did not add to storage");
@@ -840,7 +988,7 @@ public class TNotesLogic {
 			storage.deleteTask(title);
 			recurTask.setEndTime(newText);
 			if (storage.addRecurringTask(recurTask)) {
-				editPushToStack(commandWord, oldFile, currentFile);
+				editPushToStackRecur(commandWord, oldFile, currentFile, dateList, endDateList);
 				return recurTask;
 			} else {
 				throw new Exception("did not add to storage");
@@ -849,7 +997,7 @@ public class TNotesLogic {
 			storage.deleteTask(title);
 			recurTask.setStartDate(newText);
 			if (storage.addRecurringTask(recurTask)) {
-				editPushToStack(commandWord, oldFile, currentFile);
+				editPushToStackRecur(commandWord, oldFile, currentFile, dateList, endDateList);
 				return recurTask;
 			} else {
 				throw new Exception("did not add to storage");
@@ -858,7 +1006,7 @@ public class TNotesLogic {
 			storage.deleteTask(title);
 			recurTask.setEndDate(newText);
 			if (storage.addRecurringTask(recurTask)) {
-				editPushToStack(commandWord, oldFile, currentFile);
+				editPushToStackRecur(commandWord, oldFile, currentFile, dateList, endDateList);
 				return recurTask;
 			} else {
 				throw new Exception("did not add to storage");
@@ -867,7 +1015,7 @@ public class TNotesLogic {
 			storage.deleteTask(title);
 			recurTask.setDetails(newText);
 			if (storage.addRecurringTask(recurTask)) {
-				editPushToStack(commandWord, oldFile, currentFile);
+				editPushToStackRecur(commandWord, oldFile, currentFile, dateList, endDateList);
 				return recurTask;
 			} else {
 				throw new Exception("did not add to storage");
@@ -880,7 +1028,7 @@ public class TNotesLogic {
 				recurTask.setImportance(false);
 			}
 			if (storage.addRecurringTask(recurTask)) {
-				editPushToStack(commandWord, oldFile, currentFile);
+				editPushToStackRecur(commandWord, oldFile, currentFile, dateList, endDateList);
 				return currentFile;
 			}
 		} else
@@ -893,9 +1041,12 @@ public class TNotesLogic {
 		if (fromParser.isEmpty()) {
 			throw new Exception("invalid command");
 		}
+		ArrayList<String> startDates = storage.getRecurTaskStartDateList(fromParser.get(0));
+		ArrayList<String> endDates = storage.getRecurTaskEndDateList(fromParser.get(0));
 		TaskFile deletedTask = storage.deleteRecurringTask(fromParser.get(0));
 		if (deletedTask != null) {
-			pushToStack(commandWord, deletedTask);
+
+			pushToStackRecur(commandWord, deletedTask, startDates, endDates);
 
 			return deletedTask;
 		} else {
@@ -923,16 +1074,37 @@ public class TNotesLogic {
 			String commandWord = prevCmd.getCommandType();
 			TaskFile prevTask = prevCmd.getOldTask();
 
-			if (commandWord.equals("add")) {
-				storage.deleteTask(prevTask.getName());
-			} else if (commandWord.equals("delete")) {
-				storage.addTask(prevTask);
-			} else if (commandWord.equals("edit") || commandWord.equals("set")) {
-				TaskFile currentTask = prevCmd.getCurrentTask();
-				storage.deleteTask(currentTask.getName());
-				storage.addTask(prevTask);
+			if (prevCmd.getIsRecurring()) {
+				ArrayList<String> startDates = prevCmd.getStartDates();
+				ArrayList<String> endDates = prevCmd.getEndDates();
+				RecurringTaskFile recurTask = new RecurringTaskFile(prevTask);
+				recurTask.addRecurringStartDate(startDates);
+				recurTask.addRecurringEndDate(endDates);
+
+				if (commandWord.equals("add")) {
+					storage.deleteRecurringTask(prevTask.getName());
+				} else if (commandWord.equals("delete")) {
+					storage.addRecurringTask(recurTask);
+				} else if (commandWord.equals("edit") || commandWord.equals("set")) {
+					TaskFile currentTask = prevCmd.getCurrentTask();
+					storage.deleteRecurringTask(currentTask.getName());
+					storage.addRecurringTask(recurTask);
+				} else {
+					assertEquals("", commandWord);
+				}
 			} else {
-				assertEquals("", commandWord);
+
+				if (commandWord.equals("add")) {
+					storage.deleteTask(prevTask.getName());
+				} else if (commandWord.equals("delete")) {
+					storage.addTask(prevTask);
+				} else if (commandWord.equals("edit") || commandWord.equals("set")) {
+					TaskFile currentTask = prevCmd.getCurrentTask();
+					storage.deleteTask(currentTask.getName());
+					storage.addTask(prevTask);
+				} else {
+					assertEquals("", commandWord);
+				}
 			}
 
 			redoStack.push(prevCmd);
@@ -948,18 +1120,41 @@ public class TNotesLogic {
 			String commandWord = nextCmd.getCommandType();
 			TaskFile prevTask = nextCmd.getOldTask();
 
-			if (commandWord.equals("add")) {
-				storage.addTask(prevTask);
-			} else if (commandWord.equals("delete")) {
-				storage.deleteTask(prevTask.getName());
-			} else if (commandWord.equals("edit") || commandWord.equals("set")) {
-				TaskFile currentTask = nextCmd.getCurrentTask();
-				storage.deleteTask(prevTask.getName());
-				storage.addTask(currentTask);
-			} else {
-				assertEquals("", commandWord);
-			}
+			if (nextCmd.getIsRecurring()) {
+				ArrayList<String> startDates = nextCmd.getStartDates();
+				ArrayList<String> endDates = nextCmd.getEndDates();
+				RecurringTaskFile recurTask = new RecurringTaskFile(prevTask);
+				recurTask.addRecurringStartDate(startDates);
+				recurTask.addRecurringEndDate(endDates);
 
+				if (commandWord.equals("add")) {
+					storage.addRecurringTask(recurTask);
+				} else if (commandWord.equals("delete")) {
+					storage.deleteRecurringTask(prevTask.getName());
+				} else if (commandWord.equals("edit") || commandWord.equals("set")) {
+					TaskFile currentTask = nextCmd.getCurrentTask();
+					RecurringTaskFile recurTaskAfterEdit = new RecurringTaskFile(currentTask);
+					recurTaskAfterEdit.addRecurringStartDate(startDates);
+					recurTaskAfterEdit.addRecurringEndDate(endDates);
+
+					storage.deleteRecurringTask(prevTask.getName());
+					storage.addRecurringTask(recurTaskAfterEdit);
+				} else {
+					assertEquals("", commandWord);
+				}
+			} else {
+				if (commandWord.equals("add")) {
+					storage.addTask(prevTask);
+				} else if (commandWord.equals("delete")) {
+					storage.deleteTask(prevTask.getName());
+				} else if (commandWord.equals("edit") || commandWord.equals("set")) {
+					TaskFile currentTask = nextCmd.getCurrentTask();
+					storage.deleteTask(prevTask.getName());
+					storage.addTask(currentTask);
+				} else {
+					assertEquals("", commandWord);
+				}
+			}
 			undoStack.push(nextCmd);
 			return nextCmd;
 		} else {
