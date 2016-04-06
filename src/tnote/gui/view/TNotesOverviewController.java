@@ -1,3 +1,4 @@
+//@@author Joelle
 package tnote.gui.view;
 
 import java.awt.Component;

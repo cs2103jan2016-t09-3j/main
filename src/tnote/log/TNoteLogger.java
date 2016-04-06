@@ -1,3 +1,4 @@
+//@@author A0124131B
 package tnote.log;
 
 import java.util.logging.FileHandler;

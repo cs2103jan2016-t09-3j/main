@@ -1,3 +1,4 @@
+//@@author A0124697
 package tnote.object;
 
 import java.util.Comparator;
