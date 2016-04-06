@@ -1,21 +1,21 @@
 package tnote.parser;
 import static org.junit.Assert.assertEquals;
-
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Test;
-//very for 2 weeks
-//for a month
-//for 6 day
+
+/**
+ * This class will test all the input and output from all the 
+ * public classes. 
+ * 
+ * There is no way to test natural languages because the result varies day after day.
+ */
 public class TNotesParserTest {
 	private static final String TEXT_EXIT = "exit command successful";
-	
 	public static ArrayList<String> listExit = new ArrayList<String>();
-	
-	private static final List<String> listAdd1 = Arrays.asList("add", "call mom", "13:00");
+	private static final List<String> listAdd1 = Arrays.asList( "call mom", "13:00");
 	private static final List<String> listAdd2 = 
 			Arrays.asList("add", "call mom", "2016-03-02", "15:00","19:00");
 	private static final List<String> listAdd3 = 
@@ -64,10 +64,6 @@ public class TNotesParserTest {
 			Arrays.asList("add", "call mom", "important");
 	private static final List<String> listAdd25 = 
 			Arrays.asList("add", "call mom", "JULY");
-//	private static final List<String> listAdd26 = 
-//			Arrays.asList("add", "call mom", "2016-04-2");
-//	private static final List<String> listAdd27 = 
-//			Arrays.asList("add", "i want to buy the room", "2016-04-2");
 	private static final List<String> listAdd26 = 
 			Arrays.asList("add", "call mom", "2016-02-02", "12:00", "2016-03-03", "13:00", "at to due from");
 	private static final List<String> listAdd27 = 
@@ -143,6 +139,9 @@ public class TNotesParserTest {
 			Arrays.asList("sort", "importance");
 	private static final List<String> listSort2 = 
 			Arrays.asList("sort", "name");
+	////////////////////////////////////////////////////////////////////////////
+	private static final List<String> list1 = 
+			Arrays.asList("Invalid command has been entered!");
 	
 	@Test
 	public void checkCommandExit() throws Exception{
@@ -155,8 +154,8 @@ public class TNotesParserTest {
 	@Test
 	public void checkCommandAdd() throws Exception{
 		TNotesParser tester = new TNotesParser(); 		
-		assertEquals("i want to test", listAdd1, tester.checkCommand("add call mom at 1pm"));
-		System.out.println("1. add call mom at 1pm (debug)");	
+//		assertEquals("i want to test", listAdd1, tester.addCommand("call mom at 1pm"));
+//		System.out.println("1. call mom at 1pm (debug)");	
 		
 		assertEquals("i want to test", listAdd2, tester.checkCommand("add call mom due 2-3-2016 at 15:00 to 19:00"));
 		System.out.println("2. add call mom due 2-3-2016 at 15:00 to 19:00(debug)");	
@@ -238,12 +237,6 @@ public class TNotesParserTest {
 		assertEquals("i want to test", listAdd25, 
 				tester.checkCommand("add call mom at jul"));
 				System.out.println("25. add call mom at jul(small letter)");
-//		assertEquals("i want to test", listAdd26, 
-//				tester.checkCommand("add call mom the day after tomorrow"));
-//				System.out.println("26. add call mom the day after tomorrow");
-//		assertEquals("i want to test", listAdd27, 
-//				tester.checkCommand("add i want to buy the room the day after tomorrow"));
-//				System.out.println("27. add i want to buy the room the day after tomorrow");
 		assertEquals("i want to test", listAdd26, 
 				tester.checkCommand("add call mom from 2-2-2016 at 12:00 to 3-3-2016 at 13:00 details at to due from"));
 				System.out.println("26. add call mom from 2-2-2016 at 12:00 to 3-3-2016 at 13:00 details at to due from");
@@ -299,6 +292,13 @@ public class TNotesParserTest {
 		System.out.println("4. edit call mom importance yes");
 	}
 	
+//	@Test
+//	public void checkCommand() throws Exception{
+//		TNotesParser tester = new TNotesParser(); 		
+//		assertEquals("i want to test", list1, tester.checkCommand("a"));
+//		System.out.println("1. invalid command testing");	
+//	}
+	
 	@Test
 	public void checkCommandView() throws Exception{
 		
@@ -342,9 +342,9 @@ public class TNotesParserTest {
 		assertEquals("i want to test", listDelete1, tester.checkCommand("delete directory c:/file"));
 		System.out.println("1. delete directory c:/file");			
 		assertEquals("i want to test", listDelete2, tester.checkCommand("delete buy red apple"));
-		System.out.println("1. delete buy red apple");	
+		System.out.println("2. delete buy red apple");	
 		assertEquals("i want to test", listDelete3, tester.checkCommand("delete all"));
-		System.out.println("1. delete all");	
+		System.out.println("3. delete all");	
 	}
 	
 	@Test

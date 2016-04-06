@@ -18,7 +18,7 @@ public class TNotesParser {
 	private static int NUM_FIRST_WORD = 0;
 	
 	enum TNotesParserCommandWords {
-		ADD, VIEW, EDIT, DELETE, SEARCH, SORT, HELP, EXIT, SET, CHANGE
+		ADD, VIEW, EDIT, DELETE, SEARCH, SORT, HELP, EXIT, SET, CHANGE, UNDO, REDO
 
 	}
 	TNotesParserAdd add;
@@ -59,7 +59,7 @@ public class TNotesParser {
 	public void execute() throws Exception{
 		String output = new String();
 		String input = new String();  
-		input = "add call mom due 3pm every day for weeks";
+		input = "redo";
 		for (int i = 0; i < checkCommand(input).size(); i++){
 			output = checkCommand(input).get(i);
 			System.out.println(output);
@@ -141,7 +141,17 @@ public class TNotesParser {
 				
 				list.addAll(change.changeCommand(arr));
 				
-				break;		
+				break;	
+			case UNDO :
+				
+				list.add(firstWord.toLowerCase());
+				
+				break;
+			case REDO :
+				
+				list.add(firstWord.toLowerCase());
+				
+				break;
 			default:
 				throw new Exception(MESSAGE_INVALID_COMMAND);
 
