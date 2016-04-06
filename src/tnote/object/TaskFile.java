@@ -6,6 +6,8 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
+import tnote.util.IncorrectTimeException;
+
 /*
  * Calendar objects let use recur the name. Can just calendar object.add(Calendar.WEEK_OF_YEAR, 1) to add 1 week
  * startCal.add(Calendar.DATE, 1) add 1 day
@@ -52,8 +54,10 @@ import java.util.Date;
  * All task names must be unique
 */
 public class TaskFile implements Comparable<TaskFile>, Cloneable {
+	private static final String ERROR_INCORRECT_TIMING = "The specified end time %s is before the start time %s";
+
 	private static final String DEFAULT_TIME = "23:59";
-	
+
 	protected String name;
 	protected String startDate;
 	protected String startTime;
@@ -115,8 +119,8 @@ public class TaskFile implements Comparable<TaskFile>, Cloneable {
 		this(name, date, time, date, time, details, importance, isRecurr);
 	}
 
-	public TaskFile(String name, String startDate, String startTime, String endDate, String endTime, 
-			String details,	boolean importance, boolean isRecurr) {
+	public TaskFile(String name, String startDate, String startTime, String endDate, String endTime, String details,
+			boolean importance, boolean isRecurr) {
 
 		setName(name);
 		setStartDate(startDate);
@@ -131,11 +135,12 @@ public class TaskFile implements Comparable<TaskFile>, Cloneable {
 		setUpTaskFile();
 
 	}
-	
+
 	public TaskFile(TaskFile task) {
 		this(task.getName(), task.getStartDate(), task.getStartTime(), task.getEndDate(), task.getEndTime(),
 				task.getDetails(), task.getImportance(), task.getIsRecurring());
 	}
+
 	public boolean hasDetails() {
 		if (this.getDetails().equals("")) {
 			return false;
@@ -261,8 +266,7 @@ public class TaskFile implements Comparable<TaskFile>, Cloneable {
 		} else {
 			assertTrue((startDate.isEmpty() && startTime.isEmpty() || !startDate.isEmpty() && !startTime.isEmpty()));
 		}
-		
-		
+
 		if (endDate.isEmpty() && !endTime.isEmpty()) {
 			setEndDate(currentDateString);
 		} else if (!endDate.isEmpty() && endTime.isEmpty()) {
@@ -270,7 +274,7 @@ public class TaskFile implements Comparable<TaskFile>, Cloneable {
 		} else {
 			assertTrue((endDate.isEmpty() && endTime.isEmpty() || !endDate.isEmpty() && !endTime.isEmpty()));
 		}
-		
+
 	}
 
 	private String getCurrentDate() {
@@ -284,9 +288,19 @@ public class TaskFile implements Comparable<TaskFile>, Cloneable {
 		if (!startDate.isEmpty()) {
 			startCal = Calendar.getInstance();
 			setStartCal();
+			
 			if (!endDate.isEmpty()) {
 				endCal = Calendar.getInstance();
 				setEndCal();
+
+				if (endCal.before(startCal)) {
+					SimpleDateFormat stringToDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm");
+					String startCalString = stringToDateFormat.format(startCal.getTime());
+					String endCalString = stringToDateFormat.format(endCal.getTime());
+
+					throw new IncorrectTimeException(String.format(ERROR_INCORRECT_TIMING, startCalString,
+													endCalString), getName());
+				}
 			}
 		}
 	}
@@ -295,7 +309,7 @@ public class TaskFile implements Comparable<TaskFile>, Cloneable {
 		try {
 
 			Date date = convertStringToDate(startDate, startTime);
-			
+
 			startCal.setTime(date);
 		} catch (ParseException pEx) {
 			System.err.println("incorrect date/time format for start cal");
@@ -316,11 +330,11 @@ public class TaskFile implements Comparable<TaskFile>, Cloneable {
 		String dateTimeString;
 		Date date;
 		SimpleDateFormat stringToDateFormat;
-		
+
 		stringToDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm");
 
 		dateTimeString = combineDateTime(dateString, timeString);
-		
+
 		date = stringToDateFormat.parse(dateTimeString);
 
 		return date;
@@ -328,7 +342,7 @@ public class TaskFile implements Comparable<TaskFile>, Cloneable {
 
 	private void setTypeOfTask() {
 		initializeTaskTypes();
-		
+
 		if (startDate.isEmpty()) {
 			isTask = true;
 		} else if (endDate.isEmpty()) {
@@ -375,21 +389,21 @@ public class TaskFile implements Comparable<TaskFile>, Cloneable {
 					return getStartCal().compareTo(taskFile.getStartCal());
 				}
 			}
-		} 
+		}
 	}
-	
+
 	@Override
 	public boolean equals(Object obj) {
 		TaskFile otherObj = (TaskFile) obj;
-		if(this.getName().equals(otherObj.getName())) {
-			if(this.getStartCal().equals(otherObj.getStartCal())) {
+		if (this.getName().equals(otherObj.getName())) {
+			if (this.getStartCal().equals(otherObj.getStartCal())) {
 				return true;
 			}
 		}
-		
+
 		return false;
 	}
-	
+
 	@Override
 	protected Object clone() throws CloneNotSupportedException {
 		return super.clone();

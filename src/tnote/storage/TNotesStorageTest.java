@@ -99,7 +99,7 @@ public class TNotesStorageTest {
 			task2.setStartDate("2016-02-03");
 			task2.setStartTime("11:00");
 			task2.setEndDate("2016-02-03");
-			task2.setEndTime("13:00");
+			task2.setEndTime("10:00");
 			task2.setIsRecurr(true);
 			
 			task2.setUpTaskFile();
