@@ -22,7 +22,7 @@ public class CommandAdd extends TNotesLogic {
 		TNotesStorage storage = TNotesStorage.getInstance();
 	}
 
-	public TaskFile addTask(ArrayList<String> fromParser) throws Exception {
+	public TaskFile add(ArrayList<String> fromParser) throws Exception {
 		try {
 			System.out.println("addcheck " + fromParser.toString());
 			ArrayList<String> stringList = storage.readFromMasterFile();

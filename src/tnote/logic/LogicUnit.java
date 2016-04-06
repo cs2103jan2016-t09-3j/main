@@ -25,7 +25,7 @@ public class LogicUnit {
 	public TaskFile addTask(ArrayList<String> fromParser) throws Exception {
 		String commandChecker = fromParser.remove(0);
 		LogicCommand newCommand = new LogicCommand(commandChecker);
-		TaskFile newTask = comAdd.addTask(fromParser);
+		TaskFile newTask = comAdd.add(fromParser);
 		newCommand.setCurrentTask(newTask);
 		doCommandStack.push(newCommand);
 		emptyUndoStack();

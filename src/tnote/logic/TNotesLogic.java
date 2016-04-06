@@ -22,24 +22,24 @@ public class TNotesLogic {
 		storage = TNotesStorage.getInstance();
 	}
 
-	public TaskFile addTask(ArrayList<String> fromParser) throws Exception {
+	public LogicCommand addTask(ArrayList<String> fromParser) throws Exception {
 		String commandChecker = fromParser.remove(0);
 		LogicCommand newCommand = new LogicCommand(commandChecker);
-		TaskFile newTask = comAdd.addTask(fromParser);
+		TaskFile newTask = comAdd.add(fromParser);
 		newCommand.setCurrentTask(newTask);
 		doCommandStack.push(newCommand);
 		emptyUndoStack();
-		return newTask;
+		return doCommandStack.peek();
 	}
 
-	public TaskFile deleteTask(ArrayList<String> fromParser) throws Exception {
+	public LogicCommand deleteTask(ArrayList<String> fromParser) throws Exception {
 		String commandChecker = fromParser.remove(0);
 		LogicCommand newCommand = new LogicCommand(commandChecker);
 		TaskFile newTask = comDelete.delete(fromParser);
 		newCommand.setCurrentTask(newTask);
 		doCommandStack.push(newCommand);
 		emptyUndoStack();
-		return newTask;
+		return doCommandStack.peek();
 	}
 
 	public ArrayList<TaskFile> deleteIndex(ArrayList<TaskFile> currentList, int num) throws Exception {
@@ -52,7 +52,7 @@ public class TNotesLogic {
 		return currentList;
 	}
 
-	public TaskFile editTask(ArrayList<String> fromParser) throws Exception {
+	public LogicCommand editTask(ArrayList<String> fromParser) throws Exception {
 		String commandChecker = fromParser.remove(0);
 		String title = fromParser.get(0).trim();
 		LogicCommand newCommand = new LogicCommand(commandChecker);
@@ -61,7 +61,7 @@ public class TNotesLogic {
 		newCommand.setCurrentTask(newTask);
 		doCommandStack.push(newCommand);
 		emptyUndoStack();
-		return newTask;
+		return doCommandStack.peek();
 	}
 
 	public ArrayList<TaskFile> viewTask(ArrayList<String> fromParser) throws Exception {
@@ -97,6 +97,54 @@ public class TNotesLogic {
 	public ArrayList<TaskFile> sortTask(ArrayList<TaskFile> currentList) {
 		Collections.sort(currentList, new NameComparator());
 		return currentList;
+	}
+	public TaskFile searchSingleTask(String lineOfText) throws Exception {
+		ArrayList<String> masterList = storage.readFromMasterFile();
+		TaskFile oldTask = new TaskFile();
+		for (String text : masterList) {
+			if (text.equals(lineOfText.trim())) {
+				oldTask = storage.getTaskFileByName(text);
+			}
+		}
+		return oldTask;
+	}
+	public ArrayList<TaskFile> searchTask(ArrayList<String> lineOfText) throws Exception {
+		for (String text : lineOfText) {
+			System.out.println(text);
+		}
+		ArrayList<TaskFile> searchTaskList = new ArrayList<TaskFile>();
+		ArrayList<String> masterList = storage.readFromMasterFile();
+		for (int i = 0; i < lineOfText.size(); i++) {
+			if (lineOfText.size() == 1) {
+				for (String text : masterList) {
+					if (text.contains(lineOfText.get(i))) {
+						searchTaskList.add(storage.getTaskFileByName(text));
+					}
+				}
+			} else {
+				if (lineOfText.get(i).length() < 1) {
+					System.out.println("you are searching null");
+					break;
+				} else if (lineOfText.get(i).length() == 1) {
+					for (String text : masterList) {
+						if (text.startsWith(lineOfText.get(i))) {
+							searchTaskList.add(storage.getTaskFileByName(text));
+						}
+					}
+				} else {
+					for (String text : masterList) {
+						if (text.contains(lineOfText.get(i))) {
+							searchTaskList.add(storage.getTaskFileByName(text));
+						}
+					}
+				}
+			}
+		}
+		for (TaskFile newTask : searchTaskList) {
+
+			System.out.println(newTask.getName());
+		}
+		return searchTaskList;
 	}
 
 	public TaskFile undoCall() throws Exception {
