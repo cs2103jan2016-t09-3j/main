@@ -37,6 +37,8 @@ public class TNotesLogic {
 			TaskFile currentFile = new TaskFile();
 			String importance = new String();
 			String recurArgument = new String();
+			String recurDuration = new String();
+			String recurNumDuration = new String();
 			Calendar cal = Calendar.getInstance();
 
 			assertNotEquals(0, fromParser.size());
@@ -51,6 +53,13 @@ public class TNotesLogic {
 				int indexOfRecurKeyWord = fromParser.indexOf("every");
 				recurArgument = fromParser.remove(indexOfRecurKeyWord + 1).toLowerCase();
 				fromParser.remove("every");
+				// for(String text : fromParser){
+				// if(text.equals("for")){
+				// recurDuration = fromParser.remove(fromParser.size() - 1);
+				// recurNumDuration = fromParser.remove(fromParser.size() - 1);
+				// fromParser.remove(fromParser.size() - 1);
+				// }
+				// }
 				currentFile.setIsRecurr(true);
 			}
 			if (fromParser.contains("today")) {
@@ -210,22 +219,68 @@ public class TNotesLogic {
 				taskDetails += " It recurs every " + recurArgument;
 				System.out.println(taskDetails);
 				currentFile.setDetails(taskDetails);
-				
+
 				DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 				ArrayList<String> dateList = new ArrayList<String>();
 				if (recurArgument.equals("day")) {
-					for (int i = 0; i < 14; i++) {
-						dateList.add(df.format(cal.getTime()));
-						cal.add(Calendar.DATE, 1);
+					if (recurDuration.contains("day")) {
+						for (int i = 0; i < Integer.parseInt(recurNumDuration); i++) {
+							dateList.add(df.format(cal.getTime()));
+							cal.add(Calendar.DATE, 1);
+						}
+					} else if (recurDuration.contains("week")) {
+						for (int i = 0; i < (Integer.parseInt(recurNumDuration) * 7); i++) {
+							dateList.add(df.format(cal.getTime()));
+							cal.add(Calendar.DATE, 1);
+						}
+					} else if (recurDuration.contains("fortnight")) {
+						for (int i = 0; i < (Integer.parseInt(recurNumDuration) * 14); i++) {
+							dateList.add(df.format(cal.getTime()));
+							cal.add(Calendar.DATE, 1);
+						}
+					} else if (recurDuration.contains("month")) {
+						for (int i = 0; i < (Integer.parseInt(recurNumDuration) * 30); i++) {
+							dateList.add(df.format(cal.getTime()));
+							cal.add(Calendar.DATE, 1);
+						}
+					} else {
+						for (int i = 0; i < 12; i++) {
+							dateList.add(df.format(cal.getTime()));
+							cal.add(Calendar.DATE, 1);
+						}
 					}
 				} else if (recurArgument.equals("week")) {
-					for (int i = 0; i < 8; i++) {
-						dateList.add(df.format(cal.getTime()));
-						cal.add(Calendar.WEEK_OF_YEAR, 1);
+					if (recurDuration.contains("week")) {
+						for (int i = 0; i < (Integer.parseInt(recurNumDuration)); i++) {
+							dateList.add(df.format(cal.getTime()));
+							cal.add(Calendar.WEEK_OF_YEAR, 1);
+						}
+					} else if (recurDuration.contains("fortnight")) {
+						for (int i = 0; i < (Integer.parseInt(recurNumDuration) * 2); i++) {
+							dateList.add(df.format(cal.getTime()));
+							cal.add(Calendar.WEEK_OF_YEAR, 1);
+						}
+					} else {
+						for (int i = 0; i < (Integer.parseInt(recurNumDuration) * 4); i++) {
+							dateList.add(df.format(cal.getTime()));
+							cal.add(Calendar.WEEK_OF_YEAR, 1);
+						}
 					}
 
+				} else if (recurArgument.equals("fortnight")) {
+					if (recurDuration.contains("fortnight")) {
+						for (int i = 0; i < (Integer.parseInt(recurNumDuration)); i++) {
+							dateList.add(df.format(cal.getTime()));
+							cal.add(Calendar.WEEK_OF_YEAR, 2);
+						}
+					} else {
+						for (int i = 0; i < (Integer.parseInt(recurNumDuration) * 2); i++) {
+							dateList.add(df.format(cal.getTime()));
+							cal.add(Calendar.WEEK_OF_YEAR, 2);
+						}
+					}
 				} else if (recurArgument.equals("month")) {
-					for (int i = 0; i < 12; i++) {
+					for (int i = 0; i < (Integer.parseInt(recurNumDuration)); i++) {
 						dateList.add(df.format(cal.getTime()));
 						cal.add(Calendar.MONTH, 1);
 					}
@@ -305,27 +360,27 @@ public class TNotesLogic {
 
 	// currently gets a array list String, converts to array list taskFile, then
 	// checks if any is done. returns new array list without done task/
-//	public ArrayList<TaskFile> displayList() throws Exception {
-//		ArrayList<String> stringList = storage.readFromMasterFile();
-//		ArrayList<TaskFile> taskToBeDisplayed = new ArrayList<TaskFile>();
-//
-//		for (String text : stringList) {
-//			TaskFile currentFile = storage.getTaskFileByName(text);
-//			if (currentFile.getIsRecurring()) {
-//				continue;
-//			}
-//			if (!currentFile.getIsDone()) {
-//				String name = currentFile.getName();
-//				if (name.contains("_")) {
-//					String formatterName = name.substring(0, name.indexOf("_"));
-//					currentFile.setName(formatterName);
-//				}
-//				taskToBeDisplayed.add(currentFile);
-//			}
-//
-//		}
-//		return taskToBeDisplayed;
-//	}
+	// public ArrayList<TaskFile> displayList() throws Exception {
+	// ArrayList<String> stringList = storage.readFromMasterFile();
+	// ArrayList<TaskFile> taskToBeDisplayed = new ArrayList<TaskFile>();
+	//
+	// for (String text : stringList) {
+	// TaskFile currentFile = storage.getTaskFileByName(text);
+	// if (currentFile.getIsRecurring()) {
+	// continue;
+	// }
+	// if (!currentFile.getIsDone()) {
+	// String name = currentFile.getName();
+	// if (name.contains("_")) {
+	// String formatterName = name.substring(0, name.indexOf("_"));
+	// currentFile.setName(formatterName);
+	// }
+	// taskToBeDisplayed.add(currentFile);
+	// }
+	//
+	// }
+	// return taskToBeDisplayed;
+	// }
 
 	public ArrayList<String> sortViewTypes(ArrayList<String> fromParser) {
 		ArrayList<String> stringList = new ArrayList<String>();
@@ -345,10 +400,12 @@ public class TNotesLogic {
 
 	// Show the details of a single task
 	// will take in the name of the task,
-	public TaskFile viewByIndex(ArrayList<TaskFile> currentList, int num)throws Exception{
-			TaskFile removedTask = currentList.get(num - 1);
-			return removedTask;
+	public TaskFile viewByIndex(ArrayList<TaskFile> currentList, int num) throws Exception {
+		TaskFile removedTask = currentList.get(num - 1);
+		
+		return removedTask;
 	}
+
 	public TaskFile viewTask(String taskToBeDisplayed) throws Exception {
 		ArrayList<String> stringList = storage.readFromMasterFile();
 
@@ -444,7 +501,7 @@ public class TNotesLogic {
 		ArrayList<TaskFile> taskListToBeDisplayed = new ArrayList<TaskFile>();
 		for (String text : stringList) {
 			TaskFile currentFile = storage.getTaskFileByName(text);
-			if (currentFile.getIsTask()&& !currentFile.getIsDone()) {
+			if (currentFile.getIsTask() && !currentFile.getIsDone()) {
 				taskListToBeDisplayed.add(currentFile);
 			}
 		}
@@ -651,10 +708,11 @@ public class TNotesLogic {
 		return allTaskList;
 	}
 
-	public ArrayList<TaskFile> sortTask(ArrayList<TaskFile> currentList){
+	public ArrayList<TaskFile> sortTask(ArrayList<TaskFile> currentList) {
 		Collections.sort(currentList, new NameComparator());
 		return currentList;
 	}
+
 	// sort date
 	public ArrayList<TaskFile> sortDateTask() throws Exception {
 		ArrayList<String> masterList = storage.readFromMasterFile();
@@ -695,7 +753,7 @@ public class TNotesLogic {
 		String newText = fromParser.get(2).trim();
 		TaskFile currentFile = storage.getTaskFileByName(title);
 		RecurringTaskFile recurTask = new RecurringTaskFile(currentFile);
-		ArrayList<String> dateList = storage.getRecurStartDateList(title);
+		ArrayList<String> dateList = storage.getRecurTaskStartDateList(title);
 		recurTask.addRecurringStartDate(dateList);
 
 		System.err.println(currentFile.getStartDate() + " " + currentFile.getStartTime());
@@ -770,7 +828,7 @@ public class TNotesLogic {
 		if (fromParser.isEmpty()) {
 			throw new Exception("invalid command");
 		}
-		return storage.deleteTask(fromParser.get(0));
+		return storage.deleteRecurringTask(fromParser.get(0));
 	}
 
 	public ArrayList<TaskFile> callOverdueTasks() throws Exception {

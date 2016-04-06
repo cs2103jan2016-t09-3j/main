@@ -30,6 +30,6 @@ public class CommandDelete extends LogicUnit{
 		if (fromParser.isEmpty()) {
 			throw new Exception("invalid command");
 		}
-		return storage.deleteTask(fromParser.get(0));
+		return storage.deleteRecurringTask(fromParser.get(0));
 	}
 }
