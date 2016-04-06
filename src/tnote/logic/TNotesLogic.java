@@ -1,5 +1,7 @@
 package tnote.logic;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 import tnote.object.NameComparator;
@@ -62,6 +64,37 @@ public class TNotesLogic {
 		doCommandStack.push(newCommand);
 		emptyUndoStack();
 		return doCommandStack.peek();
+	}
+	public ArrayList<TaskFile> viewDateList(String date) throws Exception {
+		if (date.trim().equals("today")) {
+			Calendar cal = Calendar.getInstance();
+			DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+			String today = df.format(cal.getTime());
+			date = today;
+		}
+		if (date.equals("monday") || (date.equals("tuesday")) || (date.equals("wednesday")) || (date.equals("thursday"))
+				|| (date.equals("friday")) || (date.equals("saturday")) || (date.equals("sunday"))) {
+			String whichDay = compareDates(date);
+			date = whichDay;
+		}
+		ArrayList<String> stringList = storage.readFromMasterFile();
+		ArrayList<TaskFile> taskListToBeDisplayed = new ArrayList<TaskFile>();
+		for (String text : stringList) {
+			TaskFile currentFile = storage.getTaskFileByName(text);
+			if (currentFile.getIsRecurring() || currentFile.getIsDone()) {
+				continue;
+			}
+			if (currentFile.getStartDate().equals(date.trim())) {
+				String name = currentFile.getName();
+				if (name.contains("_")) {
+					String formatterName = name.substring(0, name.indexOf("_"));
+					currentFile.setName(formatterName);
+				}
+				taskListToBeDisplayed.add(currentFile);
+			}
+		}
+		Collections.sort(taskListToBeDisplayed);
+		return taskListToBeDisplayed;
 	}
 
 	public ArrayList<TaskFile> viewTask(ArrayList<String> fromParser) throws Exception {
@@ -316,5 +349,16 @@ public class TNotesLogic {
 		while (!undoCommandtStack.isEmpty()) {
 			undoCommandtStack.pop();
 		}
+	}
+	private String compareDates(String dates) {
+		Calendar cal = Calendar.getInstance();
+		DateFormat df = new SimpleDateFormat("EEE");
+		DateFormat dF = new SimpleDateFormat("yyyy-MM-dd");
+		String date = df.format(cal.getTime()).toLowerCase();
+		while (!dates.contains(date)) {
+			cal.add(Calendar.DATE, 1);
+			date = df.format(cal.getTime()).toLowerCase();
+		}
+		return dF.format(cal.getTime());
 	}
 }
