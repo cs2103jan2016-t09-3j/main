@@ -1,4 +1,4 @@
-    package tnote.logic;
+package tnote.logic;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -15,6 +15,21 @@ public class CommandView {
 
 	public CommandView() throws Exception {
 		TNotesStorage storage = TNotesStorage.getInstance();
+	}
+	public ArrayList<TaskFile> viewForGUI(String date) throws Exception {
+		ArrayList<TaskFile> allList = new ArrayList<TaskFile>();
+		TaskFile newTask = new TaskFile();
+		allList.addAll(viewDateList(date));
+		newTask.setName("floating");
+		allList.add(newTask);
+		allList.addAll(viewFloatingList());
+		newTask.setName("overdue");
+		allList.add(newTask);
+		allList.addAll(callOverdueTasks());
+		return allList;
+	}
+	public ArrayList<TaskFile> viewFromOverdue(){
+		return callOverdueTask();
 	}
 
 	public ArrayList<TaskFile> view(ArrayList<String> fromParser) throws Exception {
@@ -142,4 +157,19 @@ public class CommandView {
 		}
 		return dF.format(cal.getTime());
 	}
+
+	public ArrayList<TaskFile> callOverdueTasks() throws Exception {
+		ArrayList<TaskFile> listOfOverdueTasks = storage.retrieveOverdueTasks();
+		for (TaskFile newTask : listOfOverdueTasks) {
+			if (newTask.getName().contains("_")) {
+				String formatterName = newTask.getName().substring(0, newTask.getName().indexOf("_"));
+				newTask.setName(formatterName);
+			}
+		}
+		if (listOfOverdueTasks.isEmpty()) {
+			throw new Exception("    ====NO OVERDUE TASKS====\n");
+		}
+		return listOfOverdueTasks;
+	}
+
 }

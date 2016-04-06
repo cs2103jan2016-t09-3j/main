@@ -407,17 +407,6 @@ public class TNotesLogic {
 		}
 	}
 
-	protected boolean hasTimingClash(TaskFile currentFile, TaskFile savedTask) {
-		return ((currentFile.getStartCal().before(savedTask.getEndCal())
-				&& currentFile.getEndCal().after(savedTask.getEndCal()))
-				|| (currentFile.getStartCal().after(savedTask.getStartCal())
-						&& currentFile.getEndCal().before(savedTask.getEndCal()))
-				|| (currentFile.getStartCal().after(savedTask.getStartCal())
-						&& currentFile.getStartCal().before(savedTask.getEndCal()))
-				|| (currentFile.getEndCal().after(savedTask.getStartCal())
-						&& currentFile.getEndCal().before(savedTask.getEndCal())));
-	}
-
 	private void emptyUndoStack() {
 		while (!undoCommandStack.isEmpty()) {
 			undoCommandStack.pop();

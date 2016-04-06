@@ -264,4 +264,14 @@ public class CommandAdd {
 		}
 		return dF.format(cal.getTime());
 	}
+	private boolean hasTimingClash(TaskFile currentFile, TaskFile savedTask) {
+		return ((currentFile.getStartCal().before(savedTask.getEndCal())
+				&& currentFile.getEndCal().after(savedTask.getEndCal()))
+				|| (currentFile.getStartCal().after(savedTask.getStartCal())
+						&& currentFile.getEndCal().before(savedTask.getEndCal()))
+				|| (currentFile.getStartCal().after(savedTask.getStartCal())
+						&& currentFile.getStartCal().before(savedTask.getEndCal()))
+				|| (currentFile.getEndCal().after(savedTask.getStartCal())
+						&& currentFile.getEndCal().before(savedTask.getEndCal())));
+	}
 }

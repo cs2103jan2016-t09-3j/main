@@ -3,10 +3,11 @@ package tnote.logic;
 import java.util.ArrayList;
 
 import tnote.object.TaskFile;
+import tnote.storage.TNotesStorage;
 
 
 public class CommandDelete {
-	
+	TNotesStorage storage;
 	public CommandDelete() throws Exception {
 		
 	}
