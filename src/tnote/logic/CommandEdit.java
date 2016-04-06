@@ -6,7 +6,7 @@ import tnote.object.RecurringTaskFile;
 import tnote.object.TaskFile;
 import tnote.storage.TNotesStorage;
 
-public class CommandEdit extends TNotesLogic {
+public class CommandEdit {
 	TNotesStorage storage;
 	
 	public CommandEdit() throws Exception {

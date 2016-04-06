@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import tnote.object.TaskFile;
 
 
-public class CommandDelete extends LogicUnit{
+public class CommandDelete {
 	
 	public CommandDelete() throws Exception {
 		

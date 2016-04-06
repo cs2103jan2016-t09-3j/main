@@ -15,7 +15,7 @@ import tnote.object.RecurringTaskFile;
 import tnote.object.TaskFile;
 import tnote.storage.TNotesStorage;
 
-public class CommandAdd extends TNotesLogic {
+public class CommandAdd {
 	TNotesStorage storage;
 	
 	public CommandAdd() throws Exception {
