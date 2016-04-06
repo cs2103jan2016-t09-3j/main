@@ -4,57 +4,78 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
 
+import tnote.logic.LogicCommand;
 import tnote.logic.TNotesLogic;
 import tnote.object.TaskFile;
 import tnote.parser.TNotesParser;
 
+/**
+ * This class manages the input String entered by the user, passes the String to
+ * Parser and gets the command type for each input. Then it is passed to various
+ * methods in Logic.
+ * 
+ * It retrieves the contents from Logic it uses TaskFiles to format the Strings
+ * 
+ */
+
 public class TNotesUI {
 
 	enum COMMAND_TYPE {
-		ADD_COMMAND, CHANGE_DIRECTORY, DELETE_DIRECTORY, EDIT_COMMAND, DELETE_COMMAND, VIEW_COMMAND, INVALID, SET_COMMAND, 
-		SEARCH_COMMAND, SORT_COMMAND, HELP_COMMAND, EXIT, UNDO_COMMAND, REDO_COMMAND
+		ADD_COMMAND, CHANGE_DIRECTORY, DELETE_COMMAND, DELETE_DIRECTORY, EDIT_COMMAND, EXIT, 
+		HELP_COMMAND, INVALID, REDO_COMMAND, SEARCH_COMMAND, SET_COMMAND, SORT_COMMAND, UNDO_COMMAND, 
+		VIEW_COMMAND
 	}
 
 	TNotesParser parser;
 	TNotesLogic logic;
-	TNotesMessages msg;
+	TNotesMessages message;
+
 	ArrayList<String> commandArguments;
+	ArrayList<TaskFile> viewList;
+	TaskFile taskFile;
+
+	String errorMessage;
 	String commandString;
 	String result = "";
-	TaskFile taskFile;
-	ArrayList<TaskFile> viewList;
-	String errorMessage;
+	
+	// Messages
+	private static final String MESSAGE_WELCOME = "Hello, welcome to T-Note. How may I help you?\n";
+	private static final String MESSAGE_OVERDUE_TITLE = "====OVERDUE TASKS====\n";
 
 	public TNotesUI() {
-		parser = new TNotesParser();
 		try {
+			parser = new TNotesParser();
 			logic = new TNotesLogic();
+			message = new TNotesMessages();
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.getMessage();
 		}
-		msg = new TNotesMessages();
 	}
 
 	public String getWelcomeMessage() {
-		String welcomeMsg = "Hello, welcome to T-Note. How may I help you?";
+		String welcomeMsg = String.format(MESSAGE_WELCOME);
 		return welcomeMsg;
 	}
-	
+
 	public String displayOverdueTasks() {
-		String overDueString = "";
-		try{
-		ArrayList<TaskFile> arrOverdue = new ArrayList<TaskFile> ();
-		arrOverdue = logic.callOverdueTasks();
-		overDueString += "                ====OVERDUE===\n";
-		for (int i = 0; i < arrOverdue.size(); i++) {
-			overDueString += i + 1 + ". [" + arrOverdue.get(i).getStartTime() + "] [" + arrOverdue.get(i).getStartDate() + "] "
-		+ arrOverdue.get(i).getName() + "\n";
-			} 
-		}catch (Exception e) {
+		String overDueString;
+
+		try {
+			ArrayList<TaskFile> arrOverdue = new ArrayList<TaskFile>();
+			arrOverdue = logic.callOverdueTasks();
+			overDueString = String.format(MESSAGE_OVERDUE_TITLE);
+			overDueString = printOverDue(overDueString, arrOverdue);
+		} catch (Exception e) {
 			overDueString = e.getMessage();
 		}
-		
+		return overDueString;
+	}
+
+	public String printOverDue(String overDueString, ArrayList<TaskFile> arrOverdue) {
+		for (int i = 0; i < arrOverdue.size(); i++) {
+			overDueString += i + 1 + ". [" + arrOverdue.get(i).getStartTime() + "] [" + arrOverdue.get(i).getStartDate()
+					+ "] " + arrOverdue.get(i).getName() + "\n";
+		}
 		return overDueString;
 	}
 
@@ -62,29 +83,27 @@ public class TNotesUI {
 		String floatString;
 		try {
 			if (logic.hasFloatingList()) {
-			ArrayList<TaskFile> arrFloat = new ArrayList<TaskFile>();
-			arrFloat = logic.viewFloatingList();
-			
+				ArrayList<TaskFile> arrFloat = new ArrayList<TaskFile>();
+				arrFloat = logic.viewFloatingList();
+
 				floatString = "     ====NOTES====\n";
 				for (int i = 0; i < arrFloat.size(); i++) {
-					floatString += i + 1 + ". "; 
-							if (arrFloat.get(i).getImportance()){
-								floatString += "[IMPORTANT] ";
-							}
-							else {
-							floatString += arrFloat.get(i).getName() + "\n";
-							}
+					floatString += i + 1 + ". ";
+					if (arrFloat.get(i).getImportance()) {
+						floatString += "[IMPORTANT] ";
+					} else {
+						floatString += arrFloat.get(i).getName() + "\n";
+					}
 				}
 				floatString += "\n";
-			}
-			else {
+			} else {
 				floatString = "               ====NO NOTES====\n\n";
 			}
-			
+
 		} catch (Exception e) {
 			floatString = e.getMessage();
 		}
-				
+
 		return floatString;
 	}
 
@@ -144,12 +163,7 @@ public class TNotesUI {
 		commandString = getFirstWord(userCommandSplit);
 
 		COMMAND_TYPE command = determineCommandType(commandString);
-
-		// System.err.println("Checking tnote.parser String output:\n");
-		// for(int i=0; i<userCommandSplit.size(); i++){
-		// System.err.println(userCommandSplit.get(i));
-		// }
-
+		
 		result = "";
 
 		switch (command) {
@@ -186,20 +200,19 @@ public class TNotesUI {
 					result += String.format("Things to note: \"%s\"\n", taskFile.getDetails().trim());
 				}
 
-//				if (taskFile.getIsRecurring()) {
-//					int everyIndex = 0;
-//					int displayIndex = 0;
-//
-//					for (int i = 0; i < userCommandSplitCopy.size(); i++) {
-//						everyIndex = userCommandSplitCopy.indexOf("every");
-//						displayIndex = everyIndex + 1;
-//					}
-//					result += String.format("Note: It recurs every %s\n", userCommandSplitCopy.get(displayIndex));
-//				}
+				// if (taskFile.getIsRecurring()) {
+				// int everyIndex = 0;
+				// int displayIndex = 0;
+				//
+				// for (int i = 0; i < userCommandSplitCopy.size(); i++) {
+				// everyIndex = userCommandSplitCopy.indexOf("every");
+				// displayIndex = everyIndex + 1;
+				// }
+				// result += String.format("Note: It recurs every %s\n",
+				// userCommandSplitCopy.get(displayIndex));
+				// }
 
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				// String
 				result = e.getMessage();
 			}
 
@@ -404,9 +417,9 @@ public class TNotesUI {
 					result = e.getMessage();
 				}
 			}
-			
+
 			else {
-			
+
 				ArrayList<TaskFile> arrView = new ArrayList<TaskFile>();
 				try {
 					arrView = logic.viewManyDatesList(userCommandSplit);
@@ -416,14 +429,16 @@ public class TNotesUI {
 					result = e.getMessage();
 				}
 
-				result = String.format("Your schedule from %s to %s:\n", userCommandSplit.get(1), userCommandSplit.get(2));
+				result = String.format("Your schedule from %s to %s:\n", userCommandSplit.get(1),
+						userCommandSplit.get(2));
 				for (int i = 0; i < arrView.size(); i++) {
 					if (arrView.get(i).getIsMeeting()) {
 						result += i + 1 + ". " + "[" + arrView.get(i).getStartTime() + "]-" + "["
 								+ arrView.get(i).getEndTime() + "] [" + arrView.get(i).getStartDate() + "]";
 					}
 					if (arrView.get(i).getIsDeadline()) {
-						result += i + 1 + ". " + "[" + arrView.get(i).getStartTime() + "] [" + arrView.get(i).getStartDate() + "]" ;
+						result += i + 1 + ". " + "[" + arrView.get(i).getStartTime() + "] ["
+								+ arrView.get(i).getStartDate() + "]";
 					}
 					if (arrView.get(i).getImportance()) {
 						result += "[IMPORTANT] ";
@@ -499,64 +514,89 @@ public class TNotesUI {
 		case SORT_COMMAND:
 			ArrayList<TaskFile> arrSort = new ArrayList<TaskFile>();
 			String sortType = userCommandSplit.get(1).trim();
-//
-//			if (sortType.equals("importance")) {
-//				result = "I have sorted everything by importance for you. Do first things first!\n\n";
-//
-//				try {
-//					viewList = logic.sortImportTask();
-//					result = String.format("Your schedule for %s:\n", userCommandSplit.get(1));
-//					for (int i = 0; i < viewList.size(); i++) {
-//						if (viewList.get(i).getIsMeeting()) {
-//							result += i + 1 + ". " + "[" + viewList.get(i).getStartTime() + "]-" + "["
-//									+ viewList.get(i).getEndTime() + "]";
-//						}
-//						if (viewList.get(i).getIsDeadline()) {
-//							result += i + 1 + ". " + "[" + viewList.get(i).getStartTime() + "]";
-//						}
-//						if (viewList.get(i).getImportance()) {
-//							result += "[IMPORTANT] ";
-//						}
-//						result += String.format(" %s\n", viewList.get(i).getName());
-//					}
-//					
-//					
-//					
-//				} catch (Exception e) {
-//					// TODO Auto-generated catch block
-//					result = e.getMessage();
-//				}
-//			}
-//
-//			if (sortType.equals("name")) {
-//				result = "I have sorted everything by name for you! I'm so amazing, what would you do without me!";
-//				try {
-//					arrSort = logic.sortNameTask();
-//
-//					result += String.format("You new schedule for %s: \n\n", userCommandSplit.get(1));
-//
-//					for (int i = 0; i < arrSort.size(); i++) {
-//						result += i + 1 + ". " + "[" + arrSort.get(i).getStartTime() + "] ";
-//						if (arrSort.get(i).getImportance()) {
-//							result += "[IMPORTANT] ";
-//						}
-//						result += "[" + arrSort.get(i).getName() + "]\n";
-//					}
-//				} catch (Exception e) {
-//					// TODO Auto-generated catch block
-//					result = e.getMessage();
-//				}
-//			}
+			//
+			// if (sortType.equals("importance")) {
+			// result = "I have sorted everything by importance for you. Do
+			// first things first!\n\n";
+			//
+			// try {
+			// viewList = logic.sortImportTask();
+			// result = String.format("Your schedule for %s:\n",
+			// userCommandSplit.get(1));
+			// for (int i = 0; i < viewList.size(); i++) {
+			// if (viewList.get(i).getIsMeeting()) {
+			// result += i + 1 + ". " + "[" + viewList.get(i).getStartTime() +
+			// "]-" + "["
+			// + viewList.get(i).getEndTime() + "]";
+			// }
+			// if (viewList.get(i).getIsDeadline()) {
+			// result += i + 1 + ". " + "[" + viewList.get(i).getStartTime() +
+			// "]";
+			// }
+			// if (viewList.get(i).getImportance()) {
+			// result += "[IMPORTANT] ";
+			// }
+			// result += String.format(" %s\n", viewList.get(i).getName());
+			// }
+			//
+			//
+			//
+			// } catch (Exception e) {
+			// // TODO Auto-generated catch block
+			// result = e.getMessage();
+			// }
+			// }
+			//
+			// if (sortType.equals("name")) {
+			// result = "I have sorted everything by name for you! I'm so
+			// amazing, what would you do without me!";
+			// try {
+			// arrSort = logic.sortNameTask();
+			//
+			// result += String.format("You new schedule for %s: \n\n",
+			// userCommandSplit.get(1));
+			//
+			// for (int i = 0; i < arrSort.size(); i++) {
+			// result += i + 1 + ". " + "[" + arrSort.get(i).getStartTime() + "]
+			// ";
+			// if (arrSort.get(i).getImportance()) {
+			// result += "[IMPORTANT] ";
+			// }
+			// result += "[" + arrSort.get(i).getName() + "]\n";
+			// }
+			// } catch (Exception e) {
+			// // TODO Auto-generated catch block
+			// result = e.getMessage();
+			// }
+			// }
 			break;
-			
+
 		case UNDO_COMMAND:
+			LogicCommand logicCommandUndo;
+			String commandEnteredUndo;
+			TaskFile taskFileUndo;
+			String taskNameUndo;
 			
+			logicCommandUndo = logic.undo();
+			commandEnteredUndo = logicCommandUndo.getCommandType();
+			taskFileUndo = logicCommandUndo.getOldTask();
+			taskNameUndo = taskFileUndo.getName();
+			result = "You have undone " + commandEnteredUndo + " " + taskNameUndo + "\n";
 			break;
-		
+
 		case REDO_COMMAND:
+			LogicCommand logicCommandRedo;
+			String commandEnteredRedo;
+			TaskFile taskFileRedo;
+			String taskNameRedo;
 			
+			logicCommandRedo = logic.redo();
+			commandEnteredRedo = logicCommandRedo.getCommandType();
+			taskFileRedo = logicCommandRedo.getCurrentTask();
+			taskNameRedo = taskFileRedo.getName();
+			result = "You have redone " + commandEnteredRedo + " " + taskNameRedo + "\n";
 			break;
-			
+
 		case INVALID:
 			result = "Invalid command entered.\n";
 			result += "Please enter \"Help\" to show a list of available commands.\n";
@@ -565,7 +605,7 @@ public class TNotesUI {
 		case HELP_COMMAND:
 			result = "List of available commands:\n\n";
 			result += "Note: words in [] should be modified to your needs.\n\n";
-			result += msg.printHelpArray();
+			result += message.printHelpArray();
 			break;
 
 		case EXIT:

@@ -1,5 +1,7 @@
 package tnote.gui.view;
 
+import java.awt.Component;
+
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -31,21 +33,11 @@ public class TNotesOverviewController {
     private TextArea displaySideScreen;
     
     private ScrollBar scrollBar;
-//    @FXML
-//    private Label lastNameLabel;
-//    @FXML
-//    private Label streetLabel;
-//    @FXML
-//    private Label postalCodeLabel;
-//    @FXML
-//    private Label cityLabel;
-//    @FXML
-//    private Label birthdayLabel;
-     TNotesUI tNote = new TNotesUI();
+
+    TNotesUI tNote = new TNotesUI();
     
     // Reference to the main application.
     private MainApp mainApp;
-    
     
     /**
      * The constructor.
@@ -61,13 +53,10 @@ public class TNotesOverviewController {
      */
     @FXML
     private void initialize() {
-        // Initialize the person table with the two columns.
-//        firstNameColumn.setCellValueFactory(cellData -> cellData.getValue().firstNameProperty());
-//        lastNameColumn.setCellValueFactory(cellData -> cellData.getValue().lastNameProperty());
-      // displayScreen.setText("Welcome to T-Note. How may I help you?");
+
     	displaySideScreen.setWrapText(true);
-    	displayMainScreen.setWrapText(true)
-    	;
+    	displayMainScreen.setWrapText(true);
+    	displaySideScreen.centerShapeProperty();
     	String welcomeMsg = tNote.getWelcomeMessage();
     	displaySideScreen.setEditable(false);
     	String mainScreenPrint = tNote.displaySchedule();
@@ -78,14 +67,6 @@ public class TNotesOverviewController {
        String showFloats = tNote.displayFloats();
        showFloats += showOverDue;
        displaySideScreen.setText(showFloats);
-    	// Clear person details.
-//        showPersonDetails(null);
-
-        // Listen for selection changes and show the person details when changed.
-//        personTable.getSelectionModel().selectedItemProperty().addListener(
-//                (observable, oldValue, newValue) -> showPersonDetails(newValue));
-        //userInput.addEventHandler(eventType, eventHandler);    
-        
         
     }
     
