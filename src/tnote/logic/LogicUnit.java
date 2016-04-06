@@ -130,10 +130,9 @@ public class LogicUnit {
 					storage.deleteTask(currentCommand.getCurrentTask().getName());
 					storage.addTask(currentCommand.getOldTask());
 				}
-			} else if(commandType.equals("change")){
-				
-			}
-			else{
+			} else if (commandType.equals("change")) {
+				storage.setNewDirectory(currentCommand.getOldTask().getName());
+			} else {
 				throw new Exception("cannot be undone");
 			}
 			undoCommandtStack.push(currentCommand);
@@ -172,6 +171,8 @@ public class LogicUnit {
 					storage.deleteTask(currentCommand.getOldTask().getName());
 					storage.addTask(currentCommand.getCurrentTask());
 				}
+			} else if (commandType.equals("change")) {
+					storage.setNewDirectory(currentCommand.getCurrentTask().getName());
 			} else {
 				throw new Exception("cannot be redone");
 			}
@@ -214,6 +215,9 @@ public class LogicUnit {
 		String commandChecker = "change";
 		LogicCommand newCommand = new LogicCommand(commandChecker);
 		TaskFile newTask = new TaskFile(directoryName);
+		String currentDirectory = storage.getParentDirectory();
+		TaskFile oldTask = new TaskFile(currentDirectory);
+		newCommand.setOldTask(oldTask);
 		newCommand.setCurrentTask(newTask);
 		doCommandStack.push(newCommand);
 		emptyUndoStack();
