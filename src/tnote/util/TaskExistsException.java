@@ -1,6 +1,6 @@
 package tnote.util;
 
-public class TaskExistsException extends RuntimeException {
+public class TaskExistsException extends Exception {
 
 	private static final long serialVersionUID = 7796563144891762211L;
 	private String taskName;

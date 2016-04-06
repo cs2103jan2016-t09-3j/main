@@ -1,7 +1,7 @@
 package tnote.util;
 
 
-public class TimeClashException extends RuntimeException {
+public class TimeClashException extends Exception {
 
 	private static final long serialVersionUID = 8809288865672326368L;
 	private String newTaskName;

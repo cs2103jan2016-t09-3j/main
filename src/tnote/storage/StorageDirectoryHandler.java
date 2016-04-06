@@ -79,8 +79,15 @@ public class StorageDirectoryHandler {
 		}
 	}
 	
-	protected boolean deleteFile(File fileToDelete) {
-		return fileToDelete.delete();
+	protected boolean deleteFile(File fileToDelete) throws IOException {
+		try {
+		Path pathToFile = fileToDelete.toPath();
+		Files.delete(pathToFile);
+		return true;
+		} catch (IOException ioEx) {
+			throw new IOException(String.format("Error deleting %s", fileToDelete.getAbsolutePath()), ioEx);
+		}
+		
 	}
 
 	protected boolean deleteMasterDirectory() {

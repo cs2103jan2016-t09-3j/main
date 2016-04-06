@@ -60,7 +60,7 @@ public class TNotesStorage {
 	private TNotesStorage() throws Exception {
 		TNoteLogger.setUp();
 		masterFileHandler = StorageMasterFilesHandler.getInstance();
-		taskFileHandler = new StorageTaskFileHandler();
+		taskFileHandler = StorageTaskFileHandler.getInstance();
 		dHandler = StorageDirectoryHandler.getInstance();
 		masterList = new ArrayList<String>();
 		floatingList = new ArrayList<String>();
@@ -218,7 +218,7 @@ public class TNotesStorage {
 		TaskFile taskToBeDeleted = getTaskFileByName(taskName);
 		masterNameDateMap = readFolderMap();
 		
-		if (taskFileHandler.deleteTaskFile(taskName, masterNameDateMap)) {
+		if (taskFileHandler.deleteTaskTextFile(taskName, masterNameDateMap)) {
 			removeTaskFromMasterFiles(taskName);
 
 			if (taskToBeDeleted.getIsTask()) {

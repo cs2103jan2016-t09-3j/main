@@ -9,6 +9,10 @@ public class LogicCommand {
 	private TaskFile currentTask;
 	private TaskFile oldTask;
 
+	public LogicCommand() {
+		this("");
+	}
+	
 	public LogicCommand(String command) {
 		commandType = command;
 		this.currentTask = new TaskFile();

@@ -1,6 +1,6 @@
 package tnote.util;
 
-public class InvalidFileNameException extends RuntimeException {
+public class InvalidFileNameException extends Exception {
 
 	/**
 	 * 

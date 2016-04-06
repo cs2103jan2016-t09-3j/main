@@ -2,15 +2,18 @@ package tnote.storage;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import tnote.object.TaskFile;
 
@@ -23,42 +26,79 @@ public class StorageTaskFileHandler {
 	private static final String[] ILLEGAL_CHARACTERS = {"/", "\n", "\r", "\t", "\0", "\f", "`", "?",
 														"*", "\\", "<", ">", "|", "\"", ":" };
 	
+	private static final Logger logger = Logger.getGlobal();
 	
-	private StorageDirectoryHandler direcHandler;
-	private FileWriteHandler writeHandler;
-	private FileReadHandler readHandler;
+	private static StorageTaskFileHandler instance;
+	
+	private StorageDirectoryHandler dirHandler;
+	private FileWriteHandler fWHandler;
+	private FileReadHandler fRHandler;
 
-	public StorageTaskFileHandler() {
-		direcHandler = StorageDirectoryHandler.getInstance();
-		writeHandler = FileWriteHandler.getInstance();
-		readHandler = FileReadHandler.getInstance();
+	/**
+	 * Constructor for StorageTaskFileHandler class. Initializes private attributes.
+	 */
+	private StorageTaskFileHandler() {
+		dirHandler = StorageDirectoryHandler.getInstance();
+		fWHandler = FileWriteHandler.getInstance();
+		fRHandler = FileReadHandler.getInstance();
 		
 	}
+	
+	/**
+	 * Method to get instance of StorageTaskFileHandler. If instance does not exist, a new instance is created.
+	 * @return StorageTaskFileHandler instance of StorageTaskFileHandler.
+	 */
+	public static StorageTaskFileHandler getInstance() {
+		if(instance == null) {
+			instance = new StorageTaskFileHandler();
+		}
+		return instance;
+	}
+	
+	/**
+	 * Method to create the text file to store a TaskFile object inside a specified directory
+	 * @param directory the directory string for the text file
+	 * @param task the TaskFile object to be stored
+	 * @return true if the TaskFile object is successfully saved into a text file
+	 * @throws IOException Error encountered when creating the text file, or error encountered writing to the text file.
+	 */
+	public boolean createTaskFile(String directory, TaskFile task) throws IOException {
+		
+		File folder = dirHandler.appendParentDirectory(directory.trim());
+		dirHandler.createDirectory(folder);
 
-	public boolean createTaskFile(String directory, TaskFile task) throws Exception {
-		File folder = direcHandler.appendParentDirectory(directory.trim());
+		File newTask = dirHandler.addDirectoryToFile(folder, task.getName() + FILE_TYPE_TXT_FILE);
+		dirHandler.createFile(newTask);
 
-		direcHandler.createDirectory(folder);
-
-		File newTask = direcHandler.addDirectoryToFile(folder, task.getName() + FILE_TYPE_TXT_FILE);
-
-		direcHandler.createFile(newTask);
-
-		return writeHandler.writeTaskToTextFile(newTask, task);
+		return fWHandler.writeTaskToTextFile(newTask, task);
 
 	}
-
-	public TaskFile readTaskFile(File taskFileToBeRead) throws Exception {
-		return readHandler.readTaskTextFile(taskFileToBeRead);
+	
+	/**
+	 * Method to extract a Task File from a text file specified
+	 * @param taskFileToBeRead the text file to be read
+	 * @return TaskFile the TaskFile object extracted from the text file
+	 * @throws IOException Error reading the text file
+	 */
+	public TaskFile readTaskTextFile(File taskFileToBeRead) throws IOException {
+		return fRHandler.readTaskTextFile(taskFileToBeRead);
 	}
-
-	public boolean deleteTaskFile(String taskNameToDelete, Map<String, String> folderMap) throws Exception {
+	
+	/**
+	 * Method to delete a text file associated with a TaskFile object
+	 * @param taskNameToDelete name of text file to delete
+	 * @param folderMap Map containing the folders associated with each text file
+	 * @return true if the text file is deleted successfully
+	 * @throws IOException Error encountered when trying to delete the file.
+	 */
+	public boolean deleteTaskTextFile(String taskNameToDelete, Map<String, String> folderMap) throws Exception {
 
 		File fileToDelete = getTaskFilePath(taskNameToDelete, folderMap);
 		
-		return direcHandler.deleteFile(fileToDelete);
+		return dirHandler.deleteFile(fileToDelete);
 	}
-
+	
+	
 	protected String createFolderName(TaskFile task, String taskName) {
 		String monthFolder;
 		if (task.getIsTask()) {
@@ -78,11 +118,14 @@ public class StorageTaskFileHandler {
 		assertNotNull(taskDate);
 
 		String monthFolder = monthStringFormat.format(taskDate.getTime());
+		assertFalse(monthFolder.isEmpty());
+		
 		return monthFolder;
 	}
 
 	protected boolean checkInvalidFileName(String taskName) {
 		
+		assertNotNull(taskName);
 		if (taskName.isEmpty() || taskName.length() > MAXIMUM_FILE_PATH_LENGTH) {
 			return true;
 		} else {
@@ -99,11 +142,11 @@ public class StorageTaskFileHandler {
 	}
 
 	protected File getFolderFile(String folderName) {
-		return direcHandler.appendParentDirectory(folderName);
+		return dirHandler.appendParentDirectory(folderName);
 	}
 
 	protected File getFileDirectory(File folder, String taskName) {
-		return direcHandler.addDirectoryToFile(folder, taskName + FILE_TYPE_TXT_FILE);
+		return dirHandler.addDirectoryToFile(folder, taskName + FILE_TYPE_TXT_FILE);
 	}
 
 	protected ArrayList<TaskFile> getOverdueTasks(ArrayList<String> masterList, Map<String, String> folderMap) throws Exception {
@@ -148,10 +191,10 @@ public class StorageTaskFileHandler {
 		
 	}
 	
-	protected TaskFile getTaskFileByName(String taskName, ArrayList<String> masterList, Map<String, String> folderMap) throws Exception{
+	protected TaskFile getTaskFileByName(String taskName, ArrayList<String> masterList, Map<String, String> folderMap) throws Exception {
 		File fileToBeFound = getTaskFilePath(taskName, folderMap);
 
-		TaskFile taskFile = readTaskFile(fileToBeFound);
+		TaskFile taskFile = readTaskTextFile(fileToBeFound);
 
 		taskFile.setUpTaskFile();
 		

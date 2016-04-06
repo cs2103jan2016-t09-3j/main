@@ -6,6 +6,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import com.google.gson.Gson;
 
@@ -13,13 +14,22 @@ import tnote.object.TaskFile;
 
 public class FileWriteHandler {
 
+	private static final String MESSAGE_NAME_APPENDED_SUCCESSFULLY = "%s appended to %s";
+	private static final String MESSAGE_TASK_SAVED_SUCCESSFULLY = "%s is saved in text file %s";
+	private static final String MESSAGE_FILE_UPDATED = "%s successfully updated";
+	private static final String MESSAGE_FILE_CLEARED = "%s clear successfully";
+	private static final String MESSAGE_CLASS_CREATED = "writeHandler created";
 	private static final String ERROR_CLEARING_FILE = "There is an error clearing the file %s";
 	private static final String ERROR_WRITING_TO_FILE = "There is an error writing to %s";
 	private static final String ERROR_SAVING_TASK = "There is an error saving %s as a text file";
 	private static final String ERROR_SAVING_NAME_TO_FILE = "There is an error saving %s to %s";
 	private static final String STRING_TO_CLEAR_FILES = "";
+	
+	private static final Logger logger = Logger.getGlobal();
+	
 	private static FileWriteHandler instance;
-
+	
+	
 	private FileWriter fWriter;
 	private BufferedWriter bWriter;
 	private Gson gsonHelper;
@@ -29,13 +39,14 @@ public class FileWriteHandler {
 	 */
 	private FileWriteHandler() {
 		gsonHelper = new Gson();
+		logger.info(MESSAGE_CLASS_CREATED);
 	}
 
 	/**
 	 * Gets the instance of FileWriteHandler. If instance does not exist, a new
 	 * instance is created.
 	 * 
-	 * @return FileWriteHandler - the instance of FileWriteHandler.
+	 * @return FileWriteHandler the instance of FileWriteHandler.
 	 */
 	protected static FileWriteHandler getInstance() {
 		if (instance == null) {
@@ -69,10 +80,18 @@ public class FileWriteHandler {
 
 			bWriter.close();
 			fWriter.close();
+			
+			logger.info(String.format(MESSAGE_NAME_APPENDED_SUCCESSFULLY, taskName, textFile.getAbsolutePath()));
+			
 			return true;
+		
 		} catch (IOException ioEx) {
-			throw new IOException(String.format(ERROR_SAVING_NAME_TO_FILE, taskName, 
-												textFile.getAbsolutePath()), ioEx);
+			
+			String errorMessage = String.format(ERROR_SAVING_NAME_TO_FILE, taskName, 
+					textFile.getAbsolutePath());
+			
+			logger.warning(errorMessage);
+			throw new IOException(errorMessage, ioEx);
 		}
 	}
 
@@ -101,9 +120,16 @@ public class FileWriteHandler {
 			bWriter.write(taskFileString);
 			bWriter.close();
 			fWriter.close();
+			
+			logger.info(String.format(MESSAGE_TASK_SAVED_SUCCESSFULLY, task.getName(), 
+						textFile.getAbsolutePath()));
+			
 			return true;
 		} catch (IOException ioEx) {
-			throw new IOException(String.format(ERROR_SAVING_TASK, task.getName()), ioEx);
+			String errorMessage = String.format(ERROR_SAVING_TASK, task.getName());
+			
+			logger.warning(errorMessage);
+			throw new IOException(errorMessage, ioEx);
 		}
 	}
 
@@ -132,9 +158,15 @@ public class FileWriteHandler {
 
 			bWriter.close();
 			fWriter.close();
+			
+			logger.info(String.format(MESSAGE_FILE_UPDATED, textFile.getAbsolutePath()));
+			
 			return true;
 		} catch (IOException ioEx) {
-			throw new IOException(String.format(ERROR_WRITING_TO_FILE, textFile.getAbsolutePath()), ioEx);
+			String errorMessage = String.format(ERROR_WRITING_TO_FILE, textFile.getAbsolutePath());
+			
+			logger.warning(errorMessage);
+			throw new IOException(errorMessage, ioEx);
 		}
 	}
 
@@ -163,9 +195,14 @@ public class FileWriteHandler {
 
 			bWriter.close();
 			fWriter.close();
+			
+			logger.info(String.format(MESSAGE_FILE_UPDATED, textFile.getAbsolutePath()));
 			return true;
-		} catch (IOException ioEx) {
-			throw new IOException(String.format(ERROR_WRITING_TO_FILE, textFile.getAbsolutePath()), ioEx);
+		} catch (IOException ioEx) {			
+			String errorMessage = String.format(ERROR_WRITING_TO_FILE, textFile.getAbsolutePath());
+			
+			logger.warning(errorMessage);
+			throw new IOException(errorMessage, ioEx);
 		}
 	}
 
@@ -195,10 +232,14 @@ public class FileWriteHandler {
 			}
 			bWriter.close();
 			fWriter.close();
-
+			
+			logger.info(String.format(MESSAGE_FILE_UPDATED, textFile.getAbsolutePath()));
 			return true;
 		} catch (IOException ioEx) {
-			throw new IOException(String.format(ERROR_WRITING_TO_FILE, textFile.getAbsolutePath()), ioEx);
+			String errorMessage = String.format(ERROR_WRITING_TO_FILE, textFile.getAbsolutePath());
+			
+			logger.warning(errorMessage);
+			throw new IOException(errorMessage, ioEx);
 		}
 	}
 
@@ -222,9 +263,14 @@ public class FileWriteHandler {
 			bWriter.write(STRING_TO_CLEAR_FILES);
 			bWriter.close();
 			fWriter.close();
+			
+			logger.info(String.format(MESSAGE_FILE_CLEARED, fileToClear.getAbsolutePath()));
 			return true;
 		} catch (IOException ioEx) {
-			throw new IOException(String.format(ERROR_CLEARING_FILE, fileToClear.getAbsolutePath()), ioEx);
+			String errorMessage = String.format(ERROR_CLEARING_FILE, fileToClear.getAbsolutePath());
+			
+			logger.warning(errorMessage);
+			throw new IOException(errorMessage, ioEx);
 		}
 	}
 

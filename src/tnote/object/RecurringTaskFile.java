@@ -14,14 +14,14 @@ public class RecurringTaskFile extends TaskFile {
 		listOfRecurEndDates = new ArrayList<String>();
 	}
 	public RecurringTaskFile(String name, String startDate, String startTime, String endDate, String endTime,
-								String details,	boolean importance, boolean isRecurr, String interval) {
+								String details,	boolean importance, boolean isRecurr, String interval) throws Exception {
 			super(name, startDate, startTime, endDate, endTime, details, importance, isRecurr);
 			recurringInterval = interval;
 			listOfRecurStartDates = new ArrayList<String>();
 			listOfRecurEndDates = new ArrayList<String>();
 	}
 	
-	public RecurringTaskFile(TaskFile task) {
+	public RecurringTaskFile(TaskFile task) throws Exception {
 		super(task);
 		recurringInterval = new String();
 		listOfRecurStartDates = new ArrayList<String>();

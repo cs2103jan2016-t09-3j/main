@@ -77,7 +77,7 @@ public class TaskFile implements Comparable<TaskFile>, Cloneable {
 
 	private transient Calendar endCal;
 
-	// Constructor
+	/*----------------------Constructors-------------------------- */
 	public TaskFile() {
 
 		setName("");
@@ -95,32 +95,23 @@ public class TaskFile implements Comparable<TaskFile>, Cloneable {
 		initializeTaskTypes();
 	}
 
-	public TaskFile(String name) {
+	public TaskFile(String name) throws Exception {
 		this(name, "", "", "", "", "", false, false);
 	}
 
-	// public TaskFile(String name, String importance) {
-	//
-	// setTask(name);
-	// setDate("");
-	// setTime("");
-	// setDetails("");
-	// setImportance(importance);
-	// setIsRecurr(false);
-	// setIsDone(false);
-	// }
-
-	public TaskFile(String name, String date, String time, String details, boolean isRecurr) {
+	public TaskFile(String name, String date, String time, String details, boolean isRecurr) 
+					throws Exception {
 		this(name, date, time, date, time, details, false, isRecurr);
 
 	}
 
-	public TaskFile(String name, String date, String time, String details, boolean importance, boolean isRecurr) {
+	public TaskFile(String name, String date, String time, String details, 
+					boolean importance, boolean isRecurr) throws Exception {
 		this(name, date, time, date, time, details, importance, isRecurr);
 	}
 
 	public TaskFile(String name, String startDate, String startTime, String endDate, String endTime, String details,
-			boolean importance, boolean isRecurr) {
+			boolean importance, boolean isRecurr) throws Exception {
 
 		setName(name);
 		setStartDate(startDate);
@@ -136,7 +127,7 @@ public class TaskFile implements Comparable<TaskFile>, Cloneable {
 
 	}
 
-	public TaskFile(TaskFile task) {
+	public TaskFile(TaskFile task) throws Exception {
 		this(task.getName(), task.getStartDate(), task.getStartTime(), task.getEndDate(), task.getEndTime(),
 				task.getDetails(), task.getImportance(), task.getIsRecurring());
 	}
@@ -246,7 +237,7 @@ public class TaskFile implements Comparable<TaskFile>, Cloneable {
 		isDone = status;
 	}
 
-	public void setUpTaskFile() throws IncorrectTimeException {
+	public void setUpTaskFile() throws Exception {
 
 		setUpDates();
 
@@ -284,7 +275,7 @@ public class TaskFile implements Comparable<TaskFile>, Cloneable {
 		return currentDateString;
 	}
 
-	private void setUpCal() throws IncorrectTimeException {
+	private void setUpCal() throws Exception {
 		if (!startDate.isEmpty()) {
 			startCal = Calendar.getInstance();
 			setStartCal();
@@ -317,12 +308,14 @@ public class TaskFile implements Comparable<TaskFile>, Cloneable {
 
 	}
 
-	private void setEndCal() {
+	private void setEndCal() throws ParseException {
 		try {
 			Date date = convertStringToDate(endDate, endTime);
 			endCal.setTime(date);
 		} catch (ParseException pEx) {
-			System.err.println("incorrect date/time format for end cal");
+			//logger.warning("");
+			throw new ParseException("incorrect date/time format for end cal", pEx.getErrorOffset());
+			
 		}
 	}
 

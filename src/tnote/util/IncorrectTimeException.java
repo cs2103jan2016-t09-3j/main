@@ -1,6 +1,6 @@
 package tnote.util;
 
-public class IncorrectTimeException extends RuntimeException {
+public class IncorrectTimeException extends Exception {
 
 	/**
 	 * 

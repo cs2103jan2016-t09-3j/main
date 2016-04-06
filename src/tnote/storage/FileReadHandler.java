@@ -9,6 +9,7 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -16,25 +17,32 @@ import com.google.gson.reflect.TypeToken;
 import tnote.object.TaskFile;
 
 public class FileReadHandler {
+	private static final String MESSAGE_FILE_SUCCESSFULLY_READ = "successfully read from %s";
+	private static final String MESSAGE_CLASS_CREATED = "FileReadHandler created";
 	private static final String ERROR_FILE_DOES_NOT_EXIST = "%s does not exist";
 	private static final String ERROR_READING_FILE = "Error reading %s";
+	
+	private static final Logger logger = Logger.getGlobal();
+	private static FileReadHandler instance;
+	
 	private FileReader fReader;
 	private BufferedReader bReader;
 	private Gson gsonHelper;
-	private static FileReadHandler instance;
+	
 
 	/**
 	 * Constructor for FileReadHandler. Initializes the Gson object.
 	 */
 	private FileReadHandler() {
 		gsonHelper = new Gson();
+		logger.info(MESSAGE_CLASS_CREATED);
 	}
 
 	/**
 	 * Gets an instance of FileReadHandler. If instance does not exist, a new
 	 * instance is created
 	 * 
-	 * @return FileReadHandler - the instance of FileReadHandler
+	 * @return FileReadHandler the instance of FileReadHandler
 	 */
 	protected static FileReadHandler getInstance() {
 		if (instance == null) {
@@ -59,7 +67,6 @@ public class FileReadHandler {
 		try {
 
 			fReader = new FileReader(textFileToRead);
-
 			bReader = new BufferedReader(fReader);
 			ArrayList<String> listOfNames = new ArrayList<String>();
 
@@ -68,18 +75,25 @@ public class FileReadHandler {
 				while (stringInFile != null) {
 					listOfNames.add(stringInFile);
 					stringInFile = bReader.readLine();
-
 				}
 			}
 
-			bReader.close();
+			bReader.close();			
+			logger.info(String.format("Successfully read from %s", textFileToRead.getAbsolutePath()));
 
 			return listOfNames;
+			
 		} catch (FileNotFoundException fileNotFoundEx) {
-			throw new FileNotFoundException(String.format(ERROR_FILE_DOES_NOT_EXIST, 
-															textFileToRead.getAbsolutePath()));
-		} catch (IOException ioEx) {
-			throw new IOException(String.format(ERROR_READING_FILE, textFileToRead.getAbsolutePath()), ioEx);
+			String errorMessage = String.format(ERROR_FILE_DOES_NOT_EXIST, 
+									textFileToRead.getAbsolutePath());
+			
+			logger.warning(errorMessage);
+			throw new FileNotFoundException(errorMessage);
+		} catch (IOException ioEx) {			
+			String errorMessage = String.format(ERROR_READING_FILE, textFileToRead.getAbsolutePath());
+			
+			logger.warning(errorMessage);
+			throw new IOException(errorMessage, ioEx);
 		}
 	}
 
@@ -113,13 +127,21 @@ public class FileReadHandler {
 
 			bReader.close();
 			fReader.close();
+			
+			logger.info(String.format(MESSAGE_FILE_SUCCESSFULLY_READ, textFileToRead.getAbsolutePath()));
 			return mapFromFile;
 
 		} catch (FileNotFoundException fileNotFoundEx) {
-			throw new FileNotFoundException(String.format(ERROR_FILE_DOES_NOT_EXIST, 
-															textFileToRead.getAbsolutePath()));
+			String errorMessage = String.format(ERROR_FILE_DOES_NOT_EXIST, 
+									textFileToRead.getAbsolutePath());
+			
+			logger.warning(errorMessage);
+			throw new FileNotFoundException(errorMessage);
 		} catch (IOException ioEx) {
-			throw new IOException(String.format(ERROR_READING_FILE, textFileToRead.getAbsolutePath()), ioEx);
+			String errorMessage = String.format(ERROR_READING_FILE, textFileToRead.getAbsolutePath());
+			
+			logger.warning(errorMessage);
+			throw new IOException(errorMessage, ioEx);
 		}
 	}
 
@@ -146,21 +168,28 @@ public class FileReadHandler {
 				String mapString = bReader.readLine();
 
 				if (mapString != null) {
-					Type typeOfMap = new TypeToken<Map<String, ArrayList<String>>>() {
-					}.getType();
+					Type typeOfMap = new TypeToken<Map<String, ArrayList<String>>>() {}.getType();
 					mapFromFile = gsonHelper.fromJson(mapString, typeOfMap);
 				}
 			}
 
 			bReader.close();
 			fReader.close();
+			
+			logger.info(String.format(MESSAGE_FILE_SUCCESSFULLY_READ, textFileToRead.getAbsolutePath()));
 			return mapFromFile;
 
 		} catch (FileNotFoundException fileNotFoundEx) {
-			throw new FileNotFoundException(String.format(ERROR_FILE_DOES_NOT_EXIST, 
-															textFileToRead.getAbsolutePath()));
+			String errorMessage = String.format(ERROR_FILE_DOES_NOT_EXIST, 
+									textFileToRead.getAbsolutePath());
+			
+			logger.warning(errorMessage);
+			throw new FileNotFoundException(errorMessage);
 		} catch (IOException ioEx) {
-			throw new IOException(String.format(ERROR_READING_FILE, textFileToRead.getAbsolutePath()), ioEx);
+			String errorMessage = String.format(ERROR_READING_FILE, textFileToRead.getAbsolutePath());
+			
+			logger.warning(errorMessage);
+			throw new IOException(errorMessage, ioEx);
 		}
 	}
 
@@ -190,12 +219,20 @@ public class FileReadHandler {
 			}
 			bReader.close();
 			fReader.close();
+			
+			logger.info(String.format(MESSAGE_FILE_SUCCESSFULLY_READ, textFileToRead.getAbsolutePath()));
 			return extractedTask;
 		} catch (FileNotFoundException fileNoFoundEx) {
-			throw new FileNotFoundException(String.format(ERROR_FILE_DOES_NOT_EXIST, 
-															textFileToRead.getAbsolutePath()));
+			String errorMessage = String.format(ERROR_FILE_DOES_NOT_EXIST, 
+									textFileToRead.getAbsolutePath());
+			
+			logger.warning(errorMessage);
+			throw new FileNotFoundException(errorMessage);
 		} catch (IOException ioEx) {
-			throw new IOException(String.format(ERROR_READING_FILE, textFileToRead.getAbsolutePath()), ioEx);
+			String errorMessage = String.format(ERROR_READING_FILE, textFileToRead.getAbsolutePath());
+			
+			logger.warning(errorMessage);
+			throw new IOException(errorMessage, ioEx);
 		}
 	}
 }
