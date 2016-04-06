@@ -246,7 +246,7 @@ public class TaskFile implements Comparable<TaskFile>, Cloneable {
 		isDone = status;
 	}
 
-	public void setUpTaskFile() {
+	public void setUpTaskFile() throws IncorrectTimeException {
 
 		setUpDates();
 
@@ -284,7 +284,7 @@ public class TaskFile implements Comparable<TaskFile>, Cloneable {
 		return currentDateString;
 	}
 
-	private void setUpCal() {
+	private void setUpCal() throws IncorrectTimeException {
 		if (!startDate.isEmpty()) {
 			startCal = Calendar.getInstance();
 			setStartCal();

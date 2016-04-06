@@ -3,6 +3,7 @@ package tnote.storage;
 
 import static org.junit.Assert.assertFalse;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -294,6 +295,13 @@ public class TNotesStorage {
 			return false;
 		}
 		
+	}
+	
+	public String getParentDirectory() {
+		File parentDirectory = dHandler.getParentDirectory();
+		String parentDirectoryString = parentDirectory.getAbsolutePath();
+		
+		return parentDirectoryString;
 	}
 
 	
