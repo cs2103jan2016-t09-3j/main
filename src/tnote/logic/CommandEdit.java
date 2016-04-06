@@ -103,7 +103,7 @@ public class CommandEdit extends TNotesLogic {
 		String newText = fromParser.get(2).trim();
 		TaskFile currentFile = storage.getTaskFileByName(title);
 		RecurringTaskFile recurTask = new RecurringTaskFile(currentFile);
-		ArrayList<String> dateList = storage.getRecurStartDateList(title);
+		ArrayList<String> dateList = storage.getRecurTaskStartDateList(title);
 		recurTask.addRecurringStartDate(dateList);
 
 		System.err.println(currentFile.getStartDate() + " " + currentFile.getStartTime());

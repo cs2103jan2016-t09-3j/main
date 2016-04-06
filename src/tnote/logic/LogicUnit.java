@@ -17,11 +17,11 @@ public class LogicUnit {
 	CommandDelete comDelete = new CommandDelete();
 	CommandEdit comEdit = new CommandEdit();
 	CommandView comView = new CommandView();
-	
-	public LogicUnit() throws Exception{
+
+	public LogicUnit() throws Exception {
 		storage = TNotesStorage.getInstance();
 	}
-		
+
 	public TaskFile addTask(ArrayList<String> fromParser) throws Exception {
 		String commandChecker = fromParser.remove(0);
 		LogicCommand newCommand = new LogicCommand(commandChecker);
@@ -41,6 +41,7 @@ public class LogicUnit {
 		emptyUndoStack();
 		return newTask;
 	}
+
 	public ArrayList<TaskFile> deleteIndex(ArrayList<TaskFile> currentList, int num) throws Exception {
 		LogicCommand newCommand = new LogicCommand("delete");
 		TaskFile removedTask = currentList.remove(num - 1);
@@ -62,15 +63,17 @@ public class LogicUnit {
 		emptyUndoStack();
 		return newTask;
 	}
-	
+
 	public ArrayList<TaskFile> viewTask(ArrayList<String> fromParser) throws Exception {
 		fromParser.remove(0);
 		return comView.view(fromParser);
 	}
-	public TaskFile viewByIndex(ArrayList<TaskFile> currentList, int num)throws Exception{
+
+	public TaskFile viewByIndex(ArrayList<TaskFile> currentList, int num) throws Exception {
 		TaskFile removedTask = currentList.get(num - 1);
 		return removedTask;
-}
+	}
+
 	public ArrayList<String> sortViewTypes(ArrayList<String> fromParser) {
 		String viewType = fromParser.get(1);
 		if (fromParser.size() == 3) {
@@ -82,15 +85,16 @@ public class LogicUnit {
 						|| (viewType.contains("saturday")) || (viewType.contains("sunday")))) {
 			fromParser.add("isViewDateList");
 			return fromParser;
-		} else if(viewType.equals("notes")){
+		} else if (viewType.equals("notes")) {
 			fromParser.add("isViewFloating");
 			return fromParser;
-		}else{
+		} else {
 			fromParser.add("isViewTask");
 			return fromParser;
 		}
 	}
-	public ArrayList<TaskFile> sortTask(ArrayList<TaskFile> currentList){
+
+	public ArrayList<TaskFile> sortTask(ArrayList<TaskFile> currentList) {
 		Collections.sort(currentList, new NameComparator());
 		return currentList;
 	}
@@ -103,14 +107,33 @@ public class LogicUnit {
 			String commandType = currentCommand.getCommandType();
 			TaskFile newTask = new TaskFile(currentCommand.getCurrentTask());
 			if (commandType.equals("add")) {
-				newTask = currentCommand.getCurrentTask();
-				storage.deleteTask(currentCommand.getCurrentTask().getName());
+				if (newTask.getIsRecurring()) {
+					storage.deleteRecurringTask(currentCommand.getCurrentTask().getName());
+				} else {
+					storage.deleteTask(currentCommand.getCurrentTask().getName());
+				}
 			} else if (commandType.equals("delete")) {
 				storage.addTask(currentCommand.getCurrentTask());
 			} else if (commandType.equals("edit")) {
-				storage.deleteTask(currentCommand.getCurrentTask().getName());
-				storage.addTask(currentCommand.getOldTask());
-			} else {
+				if (newTask.getIsRecurring()) {
+					storage.deleteRecurringTask(currentCommand.getCurrentTask().getName());
+					storage.addTask(currentCommand.getOldTask());
+				} else {
+					storage.deleteTask(currentCommand.getCurrentTask().getName());
+					storage.addTask(currentCommand.getOldTask());
+				}
+			} else if (commandType.equals("set")) {
+				if (newTask.getIsRecurring()) {
+					storage.deleteRecurringTask(currentCommand.getCurrentTask().getName());
+					storage.addTask(currentCommand.getOldTask());
+				} else {
+					storage.deleteTask(currentCommand.getCurrentTask().getName());
+					storage.addTask(currentCommand.getOldTask());
+				}
+			} else if(commandType.equals("change")){
+				
+			}
+			else{
 				throw new Exception("cannot be undone");
 			}
 			undoCommandtStack.push(currentCommand);
@@ -128,10 +151,27 @@ public class LogicUnit {
 			if (commandType.equals("add")) {
 				storage.addTask(currentCommand.getCurrentTask());
 			} else if (commandType.equals("delete")) {
-				storage.deleteTask(currentCommand.getCurrentTask().getName());
+				if (newTask.getIsRecurring()) {
+					storage.deleteRecurringTask(currentCommand.getCurrentTask().getName());
+				} else {
+					storage.deleteTask(currentCommand.getCurrentTask().getName());
+				}
 			} else if (commandType.equals("edit")) {
-				storage.deleteTask(currentCommand.getOldTask().getName());
-				storage.addTask(currentCommand.getCurrentTask());
+				if (newTask.getIsRecurring()) {
+					storage.deleteRecurringTask(currentCommand.getOldTask().getName());
+					storage.addTask(currentCommand.getCurrentTask());
+				} else {
+					storage.deleteTask(currentCommand.getOldTask().getName());
+					storage.addTask(currentCommand.getCurrentTask());
+				}
+			} else if (commandType.equals("set")) {
+				if (newTask.getIsRecurring()) {
+					storage.deleteRecurringTask(currentCommand.getOldTask().getName());
+					storage.addTask(currentCommand.getCurrentTask());
+				} else {
+					storage.deleteTask(currentCommand.getOldTask().getName());
+					storage.addTask(currentCommand.getCurrentTask());
+				}
 			} else {
 				throw new Exception("cannot be redone");
 			}
@@ -139,17 +179,23 @@ public class LogicUnit {
 			return newTask;
 		}
 	}
+
 	public boolean setStatus(String taskName, boolean status) throws Exception {
+		String commandChecker = "set";
+		LogicCommand newCommand = new LogicCommand(commandChecker);
 		TaskFile newTask = storage.getTaskFileByName(taskName);
-		storage.deleteTask(newTask.getName());
-		newTask.setIsDone(status);
+		newCommand.setOldTask(storage.deleteTask(newTask.getName()));
 		storage.addTask(newTask);
+		newCommand.setCurrentTask(newTask);
+		doCommandStack.push(newCommand);
+		emptyUndoStack();
 		if (newTask.getIsDone()) {
 			return true;
 		} else {
 			return false;
 		}
 	}
+
 	public ArrayList<TaskFile> callOverdueTasks() throws Exception {
 		ArrayList<TaskFile> listOfOverdueTasks = storage.retrieveOverdueTasks();
 		for (TaskFile newTask : listOfOverdueTasks) {
@@ -163,7 +209,14 @@ public class LogicUnit {
 		}
 		return listOfOverdueTasks;
 	}
+
 	public boolean changeDirectory(String directoryName) throws Exception {
+		String commandChecker = "change";
+		LogicCommand newCommand = new LogicCommand(commandChecker);
+		TaskFile newTask = new TaskFile(directoryName);
+		newCommand.setCurrentTask(newTask);
+		doCommandStack.push(newCommand);
+		emptyUndoStack();
 		return storage.setNewDirectory(directoryName);
 	}
 
@@ -174,10 +227,9 @@ public class LogicUnit {
 			return false;
 		}
 	}
-	
-	
-	private void emptyUndoStack(){
-		while(!undoCommandtStack.isEmpty()){
+
+	private void emptyUndoStack() {
+		while (!undoCommandtStack.isEmpty()) {
 			undoCommandtStack.pop();
 		}
 	}
