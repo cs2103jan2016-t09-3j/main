@@ -1,6 +1,7 @@
 //@@author A0131149
 package tnote.parser;
-
+import java.util.logging.Logger;
+import tnote.log.TNoteLogger;
 import java.util.ArrayList;
 
 
@@ -20,6 +21,7 @@ public class TNotesParserView {
 	private static final String MESSAGE_NULL_ARRAY = "The input array for view is null";
 	private static final String MESSAGE_INVALID_VIEW_STRING = "Invalid view string!";
 	private static final String MESSAGE_NULL_INPUT_STRING = "Invald input String!";
+	private static final String MESSAGE_LOG_ERROR = "test Warning in parser command";
 	
 	private static int NUM_PREVIOUS_STR = 1;
 	private static int NUM_NEXT_STR = 1;
@@ -31,6 +33,8 @@ public class TNotesParserView {
 	private static int NUM_SECOND_WORD = 1;
 	private static int NUM_START_FROM_SECOND_STR = 1;
 	private static final int NUM_INTIALISATION = 0;
+	
+	private static final Logger logger = Logger.getGlobal();
 	
 	private static final String keyWord [] = {
 			"from", "to", "at", "by", "due"
@@ -121,7 +125,7 @@ public class TNotesParserView {
 		if(list.isEmpty()){
 			list.add(query.taskNameFloat(viewArr).trim());
 		}
-		
+		logger.warning(MESSAGE_LOG_ERROR); 	
 		return list;
 	}
 	private int isKeyWord(String word){
@@ -149,6 +153,7 @@ public class TNotesParserView {
 				}
 			}
 		}
+		logger.warning(MESSAGE_LOG_ERROR); 	
 		return index;
 		
 	}
@@ -169,6 +174,7 @@ public class TNotesParserView {
 			list.add(date.compareWeekDayMonth(arr[NUM_SECOND_WORD]));
 			
 		}
+		logger.warning(MESSAGE_LOG_ERROR); 	
 		return list;
 	}
 }

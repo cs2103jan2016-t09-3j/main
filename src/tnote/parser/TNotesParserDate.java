@@ -3,7 +3,8 @@
 //package Parser;
 
 package tnote.parser;
-import java.io.IOException;
+import java.util.logging.Logger;
+import tnote.log.TNoteLogger;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.DateTimeException;
@@ -38,6 +39,7 @@ public class TNotesParserDate {
 	private static final String MESSAGE_INVALID_DATE_RANGE = "Invalid date range!";
 	private static final String MESSAGE_INVALID_DATE = "Invalid date range";
 	private static final String MESSAGE_STANDARD_DATE_FORMAT ="yyyy-MM-dd";
+	private static final String MESSAGE_LOG_ERROR = "test Warning in parser command date";
 	
 	private static int NUM_SHORT_WEEKDAY = 4;
 	private static int NUM_LAST_ARR_STR = 1;
@@ -50,6 +52,8 @@ public class TNotesParserDate {
 	private static int NUM_FIRST_CHAR = 0;
 	private static int NUM_SUBSTRING_RANGE = 1;
 	private static int NUM_START_FROM_SECOND_STR = 1;
+	
+	private static final Logger logger = Logger.getGlobal();
 	
 	private static String specialDate [] = {
 			"today", "tomorrow", "afternoon",
@@ -110,6 +114,7 @@ public class TNotesParserDate {
 				monthString =  MESSAGE_NULL_STRING;
 			}
 		}
+		logger.warning(MESSAGE_LOG_ERROR); 	
 		return monthString;
 	}
 	
@@ -152,7 +157,7 @@ public class TNotesParserDate {
 		else{
 			weekDayString =  MESSAGE_NULL_STRING;
 		}
-
+		logger.warning(MESSAGE_LOG_ERROR); 	
 		return weekDayString;
 	}
 	
@@ -208,6 +213,7 @@ public class TNotesParserDate {
 				return parsedDate.toString();
 			}
 		}
+		logger.warning(MESSAGE_LOG_ERROR); 	
 		return MESSAGE_NULL_STRING;
 	}
 	
@@ -264,6 +270,7 @@ public class TNotesParserDate {
 		else if(!formatDate(inputDay).equals(MESSAGE_NULL_STRING)){
 			return formatDate(inputDay);
 		}
+		logger.warning(MESSAGE_LOG_ERROR); 	
 		return inputDay;
 	}
 	
@@ -292,12 +299,14 @@ public class TNotesParserDate {
 		}catch (DateTimeException e) {
 			return dateList;
 		}
+		logger.warning(MESSAGE_LOG_ERROR); 	
 		return dateList;	
 
 	}
 
 	private String capTheFirstChar(String dayMonth) {
-		return Character.toString(dayMonth.charAt(NUM_FIRST_CHAR)).toUpperCase() + dayMonth.substring(NUM_SUBSTRING_RANGE);
+		return Character.toString(dayMonth.charAt(NUM_FIRST_CHAR)).toUpperCase() 
+				+ dayMonth.substring(NUM_SUBSTRING_RANGE);
 	}
 		
 		

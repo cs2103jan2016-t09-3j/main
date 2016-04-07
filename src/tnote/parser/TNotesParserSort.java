@@ -1,6 +1,8 @@
 //@@author A0131149
 package tnote.parser;
 import java.util.ArrayList;
+import java.util.logging.Logger;
+import tnote.log.TNoteLogger;
 
 /**
  * This class manages the input String after command sort
@@ -15,9 +17,12 @@ public class TNotesParserSort{
 	private static final String MESSAGE_KEYWORD_BY = "by";
 	private static final String MESSAGE_INVALID_SORT_TYPE = "Invalid sort type";
 	private static final String MESSAGE_EMPTY_INPUT = "Empty input sort contents";
+	private static final String MESSAGE_LOG_ERROR = "test Warning in parser command";
 	
 	private static final int NUM_FIRST_SORT_TYPE = 1;
 	private static final int NUM_SECOND_SORT_TYPE = 2;
+	
+	private static final Logger logger = Logger.getGlobal();
 	/**
 	 * Return an ArrayList that contains all the contents after the command word sort after 
 	 * identified the sort type.
@@ -36,6 +41,7 @@ public class TNotesParserSort{
 		else{
 			throw new Exception(MESSAGE_INVALID_SORT_TYPE);
 		}
+		logger.warning(MESSAGE_LOG_ERROR); 	
 		return sortList;
 	}
 	}

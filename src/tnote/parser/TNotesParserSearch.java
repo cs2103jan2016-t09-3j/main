@@ -1,6 +1,7 @@
 //@@author A0131149
 package tnote.parser;
-
+import java.util.logging.Logger;
+import tnote.log.TNoteLogger;
 import java.util.ArrayList;
 
 /**
@@ -14,8 +15,11 @@ import java.util.ArrayList;
 public class TNotesParserSearch { 
 	private static final String MESSAGE_EMPTY_INPUT = "Empty input search contents";
 	private static final String MESSAGE_INVALID_SEARCH = "Invalid serach";
+	private static final String MESSAGE_LOG_ERROR = "test Warning in parser command";
 	
 	private static final int NUM_INITIALISATION = 1;
+	
+	private static final Logger logger = Logger.getGlobal();
 	
 	/**
 	 * Return an ArrayList that contains all the contents after the command word search.
@@ -35,7 +39,7 @@ public class TNotesParserSearch {
 				list.add(searchArr[i].trim());
 			}
 		}
-			
+		logger.warning(MESSAGE_LOG_ERROR);	
 		return list;
 
      }

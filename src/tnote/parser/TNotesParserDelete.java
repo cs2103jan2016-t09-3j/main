@@ -1,6 +1,7 @@
 //@@author A0131149
 package tnote.parser;
-
+import java.util.logging.Logger;
+import tnote.log.TNoteLogger;
 import java.util.ArrayList;
 /**
  * This class manages the input String after command delete
@@ -18,9 +19,12 @@ public class TNotesParserDelete {
 	private static final String MESSAGE_KEYWORD_DELETE = "delete";
 	private static final String MESSAGE_KEYWORD_SPACE = " ";
 	private static final String MESSAGE_INVALID_DELETE_TYPE = "Invalid delete type";
+	private static final String MESSAGE_LOG_ERROR = "test Warning in parser command delete";
 	
 	private static int NUM_INITIALISATION = 1;
 	private static int NUM_DELETE_TYPE = 2;
+	
+	private static final Logger logger = Logger.getGlobal();
 	
 	/**
 	 * This method will identify and organize the inputs after the 
@@ -48,6 +52,7 @@ public class TNotesParserDelete {
 		}catch(Exception e){
 			throw new Exception(MESSAGE_INVALID_DELETE_TYPE);
 		}
+		logger.warning(MESSAGE_LOG_ERROR); 	
 		return deleteList;
 	
 	}

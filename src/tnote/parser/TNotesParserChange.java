@@ -1,5 +1,7 @@
 //@@author A0131149
 package tnote.parser;
+import java.util.logging.Logger;
+import tnote.log.TNoteLogger;
 
 import java.util.ArrayList;
 /**
@@ -15,9 +17,12 @@ public class TNotesParserChange {
 	private static final String MESSAGE_KEYWORD_CHANGE_DIRECTORY = "change directory";
 	private static final String MESSAGE_KEYWORD_TO = "to";
 	private static final String MESSAGE_INVALIDE_DIRECTORY = "Invalid directory";
+	private static final String MESSAGE_LOG_ERROR = "test Warning in parser command change";
 	
 	private static final int NUM_INITIALISATION = 1;
 	private static final int NUM_INCREMENTATION = 1;
+	
+	private static final Logger logger = Logger.getGlobal();
 	
 	/**
 	 * Return an ArrayList that contains all the contents after the command word change after 
@@ -40,6 +45,7 @@ public class TNotesParserChange {
 		}catch(Exception e){
 			throw new Exception(MESSAGE_INVALIDE_DIRECTORY);
 		}	
+		logger.warning(MESSAGE_LOG_ERROR); 
 		return list;
 
 	}

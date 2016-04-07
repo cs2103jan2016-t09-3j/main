@@ -1,6 +1,8 @@
 //@@author A0131149
 package tnote.parser;
 import java.util.ArrayList;
+import java.util.logging.Logger;
+import tnote.log.TNoteLogger;
 
 /**
  * This class manages the input String entered by the user, split the string
@@ -15,8 +17,11 @@ public class TNotesParser {
 	private static final String MESSAGE_INVALID_COMMAND = "Invalid command has been entered!";
 	private static final String MESSAGE_NULL_INPUTSTRING = "Null inputString is passed in!";	
 	private static final String MESSAGE_NULL_STRING = " ";
+	private static final String MESSAGE_LOG_ERROR = "test Warning in parser command";
 	
 	private static int NUM_FIRST_WORD = 0;
+	
+	private static final Logger logger = Logger.getGlobal();
 	
 	enum TNotesParserCommandWords {
 		ADD, VIEW, EDIT, DELETE, SEARCH, SORT, HELP, EXIT, SET, CHANGE, UNDO, REDO
@@ -33,7 +38,8 @@ public class TNotesParser {
 	TNotesParserView view;
 	TNotesParserEdit edit;
 	
-	public TNotesParser(){
+	public TNotesParser() throws Exception{
+		TNoteLogger.setUp();
 		add = new TNotesParserAdd();
 		change = new TNotesParserChange();
 		delete = new TNotesParserDelete();
@@ -56,11 +62,12 @@ public class TNotesParser {
 		parser.execute();
 		
 	}
-
+	
+	//Must show the level of testing
 	public void execute() throws Exception{
 		String output = new String();
 		String input = new String();  
-		input = "redo";
+		input = "add call mom due every day for 2 weeks";
 		for (int i = 0; i < checkCommand(input).size(); i++){
 			output = checkCommand(input).get(i);
 			System.out.println(output);
@@ -161,6 +168,7 @@ public class TNotesParser {
 			System.out.println(MESSAGE_INVALID_COMMAND);
 		}
 		
+		logger.warning(MESSAGE_LOG_ERROR);
 		return list;
 
 		

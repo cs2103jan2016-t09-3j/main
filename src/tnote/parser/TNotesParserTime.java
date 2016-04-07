@@ -2,6 +2,8 @@
 package tnote.parser;
 
 import java.text.SimpleDateFormat;
+import java.util.logging.Logger;
+import tnote.log.TNoteLogger;
 import java.time.DateTimeException;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -35,6 +37,7 @@ public class TNotesParserTime {
 	private static final String MESSAGE_INVALID_TIME_RANGE = "Invalid time range!";
 	private static final String MESSAGE_STANDARD_DATE_FORMAT = "yyyy-MM-dd";
 	private static final String MESSAGE_STANDARD_DATE_TIME_FORMAT = "E, y-M-d 'at' h:m:s a z";
+	private static final String MESSAGE_LOG_ERROR = "test Warning in parser command";
 	
 	private static int NUM_GET_FIRST_DATE = 0;
 	private static int NUM_INITIALISATION = 0;
@@ -43,6 +46,8 @@ public class TNotesParserTime {
 	private static int NUM_FIRST_CHAR = 0;
 	private static int NUM_LAST_CHAR = 1;
 	private static int NUM_SECOND_LAST_CHAR = 2;
+	
+	private static final Logger logger = Logger.getGlobal();
 	
 	private static final List<String> TIME_POSSIBLE_FORMAT = Collections.unmodifiableList(Arrays.asList(
 			"h:mm", "hh:m", "hh:mm","HH:mm",
@@ -97,7 +102,7 @@ public class TNotesParserTime {
 				return parsedTime.toString();
 			}
 		}
-	
+		logger.warning(MESSAGE_LOG_ERROR); 	
 		return MESSAGE_NULL_STRING;
 	}
 	
@@ -136,6 +141,7 @@ public class TNotesParserTime {
 				return NUM_TRUE;
 			}
 		}
+		logger.warning(MESSAGE_LOG_ERROR); 	
 		return NUM_FALSE ;
 	}
 	
@@ -171,7 +177,7 @@ public class TNotesParserTime {
 			return list;
 		}
 		else{
-	
+		logger.warning(MESSAGE_LOG_ERROR); 	
 		return list;
 		}
 		

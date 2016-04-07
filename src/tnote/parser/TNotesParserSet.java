@@ -1,6 +1,8 @@
 //@@author A0131149
 package tnote.parser;
 import java.util.ArrayList;
+import java.util.logging.Logger;
+import tnote.log.TNoteLogger;
 
 /**
  * This class manages the input String after command set
@@ -13,6 +15,7 @@ public class TNotesParserSet {
 	private static final String MESSAGE_SPACE = " ";
 	private static final String MESSAGE_INVALID_STATUS = "Invalid status";
 	private static final String MESSAGE_EMPTY_INPUT = "Empty input after set command";
+	private static final String MESSAGE_LOG_ERROR = "test Warning in parser command";
 	
 	private static final int NUM_INITIALISATION = 1;
 	private static final int NUM_INITIALISATION_ZERO = 0;
@@ -22,6 +25,8 @@ public class TNotesParserSet {
 	
 	
 	private static final String ARR_STATUS [] = {"done", "undone", "complete", "incomplete"};
+	
+	private static final Logger logger = Logger.getGlobal();
 	
 	/**
 	 * Return an ArrayList that contains all the contents after the command word set after 
@@ -46,6 +51,7 @@ public class TNotesParserSet {
 		else{
 			throw new Exception(MESSAGE_INVALID_STATUS);
 		}
+		logger.warning(MESSAGE_LOG_ERROR); 
 		return list;
 	}
 
@@ -56,7 +62,7 @@ public class TNotesParserSet {
 				return NUM_TRUE;
 			}
 		}
-		
+		logger.warning(MESSAGE_LOG_ERROR); 
 		return NUM_FALSE;
 	}
 

@@ -1,5 +1,7 @@
 //@@author A0131149
 package tnote.parser;
+import java.util.logging.Logger;
+import tnote.log.TNoteLogger;
 
 /**
  * This class manages all the checking in the input String. It will indicate whether a particular 
@@ -15,13 +17,15 @@ public class TNotesParserQuery {
 	private static final String MESSAGE_ISLETTER = "[a-zA-Z]+";
 	private static final String MESSAGE_NULL_INPUT_ARRAY = "Null input array";
 	private static final String MESSAGE_NULL_AFTER_BEFORE_ARRAY = "Null after and before array";
+	private static final String MESSAGE_LOG_ERROR = "test Warning in parser command";
 	
 	private static int NUM_INITIALISATION = 0;
 	private static int NUM_TRUE = 1;
 	private static int NUM_FALSE = 0;
 	private static int NUM_START_FROM_SECOND_STR = 1;
 	
-
+	private static final Logger logger = Logger.getGlobal();
+	
 	private static final String ARR_IMPORTANT [] = {
 			"impt","important","importance",
 			"compulsory", "must do", "essential",
@@ -60,7 +64,7 @@ public class TNotesParserQuery {
 		}
 		else{
 			return NUM_FALSE;
-		}
+		} 
 		
 	}
 	/**
@@ -75,6 +79,7 @@ public class TNotesParserQuery {
 		for(int j=NUM_START_FROM_SECOND_STR;j<arr.length;j++ ){
 			task += arr[j] + " ";
 		}	
+		logger.warning(MESSAGE_LOG_ERROR); 
 		return task;
 	}
 	/**
@@ -91,6 +96,7 @@ public class TNotesParserQuery {
 				return NUM_TRUE;
 			}
 		}
+		logger.warning(MESSAGE_LOG_ERROR); 
 		return NUM_FALSE;
 	}
 	/**
@@ -110,6 +116,7 @@ public class TNotesParserQuery {
 				}
 			}
 		}
+		logger.warning(MESSAGE_LOG_ERROR); 
 		return index;
 	}
 	/**
@@ -126,6 +133,7 @@ public class TNotesParserQuery {
 		} else {
 			return NUM_FALSE;
 		}
+		
 	}
 	/**
 	 * Return an String that indicate the task name
@@ -142,6 +150,7 @@ public class TNotesParserQuery {
 		for(int i =NUM_START_FROM_SECOND_STR;i<count ;i++){
 			task += arr[i]+" ";
 		}		
+		logger.warning(MESSAGE_LOG_ERROR); 
 		return task;
 	}
 

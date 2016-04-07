@@ -1,7 +1,8 @@
 //@@author A0131149
 package tnote.parser;
 import java.util.ArrayList;
-import java.text.ParseException;
+import java.util.logging.Logger;
+import tnote.log.TNoteLogger;
 
 /**
  * This class manages the input String after command add
@@ -21,6 +22,7 @@ public class TNotesParserAdd {
 	private static final String MESSAGE_SPACE = " ";
 	private static final String MESSAGE_INVALID_DATE_RANGE = "Invalid date range!";
 	private static final String MESSAGE_INVALID_TIME_RANGE = "Invalid time range!";
+	private static final String MESSAGE_LOG_ERROR = "test Warning in parser command add";
 	
 	private static int NUM_LAST_ARR_STR = 1;
 	private static int NUM_LAST_TWO_ARR_STR = 2;
@@ -37,6 +39,7 @@ public class TNotesParserAdd {
 	private static int NUM_GET_FORTH = 4;
 	private static int NUM_GET_FITH = 5;
 	
+	private static final Logger logger = Logger.getGlobal();
 	
 	TNotesParserTime time;
 	TNotesParserDate date;
@@ -187,6 +190,8 @@ public class TNotesParserAdd {
 			addList.clear();
 			addList.add(MESSAGE_INVALID_DATE_RANGE);
 		}	
+		
+	logger.info(MESSAGE_LOG_ERROR); 	
 	return addList;
 	}
 	
@@ -212,6 +217,7 @@ public class TNotesParserAdd {
 			list.add(date.compareWeekDayMonth(arr[j+NUM_GET_SECOND]).trim());
 			//for 2 week
 			if(arr.length>=j+NUM_GET_FORTH && arr[j+NUM_GET_THIRD].equals("for")){
+				list.add("for");
 				list.add(arr[j+NUM_GET_FORTH]);
 				list.add(arr[j+NUM_GET_FITH]);
 			}
