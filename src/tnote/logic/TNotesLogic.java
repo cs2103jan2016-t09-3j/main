@@ -486,15 +486,15 @@ public class TNotesLogic {
 				|| (currentFile.getEndCal().after(savedTask.getStartCal())
 						&& currentFile.getEndCal().before(savedTask.getEndCal())));
 	}
-	
-//	public boolean clearAll() throws Exception{
-//		if(storage.clearFiles()){
-//			return true;
-//		}
-//		else{
-//			return false;
-//		}
-//	}
+
+	// public boolean clearAll() throws Exception{
+	// if(storage.clearFiles()){
+	// return true;
+	// }
+	// else{
+	// return false;
+	// }
+	// }
 	// currently has issue, need to make a new object, compare it, then remove
 	// it
 	// if i want to hold the main Array list
@@ -528,30 +528,6 @@ public class TNotesLogic {
 		return currentList;
 	}
 
-	// currently gets a array list String, converts to array list taskFile, then
-	// checks if any is done. returns new array list without done task/
-	// public ArrayList<TaskFile> displayList() throws Exception {
-	// ArrayList<String> stringList = storage.readFromMasterFile();
-	// ArrayList<TaskFile> taskToBeDisplayed = new ArrayList<TaskFile>();
-	//
-	// for (String text : stringList) {
-	// TaskFile currentFile = storage.getTaskFileByName(text);
-	// if (currentFile.getIsRecurring()) {
-	// continue;
-	// }
-	// if (!currentFile.getIsDone()) {
-	// String name = currentFile.getName();
-	// if (name.contains("_")) {
-	// String formatterName = name.substring(0, name.indexOf("_"));
-	// currentFile.setName(formatterName);
-	// }
-	// taskToBeDisplayed.add(currentFile);
-	// }
-	//
-	// }
-	// return taskToBeDisplayed;
-	// }
-
 	public ArrayList<String> sortViewTypes(ArrayList<String> fromParser) {
 		ArrayList<String> stringList = new ArrayList<String>();
 		String viewType = fromParser.get(1);
@@ -562,10 +538,22 @@ public class TNotesLogic {
 						|| (viewType.contains("thursday")) || (viewType.contains("friday"))
 						|| (viewType.contains("saturday")) || (viewType.contains("sunday")))) {
 			stringList.add("isViewDateList");
+		} else if (viewType.contains("notes")) {
+			stringList.add("isViewNotes");
+		} else if (isLetters(viewType)) {
+			stringList.add("isViewIndex");
 		} else {
 			stringList.add("isViewTask");
 		}
 		return stringList;
+	}
+
+	public boolean isLetters(String nextString) {
+		if (!nextString.matches("[0-9]+")) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	// Show the details of a single task
@@ -653,7 +641,7 @@ public class TNotesLogic {
 			if (currentFile.getIsRecurring() || currentFile.getIsDone()) {
 				continue;
 			}
-			if (currentFile.getStartDate().equals(date.trim())||currentFile.getEndDate().equals(date.trim())) {
+			if (currentFile.getStartDate().equals(date.trim()) || currentFile.getEndDate().equals(date.trim())) {
 				String name = currentFile.getName();
 				if (name.contains("_")) {
 					String formatterName = name.substring(0, name.indexOf("_"));

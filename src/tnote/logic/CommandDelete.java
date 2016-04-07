@@ -33,4 +33,12 @@ public class CommandDelete {
 		}
 		return storage.deleteRecurringTask(fromParser.get(0));
 	}
+	
+	public ArrayList<TaskFile> deleteIndex(ArrayList<TaskFile> currentList, int num) throws Exception {
+		String commandWord = "delete";
+		TaskFile removedTask = currentList.remove(num - 1);
+
+		storage.deleteTask(removedTask.getName());
+		return currentList;
+	}
 }
