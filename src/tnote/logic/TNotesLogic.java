@@ -542,6 +542,8 @@ public class TNotesLogic {
 			stringList.add("isViewNotes");
 		} else if (!isLetters(viewType)) {
 			stringList.add("isViewIndex");
+		} else if (viewType.contains("history")) {
+			stringList.add("isViewHistory");
 		} else {
 			stringList.add("isViewTask");
 		}
@@ -562,6 +564,20 @@ public class TNotesLogic {
 		TaskFile removedTask = currentList.get(num - 1);
 
 		return removedTask;
+	}
+
+	public ArrayList<TaskFile> viewDoneList() throws Exception {
+		ArrayList<String> nameList = new ArrayList<String>();
+		ArrayList<TaskFile> doneList = new ArrayList<TaskFile>();
+		nameList = storage.readFromMasterFile();
+
+		for (String text : nameList) {
+			TaskFile newTask = storage.getTaskFileByName(text);
+			if (newTask.getIsDone()) {
+				doneList.add(newTask);
+			}
+		}
+		return doneList;
 	}
 
 	public TaskFile viewTask(String taskToBeDisplayed) throws Exception {
@@ -1058,9 +1074,6 @@ public class TNotesLogic {
 				String formatterName = newTask.getName().substring(0, newTask.getName().indexOf("_"));
 				newTask.setName(formatterName);
 			}
-		}
-		if (listOfOverdueTasks.isEmpty()) {
-			throw new Exception("    ====NO OVERDUE TASKS====\n");
 		}
 		return listOfOverdueTasks;
 	}
