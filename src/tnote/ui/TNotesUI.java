@@ -81,7 +81,7 @@ public class TNotesUI {
 	}
 
 	public String displayFloats() {
-		String floatString;
+		String floatString ="";
 		try {
 			if (logic.hasFloatingList()) {
 				ArrayList<TaskFile> arrFloat = new ArrayList<TaskFile>();
@@ -513,6 +513,32 @@ public class TNotesUI {
 					// TODO Auto-generated catch block
 					result = e.getMessage();
 				}
+			} else if (viewType.get(0).equals("isViewHistory")) {
+				String floatString ="";
+				try {
+					if (logic.hasFloatingList()) {
+						ArrayList<TaskFile> arrFloat = new ArrayList<TaskFile>();
+						arrFloat = logic.viewFloatingList();
+
+						floatString = "     ====NOTES====\n";
+						for (int i = 0; i < arrFloat.size(); i++) {
+							floatString += i + 1 + ". ";
+							if (arrFloat.get(i).getImportance()) {
+								floatString += "[IMPORTANT] ";
+							} else {
+								floatString += arrFloat.get(i).getName() + "\n";
+							}
+						}
+						floatString += "\n";
+					} else {
+						floatString = "               ====NO NOTES====\n\n";
+					}
+
+				} catch (Exception e) {
+					floatString = e.getMessage();
+				}
+
+				return floatString;
 			}
 			break;
 
