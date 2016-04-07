@@ -540,7 +540,7 @@ public class TNotesLogic {
 			stringList.add("isViewDateList");
 		} else if (viewType.contains("notes")) {
 			stringList.add("isViewNotes");
-		} else if (isLetters(viewType)) {
+		} else if (!isLetters(viewType)) {
 			stringList.add("isViewIndex");
 		} else {
 			stringList.add("isViewTask");
