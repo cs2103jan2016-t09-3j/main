@@ -486,7 +486,15 @@ public class TNotesLogic {
 				|| (currentFile.getEndCal().after(savedTask.getStartCal())
 						&& currentFile.getEndCal().before(savedTask.getEndCal())));
 	}
-
+	
+//	public boolean clearAll() throws Exception{
+//		if(storage.clearFiles()){
+//			return true;
+//		}
+//		else{
+//			return false;
+//		}
+//	}
 	// currently has issue, need to make a new object, compare it, then remove
 	// it
 	// if i want to hold the main Array list
@@ -645,7 +653,7 @@ public class TNotesLogic {
 			if (currentFile.getIsRecurring() || currentFile.getIsDone()) {
 				continue;
 			}
-			if (currentFile.getStartDate().equals(date.trim())) {
+			if (currentFile.getStartDate().equals(date.trim())||currentFile.getEndDate().equals(date.trim())) {
 				String name = currentFile.getName();
 				if (name.contains("_")) {
 					String formatterName = name.substring(0, name.indexOf("_"));
