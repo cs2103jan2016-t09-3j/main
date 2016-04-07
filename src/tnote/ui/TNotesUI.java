@@ -419,7 +419,7 @@ public class TNotesUI {
 				}
 			}
 
-			else {
+			else if (viewType.get(0).equals("isViewManyDatesList")){
 
 				ArrayList<TaskFile> arrView = new ArrayList<TaskFile>();
 				try {
@@ -445,6 +445,73 @@ public class TNotesUI {
 						result += "[IMPORTANT] ";
 					}
 					result += String.format(" %s\n", arrView.get(i).getName());
+				}
+			} else if(viewType.get(0).equals("isViewNotes")) {
+				String floatString;
+				try {
+					if (logic.hasFloatingList()) {
+						ArrayList<TaskFile> arrFloat = new ArrayList<TaskFile>();
+						arrFloat = logic.viewFloatingList();
+
+						floatString = "     ====NOTES====\n";
+						for (int i = 0; i < arrFloat.size(); i++) {
+							floatString += i + 1 + ". ";
+							if (arrFloat.get(i).getImportance()) {
+								floatString += "[IMPORTANT] ";
+							} else {
+								floatString += arrFloat.get(i).getName() + "\n";
+							}
+						}
+						floatString += "\n";
+					} else {
+						floatString = "               ====NO NOTES====\n\n";
+					}
+
+				} catch (Exception e) {
+					floatString = e.getMessage();
+				}
+
+				return floatString;
+			} else if (viewType.get(0).equals("isViewIndex")) {
+				try {
+					String strIndex = userCommandSplit.get(1);
+					int viewIndex = Integer.parseInt(strIndex);
+					taskFile = logic.viewByIndex(viewList, viewIndex);
+
+					result = String.format("Displaying the task \"%s\":\n\n", taskFile.getName());
+					if (taskFile.getIsTask()) {
+						result += "Date: -\n";
+						result += "Time: -\n";
+					}
+					if (taskFile.getIsDeadline()) {
+						result += String.format("Date: %s\n", taskFile.getStartDate());
+						result += String.format("Time: %s\n", taskFile.getStartTime());
+					}
+					if (taskFile.getIsMeeting()) {
+						result += String.format("Date: %s to %s\n", taskFile.getStartDate(), taskFile.getEndDate());
+						result += String.format("Time: %s to %s\n", taskFile.getStartTime(), taskFile.getEndTime());
+					}
+					if (taskFile.hasDetails()) {
+						result += String.format("Details: %s\n", taskFile.getDetails());
+					} else {
+						result += "Details: -\n";
+					}
+					if (taskFile.getIsDone()) {
+						result += "Status: Completed\n";
+					}
+					if (!taskFile.getIsDone()) {
+						result += "Status: Incomplete\n";
+					}
+					if (!taskFile.getImportance()) {
+						result += "Importance: -\n";
+					}
+					if (taskFile.getImportance()) {
+						result += "Importance: highly important\n";
+					}
+
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					result = e.getMessage();
 				}
 			}
 			break;

@@ -1,6 +1,5 @@
-<!-- @@author Joelle -->
 <?xml version="1.0" encoding="UTF-8"?>
-
+<!-- @@author Joelle -->
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
