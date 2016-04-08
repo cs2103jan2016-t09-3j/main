@@ -28,7 +28,7 @@ public class FileWriteHandler {
 	private static final String MESSAGE_TASK_SAVED_SUCCESSFULLY = "%s is saved in text file %s";
 	private static final String MESSAGE_FILE_UPDATED = "%s successfully updated";
 	private static final String MESSAGE_FILE_CLEARED = "%s clear successfully";
-	private static final String MESSAGE_CLASS_CREATED = "writeHandler created";
+	private static final String MESSAGE_CLASS_CREATED = "WriteHandler created";
 	
 	private static final String ERROR_CLEARING_FILE = "There is an error clearing the file %s";
 	private static final String ERROR_WRITING_TO_FILE = "There is an error writing to %s";
@@ -73,7 +73,7 @@ public class FileWriteHandler {
 	 *            text file containing the list.
 	 * @param taskName
 	 *            String to append to the list.
-	 * @return true if String is successfully appended to the text file.
+	 * @return true if the String is successfully appended to the text file.
 	 * @throws IOException
 	 *             Error writing to the file because the file is a directory, or
 	 *             the file cannot be opened, or the file does not exist and
@@ -142,7 +142,7 @@ public class FileWriteHandler {
 	}
 
 	/**
-	 * Method which converts a Map<String, String> into a json String and saves
+	 * Method which converts a Map{@code<String, String>} into a json String and saves
 	 * it into a text file.
 	 * 
 	 * @param textFile
@@ -178,7 +178,7 @@ public class FileWriteHandler {
 	}
 
 	/**
-	 * Method which converts a Map<String, ArrayList<String>> object into a json
+	 * Method which converts a Map{@code<String, ArrayList<String>>} object into a json
 	 * String and saves it into a text file.
 	 * 
 	 * @param textFile

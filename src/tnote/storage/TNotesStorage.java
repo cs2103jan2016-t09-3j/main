@@ -39,7 +39,7 @@ public class TNotesStorage {
 
 	private static TNotesStorage instance;
 	private static final Logger logger = Logger.getGlobal();
-	private StorageMasterFilesHandler masterFileHandler;
+	private MasterFileHandler masterFileHandler;
 	private StorageTaskFileHandler taskFileHandler;
 	private DirectoryHandler dHandler;
 	private ArrayList<String> masterList;
@@ -60,7 +60,7 @@ public class TNotesStorage {
 
 	private TNotesStorage() throws Exception {
 		TNoteLogger.setUp();
-		masterFileHandler = StorageMasterFilesHandler.getInstance();
+		masterFileHandler = MasterFileHandler.getInstance();
 		taskFileHandler = StorageTaskFileHandler.getInstance();
 		dHandler = DirectoryHandler.getInstance();
 		masterList = new ArrayList<String>();
@@ -342,7 +342,7 @@ public class TNotesStorage {
 	}
 
 	private Map<String, String> readFolderMap() throws Exception {
-		return masterFileHandler.readFolderMap();
+		return masterFileHandler.readFromFolderMap();
 	}
 	
 	/* ----------------------Get date lists for recurring tasks----------------*/
@@ -356,7 +356,7 @@ public class TNotesStorage {
 	
 	/*-----------------------Adding to master files --------------------------*/
 	private boolean addTaskToMasterFile(String taskName) throws Exception {
-		return masterFileHandler.addTaskToMasterListFile(taskName);
+		return masterFileHandler.appendTaskToMasterListFile(taskName);
 	}
 
 	private boolean addTaskToFolderMap(String taskName, String monthString) throws Exception {
@@ -366,7 +366,7 @@ public class TNotesStorage {
 	
 	private boolean addToFloatingTaskList(String taskName) throws Exception {
 		floatingList.add(taskName);
-		return masterFileHandler.addTaskToFloatingListFile(taskName);
+		return masterFileHandler.appendTaskToFloatingListFile(taskName);
 	}
 	
 	private void addToEndDateMap(ArrayList<String> recurringEndDates, String taskName) throws Exception {

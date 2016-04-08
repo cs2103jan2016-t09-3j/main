@@ -9,51 +9,6 @@ import java.util.Date;
 
 import tnote.util.IncorrectTimeException;
 
-/*
- * Calendar objects let use recur the name. Can just calendar object.add(Calendar.WEEK_OF_YEAR, 1) to add 1 week
- * startCal.add(Calendar.DATE, 1) add 1 day
- * startCal.add(Calendar.YEAR, 1) add 1 year
- * startCal.add(Calendar.MONTH, 1) add 1 month
- * 
- * To set date time leave as string and set? or want to remove the string date and string time entirely.
- * Process to convert from a string to calendar is as follows
- * 1. add the date and time together with 1 space (this is defined by what format we pick)
- * 2. convert to date with SimpleDateFormat
- * 3. set the new calendar time.
- * 
- * No way of setting just time or just date with calendar object, must set with both or will lose some
- * information
- * 
- * Extracting date / time from a calendar object is easy with SimpleDateFormat
- * Should we keep the date / time Strings? for ease of get / set methods? 
- * Or change them to Date instead of Strings?
- * Or remove entirely.
- * 
- * If only calendar object used, may not be able to check if name has a date / time. Calendar objects always
- * have both. Change both date and time Strings into Date?
- * 
- * Do we want to default no date => today? how to handle the multiple constructors. need to discuss
- * Comparators 
- * Name
- * 
- * Importance
- * 
- * Status?
- * 
- * 
- * 
- * By calendar in this order
- * No Date/Time > 1Date/Time > StartDate/Time to EndDate/Time
- * Meaning 
- * 1. cal == null
- * 2. cal == Date only (defaults to 00:00)
- * 3. cal == Date at 4pm 
- * 4. cal == Date at 4pm-6pm
- * 
- * Maybe split this into multiple files?
- * 
- * All task names must be unique
-*/
 public class TaskFile implements Comparable<TaskFile>, Cloneable {
 	private static final String ERROR_INCORRECT_TIMING = "The specified end time %s is before the start time %s";
 

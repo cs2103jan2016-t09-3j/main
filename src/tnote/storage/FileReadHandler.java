@@ -69,7 +69,7 @@ public class FileReadHandler {
 	 * 
 	 * @param textFileToRead
 	 *            the text file to read from
-	 * @return ArrayList<String> the list which is read from the text file.
+	 * @return ArrayList{@code<String>} the list which is read from the text file.
 	 * @throws IOException
 	 *             Error reading from the text file.
 	 * @throws FileNotFoundException
@@ -111,11 +111,11 @@ public class FileReadHandler {
 
 	/**
 	 * Method which reads from a text file which contains a json String of a
-	 * Map<String, String>.
+	 * Map{@code<String, String>}.
 	 * 
 	 * @param textFileToRead
 	 *            the text file to read from.
-	 * @return Map<String, String> the map which is read from the text file.
+	 * @return Map{@code<String, String>} the map which is read from the text file.
 	 * @throws IOException
 	 *             Error reading from the text file.
 	 * @throws FileNotFoundException
@@ -160,11 +160,11 @@ public class FileReadHandler {
 
 	/**
 	 * Method which reads from a text file containing a json String of a
-	 * Map<String, ArrayList<String>>.
+	 * Map{@code<String, ArrayList<String>>}.
 	 * 
 	 * @param textFileToRead
 	 *            the file to be read.
-	 * @return Map<String,ArrayList<String>> the map which is read from the
+	 * @return Map{@code<String,ArrayList<String>>} the map which is read from the
 	 *         file.
 	 * @throws IOException
 	 *             Error reading from the text file.

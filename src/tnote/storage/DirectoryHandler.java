@@ -21,7 +21,7 @@ import java.util.logging.Logger;
  * Directories and files can be created or deleted. The files in one directory
  * can be copied to another directory as well.
  * 
- * @author danny
+ * @author A0124131B
  *
  */
 public class DirectoryHandler {
@@ -30,7 +30,6 @@ public class DirectoryHandler {
 	private static final String MESSAGE_NEW_PARENT_DIRECTORY = "New parent directory: %s";
 	private static final String MESSAGE_FILES_FOLDER_DELETE = "All files and folders in %s deleted";
 	private static final String MESSAGE_DIRECTORY_DELETED = "Directory: %s successfully deleted";
-	private static final String MESSAGE_PARENT_DELETED = "Parent directory: %s successfully deleted";
 	private static final String MESSAGE_FILE_DELETED = "%s file deleted";
 	private static final String MESSAGE_FILE_EXISTS = "%s file exists";
 	private static final String MESSAGE_DIRECTORY_EXISTS = "%s directory exists";
@@ -47,7 +46,6 @@ public class DirectoryHandler {
 	private static final String ERROR_DELETE_FILE = "Error deleting %s";
 	private static final String ERROR_DELETE_FAILED = "Failed to delete %s";
 	private static final String ERROR_DIRECTORY_NOT_DELETED = "Directory: %s was not deleted";
-	private static final String ERROR_PARENT_NOT_DELETED = "Parent directory: %s was not deleted";
 
 	private static final String DEFAULT_FOLDER = "\\TNote";
 
@@ -59,7 +57,7 @@ public class DirectoryHandler {
 	private File parentDirectory;
 
 	/**
-	 * Constructor for Directory Handler Gets a parent path using the default
+	 * Constructor for Directory Handler. Sets a parent path using the default
 	 * directory
 	 */
 	private DirectoryHandler() {
@@ -72,9 +70,9 @@ public class DirectoryHandler {
 	 * Method to get an instance of DirectoryHandler. If no instance exists, a
 	 * new instance is created
 	 * 
-	 * @return DirectoryHandler instance of DirectoryHandler
+	 * @return DirectoryHandler the instance of DirectoryHandler
 	 */
-	public static DirectoryHandler getInstance() {
+	protected static DirectoryHandler getInstance() {
 		if (instance == null) {
 			instance = new DirectoryHandler();
 		}
@@ -84,7 +82,7 @@ public class DirectoryHandler {
 	/**
 	 * Method to retrieve the parent directory file or path
 	 * 
-	 * @return File The File object which points to the parent directory
+	 * @return File the object which points to the parent directory
 	 */
 	protected File getParentDirectory() {
 		logger.info(String.format(MESSAGE_PARENT_PATH_GET, parentDirectory.getAbsolutePath()));
@@ -143,22 +141,13 @@ public class DirectoryHandler {
 	/*--------------------------Delete files or directories-----------------------*/
 
 	/**
-	 * Method to delete the master directory along with any files and folders
-	 * within it
-	 * 
-	 * @return true if the master directory is successfully deleted
-	 * @throws IOException
-	 *             Error deleting the master directory or any files and folders
-	 *             within it
+	 * Method to delete the parent directory and all files within it
+	 * @return true if parent directory is deleted.
+	 * @throws IOException Error deleting parent directory
 	 */
 	protected boolean deleteMasterDirectory() throws IOException {
-		if (deleteAllFilesAndFolders(parentDirectory) && deleteFile(parentDirectory)) {
-			logger.info(String.format(MESSAGE_PARENT_DELETED, parentDirectory.getAbsolutePath()));
-			return true;
-		} else {
-			logger.warning(String.format(ERROR_PARENT_NOT_DELETED, parentDirectory.getAbsolutePath()));
-			return false;
-		}
+		logger.info(String.format("Deleting parent directory: ", parentDirectory.getAbsolutePath()));
+		return deleteDirectory(parentDirectory);
 	}
 
 	/**
@@ -172,7 +161,6 @@ public class DirectoryHandler {
 	 */
 	protected boolean deleteChildDirectory(String directory) throws IOException {
 		File directoryFile = appendParentDirectory(directory);
-
 		return deleteDirectory(directoryFile);
 	}
 
@@ -363,7 +351,7 @@ public class DirectoryHandler {
 	 * 
 	 * @param fileName
 	 *            the name of the file to exist inside the parent directory
-	 * @return File The File object which contains the full directory path to
+	 * @return File the object which contains the full directory path to
 	 *         the specified file name
 	 */
 	protected File appendParentDirectory(String fileName) {
@@ -380,7 +368,7 @@ public class DirectoryHandler {
 	 *            File object used as the root directory
 	 * @param fileName
 	 *            Name of the file to exist inside the specified folder
-	 * @return File The File object which contains the full directory path to
+	 * @return File the object which contains the full directory path to
 	 *         the specified file name
 	 */
 	protected File addDirectoryToFile(File folder, String fileName) {
@@ -394,7 +382,7 @@ public class DirectoryHandler {
 	 * 
 	 * @param newDirectoryString
 	 *            the name of the new directory File object
-	 * @return File the File object which points to the new directory specified
+	 * @return File the object which points to the new directory specified
 	 */
 	protected File getNewDirectoryFile(String newDirectoryString) {
 		File newParentDirectory = new File(newDirectoryString);
