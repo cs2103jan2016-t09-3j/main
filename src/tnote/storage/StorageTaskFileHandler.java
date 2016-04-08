@@ -31,7 +31,7 @@ public class StorageTaskFileHandler {
 	
 	private static StorageTaskFileHandler instance;
 	
-	private StorageDirectoryHandler dirHandler;
+	private DirectoryHandler dirHandler;
 	private FileWriteHandler fWHandler;
 	private FileReadHandler fRHandler;
 
@@ -39,7 +39,7 @@ public class StorageTaskFileHandler {
 	 * Constructor for StorageTaskFileHandler class. Initializes private attributes.
 	 */
 	private StorageTaskFileHandler() {
-		dirHandler = StorageDirectoryHandler.getInstance();
+		dirHandler = DirectoryHandler.getInstance();
 		fWHandler = FileWriteHandler.getInstance();
 		fRHandler = FileReadHandler.getInstance();
 		
@@ -69,7 +69,9 @@ public class StorageTaskFileHandler {
 		dirHandler.createDirectory(folder);
 
 		File newTask = dirHandler.addDirectoryToFile(folder, task.getName() + FILE_TYPE_TXT_FILE);
-		dirHandler.createFile(newTask);
+		if(!dirHandler.createFile(newTask)) {
+			throw new IOException(String.format("Error creating %s", newTask.getAbsolutePath()));
+		}
 
 		return fWHandler.writeTaskToTextFile(newTask, task);
 

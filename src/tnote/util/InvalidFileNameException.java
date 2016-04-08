@@ -32,7 +32,7 @@ public class InvalidFileNameException extends Exception {
 	
 	@Override
 	public String getMessage() {
-		return super.getMessage() + " for task: " + taskName; 
+		return super.getMessage() + " for: " + taskName; 
 	}
 	
 	public String getExTaskName() {

@@ -1,6 +1,7 @@
 //@@author A0124131B
 package tnote.log;
 
+import java.io.IOException;
 import java.util.logging.FileHandler;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
@@ -14,7 +15,7 @@ public class TNoteLogger {
 	private static SimpleFormatter formatterTxt;
 	
 	
-	public static void setUp() throws Exception {
+	public static void setUp() throws IOException {
 		LogManager.getLogManager().reset();
 		fileTxt = new FileHandler("TNoteLog.log", true);
 		formatterTxt = new SimpleFormatter();

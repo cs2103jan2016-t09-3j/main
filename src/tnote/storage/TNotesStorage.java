@@ -32,7 +32,7 @@ import tnote.util.TaskExistsException;
  * 
  * Changing the directory of the saved location is supported as well.
  * 
- * 
+ * @author A0124131B
  * 
  */
 public class TNotesStorage {
@@ -41,7 +41,7 @@ public class TNotesStorage {
 	private static final Logger logger = Logger.getGlobal();
 	private StorageMasterFilesHandler masterFileHandler;
 	private StorageTaskFileHandler taskFileHandler;
-	private StorageDirectoryHandler dHandler;
+	private DirectoryHandler dHandler;
 	private ArrayList<String> masterList;
 	private ArrayList<String> floatingList;
 	private Map<String, String> masterNameDateMap;
@@ -62,7 +62,7 @@ public class TNotesStorage {
 		TNoteLogger.setUp();
 		masterFileHandler = StorageMasterFilesHandler.getInstance();
 		taskFileHandler = StorageTaskFileHandler.getInstance();
-		dHandler = StorageDirectoryHandler.getInstance();
+		dHandler = DirectoryHandler.getInstance();
 		masterList = new ArrayList<String>();
 		floatingList = new ArrayList<String>();
 		recurringTasksStartDateMap = new HashMap<String, ArrayList<String>>();
@@ -279,8 +279,8 @@ public class TNotesStorage {
 
 	}
 
-	public boolean deleteDirectory(String directory) {
-		return dHandler.deleteDirectory(directory);
+	public boolean clearDirectory(String directory) throws IOException {
+		return dHandler.clearChildDirectory(directory);
 	}
 
 	public boolean clearFiles() throws Exception {
@@ -318,6 +318,10 @@ public class TNotesStorage {
 	
 	public boolean deleteMasterDirectory() throws Exception {
 		return masterFileHandler.deleteMasterDirectory();
+	}
+	
+	public boolean deleteDirectory(String directory) throws IOException {
+		return dHandler.deleteChildDirectory(directory);
 	}
 
 	/* ------------------------Read From Files ------------------------------ */
