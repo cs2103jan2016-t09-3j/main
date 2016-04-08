@@ -2,6 +2,7 @@
 package tnote.storage;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -17,7 +18,7 @@ public class StorageMasterFilesHandler {
 	private static final String FLOATING_LIST_FILE_NAME = "floatingtasks.txt";
 
 	private static StorageMasterFilesHandler instance;
-	private StorageDirectoryHandler direcHandler;
+	private DirectoryHandler direcHandler;
 	private FileWriteHandler writeHandler;
 	private FileReadHandler readHandler;
 	private File masterFile;
@@ -28,7 +29,7 @@ public class StorageMasterFilesHandler {
 	private File recurringEndDatesMasterFile;
 
 	private StorageMasterFilesHandler() {
-		direcHandler = StorageDirectoryHandler.getInstance();
+		direcHandler = DirectoryHandler.getInstance();
 		writeHandler = FileWriteHandler.getInstance();
 		readHandler = FileReadHandler.getInstance();
 	}
@@ -196,7 +197,7 @@ public class StorageMasterFilesHandler {
 		return readFromFolderMapFile(monthMapFile);
 	}
 
-	protected boolean deleteMasterDirectory() {
+	protected boolean deleteMasterDirectory() throws IOException {
 		return direcHandler.deleteMasterDirectory();
 	}
 }
