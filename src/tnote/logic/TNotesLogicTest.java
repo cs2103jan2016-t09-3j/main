@@ -12,22 +12,22 @@ import tnote.storage.TNotesStorage;
 
 public class TNotesLogicTest {
 	
-	TNotesLogic logic = new TNotesLogic();
-	TNotesStorage storage = TNotesStorage.getInstance();
+	TNotesLogic logic;
+	TNotesStorage storage;
 	
 	@Test
-	public void addTaskTest(){
+	public void addTaskTest() throws Exception{
 		ArrayList<String> list = new ArrayList<String>();
 		TaskFile tList = new TaskFile();
 		tList.setName("Chemistry Test");
 		list.add("Chemistry Test");
-		assertEquals(tList,logic.addTask(list));
+		assertEquals(tList.getName(),logic.addTask(list));
 		tList = storage.getTaskFileByName("Chemistry Test");
 		
 		assertEquals("Chemistry Test", tList.getName());
 		
 	}
-	public void addTaskTest2(){
+	public void addTaskTest2() throws Exception{
 		ArrayList<String> list = new ArrayList<String>();
 		TaskFile tList = new TaskFile();
 		tList.setName("Math Test");
@@ -38,7 +38,7 @@ public class TNotesLogicTest {
 		assertEquals("Chemistry Test",0, tList.getName());
 		
 	}
-	public void deleteTaskTest(){
+	public void deleteTaskTest() throws Exception{
 		ArrayList<String> list = new ArrayList<String>();
 		TaskFile tList = new TaskFile();
 		tList.setName("Math Test");
@@ -47,14 +47,14 @@ public class TNotesLogicTest {
 
 		assertEquals("file does not exist", storage.getTaskFileByName("Math Test"));
 	}
-	public void viewTask(){
-		ArrayList<String> list = new ArrayList<String>();
+	public void viewTask() throws Exception{
+		ArrayList<TaskFile> list = new ArrayList<TaskFile>();
 		ArrayList<String> checkList = new ArrayList<String>();
 		checkList.add("Chemistry Test");
 		TaskFile tList = new TaskFile();
 		list = logic.viewFloatingList();
 		
-		assertEquals(list.get(0), checkList.get(0));
+		assertEquals(list.get(0).getName(), checkList.get(0));
 	}
 
 }
