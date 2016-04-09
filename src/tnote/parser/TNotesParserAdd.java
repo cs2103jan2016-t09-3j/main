@@ -103,56 +103,15 @@ public class TNotesParserAdd {
 		
 		//taskName without keyword
 		if(taskNameIndex == NUM_FALSE){
-			if(!date.formatSpecialDay(arr[arr.length-NUM_LAST_ARR_STR]).equals(MESSAGE_NULL) 
-					&& query.checkAfterBefore(arr)==NUM_FALSE){
-				addList.add(query.taskNameString(arr, arr.length-NUM_LAST_ARR_STR).trim());
-				addList.add(date.formatSpecialDay(arr[arr.length-NUM_LAST_ARR_STR]));
-				
-			}else if(arr[arr.length-NUM_LAST_ARR_STR].equals(MESSAGE_IMPORTANT)){
-				addList.add(query.taskNameString(arr, arr.length-NUM_LAST_ARR_STR).trim());
-				
-			}else if(timeList.size() == NUM_TIME_DATE_PRESENT 
-					&& dateList.size() ==NUM_TIME_DATE_ABSENT){
-					addList.add(query.taskNameString(arr, arr.length-NUM_LAST_ARR_STR).trim());
-					addList.add(timeList.get(NUM_FIRST_WORD));
-					
-			}else if(timeList.size() ==NUM_TIME_DATE_ABSENT 
-					&& dateList.size() ==NUM_TIME_DATE_PRESENT){
-				addList.add(query.taskNameString(arr, arr.length-NUM_LAST_ARR_STR).trim());
-				addList.add(dateList.get(NUM_FIRST_WORD));
-				
-			}else if(timeList.size() ==NUM_TIME_DATE_PRESENT 
-					&& dateList.size() ==NUM_TIME_DATE_PRESENT){
-				addList.add(query.taskNameString(arr, arr.length-NUM_LAST_TWO_ARR_STR).trim());
-				addList.add(timeList.get(NUM_FIRST_WORD));
-				addList.add(dateList.get(NUM_FIRST_WORD));
-				
-			}else if(timeList.size() ==NUM_TIME_DATE_ABSENT 
-					&& dateList.size() ==NUM_TIME_DATE_ABSENT 
-					&& query.checkAfterBefore(arr)==NUM_TRUE){
-				addList.add(naturalLanguageTaskName(arr));
-				addList.add(time.prettyTime(query.taskNameString(arr, arr.length).trim()));
-				
-			}
-			else{		
-				addList.add(query.taskNameString(arr, arr.length).trim());
-			}
+			addList.addAll(checkTaskName(arr,timeList,dateList));
 		}
 		//task name with key word
 		else{
 			addList.add(query.taskNameString(arr, taskNameIndex).trim());
 		}
-		
-		
+			
 		for(int k=NUM_INITIALISATION;k<arr.length;k++){
-			// key word at
-			if(arr[k].equals("at") && isKeyWord(arr[k+NUM_SECOND_WORD])==NUM_TRUE){
-				addList.addAll(keyWordAt(arr, k));
-			//key word from to	
-			}else if((arr[k].equals("from") || arr[k].equals("to"))&& isKeyWord(arr[k+NUM_SECOND_WORD])==NUM_TRUE){
-				addList.addAll(keyWordFromTo(arr, k));
-			//key word details	
-			}else if(arr[k].equals("details")){
+			if(arr[k].equals("details")){
 				if(onlyKeyDetails(arr)==NUM_TRUE){
 					addList.clear();
 					addList.add(query.taskNameString(arr, k).trim());
@@ -162,18 +121,10 @@ public class TNotesParserAdd {
 					addList.addAll(keyWordDetails(arr, k));
 				}
 				break;
-			//key word on
-			}else if(arr[k].equals("on") && isKeyWord(arr[k+NUM_SECOND_WORD])==NUM_TRUE){
-				addList.add(date.compareWeekDayMonth(arr[k+1].trim()));
-			//key word every
-			}else if(arr[k].equals("every") && isKeyWord(arr[k+NUM_SECOND_WORD])==NUM_TRUE 
-					&& !arr[k-NUM_LAST_ARR_STR].equals("due")){
-				addList.addAll(keyWordEvery(arr,k));
-			//key word due	
-			}else if(arr[k].equals("due")){
-				addList.addAll(keyWordDue(arr, k));
-			
-			}		
+			}
+			else{
+				addList.addAll(checkAddKeyWord(k,arr,timeList,dateList ));
+			}	
 		}
 		if(query.findImpt(arr) == NUM_TRUE){
 			addList.add(MESSAGE_IMPORTANT);
@@ -331,6 +282,70 @@ public class TNotesParserAdd {
 			}
 		}
 		return index;
+	}
+	
+	private ArrayList<String> checkTaskName(String[] arr,ArrayList <String> timeList,
+											ArrayList <String> dateList ) throws Exception {
+		ArrayList <String> addList = new ArrayList<String>();
+		if(!date.formatSpecialDay(arr[arr.length-NUM_LAST_ARR_STR]).equals(MESSAGE_NULL) 
+				&& query.checkAfterBefore(arr)==NUM_FALSE){
+			addList.add(query.taskNameString(arr, arr.length-NUM_LAST_ARR_STR).trim());
+			addList.add(date.formatSpecialDay(arr[arr.length-NUM_LAST_ARR_STR]));
+			
+		}else if(arr[arr.length-NUM_LAST_ARR_STR].equals(MESSAGE_IMPORTANT)){
+			addList.add(query.taskNameString(arr, arr.length-NUM_LAST_ARR_STR).trim());
+			
+		}else if(timeList.size() == NUM_TIME_DATE_PRESENT 
+				&& dateList.size() ==NUM_TIME_DATE_ABSENT){
+				addList.add(query.taskNameString(arr, arr.length-NUM_LAST_ARR_STR).trim());
+				addList.add(timeList.get(NUM_FIRST_WORD));
+				
+		}else if(timeList.size() ==NUM_TIME_DATE_ABSENT 
+				&& dateList.size() ==NUM_TIME_DATE_PRESENT){
+			addList.add(query.taskNameString(arr, arr.length-NUM_LAST_ARR_STR).trim());
+			addList.add(dateList.get(NUM_FIRST_WORD));
+			
+		}else if(timeList.size() ==NUM_TIME_DATE_PRESENT 
+				&& dateList.size() ==NUM_TIME_DATE_PRESENT){
+			addList.add(query.taskNameString(arr, arr.length-NUM_LAST_TWO_ARR_STR).trim());
+			addList.add(timeList.get(NUM_FIRST_WORD));
+			addList.add(dateList.get(NUM_FIRST_WORD));
+			
+		}else if(timeList.size() ==NUM_TIME_DATE_ABSENT 
+				&& dateList.size() ==NUM_TIME_DATE_ABSENT 
+				&& query.checkAfterBefore(arr)==NUM_TRUE){
+			addList.add(naturalLanguageTaskName(arr));
+			addList.add(time.prettyTime(query.taskNameString(arr, arr.length).trim()));
+			
+		}
+		else{		
+			addList.add(query.taskNameString(arr, arr.length).trim());
+		}
+		return addList;
+	}
+	
+	private ArrayList<String> checkAddKeyWord(int k,String[] arr,ArrayList <String> timeList,
+			ArrayList <String> dateList ) throws Exception {
+		ArrayList <String> addList = new ArrayList<String>();
+		// key word at
+		if(arr[k].equals("at") && isKeyWord(arr[k+NUM_SECOND_WORD])==NUM_TRUE){
+			addList.addAll(keyWordAt(arr, k));
+		//key word from to	
+		}else if((arr[k].equals("from") || arr[k].equals("to"))&& isKeyWord(arr[k+NUM_SECOND_WORD])==NUM_TRUE){
+			addList.addAll(keyWordFromTo(arr, k));
+		//key word details	
+		}else if(arr[k].equals("on") && isKeyWord(arr[k+NUM_SECOND_WORD])==NUM_TRUE){
+			addList.add(date.compareWeekDayMonth(arr[k+1].trim()));
+		//key word every
+		}else if(arr[k].equals("every") && isKeyWord(arr[k+NUM_SECOND_WORD])==NUM_TRUE 
+				&& !arr[k-NUM_LAST_ARR_STR].equals("due")){
+			addList.addAll(keyWordEvery(arr,k));
+		//key word due	
+		}else if(arr[k].equals("due")){
+			addList.addAll(keyWordDue(arr, k));
+		
+		}
+		return addList;
 	}
 	
 }

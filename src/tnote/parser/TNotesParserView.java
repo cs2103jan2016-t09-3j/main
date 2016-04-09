@@ -60,7 +60,7 @@ public class TNotesParserView {
 	 * @throws Exception 
 	 */
 	public ArrayList <String> viewCommand(String[] viewArr) throws Exception{
-		ArrayList<String> list = new ArrayList<String>();
+		ArrayList<String> viewList = new ArrayList<String>();
 		ArrayList<String> compareTimeList = new ArrayList<String>();
 		ArrayList<String> compareDateList = new ArrayList<String>();
 		
@@ -70,23 +70,23 @@ public class TNotesParserView {
 			//view next year/week/month
 			if (query.isLetters(viewArr[NUM_SECOND_WORD].trim()) == NUM_TRUE 
 				&& query.checkViewTo(viewArr) == NUM_FALSE) {
-				list.addAll(keyWordNext(viewArr));
+				viewList.addAll(keyWordNext(viewArr));
 				//view year/week/month to year/week/month
 				//view Feb to Mar
 			}else if(query.isLetters(viewArr[NUM_SECOND_WORD].trim()) == NUM_TRUE 
 				&& query.checkViewTo(viewArr) == NUM_TRUE 
 				&& checkKeyWordBefore(viewArr)==NUM_TRUE){
-				list.add(date.compareWeekDayMonth(viewArr[NUM_SECOND_WORD]));
-				list.add(date.compareWeekDayMonth(viewArr[NUM_FORTH_WORD]));
+				viewList.add(date.compareWeekDayMonth(viewArr[NUM_SECOND_WORD]));
+				viewList.add(date.compareWeekDayMonth(viewArr[NUM_FORTH_WORD]));
 				//view date
 			}else if (query.isLetters(viewArr[NUM_SECOND_WORD].trim()) == NUM_FALSE 
 				&& query.checkViewTo(viewArr) == NUM_FALSE 
 				&& time.checkTime(viewArr[NUM_SECOND_WORD].trim())==NUM_FALSE) {
 				String formattedDate = date.formatDate(viewArr[1]);
 				if(formattedDate.isEmpty()) {
-					list.add(viewArr[NUM_SECOND_WORD]);
+					viewList.add(viewArr[NUM_SECOND_WORD]);
 				} else {
-					list.add(date.formatDate(viewArr[NUM_SECOND_WORD]));
+					viewList.add(date.formatDate(viewArr[NUM_SECOND_WORD]));
 				}
 				//view date to date
 			}else if(query.isLetters(viewArr[NUM_SECOND_WORD].trim()) == NUM_FALSE 
@@ -95,12 +95,12 @@ public class TNotesParserView {
 				&& checkKeyWordBefore(viewArr)==NUM_TRUE){
 				compareDateList.add(date.formatDate(viewArr[NUM_SECOND_WORD]));
 				compareDateList.add(date.formatDate(viewArr[NUM_FORTH_WORD]));
-				list.addAll(date.compareDate(compareDateList));
+				viewList.addAll(date.compareDate(compareDateList));
 				//view time
 			}else if (query.isLetters(viewArr[NUM_SECOND_WORD].trim()) == NUM_FALSE 
 				&& query.checkViewTo(viewArr) == NUM_FALSE 
 				&& time.checkTime(viewArr[NUM_SECOND_WORD].trim())==NUM_TRUE) {
-				list.add(time.formatTime(viewArr[NUM_SECOND_WORD] 
+				viewList.add(time.formatTime(viewArr[NUM_SECOND_WORD] 
 					+ time.isAMPM(viewArr[viewArr.length-NUM_PREVIOUS_STR])).toString());
 				//view time to time
 			}else if(query.isLetters(viewArr[NUM_SECOND_WORD].trim()) == NUM_FALSE 
@@ -115,18 +115,18 @@ public class TNotesParserView {
 						+ time.isAMPM(viewArr[viewArr.length-NUM_PREVIOUS_STR])).toString());
 					}
 				}
-				list.addAll(time.compareTime(compareTimeList));
+				viewList.addAll(time.compareTime(compareTimeList));
 			}
 		}
 		else{
-			list.clear();
+			viewList.clear();
 			throw new Exception(MESSAGE_INVALID_VIEW_STRING);
 		}			
-		if(list.isEmpty()){
-			list.add(query.taskNameFloat(viewArr).trim());
+		if(viewList.isEmpty()){
+			viewList.add(query.taskNameFloat(viewArr).trim());
 		}
 		logger.warning(MESSAGE_LOG_ERROR); 	
-		return list;
+		return viewList;
 	}
 	private int isKeyWord(String word){
 		assert word != null : MESSAGE_NULL_INPUT_STRING;

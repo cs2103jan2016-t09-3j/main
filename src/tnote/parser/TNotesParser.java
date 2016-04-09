@@ -67,7 +67,7 @@ public class TNotesParser {
 	public void execute() throws Exception{
 		String output = new String();
 		String input = new String();  
-		input = "add call mom due every day for 2 weeks";
+		input = "change directory location to c:/file";
 		for (int i = 0; i < checkCommand(input).size(); i++){
 			output = checkCommand(input).get(i);
 			System.out.println(output);

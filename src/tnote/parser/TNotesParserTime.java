@@ -46,6 +46,12 @@ public class TNotesParserTime {
 	private static int NUM_FIRST_CHAR = 0;
 	private static int NUM_LAST_CHAR = 1;
 	private static int NUM_SECOND_LAST_CHAR = 2;
+	private static int NUM_SUB_ZERO = 0;
+	private static int NUM_SUB_ONE = 1;
+	private static int NUM_SUB_TWO = 2;
+	private static int NUM_SUB_THREE = 3;
+	private static int NUM_SUB_FIVE = 5;
+	
 	
 	private static final Logger logger = Logger.getGlobal();
 	
@@ -156,12 +162,12 @@ public class TNotesParserTime {
 		
 		assert list != null : MESSAGE_NULL_TIME_LIST;
 		
-		int firstTime = Integer.parseInt(list.get(0).substring(0,2));
-		int secondTime = Integer.parseInt(list.get(1).substring(0,2));
+		int firstTime = Integer.parseInt(list.get(0).substring(NUM_SUB_ZERO,NUM_SUB_TWO));
+		int secondTime = Integer.parseInt(list.get(NUM_SUB_ONE).substring(NUM_SUB_ZERO,NUM_SUB_TWO));
 		
 		if(firstTime == secondTime) {
-			firstTime = Integer.parseInt(list.get(0).substring(3,5));
-			secondTime = Integer.parseInt(list.get(1).substring(3,5));
+			firstTime = Integer.parseInt(list.get(0).substring(NUM_SUB_THREE,NUM_SUB_FIVE));
+			secondTime = Integer.parseInt(list.get(NUM_SUB_ONE).substring(NUM_SUB_THREE,NUM_SUB_FIVE));
 			
 			if(firstTime >= secondTime) {
 				list.clear();

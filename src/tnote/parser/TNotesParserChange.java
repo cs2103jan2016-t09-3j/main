@@ -35,6 +35,7 @@ public class TNotesParserChange {
 	 */
 	public ArrayList <String> changeCommand(String[] changeArr) throws Exception{
 		ArrayList<String> list = new ArrayList<String>();
+		//System.out.println(changeArr[0]);
 		try{
 			list.add(MESSAGE_KEYWORD_CHANGE_DIRECTORY);
 			for (int  i= NUM_INITIALISATION;  i< changeArr.length ; i++){

@@ -4,7 +4,6 @@
 
 package tnote.parser;
 import java.util.logging.Logger;
-import tnote.log.TNoteLogger;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.DateTimeException;
@@ -34,7 +33,6 @@ public class TNotesParserDate {
 	private static final String MESSAGE_INVALID_MONTH = "Invalid month!";
 	private static final String MESSAGE_INVALID_WEEKDAY = "Invalid weekday!";
 	private static final String MESSAGE_INVALID_DATE_FORMAT = "invalid date!";
-	private static final String MESSAGE_ISLETTER = "[a-zA-Z]+";
 	private static final String MESSAGE_NULL_STRING = "";
 	private static final String MESSAGE_INVALID_DATE_RANGE = "Invalid date range!";
 	private static final String MESSAGE_INVALID_DATE = "Invalid date range";
@@ -42,8 +40,6 @@ public class TNotesParserDate {
 	private static final String MESSAGE_LOG_ERROR = "test Warning in parser command date";
 	
 	private static int NUM_SHORT_WEEKDAY = 4;
-	private static int NUM_LAST_ARR_STR = 1;
-	private static int NUM_LAST_TWO_ARR_STR = 2;
 	private static int NUM_INITIALISATION = 0;
 	private static int NUM_TRUE = 1;
 	private static int NUM_FALSE = 0;
@@ -51,20 +47,8 @@ public class TNotesParserDate {
 	private static int NUM_SECOND_WORD = 1;
 	private static int NUM_FIRST_CHAR = 0;
 	private static int NUM_SUBSTRING_RANGE = 1;
-	private static int NUM_START_FROM_SECOND_STR = 1;
 	
 	private static final Logger logger = Logger.getGlobal();
-	
-	private static String specialDate [] = {
-			"today", "tomorrow", "afternoon",
-			"noon", "evenning","night",
-			"morning","week","month"
-			};
-	private static final String ARR_IMPORTANT [] = {
-			"impt","important","importance",
-			"compulsory", "essential","indispensable"
-			};
-	
 	
 	private static final List<String> DATE_POSSIBLE_FORMAT = Collections.unmodifiableList(Arrays.asList(
 			"d/M/y", "d/M/yyyy", "d/MM/yy","d/MMM/yy", "d/MMM/yyyy",

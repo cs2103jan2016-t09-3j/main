@@ -1,9 +1,7 @@
 //@@author A0131149
 package tnote.parser;
 
-import java.time.DateTimeException;
 import java.util.logging.Logger;
-import tnote.log.TNoteLogger;
 import java.util.ArrayList;
 
 /**
@@ -44,19 +42,13 @@ public class TNotesParserEdit {
 	 */
 	public ArrayList<String> editCommand(String[] editArr) throws Exception{
 		ArrayList<String> editList = new ArrayList<String>();
-		String details = new String();
-		String newName = new String();
 		for (int  f= NUM_START_FROM_SECOND_STR;  f< editArr.length ; f++){
 			if (editArr[f].equals("details")) {
 				editList.add(NUM_INTIALISATION, query.taskNameString(editArr, f).trim());
 				editList.add(editArr[f]);//"details"
-				for(int i = f+NUM_NEXT_STR; i<editArr.length; i++){
-					details +=editArr[i]+" ";
-				}
-				
-					editList.add(details.trim());
+				editList.add(keyWordNext(f, editArr).trim());
 					
-				}
+			}
 			else if(editArr[f].equals("status")){
 				editList.add(NUM_INTIALISATION, query.taskNameString(editArr, f).trim());
 				editList.add(editArr[f].trim());
@@ -75,11 +67,7 @@ public class TNotesParserEdit {
 			else if(editArr[f].equals("name")){
 				editList.add(NUM_INTIALISATION, query.taskNameString(editArr, f).trim());
 				editList.add(editArr[f]);
-				for(int j = f+NUM_NEXT_STR; j<editArr.length; j++){
-				
-					newName += editArr[j]+ " ";	
-				}
-				editList.add(newName.trim());	
+				editList.add(newName(f, editArr).trim());	
 			}
 			else if(editArr[f].equals("importance")){
 				editList.add(NUM_INTIALISATION, query.taskNameString(editArr, f).trim());
@@ -92,6 +80,23 @@ public class TNotesParserEdit {
 		}
 		logger.warning(MESSAGE_LOG_ERROR);
 		return editList;
+	}
+	
+	private String keyWordNext(int f, String editArr[]) throws Exception{
+		String details = new String();
+		for(int i = f+NUM_NEXT_STR; i<editArr.length; i++){
+			details +=editArr[i]+" ";
+		}	
+		return details;
+	}
+	
+	private String newName(int f, String editArr[]) throws Exception{
+		String newName = new String();
+		for(int j = f+NUM_NEXT_STR; j<editArr.length; j++){
+			
+			newName += editArr[j]+ " ";	
+		}
+		return newName;
 	}
 	
 

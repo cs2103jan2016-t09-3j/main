@@ -36,13 +36,14 @@ public class TNotesParserSort{
 		assert sortArr != null : MESSAGE_EMPTY_INPUT;	
 		ArrayList<String> sortList = new ArrayList<String>();
 		if(sortArr[NUM_FIRST_SORT_TYPE].equals(MESSAGE_KEYWORD_BY)){
-			sortList.add(sortArr[NUM_SECOND_SORT_TYPE]);
+			sortList.add(sortArr[NUM_SECOND_SORT_TYPE].trim());
+			return sortList;
 		}
 		else{
-			throw new Exception(MESSAGE_INVALID_SORT_TYPE);
+			logger.warning(MESSAGE_LOG_ERROR);
+			sortList.add(MESSAGE_INVALID_SORT_TYPE);
+			return sortList;
 		}
-		logger.warning(MESSAGE_LOG_ERROR); 	
-		return sortList;
 	}
 	}
 
