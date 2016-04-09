@@ -5,8 +5,6 @@ package tnote.gui;
 import  java.io.IOException;
 
 import javafx.application.Application;
-//import javafx.collections.*;
-//import javafx.collections.FXCollections;
 import javafx.fxml.*;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
@@ -17,8 +15,8 @@ import tnote.gui.view.TNotesOverviewController;
 
 public class MainApp extends Application {
 	 
-		public Stage primaryStage;
-	    public BorderPane rootLayout;
+		private Stage primaryStage;
+	    private BorderPane rootLayout;
 	    
 	    @Override
 	    public void start(Stage primaryStage) {

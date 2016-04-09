@@ -1,20 +1,10 @@
 //@@author Joelle
 package tnote.gui.view;
 
-import java.awt.Component;
-
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-//import javafx.scene.control.Alert;
-//import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
 import tnote.gui.MainApp;
 import tnote.ui.TNotesUI;
 import javafx.scene.control.ScrollBar;
@@ -33,11 +23,8 @@ public class TNotesOverviewController {
 
 	private ScrollBar scrollBar;
 
-	TNotesUI tNote = new TNotesUI();
+	private TNotesUI tNote = new TNotesUI();
 
-	String prevUserInput;
-
-	// Reference to the main application.
 	private MainApp mainApp;
 
 	/**
@@ -72,6 +59,7 @@ public class TNotesOverviewController {
 		displaySideScreen.setText(showFloats);
 		userInput.setPromptText("Enter command here");
 		userInput.setStyle("-fx-text-inner-color: brown;");
+	
 	}	
 	
 	@FXML
@@ -84,9 +72,7 @@ public class TNotesOverviewController {
 		try {
 			String userCommand = userInput.getText();
 			update = tNote.executeCommand(userCommand);
-			prevUserInput = userCommand;
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 

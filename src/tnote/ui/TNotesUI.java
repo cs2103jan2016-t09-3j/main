@@ -26,13 +26,13 @@ public class TNotesUI {
 	}
 
 	// Attributes
-	TNotesParser parser;
-	TNotesLogic logic;
-	TNotesMessages message;
+	private TNotesParser parser;
+	private TNotesLogic logic;
+	private TNotesMessages message;
 
-	ArrayList<String> commandArguments;
-	ArrayList<TaskFile> viewList;
-	ArrayList<TaskFile> mainScreenArray;
+	private ArrayList<String> commandArguments;
+	private ArrayList<TaskFile> viewList;
+	private ArrayList<TaskFile> mainScreenArray;
 
 	int userIndex;
 

@@ -5,16 +5,16 @@ import java.util.ArrayList;;
 
 public class TNotesMessages {
 
-	public ArrayList<String> addHelpArray;
-	public ArrayList<String> viewHelpArray;
-	public ArrayList<String> deleteHelpArray;
-	public ArrayList<String> editHelpArray;
-	public ArrayList<String> searchHelpArray;
-	public ArrayList<String> sortHelpArray;
-	public ArrayList<String> miscHelpArray;
-	
+	private ArrayList<String> addHelpArray;
+	private ArrayList<String> viewHelpArray;
+	private ArrayList<String> deleteHelpArray;
+	private ArrayList<String> editHelpArray;
+	private ArrayList<String> searchHelpArray;
+	private ArrayList<String> sortHelpArray;
+	private ArrayList<String> miscHelpArray;
+
 	public ArrayList<String> allHelpArray;
-	
+
 	// Constructor
 	public TNotesMessages() {
 		setAddHelpMessages();
@@ -51,18 +51,18 @@ public class TNotesMessages {
 	public ArrayList<String> getSortHelpMessages() {
 		return sortHelpArray;
 	}
-	
+
 	public ArrayList<String> getMiscHelpMessages() {
 		return miscHelpArray;
 	}
-	
-	public ArrayList<String> getAllHelpMessages(){
+
+	public ArrayList<String> getAllHelpMessages() {
 		return allHelpArray;
 	}
 
 	// Modifiers
-	
-	public void setAllHelpMessages(){
+
+	public void setAllHelpMessages() {
 		allHelpArray = new ArrayList<String>();
 		mergeArrays(addHelpArray);
 		mergeArrays(viewHelpArray);
@@ -74,11 +74,10 @@ public class TNotesMessages {
 	}
 
 	public void mergeArrays(ArrayList<String> tempArray) {
-		for(int i=0; i<tempArray.size(); i++){
+		for (int i = 0; i < tempArray.size(); i++) {
 			allHelpArray.add(tempArray.get(i).toString());
 		}
 	}
-	
 
 	public void setAddHelpMessages() {
 		addHelpArray = new ArrayList<String>();
@@ -118,7 +117,6 @@ public class TNotesMessages {
 		deleteHelpArray.add("\n");
 	}
 
-
 	public void setEditHelpMessages() {
 		editHelpArray = new ArrayList<String>();
 		editHelpArray.add("====Edit====");
@@ -152,7 +150,7 @@ public class TNotesMessages {
 		sortHelpArray.add("\n");
 
 	}
-	
+
 	public void setMiscHelpMessages() {
 		miscHelpArray = new ArrayList<String>();
 		miscHelpArray.add("====Misc====");
@@ -162,30 +160,19 @@ public class TNotesMessages {
 		miscHelpArray.add("\n");
 
 	}
-	
-	
-	
+
 	// Misc
-	
 	public String printHelpArray() {
 		String printArray;
-		
+
 		printArray = "====Start of List====\n";
-		for(int i=0; i<allHelpArray.size(); i++){
-			printArray+=allHelpArray.get(i).toString();
-			printArray+="\n";
+		for (int i = 0; i < allHelpArray.size(); i++) {
+			printArray += allHelpArray.get(i).toString();
+			printArray += "\n";
 		}
-		
+
 		printArray += "====End of List====\n";
 		return printArray;
 	}
-	
-//	public static void main(String[] args) {
-//		TNotesMessages tNote = new TNotesMessages();
-//		String print = tNote.printHelpArray();
-//		System.out.println(print);
-//		}		
-	}
 
-
-
+}
