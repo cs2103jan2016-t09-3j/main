@@ -55,13 +55,19 @@ public class CommandSearch {
 				} else if (lineOfText.get(i).length() == 1) {
 					for (String text : masterList) {
 						if (text.startsWith(lineOfText.get(i))) {
-							searchTaskList.add(storage.getTaskFileByName(text));
+							TaskFile searchedTask = storage.getTaskFileByName(text); 
+							if(!searchTaskList.contains(searchedTask)&& !searchedTask.getIsRecurring()) {
+								searchTaskList.add(searchedTask);
+							}
 						}
 					}
 				} else {
 					for (String text : masterList) {
 						if (text.contains(lineOfText.get(i))) {
-							searchTaskList.add(storage.getTaskFileByName(text));
+							TaskFile searchedTask = storage.getTaskFileByName(text); 
+							if(!searchTaskList.contains(searchedTask)&& !searchedTask.getIsRecurring()) {
+								searchTaskList.add(searchedTask);
+							}
 						}
 					}
 				}
@@ -72,7 +78,9 @@ public class CommandSearch {
 				String formatterName = newTask.getName().substring(0, newTask.getName().indexOf(STRING_UNDERSCORE));
 				newTask.setName(formatterName);
 			}
+			
 			System.out.println(newTask.getName());
+			
 		}
 		return searchTaskList;
 	}

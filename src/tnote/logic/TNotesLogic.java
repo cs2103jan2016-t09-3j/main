@@ -22,6 +22,7 @@ import tnote.storage.TNotesStorage;
 import tnote.util.TimeClashException;
 
 public class TNotesLogic {
+	private static final String ADD = "add";
 	private static final String SET = "set";
 	private static final int ARRAYLISINDEXCORRECTION = 1;
 	private static final String DELETE = "delete";
@@ -365,7 +366,7 @@ public class TNotesLogic {
 				recurTask.addRecurringStartDate(startDates);
 				recurTask.addRecurringEndDate(endDates);
 
-				if (commandWord.equals("add")) {
+				if (commandWord.equals(ADD)) {
 					storage.deleteRecurringTask(prevTask.getName());
 				} else if (commandWord.equals(DELETE)) {
 					storage.addRecurringTask(recurTask);
@@ -378,7 +379,7 @@ public class TNotesLogic {
 				}
 			} else {
 
-				if (commandWord.equals("add")) {
+				if (commandWord.equals(ADD)) {
 					storage.deleteTask(prevTask.getName());
 				} else if (commandWord.equals(DELETE)) {
 					storage.addTask(prevTask);
@@ -417,7 +418,7 @@ public class TNotesLogic {
 				recurTask.addRecurringStartDate(startDates);
 				recurTask.addRecurringEndDate(endDates);
 
-				if (commandWord.equals("add")) {
+				if (commandWord.equals(ADD)) {
 					storage.addRecurringTask(recurTask);
 				} else if (commandWord.equals(DELETE)) {
 					storage.deleteRecurringTask(prevTask.getName());
@@ -433,7 +434,7 @@ public class TNotesLogic {
 					assertEquals("", commandWord);
 				}
 			} else {
-				if (commandWord.equals("add")) {
+				if (commandWord.equals(ADD)) {
 					storage.addTask(prevTask);
 				} else if (commandWord.equals(DELETE)) {
 					storage.deleteTask(prevTask.getName());
