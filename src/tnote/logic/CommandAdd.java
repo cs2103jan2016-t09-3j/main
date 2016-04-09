@@ -3,6 +3,8 @@ package tnote.logic;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
+import java.util.logging.Logger;
+import tnote.util.log.TNoteLogger;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -18,8 +20,13 @@ import tnote.storage.TNotesStorage;
 import tnote.util.exceptions.TimeClashException;
 
 public class CommandAdd {
+	private static final String MESSAGE_LOG_ERROR = "Error Adding";
+
 	private static final int DEFAULT_DAY_DURATION = 12;
 	private static final int DEFAULT_WEEK_DURATION = 10;
+	private static final int DEFAULT_FORTNIGHT_DURATION = 4;
+	private static final int DEFAULT_MONTH_DURATION = 2;
+
 	private static final int INDEX_FOUR = 4;
 	private static final int DEFAULT_DURATION = 8;
 	private static final int INDEX_TWO = 2;
@@ -28,20 +35,20 @@ public class CommandAdd {
 	private static final int ZERO_INDEX = 0;
 	private static final String DAY_SHORTFORM = "EEE";
 	private static final String PARSER_DATE_FORMAT = "yyyy-MM-dd";
-	
+
 	private static final String STRING_COLON = ":";
 	private static final String STRING_DASH = "-";
-	
+
 	private static final String MONTH = "month";
 	private static final String FORTNIGHT = "fortnight";
 	private static final String WEEK = "week";
 	private static final String DAY = "day";
-	private static final String TOMORROW = "tomorrow";	
+	private static final String TOMORROW = "tomorrow";
 	private static final String TODAY = "today";
-	
+
 	private static final String FOR = " for ";
 	private static final String IT_RECURS_EVERY = " It recurs every ";
-	
+
 	private static final String SUNDAY = "sunday";
 	private static final String SATURDAY = "saturday";
 	private static final String FRIDAY = "friday";
@@ -49,105 +56,98 @@ public class CommandAdd {
 	private static final String WEDNESDAY = "wednesday";
 	private static final String TUESDAY = "tuesday";
 	private static final String MONDAY = "monday";
-	
+
 	private static final String KEYWORD_FOR = "for";
 	private static final String EVERY = "every";
 	private static final String IMPORTANT = "important";
-	
+
 	private TNotesStorage storage;
+
+	private static final Logger logger = Logger.getGlobal();
 
 	protected CommandAdd() throws Exception {
 		storage = TNotesStorage.getInstance();
 	}
 
 	protected TaskFile addTask(ArrayList<String> fromParser) throws Exception {
-		try {
-			System.out.println("addcheck " + fromParser.toString());
-			ArrayList<String> stringList = storage.readFromMasterFile();
-			TaskFile currentFile = new TaskFile();
-			if (stringList.isEmpty()) {
-				System.out.println("stringlist is empty");
+
+		System.out.println("addcheck " + fromParser.toString());
+		ArrayList<String> stringList = storage.readFromMasterFile();
+		TaskFile currentFile = new TaskFile();
+		if (stringList.isEmpty()) {
+			System.out.println("stringlist is empty");
+		}
+		String importance = new String();
+		String recurArgument = new String();
+		String recurDuration = new String();
+		String recurNumDuration = new String();
+		Calendar cal = Calendar.getInstance();
+
+		assertNotEquals(ZERO_INDEX, fromParser.size());
+		currentFile.setName(fromParser.remove(ZERO_INDEX).trim());
+
+		if (fromParser.contains(IMPORTANT))
+			importanceFlag(fromParser, currentFile);
+
+		if (fromParser.contains(EVERY)) {
+			int indexOfRecurKeyWord = fromParser.indexOf(EVERY);
+			recurArgument = fromParser.remove(indexOfRecurKeyWord + INDEX_ONE).toLowerCase();
+			fromParser.remove(EVERY);
+			if ((fromParser.size() > indexOfRecurKeyWord)
+					&& (fromParser.get(indexOfRecurKeyWord).equals(KEYWORD_FOR))) {
+				fromParser.remove(KEYWORD_FOR);
+				recurNumDuration = fromParser.remove(indexOfRecurKeyWord);
+				recurDuration = fromParser.remove(indexOfRecurKeyWord);
 			}
-			String importance = new String();
-			String recurArgument = new String();
-			String recurDuration = new String();
-			String recurNumDuration = new String();
-			Calendar cal = Calendar.getInstance();
+			currentFile.setIsRecurr(true);
+		}
+		if (fromParser.contains(TODAY)) {
+			DateFormat df = new SimpleDateFormat(PARSER_DATE_FORMAT);
+			String date = df.format(cal.getTime());
+			fromParser.set(fromParser.indexOf(TODAY), date);
+		}
+		if (fromParser.contains(TOMORROW)) {
+			DateFormat df = new SimpleDateFormat(PARSER_DATE_FORMAT);
+			String date = df.format(cal.getTime()).toLowerCase();
+			cal.add(Calendar.DATE, INDEX_ONE);
+			date = df.format(cal.getTime()).toLowerCase();
+			fromParser.set(fromParser.indexOf(TOMORROW), date);
+		}
 
-			assertNotEquals(ZERO_INDEX, fromParser.size());
-			currentFile.setName(fromParser.remove(ZERO_INDEX).trim());
-
-			if (fromParser.contains(IMPORTANT))
-				importanceFlag(fromParser, currentFile);
-
-			if (fromParser.contains(EVERY)) {
-				int indexOfRecurKeyWord = fromParser.indexOf(EVERY);
-				recurArgument = fromParser.remove(indexOfRecurKeyWord + INDEX_ONE).toLowerCase();
-				fromParser.remove(EVERY);
-				if ((fromParser.size() > indexOfRecurKeyWord) && (fromParser.get(indexOfRecurKeyWord).equals(KEYWORD_FOR))) {
-					fromParser.remove(KEYWORD_FOR);
-					recurNumDuration = fromParser.remove(indexOfRecurKeyWord);
-					recurDuration = fromParser.remove(indexOfRecurKeyWord);
-				}
-				currentFile.setIsRecurr(true);
+		for (int i = ZERO_INDEX; i < fromParser.size(); i++) {
+			String day = fromParser.get(i).toLowerCase();
+			if (day.equals(MONDAY) || (day.equals(TUESDAY)) || (day.equals(WEDNESDAY)) || (day.equals(THURSDAY))
+					|| (day.equals(FRIDAY)) || (day.equals(SATURDAY)) || (day.equals(SUNDAY))) {
+				String date = compareDates(day);
+				fromParser.set(i, date);
 			}
-			if (fromParser.contains(TODAY)) {
-				DateFormat df = new SimpleDateFormat(PARSER_DATE_FORMAT);
-				String date = df.format(cal.getTime());
-				fromParser.set(fromParser.indexOf(TODAY), date);
+		}
+
+		// System.out.println("adcheck 2" + fromParser.toString());
+		Iterator<String> aListIterator = fromParser.iterator();
+		while (aListIterator.hasNext()) {
+			String details = aListIterator.next();
+			if (!details.contains(STRING_COLON) && !details.contains(STRING_DASH)) {
+				currentFile.setDetails(details + ".");
+				aListIterator.remove();
 			}
-			if (fromParser.contains(TOMORROW)) {
-				DateFormat df = new SimpleDateFormat(PARSER_DATE_FORMAT);
-				String date = df.format(cal.getTime()).toLowerCase();
-				cal.add(Calendar.DATE, INDEX_ONE);
-				date = df.format(cal.getTime()).toLowerCase();
-				fromParser.set(fromParser.indexOf(TOMORROW), date);
-			}
+		}
 
-			for (int i = ZERO_INDEX; i < fromParser.size(); i++) {
-				String day = fromParser.get(i).toLowerCase();
-				if (day.equals(MONDAY) || (day.equals(TUESDAY)) || (day.equals(WEDNESDAY))
-						|| (day.equals(THURSDAY)) || (day.equals(FRIDAY)) || (day.equals(SATURDAY))
-						|| (day.equals(SUNDAY))) {
-					String date = compareDates(day);
-					fromParser.set(i, date);
-				}
-			}
+		currentFile = dateFormatter(fromParser, currentFile, recurArgument, cal);
+		currentFile.setUpTaskFile();
 
-			// System.out.println("adcheck 2" + fromParser.toString());
-			Iterator<String> aListIterator = fromParser.iterator();
-			while (aListIterator.hasNext()) {
-				String details = aListIterator.next();
-				if (!details.contains(STRING_COLON) && !details.contains(STRING_DASH)) {
-					currentFile.setDetails(details + ".");
-					aListIterator.remove();
-				}
-			}
+		// only check if the task is a meeting
+		if (currentFile.getIsMeeting()) {
+			meetingClash(stringList, currentFile);
+		}
+		if (currentFile.getIsRecurring()) {
+			return addRecuringTask(currentFile, recurArgument, recurDuration, recurNumDuration, cal);
+		}
+		if (storage.addTask(currentFile)) {
 
-			currentFile = dateFormatter(fromParser, currentFile, recurArgument, cal);
-			currentFile.setUpTaskFile();
-
-			// only check if the task is a meeting
-			if (currentFile.getIsMeeting()) {
-				meetingClash(stringList, currentFile);
-			}
-			if (currentFile.getIsRecurring()) {
-				return addRecuringTask(currentFile, recurArgument, recurDuration, recurNumDuration, cal);
-			}
-			if (storage.addTask(currentFile)) {
-
-				return currentFile;
-			} else {
-				return null;
-			}
-
-		} catch (
-
-		AssertionError aE)
-
-		{
-			// means the switch statement got invalid arguments
-			// throw instead of return
+			return currentFile;
+		} else {
+			logger.warning(MESSAGE_LOG_ERROR);
 			return null;
 		}
 
@@ -324,7 +324,7 @@ public class CommandAdd {
 							endCal.add(Calendar.WEEK_OF_YEAR, INDEX_TWO);
 						}
 					}
-				} else if(recurDuration.contains(MONTH)){
+				} else if (recurDuration.contains(MONTH)) {
 					for (int i = ZERO_INDEX; i < (Integer.parseInt(recurNumDuration) * INDEX_TWO); i++) {
 						dateList.add(df.format(cal.getTime()));
 						cal.add(Calendar.WEEK_OF_YEAR, INDEX_TWO);
@@ -334,20 +334,39 @@ public class CommandAdd {
 							endCal.add(Calendar.WEEK_OF_YEAR, INDEX_TWO);
 						}
 					}
-				}else{
-					
-				}
-			} else if (recurArgument.equals(MONTH)) {
-				for (int i = ZERO_INDEX; i < (Integer.parseInt(recurNumDuration)); i++) {
-					dateList.add(df.format(cal.getTime()));
-					cal.add(Calendar.MONTH, INDEX_ONE);
+				} else {
+					for (int i = ZERO_INDEX; i < DEFAULT_FORTNIGHT_DURATION; i++) {
+						dateList.add(df.format(cal.getTime()));
+						cal.add(Calendar.WEEK_OF_YEAR, INDEX_TWO);
 
-					if (currentFile.getIsMeeting()) {
-						endDateList.add(df.format(endCal.getTime()));
-						endCal.add(Calendar.MONTH, INDEX_ONE);
+						if (currentFile.getIsMeeting()) {
+							endDateList.add(df.format(endCal.getTime()));
+							endCal.add(Calendar.WEEK_OF_YEAR, INDEX_ONE);
+						}
 					}
 				}
+			} else if (recurArgument.equals(MONTH)) {
+				if (recurDuration.contains(MONTH)) {
+					for (int i = ZERO_INDEX; i < (Integer.parseInt(recurNumDuration)); i++) {
+						dateList.add(df.format(cal.getTime()));
+						cal.add(Calendar.MONTH, INDEX_ONE);
 
+						if (currentFile.getIsMeeting()) {
+							endDateList.add(df.format(endCal.getTime()));
+							endCal.add(Calendar.MONTH, INDEX_ONE);
+						}
+					}
+				} else {
+					for (int i = ZERO_INDEX; i < DEFAULT_MONTH_DURATION; i++) {
+						dateList.add(df.format(cal.getTime()));
+						cal.add(Calendar.MONTH, INDEX_ONE);
+
+						if (currentFile.getIsMeeting()) {
+							endDateList.add(df.format(endCal.getTime()));
+							endCal.add(Calendar.MONTH, INDEX_ONE);
+						}
+					}
+				}
 			} else {
 				recurArgument.contains(DAY);
 				String date = compareDates(recurArgument);
