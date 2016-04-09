@@ -215,7 +215,7 @@ public class TaskFile implements Comparable<TaskFile>, Cloneable {
 		}
 
 		if (endDate.isEmpty() && !endTime.isEmpty()) {
-			setEndDate(currentDateString);
+			setEndDate(startDate);
 		} else if (!endDate.isEmpty() && endTime.isEmpty()) {
 			setEndTime(DEFAULT_TIME);
 		} else {
@@ -245,8 +245,8 @@ public class TaskFile implements Comparable<TaskFile>, Cloneable {
 					String startCalString = stringToDateFormat.format(startCal.getTime());
 					String endCalString = stringToDateFormat.format(endCal.getTime());
 
-					throw new IncorrectTimeException(String.format(ERROR_INCORRECT_TIMING, startCalString,
-													endCalString), getName());
+					throw new IncorrectTimeException(String.format(ERROR_INCORRECT_TIMING, endCalString,
+													startCalString), getName());
 				}
 			}
 		}
