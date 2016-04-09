@@ -10,42 +10,70 @@ import java.util.Date;
 import tnote.object.TaskFile;
 import tnote.storage.TNotesStorage;
 
+
+
 public class CommandView {
+	private static final String TYPE_IS_VIEW_TASK = "isViewTask";
+
+	private static final String TYPE_IS_VIEW_HISTORY = "isViewHistory";
+
+	private static final String HISTROY = "history";
+
+	private static final String TYPE_IS_VIEW_INDEX = "isViewIndex";
+
+	private static final String TYPE_IS_VIEW_NOTES = "isViewNotes";
+
+	private static final String STRING_FLOATING = "notes";
+
+	private static final String TYPE_IS_VIEW_DATE_LIST = "isViewDateList";
+
+	private static final String SUNDAY = "sunday";
+
+	private static final String SATURDAY = "saturday";
+
+	private static final String FRIDAY = "friday";
+
+	private static final String THURSDAY = "thursday";
+
+	private static final String WEDNESDAY = "wednesday";
+
+	private static final String TUESDAY = "tuesday";
+
+	private static final String MONDAY = "monday";
+
+	private static final String TODAY = "today";
+
+	private static final String STRING_DASH = "-";
+
+	private static final String TYPE_IS_VIEW_MANY_LIST = "isViewManyList";
+
 	TNotesStorage storage;
+	
+	private static final String PARSER_DATE_FORMAT = "yyyy-MM-dd";
+	private static final String DAY_SHORTFORM = "EEE";
 
 	public CommandView() throws Exception {
-		TNotesStorage storage = TNotesStorage.getInstance();
-	}
-	
-	public ArrayList<TaskFile> viewFromFloating() throws Exception{
-		return viewFloatingList();
-	}
-	
-	public ArrayList<TaskFile> viewFromOverdue() throws Exception{
-		return callOverdueTasks();
+		storage = TNotesStorage.getInstance();
 	}
 
-	public ArrayList<String> sortViewTypes(ArrayList<String> fromParser) {
-		ArrayList<String> stringList = new ArrayList<String>();
-		String viewType = fromParser.get(1);
-		if (fromParser.size() == 3) {
-			stringList.add("isViewManyList");
-		} else if (viewType.contains("-") || viewType.contains("today")
-				|| (viewType.contains("monday") || (viewType.contains("tuesday")) || (viewType.contains("wednesday"))
-						|| (viewType.contains("thursday")) || (viewType.contains("friday"))
-						|| (viewType.contains("saturday")) || (viewType.contains("sunday")))) {
-			stringList.add("isViewDateList");
-		} else if (viewType.contains("notes")) {
-			stringList.add("isViewNotes");
-		} else if (!isLetters(viewType)) {
-			stringList.add("isViewIndex");
-		} else if (viewType.contains("history")) {
-			stringList.add("isViewHistory");
-		} else {
-			stringList.add("isViewTask");
+	/**
+	 * 
+	 * @param dates
+	 *            - a specific day, Monday,Tuesday, etc
+	 * @return - a string of the day in DD-MM-YYYY
+	 */
+	private String compareDates(String dates) {
+		Calendar cal = Calendar.getInstance();
+		DateFormat df = new SimpleDateFormat(DAY_SHORTFORM );
+		DateFormat dF = new SimpleDateFormat(PARSER_DATE_FORMAT);
+		String date = df.format(cal.getTime()).toLowerCase();
+		while (!dates.contains(date)) {
+			cal.add(Calendar.DATE, 1);
+			date = df.format(cal.getTime()).toLowerCase();
 		}
-		return stringList;
+		return dF.format(cal.getTime());
 	}
+
 	private boolean isLetters(String nextString) {
 		if (!nextString.matches("[0-9]+")) {
 			return true;
@@ -54,7 +82,43 @@ public class CommandView {
 		}
 	}
 
+	/**
+	 * 
+	 * @param fromParser
+	 *            - the sorted inputs from the user
+	 * 
+	 * @return - the inputs with an additional keyword to determine the type of
+	 *         view.
+	 */
+	public ArrayList<String> sortViewTypes(ArrayList<String> fromParser) {
+		ArrayList<String> stringList = new ArrayList<String>();
+		String viewType = fromParser.get(1);
+		if (fromParser.size() == 3) {
+			stringList.add(TYPE_IS_VIEW_MANY_LIST);
+		} else if (viewType.contains(STRING_DASH) || viewType.contains(TODAY)
+				|| (viewType.contains(MONDAY) || (viewType.contains(TUESDAY)) || (viewType.contains(WEDNESDAY))
+						|| (viewType.contains(THURSDAY)) || (viewType.contains(FRIDAY))
+						|| (viewType.contains(SATURDAY)) || (viewType.contains(SUNDAY)))) {
+			stringList.add(TYPE_IS_VIEW_DATE_LIST);
+		} else if (viewType.contains(STRING_FLOATING)) {
+			stringList.add(TYPE_IS_VIEW_NOTES);
+		} else if (!isLetters(viewType)) {
+			stringList.add(TYPE_IS_VIEW_INDEX);
+		} else if (viewType.contains(HISTROY)) {
+			stringList.add(TYPE_IS_VIEW_HISTORY);
+		} else {
+			stringList.add(TYPE_IS_VIEW_TASK);
+		}
+		return stringList;
+	}
 
+	/**
+	 * 
+	 * @param taskToBeDisplayed
+	 *            -String containing name of the task to be displayed
+	 * @return - returns the task with the same name, else returns null
+	 * @throws Exception
+	 */
 	public TaskFile viewTask(String taskToBeDisplayed) throws Exception {
 		ArrayList<String> stringList = storage.readFromMasterFile();
 
@@ -70,6 +134,12 @@ public class CommandView {
 		// taskFile not found
 		return null;
 	}
+
+	/**
+	 * 
+	 * @return - an ArrayList of TaskFiles that are done
+	 * @throws Exception
+	 */
 	public ArrayList<TaskFile> viewDoneList() throws Exception {
 		ArrayList<String> nameList = new ArrayList<String>();
 		ArrayList<TaskFile> doneList = new ArrayList<TaskFile>();
@@ -84,6 +154,13 @@ public class CommandView {
 		return doneList;
 	}
 
+	/**
+	 * 
+	 * @param dates
+	 *            - ArrayList consisting of the start date and end date
+	 * @return - ArrayList of TaskFiles over the dates
+	 * @throws Exception
+	 */
 	public ArrayList<TaskFile> viewManyDatesList(ArrayList<String> dates) throws Exception {
 		Date startDate;
 		Date endDate;
@@ -124,17 +201,22 @@ public class CommandView {
 		return taskListToBeDisplayed;
 	}
 
-	// show the task by date
-	// take in a date string?
+	/**
+	 * 
+	 * @param date
+	 *            - a specific date,DD-MM-YYYY, or a day, MONDAY, or Today
+	 * @return - ArrayList of TaskFiles with the same dates as the date input
+	 * @throws Exception
+	 */
 	public ArrayList<TaskFile> viewDateList(String date) throws Exception {
-		if (date.trim().equals("today")) {
+		if (date.trim().equals(TODAY)) {
 			Calendar cal = Calendar.getInstance();
 			DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 			String today = df.format(cal.getTime());
 			date = today;
 		}
-		if (date.equals("monday") || (date.equals("tuesday")) || (date.equals("wednesday")) || (date.equals("thursday"))
-				|| (date.equals("friday")) || (date.equals("saturday")) || (date.equals("sunday"))) {
+		if (date.equals(MONDAY) || (date.equals(TUESDAY)) || (date.equals(WEDNESDAY)) || (date.equals(THURSDAY))
+				|| (date.equals(FRIDAY)) || (date.equals(SATURDAY)) || (date.equals(SUNDAY))) {
 			String whichDay = compareDates(date);
 			date = whichDay;
 		}
@@ -158,6 +240,11 @@ public class CommandView {
 		return taskListToBeDisplayed;
 	}
 
+	/**
+	 * 
+	 * @return - ArrayList of TaskFiles which are floating
+	 * @throws Exception
+	 */
 	public ArrayList<TaskFile> viewFloatingList() throws Exception {
 		ArrayList<String> stringList = storage.readFromFloatingFile();
 		ArrayList<TaskFile> taskListToBeDisplayed = new ArrayList<TaskFile>();
@@ -170,18 +257,11 @@ public class CommandView {
 		return taskListToBeDisplayed;
 	}
 
-	private String compareDates(String dates) {
-		Calendar cal = Calendar.getInstance();
-		DateFormat df = new SimpleDateFormat("EEE");
-		DateFormat dF = new SimpleDateFormat("yyyy-MM-dd");
-		String date = df.format(cal.getTime()).toLowerCase();
-		while (!dates.contains(date)) {
-			cal.add(Calendar.DATE, 1);
-			date = df.format(cal.getTime()).toLowerCase();
-		}
-		return dF.format(cal.getTime());
-	}
-
+	/**
+	 * 
+	 * @return - ArrayList of TaskFiles which have passed their deadline
+	 * @throws Exception
+	 */
 	public ArrayList<TaskFile> callOverdueTasks() throws Exception {
 		ArrayList<TaskFile> listOfOverdueTasks = storage.retrieveOverdueTasks();
 		for (TaskFile newTask : listOfOverdueTasks) {
