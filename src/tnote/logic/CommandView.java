@@ -13,6 +13,7 @@ import tnote.storage.TNotesStorage;
 
 
 public class CommandView {
+	private static final String TOMORROW = "tomorrow";
 	private static final int INDEX_ZERO = 0;
 	private static final int INDEX_ONE = 1;
 	private static final int INDEX_TWO = 2;
@@ -206,6 +207,13 @@ public class CommandView {
 			Calendar cal = Calendar.getInstance();
 			String today = df.format(cal.getTime());
 			date = today;
+		}
+		if(date.trim().equals(TOMORROW)){
+			Calendar cal = Calendar.getInstance();
+			cal.add(Calendar.DATE, INDEX_ONE);
+			String today = df.format(cal.getTime());
+			date = today;
+			
 		}
 		if (date.equals(MONDAY) || (date.equals(TUESDAY)) || (date.equals(WEDNESDAY)) || (date.equals(THURSDAY))
 				|| (date.equals(FRIDAY)) || (date.equals(SATURDAY)) || (date.equals(SUNDAY))) {
