@@ -104,7 +104,6 @@ public class TNotesMessages {
 		viewHelpArray.add("view [task]");
 		viewHelpArray.add("view [month]");
 		viewHelpArray.add("view [date] to [date]");
-		viewHelpArray.add("view next [year]");
 		viewHelpArray.add("\n");
 	}
 
@@ -157,6 +156,7 @@ public class TNotesMessages {
 		miscHelpArray.add("set [task] done/undone");
 		miscHelpArray.add("change directory location to [new directory path]");
 		miscHelpArray.add("delete directory [directory path]");
+		miscHelpArray.add("[day] = mon/tues/wed/thurs/fri/sat/sun/monday/tuesday/wednesday/thursday/friday/saturday/sunday");
 		miscHelpArray.add("\n");
 
 	}
