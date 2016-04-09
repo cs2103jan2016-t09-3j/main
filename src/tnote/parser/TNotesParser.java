@@ -37,7 +37,7 @@ public class TNotesParser {
 	private TNotesParserView view;
 	private TNotesParserEdit edit;
 	
-	protected TNotesParser() throws Exception{
+	public TNotesParser() throws Exception{
 		TNoteLogger.setUp();
 		add = new TNotesParserAdd();
 		change = new TNotesParserChange();
@@ -50,7 +50,7 @@ public class TNotesParser {
 	}
 	
 
-	protected interface Parser {
+	public interface Parser {
 		public Object parse(String input);
 	}
 	
@@ -61,7 +61,7 @@ public class TNotesParser {
 	}
 	
 	//Must show the level of testing
-	protected void execute() throws Exception{
+	public void execute() throws Exception{
 		String output = new String();
 		String input = new String();  
 		input = "add happy day every month";
@@ -81,7 +81,7 @@ public class TNotesParser {
 	 * @throws Exception 
 	 * 				- Error message will be thrown for invalid commands
 	 */
-	protected ArrayList<String> checkCommand(String inputString) throws Exception{
+	public ArrayList<String> checkCommand(String inputString) throws Exception{
 		ArrayList<String> list = new ArrayList<String>();
 		assert inputString != "" : MESSAGE_NULL_INPUTSTRING;	
 		try{

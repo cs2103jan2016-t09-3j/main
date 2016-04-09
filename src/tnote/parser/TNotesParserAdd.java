@@ -2,7 +2,6 @@
 package tnote.parser;
 import java.util.ArrayList;
 import java.util.logging.Logger;
-
 import tnote.util.log.TNoteLogger;
 
 /**
