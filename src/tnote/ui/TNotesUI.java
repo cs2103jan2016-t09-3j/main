@@ -1,7 +1,6 @@
 //@@author Joelle
 package tnote.ui;
 
-import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
 
@@ -21,671 +20,725 @@ import tnote.parser.TNotesParser;
 
 public class TNotesUI {
 
+	// Command_type
 	enum COMMAND_TYPE {
-		ADD_COMMAND, CHANGE_DIRECTORY, DELETE_COMMAND, DELETE_DIRECTORY, EDIT_COMMAND, EXIT, 
-		HELP_COMMAND, INVALID, REDO_COMMAND, SEARCH_COMMAND, SET_COMMAND, SORT_COMMAND, UNDO_COMMAND, 
-		VIEW_COMMAND
+		ADD_COMMAND, CHANGE_DIRECTORY, DELETE_COMMAND, DELETE_DIRECTORY, EDIT_COMMAND, EXIT, HELP_COMMAND, INVALID, REDO_COMMAND, SEARCH_COMMAND, SET_COMMAND, SORT_COMMAND, UNDO_COMMAND, VIEW_COMMAND
 	}
 
+	// Attributes
 	TNotesParser parser;
 	TNotesLogic logic;
 	TNotesMessages message;
 
 	ArrayList<String> commandArguments;
 	ArrayList<TaskFile> viewList;
-	TaskFile taskFile;
+	ArrayList<TaskFile> mainScreenArray;
 
-	String errorMessage;
-	String commandString;
-	String result = "";
-	
+	int userIndex;
+
 	// Messages
-	private static final String MESSAGE_WELCOME = "Hello, welcome to T-Note. How may I help you?\n";
 	private static final String MESSAGE_OVERDUE_TITLE = "====OVERDUE TASKS====\n";
+	private static final String MESSAGE_NOTES_TITLE = "====NOTES====\n";
+	private static final String MESSAGE_NO_NOTES_TITLE = "====NO NOTES====\n";
+	private static final String MESSAGE_DATE_TITLE = "=======%s=======\n";
 
+	private static final String MESSAGE_UPDATE_SCHEDULE = "Schedule has been updated.\n";
+	private static final String MESSAGE_SCHEDULE_ONE_DATE = "You have changed to view schedule for %s.\n";
+	private static final String MESSAGE_SCHEDULE_DATE_TO_DATE = "You have changed to view schedule from %s to %s.\n";
+
+	private static final String MESSAGE_WELCOME = "Hello, welcome to T-Note. How may I help you?\n";
+	private static final String MESSAGE_IMPORTANT = "Note: Task was noted as important\n";
+	private static final String MESSAGE_DETAILS = "Things to note: \"%s\"\n";
+	private static final String MESSAGE_INVALID ="Invalid command entered.\nPlease enter \"Help\" to show a list of available commands.\n";
+	private static final String MESSAGE_HELP = "List of available commands:\n\nNote: words in [] should be modified to your needs.\n\n";
+	private static final String MESSAGE_EXIT = "exit";
+	
+	private static final String MESSAGE_PRINT_OVERDUE_LIST = "%s. [%s][%s] %s\n";
+	private static final String MESSAGE_PRINT_FLOAT_LIST = "%s. %s%s\n";
+	private static final String MESSAGE_PRINT_DEADLINE = "%s. [%s] %s%s\n";
+	private static final String MESSAGE_PRINT_MEETING_ONE_DATE = "%s. [%s]-[%s] %s%s\n";
+	private static final String MESSAGE_PRINT_MEETING_TWO_DATES = "%s. [%s][%s]-[%s][%s] %s%s\n";
+
+	private static final String MESSAGE_ADD_CONFIRMATION_TASK = "I have added \"%s\" to your notes!\n";
+	private static final String MESSAGE_ADD_CONFIRMATION_DEADLINE = "I have added \"%s\" at [%s] on [%s] to your schedule!\n";
+	private static final String MESSAGE_ADD_CONFIRMATION_MEETING = "I have added \"%s\" from [%s] at [%s] to [%s] at [%s] to your schedule!\n";
+
+	private static final String MESSAGE_CHANGE_DIRECTORY_SUCESS = "You have succesfully changed directory to %s.\n";
+	private static final String MESSAGE_CHANGE_DIRECTORY_FAILURE = "Unable to change directory.\n";
+
+	private static final String MESSAGE_DELETE_DIRECTORY_SUCESS = "You have succesfully deleted the directory: %s\n";
+	private static final String MESSAGE_DELETE_DIRECTORY_FAILURE = "Unable to delete directory.\n";
+
+	private static final String MESSAGE_DELETE_TASK = "I have deleted \"%s\" from your schedule for you!\n\n";
+
+	private static final String MESSAGE_EDIT_NAME = "You have changed the task name from \"%s\" to \"%s\"!\n";
+	private static final String MESSAGE_EDIT_TIME = "You have changed the start time in \"%s\" from [%s] to [%s]!\n";
+	private static final String MESSAGE_EDIT_END_TIME = "You have changed the end time in \"%s\" from [%s] to [%s]!\n";
+	private static final String MESSAGE_EDIT_DATE = "You have changed the start date in \"%s\" from [%s] to [%s]!\n";
+	private static final String MESSAGE_EDIT_END_DATE = "You have changed the end date in \"%s\" from [%s] to [%s]!\n";
+	private static final String MESSAGE_EDIT_DETAILS = "You have changed the details in \"%s\" from [%s] to [%s]!\n";
+	private static final String MESSAGE_EDIT_IMPORTANCE = "You have changed the importance of \"%s\" to ";
+	private static final String MESSAGE_EDIT_RECURRING = "You have set recurring in \"%s\" from [%s] to [%s]!\n";
+
+	private static final String MESSAGE_VIEW_TASK = "Displaying the task \"%s\":\n\n";
+	private static final String MESSAGE_VIEW_ONE_DATE = "Date: %s\n";
+	private static final String MESSAGE_VIEW_TWO_DATES = "Date: %s - %s\n";
+	private static final String MESSAGE_VIEW_ONE_TIME = "Time: %s\n";
+	private static final String MESSAGE_VIEW_TWO_TIMES = "Time: %s - %s\n";
+	private static final String MESSAGE_VIEW_IMPORTANCE = "Importance: %s\n";
+	private static final String MESSAGE_VIEW_STATUS = "Status: %s\n";
+	private static final String MESSAGE_VIEW_DETAILS = "Details: %s\n";
+
+	private static final String MESSAGE_SET_CONFIRMATION = "You have changed the status in \"%s\" from %s to %s\n\n";
+	private static final String MESSAGE_SET_ERROR = "Error. The task is already %s!\n";
+
+	private static final String MESSAGE_SEARCH_CONFIRMATION = "Searching for \"%s\" .......This is what I've found:\n";
+	private static final String MESSAGE_SEARCH_FAILURE = "Nothing was found......\n";
+	
+	private static final String MESSAGE_SORT_CONFIRMATION = "I have sorted everything by name for you! I'm so amazing, what would you do without me!\n";
+	
+	private static final String MESSAGE_UNDO_CONFIRMATION = "You have undone %s %s!\n";
+	
+	private static final String MESSAGE_REDO_CONFIRMATION = "You have redo %s %s!\n";
+
+	// Constructor
 	public TNotesUI() {
 		try {
 			parser = new TNotesParser();
 			logic = new TNotesLogic();
 			message = new TNotesMessages();
+			mainScreenArray = new ArrayList<TaskFile>();
+			mainScreenArray = logic.viewDateList("today");
 		} catch (Exception e) {
 			e.getMessage();
 		}
 	}
 
+	// Getters
 	public String getWelcomeMessage() {
 		String welcomeMsg = String.format(MESSAGE_WELCOME);
 		return welcomeMsg;
 	}
 
+	// Main Method
+	public String executeCommand(String userInput) throws Exception {
+		String resultString = "";
+		String commandString;
+		ArrayList<String> userCommandSplit = new ArrayList<String>();
+
+		// ?? should it be like that?
+		try {
+			userCommandSplit = parser.checkCommand(userInput);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+
+		commandString = getFirstWord(userCommandSplit);
+		COMMAND_TYPE command = determineCommandType(commandString);
+
+		switch (command) {
+		case ADD_COMMAND:
+			resultString = formatAddCommand(resultString, userCommandSplit);
+
+			break;
+		case CHANGE_DIRECTORY:
+			String changeDirectoryPath = userCommandSplit.get(1);
+
+			resultString = formatChangeDirectoryCommand(changeDirectoryPath);
+			break;
+		case DELETE_DIRECTORY:
+			String deleteDirectoryPath = userCommandSplit.get(1);
+
+			resultString = formatDeleteDirectoryCommand(deleteDirectoryPath);
+			break;
+		case EDIT_COMMAND:
+			String editTaskName = userCommandSplit.get(1).trim();
+			String editType = userCommandSplit.get(2).trim();
+
+			resultString = formatEditCommand(userCommandSplit, editTaskName, editType);
+			break;
+		case DELETE_COMMAND:
+			String deleteType = userCommandSplit.get(1);
+
+			resultString = formatDeleteCommand(userCommandSplit, deleteType);
+			break;
+		case VIEW_COMMAND:
+			ArrayList<String> viewType = logic.sortViewTypes(userCommandSplit);
+			String viewTypeString = viewType.get(0);
+
+			resultString = formatViewCommand(userCommandSplit, viewTypeString);
+			break;
+		case SET_COMMAND:
+			String taskName = userCommandSplit.get(1);
+
+			resultString = formatSetCommand(userCommandSplit, taskName);
+			break;
+		case SEARCH_COMMAND:
+			
+			resultString = formatSearchCommand(userCommandSplit);
+			break;
+		case SORT_COMMAND:
+			String sortType = userCommandSplit.get(1).trim();
+
+			resultString = formatSortCommand(userCommandSplit, sortType);
+			break;
+		case UNDO_COMMAND:
+			
+			resultString = formatUndoCommand();
+			break;
+		case REDO_COMMAND:
+		
+			resultString = formatRedoCommand();
+			break;
+		case INVALID:
+			
+			resultString = String.format(MESSAGE_INVALID);
+			break;
+		case HELP_COMMAND:
+			
+			resultString = String.format(MESSAGE_HELP);
+			resultString += message.printHelpArray();
+			break;
+		case EXIT:
+			
+			resultString = String.format(MESSAGE_EXIT);
+			break;
+		default:
+			resultString = "Error!";
+		}
+		return resultString;
+	}
+
+	// ==== SubCommands ====
+
+	// ==== ADD ====
+	public String formatAddCommand(String resultString, ArrayList<String> userCommandSplit) {
+		String formatAddString = "";
+		TaskFile addTask;
+
+		try {
+			addTask = logic.addTask(userCommandSplit);
+			formatAddString = checkAddTypes(resultString, addTask);
+		} catch (Exception e) {
+			formatAddString = e.getMessage();
+		}
+		return formatAddString;
+	}
+
+	public String checkAddTypes(String resultString, TaskFile taskFile) {
+		String addString = "";
+
+		// Floating task case
+		if (taskFile.getIsTask()) {
+			addString = String.format(MESSAGE_ADD_CONFIRMATION_TASK, taskFile.getName());
+		}
+
+		// Tasks with only 1 date
+		if (taskFile.getIsDeadline()) {
+			addString = String.format(MESSAGE_ADD_CONFIRMATION_DEADLINE, taskFile.getName(), taskFile.getStartTime(),
+					taskFile.getStartDate());
+			updateMainScreen(taskFile.getStartDate());
+		}
+
+		// Tasks with 2 dates
+		if (taskFile.getIsMeeting()) {
+			addString += String.format(MESSAGE_ADD_CONFIRMATION_MEETING, taskFile.getName(), taskFile.getStartDate(),
+					taskFile.getStartTime(), taskFile.getEndDate(), taskFile.getEndTime());
+			updateMainScreen(taskFile.getStartDate());
+		}
+
+		if (taskFile.getImportance()) {
+			addString += String.format(MESSAGE_IMPORTANT);
+		}
+
+		if (taskFile.hasDetails()) {
+			addString += String.format(MESSAGE_DETAILS, taskFile.getDetails().trim());
+		}
+
+		return addString;
+	}
+
+	// ==== CHANGE DIRECTORY ====
+
+	public String formatChangeDirectoryCommand(String changeDirectoryPath) {
+		String formatChangeDirString;
+		try {
+			if (logic.changeDirectory(changeDirectoryPath)) {
+				formatChangeDirString = String.format(MESSAGE_CHANGE_DIRECTORY_SUCESS, changeDirectoryPath);
+			} else {
+				formatChangeDirString = String.format(MESSAGE_CHANGE_DIRECTORY_FAILURE);
+			}
+		} catch (Exception e) {
+			formatChangeDirString = e.getMessage();
+		}
+		return formatChangeDirString;
+	}
+
+	// ==== DELETE DIRECTORY ====
+
+	public String formatDeleteDirectoryCommand(String deleteDirectoryPath) {
+		String formatDeletDirString;
+
+		if (logic.deleteDirectory(deleteDirectoryPath)) {
+			formatDeletDirString = String.format(MESSAGE_DELETE_DIRECTORY_SUCESS, deleteDirectoryPath);
+		} else {
+			formatDeletDirString = String.format(MESSAGE_DELETE_DIRECTORY_FAILURE);
+		}
+		return formatDeletDirString;
+	}
+
+	// ==== EDIT ====
+
+	public String formatEditCommand(ArrayList<String> userCommandSplit, String editTaskName, String editType) {
+		TaskFile oldTaskFile;
+		TaskFile newTaskFile;
+		String formatEditString = "";
+
+		try {
+			oldTaskFile = logic.searchSingleTask(editTaskName);
+			newTaskFile = logic.editTask(userCommandSplit);
+
+			formatEditString = checkEditType(editTaskName, editType, oldTaskFile, newTaskFile);
+
+		} catch (Exception e) {
+			formatEditString = e.getMessage();
+		}
+		return formatEditString;
+	}
+
+	public String checkEditType(String editTaskName, String editType, TaskFile oldTaskFile, TaskFile newTaskFile) {
+		String displayEditString = "";
+
+		if (editType.equals("name")) {
+			displayEditString = String.format(MESSAGE_EDIT_NAME, oldTaskFile.getName(), newTaskFile.getName());
+		}
+		if (editType.equals("time") || editType.equals("startTime")) {
+			displayEditString = String.format(MESSAGE_EDIT_TIME, editTaskName, oldTaskFile.getStartTime(),
+					newTaskFile.getStartTime());
+		}
+		if (editType.equals("endTime")) {
+			displayEditString = String.format(MESSAGE_EDIT_END_TIME, editTaskName, oldTaskFile.getEndTime(),
+					newTaskFile.getEndTime());
+		}
+		if (editType.equals("date") || editType.equals("startDate")) {
+			displayEditString = String.format(MESSAGE_EDIT_DATE, editTaskName, oldTaskFile.getStartDate(),
+					newTaskFile.getStartDate());
+		}
+		if (editType.equals("endDate")) {
+			displayEditString = String.format(MESSAGE_EDIT_END_DATE, editTaskName, oldTaskFile.getEndDate(),
+					newTaskFile.getEndDate());
+		}
+		if (editType.equals("details")) {
+			displayEditString = String.format(MESSAGE_EDIT_DETAILS, editTaskName, oldTaskFile.getDetails(),
+					newTaskFile.getDetails());
+		}
+		if (editType.equals("importance")) {
+			displayEditString = String.format(MESSAGE_EDIT_IMPORTANCE, editTaskName);
+			displayEditString += displayImportance(newTaskFile);
+		}
+
+		if (editType.equals("Reccuring")) {
+			displayEditString = String.format(MESSAGE_EDIT_RECURRING, editTaskName, oldTaskFile.getIsRecurring(),
+					newTaskFile.getIsRecurring());
+		}
+		return displayEditString;
+	}
+
+	// ==== DELETE ====
+	public String formatDeleteCommand(ArrayList<String> userCommandSplit, String deleteType) throws Exception {
+		String resultString;
+		ArrayList<TaskFile> updatedList = new ArrayList<TaskFile>();
+		TaskFile deletedTask;
+
+		resultString = String.format(MESSAGE_UPDATE_SCHEDULE);
+
+		if (isLetters(deleteType) == 0) {
+			int index = Integer.valueOf(deleteType);
+			deletedTask = viewList.get(index - 1);
+
+			updatedList = logic.deleteIndex(viewList, index);
+			resultString += String.format(MESSAGE_DELETE_TASK, deletedTask.getName());
+
+		} else {
+			deletedTask = logic.deleteTask(userCommandSplit);
+			updateMainScreen(deletedTask.getStartDate());
+			resultString += String.format(MESSAGE_DELETE_TASK, deletedTask.getName());
+		}
+		return resultString;
+	}
+
+	// ==== VIEW ====
+
+	public String formatViewCommand(ArrayList<String> userCommandSplit, String viewTypeString) {
+		ArrayList<TaskFile> viewArray = new ArrayList<TaskFile>();
+		TaskFile currTask;
+		String formatViewString = "";
+		System.out.println(viewTypeString);
+
+		if (viewTypeString.equals("isViewTask")) {
+			String taskName = userCommandSplit.get(1);
+
+			try {
+				currTask = logic.viewTask(taskName);
+
+				formatViewString += printOneDetailedTask(currTask);
+
+			} catch (Exception e) {
+				formatViewString = e.getMessage();
+			}
+		}
+
+		else if (viewTypeString.equals("isViewDateList")) {
+			String date = userCommandSplit.get(1);
+
+			try {
+				viewArray = logic.viewDateList(date);
+
+				// Saves copy of current list
+				viewList = viewArray;
+
+				// Updates to main screen
+				mainScreenArray = viewArray;
+
+				formatViewString = String.format(MESSAGE_SCHEDULE_ONE_DATE, date);
+
+			} catch (Exception e) {
+				formatViewString = e.getMessage();
+			}
+		}
+
+		else if (viewTypeString.equals("isViewManyList")) {
+			String dateOne = userCommandSplit.get(1);
+			String dateTwo = userCommandSplit.get(2);
+
+			try {
+
+				viewArray = logic.viewManyDatesList(userCommandSplit);
+
+				// Saves copy of current list
+				viewList = viewArray;
+
+				// Updates to main screen
+				mainScreenArray = viewArray;
+
+				formatViewString = String.format(MESSAGE_SCHEDULE_DATE_TO_DATE, dateOne, dateTwo);
+
+			} catch (Exception e) {
+				formatViewString = e.getMessage();
+			}
+
+		}
+
+		else if (viewTypeString.equals("isViewNotes")) {
+			formatViewString += displayFloats();
+		}
+
+		else if (viewTypeString.equals("isViewIndex")) {
+			String strIndex = userCommandSplit.get(1);
+			int viewIndex = Integer.parseInt(strIndex);
+			TaskFile viewTaskFile;
+
+			try {
+				viewTaskFile = logic.viewByIndex(viewList, viewIndex);
+				formatViewString += printOneDetailedTask(viewTaskFile);
+			} catch (Exception e) {
+				formatViewString = e.getMessage();
+			}
+		}
+
+		else if (viewTypeString.equals("isViewHistory")) {
+			// String historyString ="";
+			// try {
+			// if (logic.hasHistoryList()) {
+			// ArrayList<TaskFile> arrHistory = new ArrayList<TaskFile>();
+			// arrHistory = logic.viewHistoryList();
+			//
+			// historyString = " ====HISTORY====\n";
+			// for (int i = 0; i < arrHistory.size(); i++) {
+			// historyString += i + 1 + ". ";
+			// if (arrHistory.get(i).getImportance()) {
+			// historyString += "[IMPORTANT] ";
+			// } else {
+			// historyString += arrHistory.get(i).getName() + "\n";
+			// }
+			// }
+			// historyString += "\n";
+			// } else {
+			// historyString = " ====EMPTY HISTORY====\n\n";
+			// }
+
+			// } catch (Exception e) {
+			// historyString = e.getMessage();
+			// }
+			//
+			// return historyString;
+			// }
+		}
+		return formatViewString;
+	}
+
+	public String printOneDetailedTask(TaskFile currTask) {
+		String formatViewString;
+		formatViewString = String.format(MESSAGE_VIEW_TASK, currTask.getName());
+		if (currTask.getIsTask()) {
+			formatViewString += String.format(MESSAGE_VIEW_ONE_DATE, "-");
+			formatViewString += String.format(MESSAGE_VIEW_ONE_TIME, "-");
+		}
+		if (currTask.getIsDeadline()) {
+			formatViewString += String.format(MESSAGE_VIEW_ONE_DATE, currTask.getStartDate());
+			formatViewString += String.format(MESSAGE_VIEW_ONE_TIME, currTask.getStartTime());
+		}
+		if (currTask.getIsMeeting()) {
+			formatViewString += String.format(MESSAGE_VIEW_TWO_DATES, currTask.getStartDate(), currTask.getEndDate());
+			formatViewString += String.format(MESSAGE_VIEW_TWO_TIMES, currTask.getStartTime(), currTask.getEndTime());
+		}
+		if (currTask.hasDetails()) {
+			formatViewString += String.format(MESSAGE_VIEW_DETAILS, currTask.getDetails());
+		} else {
+			formatViewString += String.format(MESSAGE_VIEW_DETAILS, "-");
+		}
+		if (currTask.getIsDone()) {
+			formatViewString += String.format(MESSAGE_VIEW_STATUS, "Completed");
+		}
+		if (!currTask.getIsDone()) {
+			formatViewString += String.format(MESSAGE_VIEW_STATUS, "-");
+		}
+		if (!currTask.getImportance()) {
+			formatViewString += String.format(MESSAGE_VIEW_IMPORTANCE, "-");
+		}
+		if (currTask.getImportance()) {
+			formatViewString += String.format(MESSAGE_VIEW_IMPORTANCE, "Highly Important");
+		}
+		return formatViewString;
+	}
+	
+	// ==== Sort ====
+	
+	public String formatSortCommand(ArrayList<String> userCommandSplit, String sortType) {
+		ArrayList<TaskFile> arraySort;
+		String sortString = "";
+		String dateOfList = viewList.get(0).getStartDate();
+		
+		if (sortType.equals("name")) {
+			sortString = String.format(MESSAGE_SORT_CONFIRMATION);
+			
+			try {
+				arraySort = logic.sortTask(viewList);
+				sortString += printTaskList(arraySort);
+				
+				// update to main screen // currently change is not perm, so might not work
+				// if we do it this way, we should also include a sort by time to change it back
+//				mainScreenArray = arraySort;
+//				updateMainScreen(dateOfList);
+				
+			} catch (Exception e) {
+				sortString = e.getMessage();
+			}
+		}
+		return sortString;
+	}
+
+	// ===== GUI Display Screens ====
+
+	// ==== Main screen ====
+	public String displayMain() {
+		String scheduleString = "";
+
+		if (mainScreenArray.size() != 0) {
+			scheduleString += printTaskList(mainScreenArray);
+			scheduleString += "\n";
+		}
+
+		return scheduleString;
+	}
+
+	// ==== Side screen ====
+	// Display overdue tasks
 	public String displayOverdueTasks() {
 		String overDueString;
 
 		try {
-			ArrayList<TaskFile> arrOverdue = new ArrayList<TaskFile>();
-			arrOverdue = logic.callOverdueTasks();
+			ArrayList<TaskFile> arrayOverdue = new ArrayList<TaskFile>();
+			arrayOverdue = logic.callOverdueTasks();
 			overDueString = String.format(MESSAGE_OVERDUE_TITLE);
-			overDueString = printOverDue(overDueString, arrOverdue);
+			overDueString = printOverDueList(overDueString, arrayOverdue);
 		} catch (Exception e) {
 			overDueString = e.getMessage();
 		}
 		return overDueString;
 	}
 
-	public String printOverDue(String overDueString, ArrayList<TaskFile> arrOverdue) {
-		for (int i = 0; i < arrOverdue.size(); i++) {
-			overDueString += i + 1 + ". [" + arrOverdue.get(i).getStartTime() + "] [" + arrOverdue.get(i).getStartDate()
-					+ "] " + arrOverdue.get(i).getName() + "\n";
+	public String printOverDueList(String overDueString, ArrayList<TaskFile> arrayOverdue) {
+		TaskFile overDueTask;
+
+		for (int i = 0; i < arrayOverdue.size(); i++) {
+			int indexDisplay = i + 1;
+			overDueTask = arrayOverdue.get(i);
+			overDueString += String.format(MESSAGE_PRINT_OVERDUE_LIST, indexDisplay, overDueTask.getStartTime(),
+					overDueTask.getStartDate(), overDueTask.getName());
 		}
 		return overDueString;
 	}
 
+	// Display floating tasks
 	public String displayFloats() {
-		String floatString ="";
+		String floatString = "";
 		try {
 			if (logic.hasFloatingList()) {
-				ArrayList<TaskFile> arrFloat = new ArrayList<TaskFile>();
-				arrFloat = logic.viewFloatingList();
-
-				floatString = "     ====NOTES====\n";
-				for (int i = 0; i < arrFloat.size(); i++) {
-					floatString += i + 1 + ". ";
-					if (arrFloat.get(i).getImportance()) {
-						floatString += "[IMPORTANT] ";
-					} else {
-						floatString += arrFloat.get(i).getName() + "\n";
-					}
-				}
-				floatString += "\n";
+				ArrayList<TaskFile> arrayFloat = new ArrayList<TaskFile>();
+				arrayFloat = logic.viewFloatingList();
+				floatString = String.format(MESSAGE_NOTES_TITLE);
+				floatString += printFloatList(floatString, arrayFloat);
 			} else {
-				floatString = "               ====NO NOTES====\n\n";
+				floatString = String.format(MESSAGE_NO_NOTES_TITLE);
 			}
-
 		} catch (Exception e) {
 			floatString = e.getMessage();
-		}
 
+		}
 		return floatString;
 	}
 
-	public String displaySchedule() {
+	public String printFloatList(String floatString, ArrayList<TaskFile> arrayFloat) {
+		int floatIndex;
+		TaskFile floatTask;
+		String importance;
+		String printString = "";
 
-		String schedule = "";
-		ArrayList<TaskFile> todaySchedule = new ArrayList<TaskFile>();
+		for (int i = 0; i < arrayFloat.size(); i++) {
+			floatIndex = i + 1;
+			floatTask = arrayFloat.get(i);
+			importance = checkImportance(floatTask);
+			printString += String.format(MESSAGE_PRINT_FLOAT_LIST, floatIndex, importance, floatTask.getName());
+		}
+		printString += "\n";
+		return printString;
+	}
+
+	public String checkImportance(TaskFile taskFile) {
+		String importance;
+
+		if (taskFile.getImportance()) {
+			importance = "[IMPORTANT]";
+		} else {
+			importance = "";
+		}
+		return importance;
+	}
+
+	// ==== SET ====
+
+	public String formatSetCommand(ArrayList<String> userCommandSplit, String taskName) {
+		String setString = "";
+		TaskFile currentTask;
 
 		try {
-			todaySchedule = logic.viewDateList("today");
-			schedule = "                                         ====TODAY's Schedule====\n";
-			for (int i = 0; i < todaySchedule.size(); i++) {
+			currentTask = logic.searchSingleTask(taskName.trim());
+			boolean taskStatus = currentTask.getIsDone();
+			String newStatus = userCommandSplit.get(2).trim();
+			String undone = "[UNDONE]";
+			String done = "[DONE]";
 
-				if (todaySchedule.get(i).getIsDeadline()) {
-					schedule += String.format("%-24s", "[" + todaySchedule.get(i).getStartTime() + "]");
+			setString += changeTaskStatus(taskName, setString, taskStatus, newStatus, undone, done);
 
-					schedule += todaySchedule.get(i).getName() + " ";
+			currentTask = logic.searchSingleTask(taskName.trim());
+			setString += printOneDetailedTask(currentTask);
 
-					if (todaySchedule.get(i).getImportance()) {
-						schedule += "[IMPORTANT]\n";
-					} else {
-						schedule += "\n";
-					}
-				}
-
-				if (todaySchedule.get(i).getIsMeeting()) {
-					schedule += String.format("%-20s", "[" + todaySchedule.get(i).getStartTime() + "] - " + "["
-							+ todaySchedule.get(i).getEndTime() + "]");
-
-					schedule += todaySchedule.get(i).getName() + " ";
-
-					if (todaySchedule.get(i).getImportance()) {
-						schedule += "[IMPORTANT]\n";
-					} else {
-						schedule += "\n";
-					}
-				}
-			}
-			schedule += "\n";
-
+			updateMainScreen(currentTask.getStartDate());
 		} catch (Exception e) {
-			errorMessage = e.getMessage();
-			schedule = errorMessage;
+			setString = e.getMessage();
 		}
-		return schedule;
+		return setString;
 	}
 
-	public String executeCommand(String userInput) throws Exception {
-		ArrayList<String> userCommandSplit = new ArrayList<String>();
+	public String changeTaskStatus(String taskName, String setString, boolean taskStatus, String newStatus,
+			String undone, String done) throws Exception {
+
+		if (taskStatus == false && newStatus.equals("done")) {
+			if (logic.setStatus(taskName, true)) {
+				setString += String.format(MESSAGE_SET_CONFIRMATION, taskName, undone, done);
+			}
+		}
+
+		else if (taskStatus == true && newStatus.equals("undone")) {
+			if (!logic.setStatus(taskName, false)) {
+				setString += String.format(MESSAGE_SET_CONFIRMATION, taskName, done, undone);
+			}
+		}
+
+		else {
+			setString = String.format(MESSAGE_SET_ERROR, newStatus);
+		}
+		return setString;
+	}
+
+	// ==== SEARCH ====
+
+	public String formatSearchCommand(ArrayList<String> userCommandSplit) {
+		ArrayList<TaskFile> arraySearch;
+		String searchInput = userCommandSplit.get(1);
+		String searchResultString = "";
+
 		try {
-			userCommandSplit = parser.checkCommand(userInput);
-		} catch (ParseException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-		ArrayList<String> userCommandSplitCopy = new ArrayList<String>(userCommandSplit);
-		commandString = getFirstWord(userCommandSplit);
-
-		COMMAND_TYPE command = determineCommandType(commandString);
-		
-		result = "";
-
-		switch (command) {
-		case ADD_COMMAND:
-
-			try {
-
-				taskFile = logic.addTask(userCommandSplit);
-
-				// Floating task case
-				if (taskFile.getIsTask()) {
-					result += String.format("I have added \"%s\" to your schedule!\n", taskFile.getName().trim());
-				}
-
-				// Tasks with only 1 date
-				if (taskFile.getIsDeadline()) {
-					result += String.format("I have added \"%s\" at [%s] on [%s] to your schedule!\n",
-							taskFile.getName(), taskFile.getStartTime(), taskFile.getStartDate());
-				}
-
-				// Tasks with 2 dates
-				if (taskFile.getIsMeeting()) {
-					result += String.format("I have added \"%s\" from [%s] at [%s] to [%s] at [%s] to your schedule!\n",
-							taskFile.getName(), taskFile.getStartDate(), taskFile.getStartTime(), taskFile.getEndDate(),
-							taskFile.getEndTime());
-				}
-
-				if (taskFile.getImportance()) {
-					result += String.format("Note: Task was noted as important");
-				}
-
-				if (taskFile.hasDetails()) {
-					System.out.print("details");
-					result += String.format("Things to note: \"%s\"\n", taskFile.getDetails().trim());
-				}
-
-				// if (taskFile.getIsRecurring()) {
-				// int everyIndex = 0;
-				// int displayIndex = 0;
-				//
-				// for (int i = 0; i < userCommandSplitCopy.size(); i++) {
-				// everyIndex = userCommandSplitCopy.indexOf("every");
-				// displayIndex = everyIndex + 1;
-				// }
-				// result += String.format("Note: It recurs every %s\n",
-				// userCommandSplitCopy.get(displayIndex));
-				// }
-
-			} catch (Exception e) {
-				result = e.getMessage();
-			}
-
-			break;
-
-		case CHANGE_DIRECTORY:
-			String directoryPath = userCommandSplit.get(1);
-			try {
-				if (logic.changeDirectory(directoryPath)) {
-					result = "You have succesfully changed directory.\n";
-				} else {
-					result = "Directory did not change.\n";
-				}
-			} catch (Exception e) {
-				result = e.getMessage();
-			}
-			break;
-		case DELETE_DIRECTORY:
-			String directoryPathx = userCommandSplit.get(1);
-			if (logic.deleteDirectory(directoryPathx)) {
-				result = "You have succesfully deleted directory.\n";
+			arraySearch = logic.searchTask(userCommandSplit);
+			if (!arraySearch.isEmpty()) {
+				searchResultString = String.format(MESSAGE_SEARCH_CONFIRMATION, searchInput);
+				searchResultString += printSearchList(arraySearch);
 			} else {
-				result = "Directory was not deleted.\n";
+				searchResultString += String.format(MESSAGE_SEARCH_FAILURE);
 			}
-			break;
-		case EDIT_COMMAND:
-
-			TaskFile oldTaskFile = new TaskFile();
-
-			try {
-				oldTaskFile = logic.searchSingleTask(userCommandSplit.get(1).trim());
-				String editType = userCommandSplit.get(2).trim();
-
-				taskFile = logic.editTask(userCommandSplit);
-
-				if (editType.equals("name")) {
-					result = String.format("You have changed the task name from \"%s\" to \"%s\"!\n",
-							oldTaskFile.getName(), taskFile.getName());
-				}
-				if (editType.equals("time") || editType.equals("startTime")) {
-					result = String.format("You have changed the start time in \"%s\" from [%s] to [%s]!\n",
-							taskFile.getName(), oldTaskFile.getStartTime(), taskFile.getStartTime());
-				}
-				if (editType.equals("endTime")) {
-					result = String.format("You have changed the end time in \"%s\" from [%s] to [%s]!\n",
-							taskFile.getName(), oldTaskFile.getEndTime(), taskFile.getEndTime());
-				}
-				if (editType.equals("date") || editType.equals("startDate")) {
-					result = String.format("You have changed the start date in \"%s\" from [%s] to [%s]!\n",
-							taskFile.getName(), oldTaskFile.getStartDate(), taskFile.getStartDate());
-				}
-				if (editType.equals("endDate")) {
-					result = String.format("You have changed the end date in \"%s\" from [%s] to [%s]!\n",
-							taskFile.getName(), oldTaskFile.getEndDate(), taskFile.getEndDate());
-				}
-				if (editType.equals("details")) {
-					result = String.format("You have changed the details in \"%s\" from [%s] to [%s]!\n",
-							taskFile.getName(), oldTaskFile.getDetails(), taskFile.getDetails());
-				}
-				if (editType.equals("importance")) {
-					result = String.format("You have changed the importance of \"%s\" to ", taskFile.getName());
-					if (taskFile.getImportance()) {
-						result += "important";
-					} else {
-						result += "not as important";
-					}
-				}
-
-				if (editType.equals("Reccuring")) {
-					result = String.format("You have set recurring in \"%s\" from [%s] to [%s]!\n", taskFile.getName(),
-							oldTaskFile.getIsRecurring(), taskFile.getIsRecurring());
-				}
-
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				result = e.getMessage();
-			}
-
-			break;
-
-		case DELETE_COMMAND:
-			if (isLetters(userCommandSplit.get(1)) == 0) {
-				int indexNum = Integer.valueOf(userCommandSplit.get(1));
-				ArrayList<TaskFile> arrD = new ArrayList<TaskFile>();
-				try {
-					arrD = logic.deleteIndex(viewList, indexNum);
-
-					result += String.format("Your NEW schedule:\n");
-					for (int i = 0; i < arrD.size(); i++) {
-						result += i + 1 + ". " + "[" + arrD.get(i).getStartTime() + "] ";
-						if (arrD.get(i).getIsMeeting()) {
-							result += "- [" + arrD.get(i).getEndTime() + "] ";
-						}
-						if (arrD.get(i).getImportance()) {
-							result += "[IMPORTANT] ";
-						}
-						result += arrD.get(i).getName() + "\n";
-					}
-				} catch (Exception e) {
-					result = e.getMessage();
-				}
-			} else {
-				try {
-					taskFile = logic.deleteTask(userCommandSplit);
-					result = String.format("I have deleted \"%s\" from your schedule for you!\n\n", taskFile.getName());
-					ArrayList<TaskFile> arrN = new ArrayList<TaskFile>();
-					try {
-						arrN = logic.viewDateList(taskFile.getStartDate());
-					} catch (Exception e) {
-						// TODO Auto-generated catch block
-						result = e.getMessage();
-					}
-
-					result += String.format("Your NEW schedule for %s:\n", taskFile.getStartDate());
-					for (int i = 0; i < arrN.size(); i++) {
-						result += i + 1 + ". " + "[" + arrN.get(i).getStartTime() + "] ";
-						if (arrN.get(i).getIsMeeting()) {
-							result += "- [" + arrN.get(i).getEndTime() + "] ";
-						}
-						if (arrN.get(i).getImportance()) {
-							result += "[IMPORTANT] ";
-						}
-						result += arrN.get(i).getName() + "\n";
-					}
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					result = e.getMessage();
-				}
-			}
-			break;
-
-		case VIEW_COMMAND:
-
-			ArrayList<String> viewType = logic.sortViewTypes(userCommandSplit);
-
-			if (viewType.get(0).equals("isViewDateList")) {
-
-				String date = userCommandSplit.get(1);
-				ArrayList<TaskFile> arrView = new ArrayList<TaskFile>();
-				try {
-					arrView = logic.viewDateList(date);
-					viewList = arrView;
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					result = e.getMessage();
-				}
-
-				result = String.format("Your schedule for %s:\n", userCommandSplit.get(1));
-				for (int i = 0; i < arrView.size(); i++) {
-					if (arrView.get(i).getIsMeeting()) {
-						result += i + 1 + ". " + "[" + arrView.get(i).getStartTime() + "]-" + "["
-								+ arrView.get(i).getEndTime() + "]";
-					}
-					if (arrView.get(i).getIsDeadline()) {
-						result += i + 1 + ". " + "[" + arrView.get(i).getStartTime() + "]";
-					}
-					if (arrView.get(i).getImportance()) {
-						result += "[IMPORTANT] ";
-					}
-					result += String.format(" %s\n", arrView.get(i).getName());
-				}
-
-			}
-
-			else if (viewType.get(0).equals("isViewTask")) {
-				try {
-					taskFile = logic.viewTask(userCommandSplit.get(1));
-
-					result = String.format("Displaying the task \"%s\":\n\n", taskFile.getName());
-					if (taskFile.getIsTask()) {
-						result += "Date: -\n";
-						result += "Time: -\n";
-					}
-					if (taskFile.getIsDeadline()) {
-						result += String.format("Date: %s\n", taskFile.getStartDate());
-						result += String.format("Time: %s\n", taskFile.getStartTime());
-					}
-					if (taskFile.getIsMeeting()) {
-						result += String.format("Date: %s to %s\n", taskFile.getStartDate(), taskFile.getEndDate());
-						result += String.format("Time: %s to %s\n", taskFile.getStartTime(), taskFile.getEndTime());
-					}
-					if (taskFile.hasDetails()) {
-						result += String.format("Details: %s\n", taskFile.getDetails());
-					} else {
-						result += "Details: -\n";
-					}
-					if (taskFile.getIsDone()) {
-						result += "Status: Completed\n";
-					}
-					if (!taskFile.getIsDone()) {
-						result += "Status: Incomplete\n";
-					}
-					if (!taskFile.getImportance()) {
-						result += "Importance: -\n";
-					}
-					if (taskFile.getImportance()) {
-						result += "Importance: highly important\n";
-					}
-
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					result = e.getMessage();
-				}
-			}
-
-			else if (viewType.get(0).equals("isViewManyDatesList")){
-
-				ArrayList<TaskFile> arrView = new ArrayList<TaskFile>();
-				try {
-					arrView = logic.viewManyDatesList(userCommandSplit);
-					viewList = arrView;
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					result = e.getMessage();
-				}
-
-				result = String.format("Your schedule from %s to %s:\n", userCommandSplit.get(1),
-						userCommandSplit.get(2));
-				for (int i = 0; i < arrView.size(); i++) {
-					if (arrView.get(i).getIsMeeting()) {
-						result += i + 1 + ". " + "[" + arrView.get(i).getStartTime() + "]-" + "["
-								+ arrView.get(i).getEndTime() + "] [" + arrView.get(i).getStartDate() + "]";
-					}
-					if (arrView.get(i).getIsDeadline()) {
-						result += i + 1 + ". " + "[" + arrView.get(i).getStartTime() + "] ["
-								+ arrView.get(i).getStartDate() + "]";
-					}
-					if (arrView.get(i).getImportance()) {
-						result += "[IMPORTANT] ";
-					}
-					result += String.format(" %s\n", arrView.get(i).getName());
-				}
-			} else if(viewType.get(0).equals("isViewNotes")) {
-				String floatString;
-				try {
-					if (logic.hasFloatingList()) {
-						ArrayList<TaskFile> arrFloat = new ArrayList<TaskFile>();
-						arrFloat = logic.viewFloatingList();
-
-						floatString = "     ====NOTES====\n";
-						for (int i = 0; i < arrFloat.size(); i++) {
-							floatString += i + 1 + ". ";
-							if (arrFloat.get(i).getImportance()) {
-								floatString += "[IMPORTANT] ";
-							} else {
-								floatString += arrFloat.get(i).getName() + "\n";
-							}
-						}
-						floatString += "\n";
-					} else {
-						floatString = "               ====NO NOTES====\n\n";
-					}
-
-				} catch (Exception e) {
-					floatString = e.getMessage();
-				}
-
-				return floatString;
-			} else if (viewType.get(0).equals("isViewIndex")) {
-				try {
-					String strIndex = userCommandSplit.get(1);
-					int viewIndex = Integer.parseInt(strIndex);
-					taskFile = logic.viewByIndex(viewList, viewIndex);
-
-					result = String.format("Displaying the task \"%s\":\n\n", taskFile.getName());
-					if (taskFile.getIsTask()) {
-						result += "Date: -\n";
-						result += "Time: -\n";
-					}
-					if (taskFile.getIsDeadline()) {
-						result += String.format("Date: %s\n", taskFile.getStartDate());
-						result += String.format("Time: %s\n", taskFile.getStartTime());
-					}
-					if (taskFile.getIsMeeting()) {
-						result += String.format("Date: %s to %s\n", taskFile.getStartDate(), taskFile.getEndDate());
-						result += String.format("Time: %s to %s\n", taskFile.getStartTime(), taskFile.getEndTime());
-					}
-					if (taskFile.hasDetails()) {
-						result += String.format("Details: %s\n", taskFile.getDetails());
-					} else {
-						result += "Details: -\n";
-					}
-					if (taskFile.getIsDone()) {
-						result += "Status: Completed\n";
-					}
-					if (!taskFile.getIsDone()) {
-						result += "Status: Incomplete\n";
-					}
-					if (!taskFile.getImportance()) {
-						result += "Importance: -\n";
-					}
-					if (taskFile.getImportance()) {
-						result += "Importance: highly important\n";
-					}
-
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					result = e.getMessage();
-				}
-			} else if (viewType.get(0).equals("isViewHistory")) {
-				String floatString ="";
-				try {
-					if (logic.hasFloatingList()) {
-						ArrayList<TaskFile> arrFloat = new ArrayList<TaskFile>();
-						arrFloat = logic.viewFloatingList();
-
-						floatString = "     ====NOTES====\n";
-						for (int i = 0; i < arrFloat.size(); i++) {
-							floatString += i + 1 + ". ";
-							if (arrFloat.get(i).getImportance()) {
-								floatString += "[IMPORTANT] ";
-							} else {
-								floatString += arrFloat.get(i).getName() + "\n";
-							}
-						}
-						floatString += "\n";
-					} else {
-						floatString = "               ====NO NOTES====\n\n";
-					}
-
-				} catch (Exception e) {
-					floatString = e.getMessage();
-				}
-
-				return floatString;
-			}
-			break;
-
-		case SET_COMMAND:
-			String taskName = userCommandSplit.get(1);
-			try {
-				taskFile = logic.searchSingleTask(taskName.trim());
-				boolean taskStatus = taskFile.getIsDone();
-				String currStatus = userCommandSplit.get(2).trim();
-				result = String.format("You have changed the status in \"%s\" from ", taskName);
-
-				if (taskStatus == true) {
-					result += "[DONE] to ";
-				}
-				if (taskStatus == false) {
-					result += "[UNDONE] to ";
-				}
-
-				if (currStatus.equals("done")) {
-					if (logic.setStatus(taskName, true)) {
-						result += "[DONE]\n";
-					}
-				}
-
-				if (currStatus.equals("undone")) {
-					if (!logic.setStatus(taskName, false)) {
-						result += "[UNDONE]\n";
-					}
-				}
-
-			} catch (Exception e) {
-				result = e.getMessage();
-			}
-			break;
-
-		case SEARCH_COMMAND:
-			// might have a problem when details becomes too long, either add
-			// newline char or set some
-			// sort of limitation in tnote.gui
-
-			ArrayList<TaskFile> arrSearch = new ArrayList<TaskFile>();
-			try {
-				arrSearch = logic.searchTask(userCommandSplit);
-				if (!arrSearch.isEmpty()) {
-					result = String.format("Searching for \"%s\" ... This is what I've found:\n",
-							userCommandSplit.get(1));
-					for (int i = 0; i < arrSearch.size(); i++) {
-						if (arrSearch.get(i).getIsTask()) {
-							result += i + 1 + ". " + String.format("%s\n", arrSearch.get(i).getName());
-						}
-
-						else {
-							result += i + 1 + ". " + String.format("[%s] [%s] %s\n", arrSearch.get(i).getStartDate(),
-									arrSearch.get(i).getStartTime(), arrSearch.get(i).getName());
-						}
-					}
-				} else {
-					result += "Nothing was found..\n";
-				}
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				result = e.getMessage();
-			}
-
-			break;
-
-		case SORT_COMMAND:
-			ArrayList<TaskFile> arrSort = new ArrayList<TaskFile>();
-			String sortType = userCommandSplit.get(1).trim();
-			
-			 if (sortType.equals("name")) {
-			 result = "I have sorted everything by name for you! I'm so amazing, what would you do without me!";
-			 try {
-			 arrSort = logic.sortTask(viewList);
-			
-			 result += String.format("You new schedule for %s: \n\n",
-			 userCommandSplit.get(1));
-			
-			 for (int i = 0; i < arrSort.size(); i++) {
-			 result += i + 1 + ". " + "[" + arrSort.get(i).getStartTime() + "]";
-			 if (arrSort.get(i).getImportance()) {
-			 result += "[IMPORTANT] ";
-			 }
-			 result += "[" + arrSort.get(i).getName() + "]\n";
-			 }
-			 } catch (Exception e) {
-			 // TODO Auto-generated catch block
-			 result = e.getMessage();
-			 }
-			}
-			break;
-
-		case UNDO_COMMAND:
-			
-			LogicCommand logicCommandUndo;
-			String commandEnteredUndo;
-			TaskFile taskFileUndo;
-			String taskNameUndo;
-			try {
-				logicCommandUndo = logic.undo();
-				commandEnteredUndo = logicCommandUndo.getCommandType();
-				taskFileUndo = logicCommandUndo.getOldTask();
-				taskNameUndo = taskFileUndo.getName();
-				result = "You have undone " + commandEnteredUndo + " " + taskNameUndo + "\n";
-			} catch (Exception e) {
-				result = e.getMessage();
-			}
-			break;
-
-		case REDO_COMMAND:
-			LogicCommand logicCommandRedo;
-			String commandEnteredRedo;
-			TaskFile taskFileRedo;
-			String taskNameRedo;
-			try {
-				logicCommandRedo = logic.redo();
-				commandEnteredRedo = logicCommandRedo.getCommandType();
-				taskFileRedo = logicCommandRedo.getCurrentTask();
-				taskNameRedo = taskFileRedo.getName();
-				result = "You have redone " + commandEnteredRedo + " " + taskNameRedo + "\n";
-			} catch (Exception e) {
-				result = e.getMessage();
-			}
-			break;
-
-		case INVALID:
-			result = "Invalid command entered.\n";
-			result += "Please enter \"Help\" to show a list of available commands.\n";
-			break;
-
-		case HELP_COMMAND:
-			result = "List of available commands:\n\n";
-			result += "Note: words in [] should be modified to your needs.\n\n";
-			result += message.printHelpArray();
-			break;
-
-		case EXIT:
-			result = "exit";
-			break;
-
-		default:
-			result = "Error!";
-
+		} catch (Exception e) {
+			searchResultString = e.getMessage();
 		}
-		return result;
+		return searchResultString;
+	}
+	
+	// ==== UNDO ====
+	
+	public String formatUndoCommand() {
+		String undoString = "";
+
+		try {
+			LogicCommand logicCommand = logic.undo();
+			String commandEntered = logicCommand.getCommandType();
+			TaskFile taskFile = logicCommand.getOldTask();
+			String taskName = taskFile.getName();
+			
+			undoString = String.format(MESSAGE_UNDO_CONFIRMATION, commandEntered, taskName);
+			
+			String dateOfUpdatedList = taskFile.getStartDate();
+			
+			updateMainScreen(dateOfUpdatedList);
+			
+		} catch (Exception e) {
+			undoString = e.getMessage();
+		}
+		return undoString;
+	}
+	
+	// ==== REDO ====
+	public String formatRedoCommand() {
+		String RedoString = "";
+
+		try {
+			LogicCommand logicCommand = logic.redo();
+			String commandEntered = logicCommand.getCommandType();
+			TaskFile taskFile = logicCommand.getOldTask();
+			String taskName = taskFile.getName();
+			
+			RedoString = String.format(MESSAGE_REDO_CONFIRMATION, commandEntered, taskName);
+			
+			String dateOfUpdatedList = taskFile.getStartDate();
+			
+			updateMainScreen(dateOfUpdatedList);
+			
+		} catch (Exception e) {
+			RedoString = e.getMessage();
+		}
+		return RedoString;
 	}
 
+	// ==== MISC METHODS ====
 	private COMMAND_TYPE determineCommandType(String commandString) {
 		if (checkCommand(commandString, "add")) {
 			return COMMAND_TYPE.ADD_COMMAND;
@@ -730,12 +783,104 @@ public class TNotesUI {
 		return userCommandArrayList.get(0);
 	}
 
+	// If String are letters, returns 1
 	public int isLetters(String nextString) {
 		if (!nextString.matches("[0-9]+")) {
 			return 1;
 		} else {
 			return 0;
 		}
+	}
+
+	public String displayImportance(TaskFile taskFile) {
+		String displayImportanceString;
+
+		if (taskFile.getImportance()) {
+			displayImportanceString = "IMPORTANT";
+		} else {
+			displayImportanceString = "NOT IMPORTANT";
+		}
+		return displayImportanceString;
+	}
+
+	public String printTaskList(ArrayList<TaskFile> scheduleArray) {
+		String currStartDate = scheduleArray.get(0).getStartDate();
+		String printString = String.format(MESSAGE_DATE_TITLE, currStartDate);
+
+		for (int i = 0; i < scheduleArray.size(); i++) {
+			TaskFile currTask = scheduleArray.get(i);
+			int realIndex = i + 1;
+			String importance;
+
+			if (!currStartDate.equals(currTask.getStartDate())) {
+				printString += String.format(MESSAGE_DATE_TITLE, currTask.getStartDate());
+				currStartDate = currTask.getStartDate();
+			}
+
+			importance = checkImportance(currTask);
+
+			if (currTask.getIsDeadline()) {
+				printString += String.format(MESSAGE_PRINT_DEADLINE, realIndex, currTask.getStartTime(), importance,
+						currTask.getName());
+			}
+
+			else if (currTask.getIsMeeting()) {
+				if (currTask.getStartDate().trim().equals(currTask.getEndDate().trim())) {
+					printString += String.format(MESSAGE_PRINT_MEETING_ONE_DATE, realIndex, currTask.getStartTime(),
+							currTask.getEndTime(), currTask.getName(), importance);
+				} else {
+					printString += String.format(MESSAGE_PRINT_MEETING_TWO_DATES, realIndex, currTask.getStartTime(),
+							currTask.getStartDate(), currTask.getEndTime(), currTask.getEndDate(), currTask.getName(),
+							importance);
+				}
+			}
+		}
+		return printString;
+	}
+
+	public String printSearchList(ArrayList<TaskFile> scheduleArray) {
+		String printString = "";
+
+		for (int i = 0; i < scheduleArray.size(); i++) {
+			TaskFile currTask = scheduleArray.get(i);
+			int realIndex = i + 1;
+			String importance;
+
+			importance = checkImportance(currTask);
+
+			if (currTask.getIsDeadline()) {
+				printString += String.format(MESSAGE_PRINT_DEADLINE, realIndex, currTask.getStartTime(), importance,
+						currTask.getName());
+			}
+
+			else if (currTask.getIsMeeting()) {
+				if (currTask.getStartDate().trim().equals(currTask.getEndDate().trim())) {
+					printString += String.format(MESSAGE_PRINT_MEETING_ONE_DATE, realIndex, currTask.getStartTime(),
+							currTask.getEndTime(), currTask.getName(), importance);
+				} else {
+					printString += String.format(MESSAGE_PRINT_MEETING_TWO_DATES, realIndex, currTask.getStartTime(),
+							currTask.getStartDate(), currTask.getEndTime(), currTask.getEndDate(), currTask.getName(),
+							importance);
+				}
+			}
+			
+			else if (currTask.getIsTask()) {
+				printString += String.format(MESSAGE_PRINT_FLOAT_LIST, realIndex,currTask.getName(),importance);
+			}
+		}
+		return printString;
+	}
+
+	public void updateMainScreen(String date) {
+		ArrayList<TaskFile> updateArray;
+
+		try {
+			updateArray = logic.viewDateList(date);
+			mainScreenArray = updateArray;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return;
 	}
 
 }

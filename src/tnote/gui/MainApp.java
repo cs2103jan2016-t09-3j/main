@@ -24,8 +24,8 @@ public class MainApp extends Application {
 	    public void start(Stage primaryStage) {
 	        this.primaryStage = primaryStage;
 	        this.primaryStage.setTitle("T-Note");
-	        
-	        // Set the application icon
+	        this.primaryStage.setResizable(false);
+	    
 	        this.primaryStage.getIcons().add(new Image("file:resources/images/turtleIcon.png"));
 	        
 	        initRootLayout();
@@ -44,7 +44,7 @@ public class MainApp extends Application {
 	            rootLayout = (BorderPane) loader.load();
 
 	            // Show the scene containing the root layout.
-	            Scene scene = new Scene(rootLayout,800,650);
+	            Scene scene = new Scene(rootLayout,1100,650);
 	            primaryStage.setScene(scene);
 	            primaryStage.show();
 	        } catch (IOException e) {
@@ -60,7 +60,6 @@ public class MainApp extends Application {
 	            // Load TNotesOverview overview.
 	            FXMLLoader loader = new FXMLLoader();
 	         
-	          //  loader.setLocation(MainApp.class.getResource("view/TNotesOverview.fxml"));
 	            loader.setLocation(MainApp.class.getResource("/tnote/gui/view/TNotesSplitView.fxml"));
 	            
 	            AnchorPane TNotesOverview = (AnchorPane) loader.load();

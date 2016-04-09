@@ -1,17 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
 <!-- @@author Joelle -->
+
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="650.0" prefWidth="800.0" styleClass="background" stylesheets="@colour.css" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tnote.gui.view.TNotesOverviewController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="650.0" prefWidth="1100.0" styleClass="background" stylesheets="@colour.css" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tnote.gui.view.TNotesOverviewController">
    <children>
       <SplitPane dividerPositions="0.6353383458646616" layoutX="174.0" layoutY="127.0" prefHeight="600.0" prefWidth="800.0" styleClass="background" stylesheets="@colour.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <items>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
                <children>
-                  <TextArea fx:id="displayMainScreen" layoutX="12.0" layoutY="12.0" prefHeight="336.0" prefWidth="388.0" AnchorPane.bottomAnchor="50.0" AnchorPane.leftAnchor="12.0" AnchorPane.rightAnchor="12.0" AnchorPane.topAnchor="12.0" />
+                  <TextArea fx:id="displayMainScreen" layoutX="12.0" layoutY="12.0" onKeyPressed="#handleScrollBar" prefHeight="336.0" prefWidth="388.0" AnchorPane.bottomAnchor="50.0" AnchorPane.leftAnchor="12.0" AnchorPane.rightAnchor="12.0" AnchorPane.topAnchor="12.0" />
                   <TextField fx:id="userInput" layoutX="11.0" layoutY="560.0" onAction="#handleUserInput" prefHeight="26.0" prefWidth="524.0" AnchorPane.bottomAnchor="12.0" AnchorPane.leftAnchor="12.0" AnchorPane.rightAnchor="12.0" />
                </children>
             </AnchorPane>
