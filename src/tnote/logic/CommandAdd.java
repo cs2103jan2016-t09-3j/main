@@ -100,7 +100,6 @@ public class CommandAdd {
 				DateFormat df = new SimpleDateFormat(PARSER_DATE_FORMAT);
 				String date = df.format(cal.getTime()).toLowerCase();
 				cal.add(Calendar.DATE, INDEX_ONE);
-				cal.add(Calendar.DATE, INDEX_ONE);
 				date = df.format(cal.getTime()).toLowerCase();
 				fromParser.set(fromParser.indexOf(TOMORROW), date);
 			}
