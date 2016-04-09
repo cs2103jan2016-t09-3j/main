@@ -13,44 +13,40 @@ import tnote.storage.TNotesStorage;
 
 
 public class CommandView {
-	private static final String TYPE_IS_VIEW_TASK = "isViewTask";
-
-	private static final String TYPE_IS_VIEW_HISTORY = "isViewHistory";
+	private static final int INDEX_ZERO = 0;
+	private static final int INDEX_ONE = 1;
+	private static final int INDEX_TWO = 2;
+	private static final String NUMBERS = "[0-9]+";
 
 	private static final String HISTROY = "history";
-
-	private static final String TYPE_IS_VIEW_INDEX = "isViewIndex";
-
-	private static final String TYPE_IS_VIEW_NOTES = "isViewNotes";
-
-	private static final String STRING_FLOATING = "notes";
-
-	private static final String TYPE_IS_VIEW_DATE_LIST = "isViewDateList";
-
-	private static final String SUNDAY = "sunday";
-
-	private static final String SATURDAY = "saturday";
-
-	private static final String FRIDAY = "friday";
-
-	private static final String THURSDAY = "thursday";
-
-	private static final String WEDNESDAY = "wednesday";
-
-	private static final String TUESDAY = "tuesday";
-
-	private static final String MONDAY = "monday";
-
-	private static final String TODAY = "today";
-
+	
+	private static final String STRING_UNDERSCORE = "_";
 	private static final String STRING_DASH = "-";
 
+	private static final String TYPE_IS_VIEW_TASK = "isViewTask";
+	private static final String TYPE_IS_VIEW_HISTORY = "isViewHistory";
+	private static final String TYPE_IS_VIEW_INDEX = "isViewIndex";
+	private static final String TYPE_IS_VIEW_NOTES = "isViewNotes";
 	private static final String TYPE_IS_VIEW_MANY_LIST = "isViewManyList";
+	private static final String TYPE_IS_VIEW_DATE_LIST = "isViewDateList";
+	private static final String STRING_FLOATING = "notes";
+	
+	private static final String SUNDAY = "sunday";
+	private static final String SATURDAY = "saturday";
+	private static final String FRIDAY = "friday";
+	private static final String THURSDAY = "thursday";
+	private static final String WEDNESDAY = "wednesday";
+	private static final String TUESDAY = "tuesday";
+	private static final String MONDAY = "monday";
+	private static final String TODAY = "today";
+
 
 	TNotesStorage storage;
 	
 	private static final String PARSER_DATE_FORMAT = "yyyy-MM-dd";
 	private static final String DAY_SHORTFORM = "EEE";
+	
+	DateFormat df = new SimpleDateFormat(PARSER_DATE_FORMAT);
 
 	public CommandView() throws Exception {
 		storage = TNotesStorage.getInstance();
@@ -64,18 +60,17 @@ public class CommandView {
 	 */
 	private String compareDates(String dates) {
 		Calendar cal = Calendar.getInstance();
-		DateFormat df = new SimpleDateFormat(DAY_SHORTFORM );
-		DateFormat dF = new SimpleDateFormat(PARSER_DATE_FORMAT);
-		String date = df.format(cal.getTime()).toLowerCase();
+		DateFormat shortForm = new SimpleDateFormat(DAY_SHORTFORM );
+		String date = shortForm.format(cal.getTime()).toLowerCase();
 		while (!dates.contains(date)) {
-			cal.add(Calendar.DATE, 1);
-			date = df.format(cal.getTime()).toLowerCase();
+			cal.add(Calendar.DATE, INDEX_ONE);
+			date = shortForm.format(cal.getTime()).toLowerCase();
 		}
-		return dF.format(cal.getTime());
+		return df.format(cal.getTime());
 	}
 
 	private boolean isLetters(String nextString) {
-		if (!nextString.matches("[0-9]+")) {
+		if (!nextString.matches(NUMBERS)) {
 			return true;
 		} else {
 			return false;
@@ -92,7 +87,7 @@ public class CommandView {
 	 */
 	public ArrayList<String> sortViewTypes(ArrayList<String> fromParser) {
 		ArrayList<String> stringList = new ArrayList<String>();
-		String viewType = fromParser.get(1);
+		String viewType = fromParser.get(INDEX_ONE);
 		if (fromParser.size() == 3) {
 			stringList.add(TYPE_IS_VIEW_MANY_LIST);
 		} else if (viewType.contains(STRING_DASH) || viewType.contains(TODAY)
@@ -165,17 +160,16 @@ public class CommandView {
 		Date startDate;
 		Date endDate;
 		Calendar cal = Calendar.getInstance();
-		DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 		ArrayList<String> stringList = storage.readFromMasterFile();
 		ArrayList<Date> listOfDates = new ArrayList<Date>();
 		ArrayList<TaskFile> taskListToBeDisplayed = new ArrayList<TaskFile>();
 
-		startDate = df.parse(dates.get(1));
-		endDate = df.parse(dates.get(2));
+		startDate = df.parse(dates.get(INDEX_ONE));
+		endDate = df.parse(dates.get(INDEX_TWO));
 		listOfDates.add(startDate);
 		cal.setTime(startDate);
 		while (!startDate.equals(endDate)) {
-			cal.add(Calendar.DATE, 1);
+			cal.add(Calendar.DATE, INDEX_ONE);
 			startDate = cal.getTime();
 			listOfDates.add(startDate);
 		}
@@ -188,8 +182,8 @@ public class CommandView {
 				}
 				if (currentFile.getStartDate().equals(dateString.trim())) {
 					String name = currentFile.getName();
-					if (name.contains("_")) {
-						String formatterName = name.substring(0, name.indexOf("_"));
+					if (name.contains(STRING_UNDERSCORE)) {
+						String formatterName = name.substring(0, name.indexOf(STRING_UNDERSCORE));
 						currentFile.setName(formatterName);
 					}
 					taskListToBeDisplayed.add(currentFile);
@@ -211,7 +205,6 @@ public class CommandView {
 	public ArrayList<TaskFile> viewDateList(String date) throws Exception {
 		if (date.trim().equals(TODAY)) {
 			Calendar cal = Calendar.getInstance();
-			DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 			String today = df.format(cal.getTime());
 			date = today;
 		}
@@ -229,8 +222,8 @@ public class CommandView {
 			}
 			if (currentFile.getStartDate().equals(date.trim()) || currentFile.getEndDate().equals(date.trim())) {
 				String name = currentFile.getName();
-				if (name.contains("_")) {
-					String formatterName = name.substring(0, name.indexOf("_"));
+				if (name.contains(STRING_UNDERSCORE)) {
+					String formatterName = name.substring(INDEX_ZERO, name.indexOf(STRING_UNDERSCORE));
 					currentFile.setName(formatterName);
 				}
 				taskListToBeDisplayed.add(currentFile);
@@ -265,8 +258,8 @@ public class CommandView {
 	public ArrayList<TaskFile> callOverdueTasks() throws Exception {
 		ArrayList<TaskFile> listOfOverdueTasks = storage.retrieveOverdueTasks();
 		for (TaskFile newTask : listOfOverdueTasks) {
-			if (newTask.getName().contains("_")) {
-				String formatterName = newTask.getName().substring(0, newTask.getName().indexOf("_"));
+			if (newTask.getName().contains(STRING_UNDERSCORE)) {
+				String formatterName = newTask.getName().substring(INDEX_ZERO, newTask.getName().indexOf(STRING_UNDERSCORE));
 				newTask.setName(formatterName);
 			}
 		}

@@ -18,15 +18,30 @@ import tnote.storage.TNotesStorage;
 import tnote.util.TimeClashException;
 
 public class CommandAdd {
+	private static final int DEFAULT_DAY_DURATION = 12;
+	private static final int DEFAULT_WEEK_DURATION = 10;
+	private static final int INDEX_FOUR = 4;
+	private static final int DEFAULT_DURATION = 8;
+	private static final int INDEX_TWO = 2;
+	private static final int INDEX_THREE = 3;
+	private static final int INDEX_ONE = 1;
+	private static final int ZERO_INDEX = 0;
 	private static final String DAY_SHORTFORM = "EEE";
+	private static final String PARSER_DATE_FORMAT = "yyyy-MM-dd";
+	
 	private static final String STRING_COLON = ":";
 	private static final String STRING_DASH = "-";
+	
 	private static final String MONTH = "month";
 	private static final String FORTNIGHT = "fortnight";
 	private static final String WEEK = "week";
 	private static final String DAY = "day";
+	private static final String TOMORROW = "tomorrow";	
+	private static final String TODAY = "today";
+	
 	private static final String FOR = " for ";
 	private static final String IT_RECURS_EVERY = " It recurs every ";
+	
 	private static final String SUNDAY = "sunday";
 	private static final String SATURDAY = "saturday";
 	private static final String FRIDAY = "friday";
@@ -34,12 +49,11 @@ public class CommandAdd {
 	private static final String WEDNESDAY = "wednesday";
 	private static final String TUESDAY = "tuesday";
 	private static final String MONDAY = "monday";
-	private static final String TOMORROW = "tomorrow";
-	private static final String PARSER_DATE_FORMAT = "yyyy-MM-dd";
-	private static final String TODAY = "today";
+	
 	private static final String KEYWORD_FOR = "for";
 	private static final String EVERY = "every";
 	private static final String IMPORTANT = "important";
+	
 	TNotesStorage storage;
 
 	public CommandAdd() throws Exception {
@@ -60,17 +74,15 @@ public class CommandAdd {
 			String recurNumDuration = new String();
 			Calendar cal = Calendar.getInstance();
 
-			assertNotEquals(0, fromParser.size());
-			currentFile.setName(fromParser.remove(0).trim());
+			assertNotEquals(ZERO_INDEX, fromParser.size());
+			currentFile.setName(fromParser.remove(ZERO_INDEX).trim());
 
-			if (fromParser.contains(IMPORTANT)) {
-				fromParser.remove(fromParser.indexOf(IMPORTANT));
-				currentFile.setImportance(true);
-			}
+			if (fromParser.contains(IMPORTANT))
+				importanceFlag(fromParser, currentFile);
 
 			if (fromParser.contains(EVERY)) {
 				int indexOfRecurKeyWord = fromParser.indexOf(EVERY);
-				recurArgument = fromParser.remove(indexOfRecurKeyWord + 1).toLowerCase();
+				recurArgument = fromParser.remove(indexOfRecurKeyWord + INDEX_ONE).toLowerCase();
 				fromParser.remove(EVERY);
 				if ((fromParser.size() > indexOfRecurKeyWord) && (fromParser.get(indexOfRecurKeyWord).equals(KEYWORD_FOR))) {
 					fromParser.remove(KEYWORD_FOR);
@@ -87,13 +99,13 @@ public class CommandAdd {
 			if (fromParser.contains(TOMORROW)) {
 				DateFormat df = new SimpleDateFormat(PARSER_DATE_FORMAT);
 				String date = df.format(cal.getTime()).toLowerCase();
-				cal.add(Calendar.DATE, 1);
-				cal.add(Calendar.DATE, 1);
+				cal.add(Calendar.DATE, INDEX_ONE);
+				cal.add(Calendar.DATE, INDEX_ONE);
 				date = df.format(cal.getTime()).toLowerCase();
 				fromParser.set(fromParser.indexOf(TOMORROW), date);
 			}
 
-			for (int i = 0; i < fromParser.size(); i++) {
+			for (int i = ZERO_INDEX; i < fromParser.size(); i++) {
 				String day = fromParser.get(i).toLowerCase();
 				if (day.equals(MONDAY) || (day.equals(TUESDAY)) || (day.equals(WEDNESDAY))
 						|| (day.equals(THURSDAY)) || (day.equals(FRIDAY)) || (day.equals(SATURDAY))
@@ -140,6 +152,17 @@ public class CommandAdd {
 			return null;
 		}
 
+	}
+
+	/**
+	 * @param fromParser
+	 * @param currentFile
+	 */
+	private void importanceFlag(ArrayList<String> fromParser, TaskFile currentFile) {
+		{
+			fromParser.remove(fromParser.indexOf(IMPORTANT));
+			currentFile.setImportance(true);
+		}
 	}
 
 	/**
@@ -198,129 +221,129 @@ public class CommandAdd {
 
 			if (recurArgument.equals(DAY)) {
 				if (recurDuration.contains(DAY)) {
-					for (int i = 0; i < Integer.parseInt(recurNumDuration); i++) {
+					for (int i = ZERO_INDEX; i < Integer.parseInt(recurNumDuration); i++) {
 						dateList.add(df.format(startCal.getTime()));
-						startCal.add(Calendar.DATE, 1);
+						startCal.add(Calendar.DATE, INDEX_ONE);
 
 						if (currentFile.getIsMeeting()) {
 							endDateList.add(df.format(endCal.getTime()));
-							endCal.add(Calendar.DATE, 1);
+							endCal.add(Calendar.DATE, INDEX_ONE);
 						}
 					}
 				} else if (recurDuration.contains(WEEK)) {
-					for (int i = 0; i < (Integer.parseInt(recurNumDuration) * 7); i++) {
+					for (int i = ZERO_INDEX; i < (Integer.parseInt(recurNumDuration) * 7); i++) {
 						dateList.add(df.format(cal.getTime()));
-						cal.add(Calendar.DATE, 1);
+						cal.add(Calendar.DATE, INDEX_ONE);
 
 						if (currentFile.getIsMeeting()) {
 							endDateList.add(df.format(endCal.getTime()));
-							endCal.add(Calendar.DATE, 1);
+							endCal.add(Calendar.DATE, INDEX_ONE);
 						}
 					}
 				} else if (recurDuration.contains(FORTNIGHT)) {
-					for (int i = 0; i < (Integer.parseInt(recurNumDuration) * 14); i++) {
+					for (int i = ZERO_INDEX; i < (Integer.parseInt(recurNumDuration) * 14); i++) {
 						dateList.add(df.format(cal.getTime()));
-						cal.add(Calendar.DATE, 1);
+						cal.add(Calendar.DATE, INDEX_ONE);
 
 						if (currentFile.getIsMeeting()) {
 							endDateList.add(df.format(endCal.getTime()));
-							endCal.add(Calendar.DATE, 1);
+							endCal.add(Calendar.DATE, INDEX_ONE);
 						}
 					}
 				} else if (recurDuration.contains(MONTH)) {
-					for (int i = 0; i < (Integer.parseInt(recurNumDuration) * 30); i++) {
+					for (int i = ZERO_INDEX; i < (Integer.parseInt(recurNumDuration) * 30); i++) {
 						dateList.add(df.format(cal.getTime()));
-						cal.add(Calendar.DATE, 1);
+						cal.add(Calendar.DATE, INDEX_ONE);
 
 						if (currentFile.getIsMeeting()) {
 							endDateList.add(df.format(endCal.getTime()));
-							endCal.add(Calendar.DATE, 1);
+							endCal.add(Calendar.DATE, INDEX_ONE);
 						}
 					}
 				} else {
-					for (int i = 0; i < 12; i++) {
+					for (int i = ZERO_INDEX; i < DEFAULT_DAY_DURATION; i++) {
 						dateList.add(df.format(cal.getTime()));
-						cal.add(Calendar.DATE, 1);
+						cal.add(Calendar.DATE, INDEX_ONE);
 
 						if (currentFile.getIsMeeting()) {
 							endDateList.add(df.format(endCal.getTime()));
-							endCal.add(Calendar.DATE, 1);
+							endCal.add(Calendar.DATE, INDEX_ONE);
 						}
 					}
 				}
 			} else if (recurArgument.equals(WEEK)) {
 				if (recurDuration.contains(WEEK)) {
-					for (int i = 0; i < (Integer.parseInt(recurNumDuration)); i++) {
+					for (int i = ZERO_INDEX; i < (Integer.parseInt(recurNumDuration)); i++) {
 						dateList.add(df.format(cal.getTime()));
-						cal.add(Calendar.WEEK_OF_YEAR, 1);
+						cal.add(Calendar.WEEK_OF_YEAR, INDEX_ONE);
 
 						if (currentFile.getIsMeeting()) {
 							endDateList.add(df.format(endCal.getTime()));
-							endCal.add(Calendar.WEEK_OF_YEAR, 1);
+							endCal.add(Calendar.WEEK_OF_YEAR, INDEX_ONE);
 						}
 					}
 				} else if (recurDuration.contains(FORTNIGHT)) {
-					for (int i = 0; i < (Integer.parseInt(recurNumDuration) * 2); i++) {
+					for (int i = ZERO_INDEX; i < (Integer.parseInt(recurNumDuration) * INDEX_TWO); i++) {
 						dateList.add(df.format(cal.getTime()));
-						cal.add(Calendar.WEEK_OF_YEAR, 1);
+						cal.add(Calendar.WEEK_OF_YEAR, INDEX_ONE);
 
 						if (currentFile.getIsMeeting()) {
 							endDateList.add(df.format(endCal.getTime()));
-							endCal.add(Calendar.WEEK_OF_YEAR, 1);
+							endCal.add(Calendar.WEEK_OF_YEAR, INDEX_ONE);
 						}
 					}
 				} else if (recurDuration.contains(MONTH)) {
-					for (int i = 0; i < (Integer.parseInt(recurNumDuration) * 4); i++) {
+					for (int i = ZERO_INDEX; i < (Integer.parseInt(recurNumDuration) * INDEX_FOUR); i++) {
 						dateList.add(df.format(cal.getTime()));
-						cal.add(Calendar.WEEK_OF_YEAR, 1);
+						cal.add(Calendar.WEEK_OF_YEAR, INDEX_ONE);
 
 						if (currentFile.getIsMeeting()) {
 							endDateList.add(df.format(endCal.getTime()));
-							endCal.add(Calendar.WEEK_OF_YEAR, 1);
+							endCal.add(Calendar.WEEK_OF_YEAR, INDEX_ONE);
 						}
 					}
 				} else {
-					for (int i = 0; i < 10; i++) {
+					for (int i = ZERO_INDEX; i < DEFAULT_WEEK_DURATION; i++) {
 						dateList.add(df.format(cal.getTime()));
-						cal.add(Calendar.WEEK_OF_YEAR, 1);
+						cal.add(Calendar.WEEK_OF_YEAR, INDEX_ONE);
 
 						if (currentFile.getIsMeeting()) {
 							endDateList.add(df.format(endCal.getTime()));
-							endCal.add(Calendar.WEEK_OF_YEAR, 1);
+							endCal.add(Calendar.WEEK_OF_YEAR, INDEX_ONE);
 						}
 					}
 				}
 
 			} else if (recurArgument.equals(FORTNIGHT)) {
 				if (recurDuration.contains(FORTNIGHT)) {
-					for (int i = 0; i < (Integer.parseInt(recurNumDuration)); i++) {
+					for (int i = ZERO_INDEX; i < (Integer.parseInt(recurNumDuration)); i++) {
 						dateList.add(df.format(cal.getTime()));
-						cal.add(Calendar.WEEK_OF_YEAR, 2);
+						cal.add(Calendar.WEEK_OF_YEAR, INDEX_TWO);
 
 						if (currentFile.getIsMeeting()) {
 							endDateList.add(df.format(endCal.getTime()));
-							endCal.add(Calendar.WEEK_OF_YEAR, 2);
+							endCal.add(Calendar.WEEK_OF_YEAR, INDEX_TWO);
 						}
 					}
-				} else {
-					for (int i = 0; i < (Integer.parseInt(recurNumDuration) * 2); i++) {
+				} else if(recurDuration.contains(MONTH)){
+					for (int i = ZERO_INDEX; i < (Integer.parseInt(recurNumDuration) * INDEX_TWO); i++) {
 						dateList.add(df.format(cal.getTime()));
-						cal.add(Calendar.WEEK_OF_YEAR, 2);
+						cal.add(Calendar.WEEK_OF_YEAR, INDEX_TWO);
 
 						if (currentFile.getIsMeeting()) {
 							endDateList.add(df.format(endCal.getTime()));
-							endCal.add(Calendar.WEEK_OF_YEAR, 2);
+							endCal.add(Calendar.WEEK_OF_YEAR, INDEX_TWO);
 						}
 					}
 				}
 			} else if (recurArgument.equals(MONTH)) {
-				for (int i = 0; i < (Integer.parseInt(recurNumDuration)); i++) {
+				for (int i = ZERO_INDEX; i < (Integer.parseInt(recurNumDuration)); i++) {
 					dateList.add(df.format(cal.getTime()));
-					cal.add(Calendar.MONTH, 1);
+					cal.add(Calendar.MONTH, INDEX_ONE);
 
 					if (currentFile.getIsMeeting()) {
 						endDateList.add(df.format(endCal.getTime()));
-						endCal.add(Calendar.MONTH, 1);
+						endCal.add(Calendar.MONTH, INDEX_ONE);
 					}
 				}
 
@@ -332,43 +355,43 @@ public class CommandAdd {
 				cal.setTime(dateToStart);
 
 				if (recurDuration.contains(WEEK)) {
-					for (int i = 0; i < (Integer.parseInt(recurNumDuration)); i++) {
+					for (int i = ZERO_INDEX; i < (Integer.parseInt(recurNumDuration)); i++) {
 						dateList.add(df.format(cal.getTime()));
-						cal.add(Calendar.WEEK_OF_YEAR, 1);
+						cal.add(Calendar.WEEK_OF_YEAR, INDEX_ONE);
 
 						if (currentFile.getIsMeeting()) {
 							endDateList.add(df.format(endCal.getTime()));
-							endCal.add(Calendar.WEEK_OF_YEAR, 1);
+							endCal.add(Calendar.WEEK_OF_YEAR, INDEX_ONE);
 						}
 					}
 				} else if (recurDuration.contains(FORTNIGHT)) {
-					for (int i = 0; i < (Integer.parseInt(recurNumDuration) * 2); i++) {
+					for (int i = ZERO_INDEX; i < (Integer.parseInt(recurNumDuration) * INDEX_TWO); i++) {
 						dateList.add(df.format(cal.getTime()));
-						cal.add(Calendar.WEEK_OF_YEAR, 1);
+						cal.add(Calendar.WEEK_OF_YEAR, INDEX_ONE);
 
 						if (currentFile.getIsMeeting()) {
 							endDateList.add(df.format(endCal.getTime()));
-							endCal.add(Calendar.WEEK_OF_YEAR, 1);
+							endCal.add(Calendar.WEEK_OF_YEAR, INDEX_ONE);
 						}
 					}
 				} else if (recurDuration.contains(MONTH)) {
-					for (int i = 0; i < (Integer.parseInt(recurNumDuration) * 4); i++) {
+					for (int i = ZERO_INDEX; i < (Integer.parseInt(recurNumDuration) * INDEX_FOUR); i++) {
 						dateList.add(df.format(cal.getTime()));
-						cal.add(Calendar.WEEK_OF_YEAR, 1);
+						cal.add(Calendar.WEEK_OF_YEAR, INDEX_ONE);
 
 						if (currentFile.getIsMeeting()) {
 							endDateList.add(df.format(endCal.getTime()));
-							endCal.add(Calendar.WEEK_OF_YEAR, 1);
+							endCal.add(Calendar.WEEK_OF_YEAR, INDEX_ONE);
 						}
 					}
 				} else {
-					for (int i = 0; i < 8; i++) {
+					for (int i = ZERO_INDEX; i < DEFAULT_DURATION; i++) {
 						dateList.add(df.format(cal.getTime()));
-						cal.add(Calendar.WEEK_OF_YEAR, 1);
+						cal.add(Calendar.WEEK_OF_YEAR, INDEX_ONE);
 
 						if (currentFile.getIsMeeting()) {
 							endDateList.add(df.format(endCal.getTime()));
-							endCal.add(Calendar.WEEK_OF_YEAR, 1);
+							endCal.add(Calendar.WEEK_OF_YEAR, INDEX_ONE);
 						}
 					}
 				}
@@ -393,93 +416,93 @@ public class CommandAdd {
 	private TaskFile dateFormatter(ArrayList<String> fromParser, TaskFile currentFile, String recurArgument,
 			Calendar cal) {
 		switch (fromParser.size()) {
-		case 1:
+		case INDEX_ONE:
 
-			if (fromParser.get(0).contains(STRING_DASH)) {
-				currentFile.setStartDate(fromParser.get(0));
+			if (fromParser.get(ZERO_INDEX).contains(STRING_DASH)) {
+				currentFile.setStartDate(fromParser.get(ZERO_INDEX));
 			} else {
-				assertTrue(fromParser.get(0).contains(STRING_COLON));
-				currentFile.setStartTime(fromParser.get(0));
+				assertTrue(fromParser.get(ZERO_INDEX).contains(STRING_COLON));
+				currentFile.setStartTime(fromParser.get(ZERO_INDEX));
 
 			}
 			break;
-		case 2:
-			if (fromParser.get(0).contains(STRING_DASH)) {
-				currentFile.setStartDate(fromParser.get(0));
+		case INDEX_TWO:
+			if (fromParser.get(ZERO_INDEX).contains(STRING_DASH)) {
+				currentFile.setStartDate(fromParser.get(ZERO_INDEX));
 
-				if (fromParser.get(1).contains(STRING_DASH)) {
-					currentFile.setEndDate(fromParser.get(1));
+				if (fromParser.get(INDEX_ONE).contains(STRING_DASH)) {
+					currentFile.setEndDate(fromParser.get(INDEX_ONE));
 				} else {
-					assertTrue(fromParser.get(1).contains(STRING_COLON));
-					currentFile.setStartTime(fromParser.get(1));
+					assertTrue(fromParser.get(INDEX_ONE).contains(STRING_COLON));
+					currentFile.setStartTime(fromParser.get(INDEX_ONE));
 				}
 
-			} else if (fromParser.get(0).contains(STRING_COLON)) {
-				currentFile.setStartTime(fromParser.get(0));
+			} else if (fromParser.get(ZERO_INDEX).contains(STRING_COLON)) {
+				currentFile.setStartTime(fromParser.get(ZERO_INDEX));
 
-				if (fromParser.get(1).contains(STRING_DASH)) {
-					currentFile.setEndDate(fromParser.get(1));
+				if (fromParser.get(INDEX_ONE).contains(STRING_DASH)) {
+					currentFile.setEndDate(fromParser.get(INDEX_ONE));
 				} else {
-					assertTrue(fromParser.get(1).contains(STRING_COLON));
-					currentFile.setEndTime(fromParser.get(1));
+					assertTrue(fromParser.get(INDEX_ONE).contains(STRING_COLON));
+					currentFile.setEndTime(fromParser.get(INDEX_ONE));
 				}
 
 			}
 			break;
-		case 3:
-			if (fromParser.get(0).contains(STRING_DASH)) {
-				currentFile.setStartDate(fromParser.get(0));
+		case INDEX_THREE:
+			if (fromParser.get(ZERO_INDEX).contains(STRING_DASH)) {
+				currentFile.setStartDate(fromParser.get(ZERO_INDEX));
 
-				if (fromParser.get(1).contains(STRING_COLON)) {
-					currentFile.setStartTime(fromParser.get(1));
+				if (fromParser.get(INDEX_ONE).contains(STRING_COLON)) {
+					currentFile.setStartTime(fromParser.get(INDEX_ONE));
 
-					if (fromParser.get(2).contains(STRING_DASH)) {
-						currentFile.setEndDate(fromParser.get(2));
+					if (fromParser.get(INDEX_TWO).contains(STRING_DASH)) {
+						currentFile.setEndDate(fromParser.get(INDEX_TWO));
 					} else {
-						assertTrue(fromParser.get(2).contains(STRING_COLON));
-						currentFile.setEndTime(fromParser.get(2));
+						assertTrue(fromParser.get(INDEX_TWO).contains(STRING_COLON));
+						currentFile.setEndTime(fromParser.get(INDEX_TWO));
 					}
 
 				} else {
 
-					assertTrue(fromParser.get(1).contains(STRING_DASH));
-					currentFile.setEndDate(fromParser.get(1));
+					assertTrue(fromParser.get(INDEX_ONE).contains(STRING_DASH));
+					currentFile.setEndDate(fromParser.get(INDEX_ONE));
 
-					assertTrue(fromParser.get(2).contains(STRING_COLON));
-					currentFile.setEndTime(fromParser.get(2));
+					assertTrue(fromParser.get(INDEX_TWO).contains(STRING_COLON));
+					currentFile.setEndTime(fromParser.get(INDEX_TWO));
 				}
 
 			} else {
 
-				assertTrue(fromParser.get(0).contains(STRING_COLON));
-				currentFile.setStartTime(fromParser.get(0));
+				assertTrue(fromParser.get(ZERO_INDEX).contains(STRING_COLON));
+				currentFile.setStartTime(fromParser.get(ZERO_INDEX));
 
-				assertTrue(fromParser.get(1).contains(STRING_DASH));
-				currentFile.setEndDate(fromParser.get(1));
+				assertTrue(fromParser.get(INDEX_ONE).contains(STRING_DASH));
+				currentFile.setEndDate(fromParser.get(INDEX_ONE));
 
-				assertTrue(fromParser.get(2).contains(STRING_COLON));
-				currentFile.setEndTime(fromParser.get(2));
+				assertTrue(fromParser.get(INDEX_TWO).contains(STRING_COLON));
+				currentFile.setEndTime(fromParser.get(INDEX_TWO));
 			}
 			break;
 
-		case 4:
+		case INDEX_FOUR:
 
-			assertTrue(fromParser.get(0).contains(STRING_DASH));
-			currentFile.setStartDate(fromParser.get(0));
+			assertTrue(fromParser.get(ZERO_INDEX).contains(STRING_DASH));
+			currentFile.setStartDate(fromParser.get(ZERO_INDEX));
 
-			assertTrue(fromParser.get(1).contains(STRING_COLON));
-			currentFile.setStartTime(fromParser.get(1));
+			assertTrue(fromParser.get(INDEX_ONE).contains(STRING_COLON));
+			currentFile.setStartTime(fromParser.get(INDEX_ONE));
 
-			assertTrue(fromParser.get(2).contains(STRING_DASH));
-			currentFile.setEndDate(fromParser.get(2));
+			assertTrue(fromParser.get(INDEX_TWO).contains(STRING_DASH));
+			currentFile.setEndDate(fromParser.get(INDEX_TWO));
 
-			assertTrue(fromParser.get(3).contains(STRING_COLON));
-			currentFile.setEndTime(fromParser.get(3));
+			assertTrue(fromParser.get(INDEX_THREE).contains(STRING_COLON));
+			currentFile.setEndTime(fromParser.get(INDEX_THREE));
 
 			break;
 
 		default:
-			assertEquals(0, fromParser.size());
+			assertEquals(ZERO_INDEX, fromParser.size());
 			if (!recurArgument.isEmpty()) {
 				DateFormat df = new SimpleDateFormat(PARSER_DATE_FORMAT);
 				String date;
@@ -509,7 +532,7 @@ public class CommandAdd {
 		DateFormat dF = new SimpleDateFormat(PARSER_DATE_FORMAT);
 		String date = df.format(cal.getTime()).toLowerCase();
 		while (!dates.contains(date)) {
-			cal.add(Calendar.DATE, 1);
+			cal.add(Calendar.DATE, INDEX_ONE);
 			date = df.format(cal.getTime()).toLowerCase();
 		}
 		return dF.format(cal.getTime());
