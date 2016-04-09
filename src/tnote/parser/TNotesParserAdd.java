@@ -41,9 +41,9 @@ public class TNotesParserAdd {
 	
 	private static final Logger logger = Logger.getGlobal();
 	
-	TNotesParserTime time;
-	TNotesParserDate date;
-	TNotesParserQuery query;
+	private TNotesParserTime time;
+	private TNotesParserDate date;
+	private TNotesParserQuery query;
 	
 	public TNotesParserAdd(){
 		time = new TNotesParserTime();

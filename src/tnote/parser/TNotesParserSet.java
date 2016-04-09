@@ -15,7 +15,7 @@ public class TNotesParserSet {
 	private static final String MESSAGE_SPACE = " ";
 	private static final String MESSAGE_INVALID_STATUS = "Invalid status";
 	private static final String MESSAGE_EMPTY_INPUT = "Empty input after set command";
-	private static final String MESSAGE_LOG_ERROR = "test Warning in parser command";
+	private static final String MESSAGE_LOG_ERROR = "Warning in parser command set";
 	
 	private static final int NUM_INITIALISATION = 1;
 	private static final int NUM_INITIALISATION_ZERO = 0;
@@ -49,9 +49,9 @@ public class TNotesParserSet {
 			list.add(setArr[setArr.length-NUM_DECREMENTATION].trim());
 		}
 		else{
-			throw new Exception(MESSAGE_INVALID_STATUS);
-		}
-		logger.warning(MESSAGE_LOG_ERROR); 
+			logger.warning(MESSAGE_LOG_ERROR); 
+			System.out.println(MESSAGE_INVALID_STATUS);
+		}	
 		return list;
 	}
 

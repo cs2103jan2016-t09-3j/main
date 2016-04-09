@@ -13,9 +13,9 @@ import java.util.ArrayList;
  *  The users are able to edit the time, date, name, status and importance of the task.
  */
 public class TNotesParserEdit {
-	TNotesParserTime time;
-	TNotesParserDate date;
-	TNotesParserQuery query;
+	private TNotesParserTime time;
+	private TNotesParserDate date;
+	private TNotesParserQuery query;
 	
 	public TNotesParserEdit(){
 		time = new TNotesParserTime();
