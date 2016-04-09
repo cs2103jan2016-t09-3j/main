@@ -364,8 +364,9 @@ public class TNotesUI {
 			resultString = String.format(MESSAGE_UPDATE_SCHEDULE);
 			int index = Integer.valueOf(deleteType);
 			deletedTask = viewList.get(index - 1);
-
+			
 			updatedList = logic.deleteIndex(viewList, index);
+			updateMainScreen(deletedTask.getStartDate());
 			resultString += String.format(MESSAGE_DELETE_TASK, deletedTask.getName());
 
 		}
