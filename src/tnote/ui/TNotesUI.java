@@ -34,7 +34,7 @@ public class TNotesUI {
 	private ArrayList<TaskFile> viewList;
 	private ArrayList<TaskFile> mainScreenArray;
 
-	int userIndex;
+	private int userIndex;
 
 	// Messages
 	private static final String MESSAGE_OVERDUE_TITLE = "====OVERDUE TASKS====\n";
@@ -215,7 +215,7 @@ public class TNotesUI {
 	// ==== SubCommands ====
 
 	// ==== ADD ====
-	public String formatAddCommand(String resultString, ArrayList<String> userCommandSplit) {
+	private String formatAddCommand(String resultString, ArrayList<String> userCommandSplit) {
 		String formatAddString = "";
 		TaskFile addTask;
 
@@ -228,7 +228,7 @@ public class TNotesUI {
 		return formatAddString;
 	}
 
-	public String checkAddTypes(String resultString, TaskFile taskFile) {
+	private String checkAddTypes(String resultString, TaskFile taskFile) {
 		String addString = "";
 
 		// Floating task case
@@ -263,7 +263,7 @@ public class TNotesUI {
 
 	// ==== CHANGE DIRECTORY ====
 
-	public String formatChangeDirectoryCommand(String changeDirectoryPath) {
+	private String formatChangeDirectoryCommand(String changeDirectoryPath) {
 		String formatChangeDirString;
 		try {
 			if (logic.changeDirectory(changeDirectoryPath)) {
@@ -279,7 +279,7 @@ public class TNotesUI {
 
 	// ==== DELETE DIRECTORY ====
 
-	public String formatDeleteDirectoryCommand(String deleteDirectoryPath) {
+	private String formatDeleteDirectoryCommand(String deleteDirectoryPath) {
 		String formatDeletDirString;
 
 		try {
@@ -297,7 +297,7 @@ public class TNotesUI {
 
 	// ==== EDIT ====
 
-	public String formatEditCommand(ArrayList<String> userCommandSplit, String editTaskName, String editType) {
+	private String formatEditCommand(ArrayList<String> userCommandSplit, String editTaskName, String editType) {
 		TaskFile oldTaskFile;
 		TaskFile newTaskFile;
 		String formatEditString = "";
@@ -316,7 +316,7 @@ public class TNotesUI {
 		return formatEditString;
 	}
 
-	public String checkEditType(String editTaskName, String editType, TaskFile oldTaskFile, TaskFile newTaskFile) {
+	private String checkEditType(String editTaskName, String editType, TaskFile oldTaskFile, TaskFile newTaskFile) {
 		String displayEditString = "";
 
 		if (editType.equals("name")) {
@@ -355,7 +355,7 @@ public class TNotesUI {
 	}
 
 	// ==== DELETE ====
-	public String formatDeleteCommand(ArrayList<String> userCommandSplit, String deleteType) throws Exception {
+	private String formatDeleteCommand(ArrayList<String> userCommandSplit, String deleteType) throws Exception {
 		String resultString = "";
 		ArrayList<TaskFile> updatedList = new ArrayList<TaskFile>();
 		TaskFile deletedTask;
@@ -388,7 +388,7 @@ public class TNotesUI {
 
 	// ==== VIEW ====
 
-	public String formatViewCommand(ArrayList<String> userCommandSplit, String viewTypeString) {
+	private String formatViewCommand(ArrayList<String> userCommandSplit, String viewTypeString) {
 		ArrayList<TaskFile> viewArray = new ArrayList<TaskFile>();
 		TaskFile currTask;
 		String formatViewString = "";
@@ -479,7 +479,7 @@ public class TNotesUI {
 		return formatViewString;
 	}
 
-	public String printOneDetailedTask(TaskFile currTask) {
+	private String printOneDetailedTask(TaskFile currTask) {
 		String formatViewString;
 		formatViewString = String.format(MESSAGE_VIEW_TASK, currTask.getName());
 		if (currTask.getIsTask()) {
@@ -516,7 +516,7 @@ public class TNotesUI {
 
 	// ==== Sort ====
 
-	public String formatSortCommand(ArrayList<String> userCommandSplit, String sortType) {
+	private String formatSortCommand(ArrayList<String> userCommandSplit, String sortType) {
 		ArrayList<TaskFile> arraySort;
 		String sortString = "";
 		String dateOfList = viewList.get(0).getStartDate();
@@ -544,7 +544,7 @@ public class TNotesUI {
 
 	// ==== SET ====
 
-	public String formatSetCommand(ArrayList<String> userCommandSplit, String taskName) {
+	private String formatSetCommand(ArrayList<String> userCommandSplit, String taskName) {
 		String setString = "";
 		TaskFile currentTask;
 
@@ -567,7 +567,7 @@ public class TNotesUI {
 		return setString;
 	}
 
-	public String changeTaskStatus(String taskName, String setString, boolean taskStatus, String newStatus,
+	private String changeTaskStatus(String taskName, String setString, boolean taskStatus, String newStatus,
 			String undone, String done) throws Exception {
 
 		if (taskStatus == false && newStatus.equals("done")) {
@@ -590,7 +590,7 @@ public class TNotesUI {
 
 	// ==== SEARCH ====
 
-	public String formatSearchCommand(ArrayList<String> userCommandSplit) {
+	private String formatSearchCommand(ArrayList<String> userCommandSplit) {
 		ArrayList<TaskFile> arraySearch;
 		String searchInput = userCommandSplit.get(1);
 		String searchResultString = "";
@@ -612,7 +612,7 @@ public class TNotesUI {
 		return searchResultString;
 	}
 
-	public String longSearchInput(ArrayList<String> userCommandSplit) {
+	private String longSearchInput(ArrayList<String> userCommandSplit) {
 		String searchInput = "...";
 
 		for (int i = 2; i < userCommandSplit.size(); i++) {
@@ -624,7 +624,7 @@ public class TNotesUI {
 
 	// ==== UNDO ====
 
-	public String formatUndoCommand() {
+	private String formatUndoCommand() {
 		String undoString = "";
 
 		try {
@@ -646,7 +646,7 @@ public class TNotesUI {
 	}
 
 	// ==== REDO ====
-	public String formatRedoCommand() {
+	private String formatRedoCommand() {
 		String RedoString = "";
 
 		try {
@@ -697,7 +697,7 @@ public class TNotesUI {
 		return overDueString;
 	}
 
-	public String printOverDueList(String overDueString, ArrayList<TaskFile> arrayOverdue) {
+	private String printOverDueList(String overDueString, ArrayList<TaskFile> arrayOverdue) {
 		TaskFile overDueTask;
 
 		for (int i = 0; i < arrayOverdue.size(); i++) {
@@ -727,7 +727,7 @@ public class TNotesUI {
 		return floatString;
 	}
 
-	public String printFloatList(String floatString, ArrayList<TaskFile> arrayFloat) {
+	private String printFloatList(String floatString, ArrayList<TaskFile> arrayFloat) {
 		int floatIndex;
 		TaskFile floatTask;
 		String importance;
@@ -743,7 +743,7 @@ public class TNotesUI {
 		return printString;
 	}
 
-	public String checkImportance(TaskFile taskFile) {
+	private String checkImportance(TaskFile taskFile) {
 		String importance;
 
 		if (taskFile.getImportance()) {
@@ -800,7 +800,7 @@ public class TNotesUI {
 	}
 
 	// If String are letters, returns 1
-	public int isLetters(String nextString) {
+	private int isLetters(String nextString) {
 		if (!nextString.matches("[0-9]+")) {
 			return 1;
 		} else {
@@ -808,7 +808,7 @@ public class TNotesUI {
 		}
 	}
 
-	public String displayImportance(TaskFile taskFile) {
+	private String displayImportance(TaskFile taskFile) {
 		String displayImportanceString;
 
 		if (taskFile.getImportance()) {
@@ -819,7 +819,7 @@ public class TNotesUI {
 		return displayImportanceString;
 	}
 
-	public String printTaskList(ArrayList<TaskFile> scheduleArray) {
+	private String printTaskList(ArrayList<TaskFile> scheduleArray) {
 		String currStartDate = scheduleArray.get(0).getStartDate();
 		String printString = String.format(MESSAGE_DATE_TITLE, currStartDate);
 
@@ -854,7 +854,7 @@ public class TNotesUI {
 		return printString;
 	}
 
-	public String printSearchList(ArrayList<TaskFile> scheduleArray) {
+	private String printSearchList(ArrayList<TaskFile> scheduleArray) {
 		String printString = "";
 
 		for (int i = 0; i < scheduleArray.size(); i++) {
@@ -888,7 +888,7 @@ public class TNotesUI {
 		return printString;
 	}
 
-	public void updateMainScreen(String date) {
+	private void updateMainScreen(String date) {
 		ArrayList<TaskFile> updateArray;
 
 		try {
