@@ -40,7 +40,7 @@ public class TNotesStorage {
 	private static TNotesStorage instance;
 	private static final Logger logger = Logger.getGlobal();
 	private MasterFileHandler masterFileHandler;
-	private StorageTaskFileHandler taskFileHandler;
+	private TaskHandler taskFileHandler;
 	private DirectoryHandler dHandler;
 	private ArrayList<String> masterList;
 	private ArrayList<String> floatingList;
@@ -61,7 +61,7 @@ public class TNotesStorage {
 	private TNotesStorage() throws Exception {
 		TNoteLogger.setUp();
 		masterFileHandler = MasterFileHandler.getInstance();
-		taskFileHandler = StorageTaskFileHandler.getInstance();
+		taskFileHandler = TaskHandler.getInstance();
 		dHandler = DirectoryHandler.getInstance();
 		masterList = new ArrayList<String>();
 		floatingList = new ArrayList<String>();
@@ -111,7 +111,7 @@ public class TNotesStorage {
 				masterList.add(taskName);
 
 				masterNameDateMap = readFolderMap();
-				String monthFolder = taskFileHandler.createFolderName(task, taskName);
+				String monthFolder = taskFileHandler.retrieveFolderName(task, taskName);
 
 				if (addTaskToMasterFile(taskName) && addTaskToFolderMap(taskName, monthFolder)) {
 					return createTaskFile(task, taskName, monthFolder);

@@ -193,7 +193,7 @@ public class TaskFile implements Comparable<TaskFile>, Cloneable {
 		isDone = status;
 	}
 
-	public void setUpTaskFile() throws Exception {
+	public void setUpTaskFile() throws ParseException, IncorrectTimeException {
 
 		setUpDates();
 
