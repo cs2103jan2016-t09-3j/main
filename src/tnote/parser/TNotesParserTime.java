@@ -3,7 +3,6 @@ package tnote.parser;
 
 import java.text.SimpleDateFormat;
 import java.util.logging.Logger;
-import tnote.log.TNoteLogger;
 import java.time.DateTimeException;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -13,6 +12,8 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import org.ocpsoft.prettytime.nlp.PrettyTimeParser;
+
+import tnote.util.log.TNoteLogger;
 
 /**
  * This class manages all the inputs related to time.

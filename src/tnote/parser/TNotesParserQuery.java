@@ -1,7 +1,8 @@
 //@@author A0131149
 package tnote.parser;
 import java.util.logging.Logger;
-import tnote.log.TNoteLogger;
+
+import tnote.util.log.TNoteLogger;
 
 /**
  * This class manages all the checking in the input String. It will indicate whether a particular 

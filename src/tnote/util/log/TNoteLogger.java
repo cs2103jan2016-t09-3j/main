@@ -1,5 +1,5 @@
 //@@author A0124131B
-package tnote.log;
+package tnote.util.log;
 
 import java.io.IOException;
 import java.util.logging.FileHandler;

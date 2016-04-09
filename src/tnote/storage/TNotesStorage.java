@@ -12,11 +12,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
 
-import tnote.log.TNoteLogger;
 import tnote.object.RecurringTaskFile;
 import tnote.object.TaskFile;
-import tnote.util.InvalidFileNameException;
-import tnote.util.TaskExistsException;
+import tnote.util.exceptions.InvalidFileNameException;
+import tnote.util.exceptions.TaskExistsException;
+import tnote.util.log.TNoteLogger;
 
 /**
  * This class manages how tasks are saved in T-Note.

@@ -7,7 +7,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-import tnote.util.IncorrectTimeException;
+import tnote.util.exceptions.IncorrectTimeException;
 
 public class TaskFile implements Comparable<TaskFile>, Cloneable {
 	private static final String ERROR_INCORRECT_TIMING = "The specified end time %s is before the start time %s";

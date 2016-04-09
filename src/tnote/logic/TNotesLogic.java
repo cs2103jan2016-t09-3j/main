@@ -19,7 +19,7 @@ import tnote.object.NameComparator;
 import tnote.object.RecurringTaskFile;
 import tnote.object.TaskFile;
 import tnote.storage.TNotesStorage;
-import tnote.util.TimeClashException;
+import tnote.util.exceptions.TimeClashException;
 
 public class TNotesLogic {
 	private static final String ADD = "add";

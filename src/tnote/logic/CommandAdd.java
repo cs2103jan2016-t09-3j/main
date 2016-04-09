@@ -15,7 +15,7 @@ import java.util.Iterator;
 import tnote.object.RecurringTaskFile;
 import tnote.object.TaskFile;
 import tnote.storage.TNotesStorage;
-import tnote.util.TimeClashException;
+import tnote.util.exceptions.TimeClashException;
 
 public class CommandAdd {
 	private static final int DEFAULT_DAY_DURATION = 12;

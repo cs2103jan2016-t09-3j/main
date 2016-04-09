@@ -1,5 +1,5 @@
 //@@author A0124131B
-package tnote.util;
+package tnote.util.exceptions;
 
 
 public class TimeClashException extends Exception {

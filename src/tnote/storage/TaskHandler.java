@@ -18,7 +18,7 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 import tnote.object.TaskFile;
-import tnote.util.IncorrectTimeException;
+import tnote.util.exceptions.IncorrectTimeException;
 
 /**
  * This class manages the tasks within TNote. It allows for tasks to be added,

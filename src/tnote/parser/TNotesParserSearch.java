@@ -1,7 +1,9 @@
 //@@author A0131149
 package tnote.parser;
 import java.util.logging.Logger;
-import tnote.log.TNoteLogger;
+
+import tnote.util.log.TNoteLogger;
+
 import java.util.ArrayList;
 
 /**

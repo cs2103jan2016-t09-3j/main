@@ -2,7 +2,8 @@
 package tnote.parser;
 import java.util.ArrayList;
 import java.util.logging.Logger;
-import tnote.log.TNoteLogger;
+
+import tnote.util.log.TNoteLogger;
 
 /**
  * This class manages the input String entered by the user, split the string
