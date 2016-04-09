@@ -46,7 +46,7 @@ public class TNotesParserAdd {
 	private TNotesParserDate date;
 	private TNotesParserQuery query;
 	
-	public TNotesParserAdd(){
+	protected TNotesParserAdd(){
 		time = new TNotesParserTime();
 		date = new TNotesParserDate();
 		query = new TNotesParserQuery();

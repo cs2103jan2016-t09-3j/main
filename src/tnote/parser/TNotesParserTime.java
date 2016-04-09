@@ -94,7 +94,7 @@ public class TNotesParserTime {
 	 * @return	Time with the correct format
 	 * @throws DateTimeException A null exception will be thrown 
 	 */
-	public String formatTime(String time){
+	protected String formatTime(String time){
 		ArrayList<String> timeList = new ArrayList<String>();
 		
 		assert time != null : MESSAGE_INVALID_TIME;
@@ -136,7 +136,7 @@ public class TNotesParserTime {
 	 * @param input	An time input from the user.
 	 * @return	Integer that is either 1 or 0
 	 */
-	public int checkTime(String input) {
+	protected int checkTime(String input) {
 		assert input != null : MESSAGE_NULL_TIME;
 		int inputCharLength = input.trim().length();
 		for(int i =NUM_INITIALISATION; i<inputCharLength; i++){
@@ -159,7 +159,7 @@ public class TNotesParserTime {
 	 * @param list	An time input ArrayList from the user.
 	 * @return	updated ArrayList
 	 */
-	public ArrayList<String> compareTime(ArrayList<String> list){
+	protected ArrayList<String> compareTime(ArrayList<String> list){
 		
 		assert list != null : MESSAGE_NULL_TIME_LIST;
 		
@@ -205,7 +205,7 @@ public class TNotesParserTime {
 	 * @return	the exact date after formating
 	 * @throws Exception that returns null
 	 */
-	public String isAMPM(String atDatePMAM){
+	protected String isAMPM(String atDatePMAM){
 		switch(atDatePMAM){
 			case "am" :
 				return "am";

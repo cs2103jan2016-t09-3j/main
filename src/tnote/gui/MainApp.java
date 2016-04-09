@@ -1,6 +1,7 @@
 //@@author Joelle
 package tnote.gui;
-
+import java.util.logging.Logger;
+import tnote.util.log.TNoteLogger;
 
 import  java.io.IOException;
 
@@ -14,6 +15,9 @@ import javafx.stage.Stage;
 import tnote.gui.view.TNotesOverviewController;
 
 public class MainApp extends Application {
+	
+		private static final String MESSAGE_LOG_ERROR = "Warning";
+		private static final Logger logger = Logger.getGlobal();
 	 
 		private Stage primaryStage;
 	    private BorderPane rootLayout;
@@ -46,6 +50,7 @@ public class MainApp extends Application {
 	            primaryStage.setScene(scene);
 	            primaryStage.show();
 	        } catch (IOException e) {
+	        	logger.warning(MESSAGE_LOG_ERROR);
 	            e.printStackTrace();
 	        }
 	    }
@@ -70,6 +75,7 @@ public class MainApp extends Application {
     	        controller.setMainApp(this);
 	            
 	        } catch (IOException e) {
+	        	logger.warning(MESSAGE_LOG_ERROR);
 	            e.printStackTrace();
 	        }
 	    }

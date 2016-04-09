@@ -84,7 +84,7 @@ public class TNotesParserDate {
 	 * @return	Month with the correct format
 	 * @throws DateTimeException A null exception will be thrown 
 	 */
-	public String formatMonth(String monthInput) {
+	protected String formatMonth(String monthInput) {
 		String monthStr = capTheFirstChar(monthInput);
 		String monthString = new String();
 		Month month = null;
@@ -102,7 +102,7 @@ public class TNotesParserDate {
 		return monthString;
 	}
 	
-	private Month compareMonthFormat(String monthString, String pattern) {
+	protected Month compareMonthFormat(String monthString, String pattern) {
 		assert pattern != null : MESSAGE_INVALID_MONTH;
 		try {
 			DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern);
@@ -145,7 +145,7 @@ public class TNotesParserDate {
 		return weekDayString;
 	}
 	
-	private DayOfWeek compareWeekDayFormat(String dateString, String pattern) {
+	 protected DayOfWeek compareWeekDayFormat(String dateString, String pattern) {
 		assert pattern != null : MESSAGE_INVALID_WEEKDAY;
 		try {
 			DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern);
@@ -163,7 +163,7 @@ public class TNotesParserDate {
 	 * @return	special days with the correct format
 	 * 			-"" will be returned if there is no special days
 	 */
-	public String formatSpecialDay(String date){
+	 protected String formatSpecialDay(String date){
 		switch(date.toLowerCase()){
 			case "today" :
 				return "today";
@@ -177,6 +177,8 @@ public class TNotesParserDate {
 				return "week";
 			case "day" :
 				return "day";
+			case "month" :
+				return "month";
 			default   :
 				return "";
 		}	
@@ -189,7 +191,7 @@ public class TNotesParserDate {
 	 * @return	date with the correct format
 	 * @throws DateTimeException A null exception will be thrown 
 	 */
-	public String formatDate(String inputDate){
+	 protected String formatDate(String inputDate){
 	    LocalDate parsedDate = null;	
 		for (String dateFormat : DATE_POSSIBLE_FORMAT) {
 			parsedDate = compareDateFormat(inputDate.trim(), dateFormat);
@@ -223,7 +225,7 @@ public class TNotesParserDate {
 	 * @param input	An time input from the user.
 	 * @return	Integer that is either 1 or 0
 	 */
-	public int checkDate(String input) {
+	protected int checkDate(String input) {
 		assert input != null : MESSAGE_INVALID_DATE_FORMAT;
 		int inputCharLength = input.trim().length();
 		for(int i =NUM_INITIALISATION; i<inputCharLength; i++){
@@ -241,7 +243,7 @@ public class TNotesParserDate {
 	 * @param inputDay	An date input ArrayList from the user.
 	 * @return	updated inputDate
 	 */
-	public String compareWeekDayMonth(String inputDay){
+	protected String compareWeekDayMonth(String inputDay){
 		if(!formatWeekDay(inputDay).equals(MESSAGE_NULL_STRING)){
 			return formatWeekDay(inputDay);
 		}
@@ -266,7 +268,7 @@ public class TNotesParserDate {
 	 * @return	updated ArrayList
 	 * @throws DateTimeException
 	 */
-	public ArrayList<String> compareDate(ArrayList<String> dateList) throws ParseException{
+	protected ArrayList<String> compareDate(ArrayList<String> dateList) throws ParseException{
 		SimpleDateFormat dateformat = new SimpleDateFormat(MESSAGE_STANDARD_DATE_FORMAT);
 		Date dateOne = dateformat.parse(dateList.get(NUM_FIRST_WORD));
 		Date dateTwo = dateformat.parse(dateList.get(NUM_SECOND_WORD));

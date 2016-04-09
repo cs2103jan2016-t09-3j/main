@@ -33,7 +33,7 @@ public class TNotesParserSort{
 	 * @return	The an ArrayList of split sort type.
 	 * @throws Exception 
 	 */
-	public ArrayList <String> sortCommand(String[] sortArr) throws Exception{
+	protected ArrayList <String> sortCommand(String[] sortArr) throws Exception{
 		assert sortArr != null : MESSAGE_EMPTY_INPUT;	
 		ArrayList<String> sortList = new ArrayList<String>();
 		if(sortArr[NUM_FIRST_SORT_TYPE].equals(MESSAGE_KEYWORD_BY)){

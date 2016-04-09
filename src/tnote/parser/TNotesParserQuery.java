@@ -29,8 +29,9 @@ public class TNotesParserQuery {
 	
 	private static final String ARR_IMPORTANT [] = {
 			"impt","important","importance",
-			"compulsory", "must do", "essential",
-			"indispensable"};
+			"compulsory", "essential",
+			"indispensable", "key", "crucial",
+			};
 	
 	
 	/**
@@ -41,7 +42,7 @@ public class TNotesParserQuery {
 	 * @return An integer
 	 * @throws Exception 
 	 */
-	public int checkAfterBefore(String arr[]) throws Exception{
+	protected int checkAfterBefore(String arr[]) throws Exception{
 		assert arr != null : MESSAGE_NULL_AFTER_BEFORE_ARRAY;	
 		
 		int indexThe = NUM_INITIALISATION;
@@ -75,7 +76,7 @@ public class TNotesParserQuery {
 	 * @return String
 	 * @throws Exception 
 	 */
-	public String taskNameFloat(String[] arr)throws Exception {
+	protected String taskNameFloat(String[] arr)throws Exception {
 		String task = new String();
 		for(int j=NUM_START_FROM_SECOND_STR;j<arr.length;j++ ){
 			task += arr[j] + " ";
@@ -91,7 +92,7 @@ public class TNotesParserQuery {
 	 * @return Integer
 	 * @throws Exception 
 	 */
-	public int checkViewTo(String[] arr) throws Exception{
+	protected int checkViewTo(String[] arr) throws Exception{
 		for(int i =NUM_INITIALISATION; i<arr.length;i++){
 			if(arr[i].equals("to")){
 				return NUM_TRUE;
@@ -108,7 +109,7 @@ public class TNotesParserQuery {
 	 * @return Integer
 	 * @throws Exception 
 	 */
-	public int findImpt(String[] arr) throws Exception{
+	protected int findImpt(String[] arr) throws Exception{
 		int index = NUM_INITIALISATION;
 		for (int i=NUM_INITIALISATION;i<arr.length;i++){
 			for(int j=NUM_INITIALISATION;j<ARR_IMPORTANT.length;j++){
@@ -128,7 +129,7 @@ public class TNotesParserQuery {
 	 * @return Integer
 	 * @throws Exception 
 	 */
-	public int isLetters(String nextString) throws Exception {
+	protected int isLetters(String nextString) throws Exception {
 		if (nextString.matches(MESSAGE_ISLETTER)) {
 			return NUM_TRUE;
 		} else {
@@ -146,7 +147,7 @@ public class TNotesParserQuery {
 	 * @return String The task name
 	 * @throws Exception 
 	 */
-	public String taskNameString(String arr[], int count) throws Exception{
+	protected String taskNameString(String arr[], int count) throws Exception{
 		String task = new String();
 		for(int i =NUM_START_FROM_SECOND_STR;i<count ;i++){
 			task += arr[i]+" ";

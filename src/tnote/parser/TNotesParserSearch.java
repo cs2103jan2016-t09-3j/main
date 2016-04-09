@@ -33,7 +33,7 @@ public class TNotesParserSearch {
 	 * @throws Exception 
 	 */
 	
-	public ArrayList <String> searchCommand(String[] searchArr){
+	protected ArrayList <String> searchCommand(String[] searchArr){
 		ArrayList<String> list = new ArrayList<String>();
 		assert searchArr != null : MESSAGE_EMPTY_INPUT;	
 		try {

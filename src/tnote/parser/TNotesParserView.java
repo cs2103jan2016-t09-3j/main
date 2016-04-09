@@ -61,7 +61,7 @@ public class TNotesParserView {
 	 * @return	The an ArrayList of split Strings.
 	 * @throws Exception 
 	 */
-	public ArrayList <String> viewCommand(String[] viewArr) throws Exception{
+	protected ArrayList <String> viewCommand(String[] viewArr) throws Exception{
 		ArrayList<String> viewList = new ArrayList<String>();
 		ArrayList<String> compareTimeList = new ArrayList<String>();
 		ArrayList<String> compareDateList = new ArrayList<String>();

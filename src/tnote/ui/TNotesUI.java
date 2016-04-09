@@ -3,7 +3,7 @@ package tnote.ui;
 
 import java.text.ParseException;
 import java.util.ArrayList;
-
+import java.util.logging.Logger;
 import tnote.logic.LogicCommand;
 import tnote.logic.TNotesLogic;
 import tnote.object.TaskFile;
@@ -104,7 +104,11 @@ public class TNotesUI {
 
 	private static final String MESSAGE_PRINT_DEADLINE_W_DATE = "%s. [%s][%s] %s%s\n";
 	private static final String MESSAGE_PRINT_MEETING_ONE_DATE_W_DATE = "%s. [%s][%s]-[%s] %s%s\n";
+	
+	private static final String MESSAGE_LOG_ERROR = "Warning!";
 
+	private static final Logger logger = Logger.getGlobal();
+	
 	// Constructor
 	public TNotesUI() {
 		try {
@@ -114,6 +118,7 @@ public class TNotesUI {
 			mainScreenArray = new ArrayList<TaskFile>();
 			mainScreenArray = logic.viewDateList("today");
 		} catch (Exception e) {
+			logger.warning(MESSAGE_LOG_ERROR);
 			e.getMessage();
 		}
 	}
@@ -133,6 +138,7 @@ public class TNotesUI {
 		try {
 			userCommandSplit = parser.checkCommand(userInput);
 		} catch (ParseException e) {
+			logger.warning(MESSAGE_LOG_ERROR);
 			e.printStackTrace();
 		}
 
@@ -272,6 +278,7 @@ public class TNotesUI {
 				formatChangeDirString = String.format(MESSAGE_CHANGE_DIRECTORY_FAILURE);
 			}
 		} catch (Exception e) {
+			logger.warning(MESSAGE_LOG_ERROR);
 			formatChangeDirString = e.getMessage();
 		}
 		return formatChangeDirString;
@@ -290,6 +297,7 @@ public class TNotesUI {
 			}
 
 		} catch (Exception e) {
+			logger.warning(MESSAGE_LOG_ERROR);
 			formatDeletDirString = e.getMessage();
 		}
 		return formatDeletDirString;
@@ -311,6 +319,7 @@ public class TNotesUI {
 			updateMainScreen(newTaskFile.getStartDate());
 
 		} catch (Exception e) {
+			logger.warning(MESSAGE_LOG_ERROR);
 			formatEditString = e.getMessage();
 		}
 		return formatEditString;
@@ -537,6 +546,7 @@ public class TNotesUI {
 				// updateMainScreen(dateOfList);
 
 			} catch (Exception e) {
+				logger.warning(MESSAGE_LOG_ERROR);
 				sortString = e.getMessage();
 			}
 		}
@@ -563,6 +573,7 @@ public class TNotesUI {
 
 			updateMainScreen(currentTask.getStartDate());
 		} catch (Exception e) {
+			logger.warning(MESSAGE_LOG_ERROR);
 			setString = e.getMessage();
 		}
 		return setString;
@@ -608,6 +619,7 @@ public class TNotesUI {
 				searchResultString += String.format(MESSAGE_SEARCH_FAILURE);
 			}
 		} catch (Exception e) {
+			logger.warning(MESSAGE_LOG_ERROR);
 			searchResultString = e.getMessage();
 		}
 		return searchResultString;
@@ -641,6 +653,7 @@ public class TNotesUI {
 			updateMainScreen(dateOfUpdatedList);
 
 		} catch (Exception e) {
+			logger.warning(MESSAGE_LOG_ERROR);
 			undoString = e.getMessage();
 		}
 		return undoString;
@@ -663,6 +676,7 @@ public class TNotesUI {
 			updateMainScreen(dateOfUpdatedList);
 
 		} catch (Exception e) {
+			logger.warning(MESSAGE_LOG_ERROR);
 			RedoString = e.getMessage();
 		}
 		return RedoString;
@@ -693,6 +707,7 @@ public class TNotesUI {
 			overDueString = String.format(MESSAGE_OVERDUE_TITLE);
 			overDueString = printOverDueList(overDueString, arrayOverdue);
 		} catch (Exception e) {
+			logger.warning(MESSAGE_LOG_ERROR);
 			overDueString = e.getMessage();
 		}
 		return overDueString;
@@ -722,6 +737,7 @@ public class TNotesUI {
 				floatString += printFloatList(floatString, arrayFloat);
 			} 
 		} catch (Exception e) {
+			logger.warning(MESSAGE_LOG_ERROR);
 			floatString = e.getMessage();
 
 		}
@@ -896,6 +912,7 @@ public class TNotesUI {
 			updateArray = logic.viewDateList(date);
 			mainScreenArray = updateArray;
 		} catch (Exception e) {
+			logger.warning(MESSAGE_LOG_ERROR);
 			e.printStackTrace();
 		}
 		return;

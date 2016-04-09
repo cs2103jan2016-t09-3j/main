@@ -27,7 +27,7 @@ public class TNotesParserDelete {
 	 * @param  deleteArr All Array input by the user
 	 * @return deleteList An ArrayList
 	 */
-	public ArrayList <String> deleteCommand(String[] deleteArr) throws Exception{
+	protected ArrayList <String> deleteCommand(String[] deleteArr) throws Exception{
 		
 		ArrayList<String> deleteList = new ArrayList<String>();
 			if(deleteArr[1].equals(MESSAGE_KEYWORD_DIRECTORY)){

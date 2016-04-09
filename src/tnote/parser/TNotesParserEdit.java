@@ -40,7 +40,7 @@ public class TNotesParserEdit {
 	 *              - throw error when the Array input is
 	 *              invalid.
 	 */
-	public ArrayList<String> editCommand(String[] editArr) throws Exception{
+	protected ArrayList<String> editCommand(String[] editArr) throws Exception{
 		ArrayList<String> editList = new ArrayList<String>();
 		for (int  f= NUM_START_FROM_SECOND_STR;  f< editArr.length ; f++){
 			if (editArr[f].equals("details")) {

@@ -34,7 +34,7 @@ public class TNotesParserChange {
 	 * @return	The an ArrayList of split chnage type.
 	 * @throws Exception 
 	 */
-	public ArrayList <String> changeCommand(String[] changeArr) throws Exception{
+	protected ArrayList <String> changeCommand(String[] changeArr) throws Exception{
 		ArrayList<String> list = new ArrayList<String>();
 		try{
 			list.add(MESSAGE_KEYWORD_CHANGE_DIRECTORY);

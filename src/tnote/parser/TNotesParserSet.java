@@ -38,7 +38,7 @@ public class TNotesParserSet {
 	 * @return	The an ArrayList of split String.
 	 * @throws Exception 
 	 */
-	public ArrayList <String> setCommand(String[] setArr) throws Exception{
+	protected ArrayList <String> setCommand(String[] setArr) throws Exception{
 		assert setArr != null : MESSAGE_EMPTY_INPUT;
 		ArrayList<String> list = new ArrayList<String>();
 		String title = new String();
