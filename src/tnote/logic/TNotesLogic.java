@@ -256,33 +256,6 @@ public class TNotesLogic {
 		return taskList;
 	}
 
-	// // importance sort
-	// // assumption, importance always placed first , regardless of sort.
-	// public ArrayList<TaskFile> sortImportTask() throws Exception {
-	// ArrayList<String> masterList = storage.readFromMasterFile();
-	// ArrayList<TaskFile> importList = new ArrayList<TaskFile>();
-	// ArrayList<TaskFile> nonImportList = new ArrayList<TaskFile>();
-	//
-	// for (String text : masterList) {
-	// TaskFile currentFile = storage.getTaskFileByName(text);
-	// if (!currentFile.getIsDone() && !currentFile.getName().contains("_")) {
-	// nonImportList.add(currentFile);
-	// }
-	// }
-	// masterList.clear();
-	// for (TaskFile newFile : nonImportList) {
-	// if (newFile.getImportance() && !newFile.getName().contains("_")) {
-	// importList.add(newFile);
-	// nonImportList.remove(newFile);
-	// }
-	// }
-	//
-	// Collections.sort(importList, new NameComparator());
-	// Collections.sort(nonImportList, new NameComparator());
-	// importList.addAll(nonImportList);
-	// taskList.clear();
-	// return importList;
-	// }
 	/**
 	 * 
 	 * @return - returns true if there are floating tasks, false if there are no
@@ -298,42 +271,9 @@ public class TNotesLogic {
 		}
 	}
 
-	/**
-	 * 
-	 * @return - ArrayList of taskfiles sorted according to the taskfile names
-	 * @throws Exception
-	 */
-	public ArrayList<TaskFile> sortNameTask() throws Exception {
-		ArrayList<String> masterList = storage.readFromMasterFile();
-		ArrayList<TaskFile> allTaskList = new ArrayList<TaskFile>();
-		for (String text : masterList) {
-			TaskFile currentFile = storage.getTaskFileByName(text);
-			if (!currentFile.getIsDone()) {
-				allTaskList.add(currentFile);
-			}
-		}
-		Collections.sort(allTaskList, new NameComparator());
-		taskList.clear();
-		return allTaskList;
-	}
-
 	public ArrayList<TaskFile> sortTask(ArrayList<TaskFile> currentList) {
 		Collections.sort(currentList, new NameComparator());
 		return currentList;
-	}
-
-	// sort date
-	public ArrayList<TaskFile> sortDateTask() throws Exception {
-		ArrayList<String> masterList = storage.readFromMasterFile();
-		ArrayList<TaskFile> dateList = new ArrayList<TaskFile>();
-		for (String text : masterList) {
-			TaskFile currentFile = storage.getTaskFileByName(text);
-			if (!currentFile.getIsDone() && !currentFile.getName().contains("_")) {
-				dateList.add(currentFile);
-			}
-		}
-		Collections.sort(dateList);
-		return dateList;
 	}
 
 	public boolean changeDirectory(String directoryName) throws Exception {

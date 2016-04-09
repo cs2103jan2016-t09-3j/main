@@ -246,6 +246,7 @@ public class CommandView {
 				taskListToBeDisplayed.add(currentFile);
 			}
 		}
+		Collections.sort(taskListToBeDisplayed);
 		return taskListToBeDisplayed;
 	}
 
@@ -262,6 +263,7 @@ public class CommandView {
 				newTask.setName(formatterName);
 			}
 		}
+		Collections.sort(listOfOverdueTasks);
 		return listOfOverdueTasks;
 	}
 
