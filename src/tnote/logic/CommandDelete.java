@@ -8,11 +8,11 @@ import tnote.storage.TNotesStorage;
 public class CommandDelete {
 	private TNotesStorage storage;
 
-	public CommandDelete() throws Exception {
+	protected CommandDelete() throws Exception {
 		storage = TNotesStorage.getInstance();
 	}
 
-	public TaskFile delete(ArrayList<String> fromParser) throws Exception {
+	protected TaskFile delete(ArrayList<String> fromParser) throws Exception {
 		TaskFile deletedTask = storage.getTaskFileByName(fromParser.get(0));
 		if (deletedTask.getIsRecurring()) {
 			return deleteRecurringTask(fromParser);
@@ -28,7 +28,7 @@ public class CommandDelete {
 	 * @return - returns the deleted task, else returns null
 	 * @throws Exception
 	 */
-	public TaskFile deleteTask(ArrayList<String> fromParser) throws Exception {
+	protected TaskFile deleteTask(ArrayList<String> fromParser) throws Exception {
 		if (fromParser.isEmpty()) {
 			throw new Exception("invalid command");
 		}
@@ -53,7 +53,7 @@ public class CommandDelete {
 	 * @return - returns the deleted task , or null
 	 * @throws Exception
 	 */
-	public TaskFile deleteRecurringTask(ArrayList<String> fromParser) throws Exception {
+	protected TaskFile deleteRecurringTask(ArrayList<String> fromParser) throws Exception {
 		if (fromParser.isEmpty()) {
 			throw new Exception("invalid command");
 		}
