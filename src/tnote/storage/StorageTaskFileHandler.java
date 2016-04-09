@@ -18,6 +18,13 @@ import java.util.logging.Logger;
 
 import tnote.object.TaskFile;
 
+
+/**
+ * This class manages the tasks within T-Note. It allows for tasks to be added, deleted and read. 
+ * Tasks are saved inside folders, and each folder is named as the month of the task's starting date.
+ * @author A0124131B
+ *
+ */
 public class StorageTaskFileHandler {
 
 	private static final int MAXIMUM_FILE_PATH_LENGTH = 240;
@@ -49,7 +56,7 @@ public class StorageTaskFileHandler {
 	 * Method to get instance of StorageTaskFileHandler. If instance does not exist, a new instance is created.
 	 * @return StorageTaskFileHandler instance of StorageTaskFileHandler.
 	 */
-	public static StorageTaskFileHandler getInstance() {
+	protected static StorageTaskFileHandler getInstance() {
 		if(instance == null) {
 			instance = new StorageTaskFileHandler();
 		}
@@ -63,7 +70,7 @@ public class StorageTaskFileHandler {
 	 * @return true if the TaskFile object is successfully saved into a text file
 	 * @throws IOException Error encountered when creating the text file, or error encountered writing to the text file.
 	 */
-	public boolean createTaskFile(String directory, TaskFile task) throws IOException {
+	protected boolean createTaskFile(String directory, TaskFile task) throws IOException {
 		
 		File folder = dirHandler.appendParentDirectory(directory.trim());
 		dirHandler.createDirectory(folder);
@@ -83,7 +90,7 @@ public class StorageTaskFileHandler {
 	 * @return TaskFile the TaskFile object extracted from the text file
 	 * @throws IOException Error reading the text file
 	 */
-	public TaskFile readTaskTextFile(File taskFileToBeRead) throws IOException {
+	protected TaskFile readTaskTextFile(File taskFileToBeRead) throws IOException {
 		return fRHandler.readTaskTextFile(taskFileToBeRead);
 	}
 	
@@ -94,7 +101,7 @@ public class StorageTaskFileHandler {
 	 * @return true if the text file is deleted successfully
 	 * @throws IOException Error encountered when trying to delete the file.
 	 */
-	public boolean deleteTaskTextFile(String taskNameToDelete, Map<String, String> folderMap) throws Exception {
+	protected boolean deleteTaskTextFile(String taskNameToDelete, Map<String, String> folderMap) throws IOException {
 
 		File fileToDelete = getTaskFilePath(taskNameToDelete, folderMap);
 		
@@ -173,12 +180,11 @@ public class StorageTaskFileHandler {
 			} else {
 				assertTrue(task.getIsTask());
 			}
-		}
-		
+		}	
 		return listOfOverdueTasks;
 	}
 	
-	protected File getTaskFilePath(String taskName, Map<String, String> folderMap) throws Exception {
+	protected File getTaskFilePath(String taskName, Map<String, String> folderMap) throws FileNotFoundException {
 
 		String folderName = folderMap.get(taskName);
 
@@ -187,11 +193,9 @@ public class StorageTaskFileHandler {
 		}
 
 		File folder = getFolderFile(folderName);
-
 		File fileToBeFound = getFileDirectory(folder, taskName);
 		
-		return fileToBeFound;
-		
+		return fileToBeFound;		
 	}
 	
 	protected TaskFile getTaskFileByName(String taskName, ArrayList<String> masterList, Map<String, String> folderMap) throws Exception {

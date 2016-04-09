@@ -231,7 +231,7 @@ public class TaskFile implements Comparable<TaskFile>, Cloneable {
 		return currentDateString;
 	}
 
-	private void setUpCal() throws Exception {
+	private void setUpCal() throws ParseException, IncorrectTimeException {
 		if (!startDate.isEmpty()) {
 			startCal = Calendar.getInstance();
 			setStartCal();
@@ -252,7 +252,7 @@ public class TaskFile implements Comparable<TaskFile>, Cloneable {
 		}
 	}
 
-	private void setStartCal() {
+	private void setStartCal() throws ParseException {
 		try {
 
 			Date date = convertStringToDate(startDate, startTime);
