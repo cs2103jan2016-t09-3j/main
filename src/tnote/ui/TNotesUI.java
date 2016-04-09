@@ -49,10 +49,10 @@ public class TNotesUI {
 	private static final String MESSAGE_WELCOME = "Hello, welcome to T-Note. How may I help you?\n";
 	private static final String MESSAGE_IMPORTANT = "Note: Task was noted as important\n";
 	private static final String MESSAGE_DETAILS = "Things to note: \"%s\"\n";
-	private static final String MESSAGE_INVALID ="Invalid command entered.\nPlease enter \"Help\" to show a list of available commands.\n";
+	private static final String MESSAGE_INVALID = "Invalid command entered.\nPlease enter \"Help\" to show a list of available commands.\n";
 	private static final String MESSAGE_HELP = "List of available commands:\n\nNote: words in [] should be modified to your needs.\n\n";
 	private static final String MESSAGE_EXIT = "exit";
-	
+
 	private static final String MESSAGE_PRINT_OVERDUE_LIST = "%s. [%s][%s] %s\n";
 	private static final String MESSAGE_PRINT_FLOAT_LIST = "%s. %s%s\n";
 	private static final String MESSAGE_PRINT_DEADLINE = "%s. [%s] %s%s\n";
@@ -70,6 +70,7 @@ public class TNotesUI {
 	private static final String MESSAGE_DELETE_DIRECTORY_FAILURE = "Unable to delete directory.\n";
 
 	private static final String MESSAGE_DELETE_TASK = "I have deleted \"%s\" from your schedule for you!\n\n";
+	private static final String MESSAGE_DELETE_ALL = "I have deleted EVERYTHING.\n";
 
 	private static final String MESSAGE_EDIT_NAME = "You have changed the task name from \"%s\" to \"%s\"!\n";
 	private static final String MESSAGE_EDIT_TIME = "You have changed the start time in \"%s\" from [%s] to [%s]!\n";
@@ -94,12 +95,15 @@ public class TNotesUI {
 
 	private static final String MESSAGE_SEARCH_CONFIRMATION = "Searching for \"%s\" .......This is what I've found:\n";
 	private static final String MESSAGE_SEARCH_FAILURE = "Nothing was found......\n";
-	
+
 	private static final String MESSAGE_SORT_CONFIRMATION = "I have sorted everything by name for you! I'm so amazing, what would you do without me!\n";
-	
+
 	private static final String MESSAGE_UNDO_CONFIRMATION = "You have undone %s %s!\n";
-	
-	private static final String MESSAGE_REDO_CONFIRMATION = "You have redo %s %s!\n";
+
+	private static final String MESSAGE_REDO_CONFIRMATION = "You have redone %s %s!\n";
+
+	private static final String MESSAGE_PRINT_DEADLINE_W_DATE = "%s. [%s][%s] %s%s\n";
+	private static final String MESSAGE_PRINT_MEETING_ONE_DATE_W_DATE = "%s. [%s][%s]-[%s] %s%s\n";
 
 	// Constructor
 	public TNotesUI() {
@@ -174,7 +178,7 @@ public class TNotesUI {
 			resultString = formatSetCommand(userCommandSplit, taskName);
 			break;
 		case SEARCH_COMMAND:
-			
+
 			resultString = formatSearchCommand(userCommandSplit);
 			break;
 		case SORT_COMMAND:
@@ -183,24 +187,24 @@ public class TNotesUI {
 			resultString = formatSortCommand(userCommandSplit, sortType);
 			break;
 		case UNDO_COMMAND:
-			
+
 			resultString = formatUndoCommand();
 			break;
 		case REDO_COMMAND:
-		
+
 			resultString = formatRedoCommand();
 			break;
 		case INVALID:
-			
+
 			resultString = String.format(MESSAGE_INVALID);
 			break;
 		case HELP_COMMAND:
-			
+
 			resultString = String.format(MESSAGE_HELP);
 			resultString += message.printHelpArray();
 			break;
 		case EXIT:
-			
+
 			resultString = String.format(MESSAGE_EXIT);
 			break;
 		default:
@@ -279,10 +283,15 @@ public class TNotesUI {
 	public String formatDeleteDirectoryCommand(String deleteDirectoryPath) {
 		String formatDeletDirString;
 
-		if (logic.deleteDirectory(deleteDirectoryPath)) {
-			formatDeletDirString = String.format(MESSAGE_DELETE_DIRECTORY_SUCESS, deleteDirectoryPath);
-		} else {
-			formatDeletDirString = String.format(MESSAGE_DELETE_DIRECTORY_FAILURE);
+		try {
+			if (logic.deleteDirectory(deleteDirectoryPath)) {
+				formatDeletDirString = String.format(MESSAGE_DELETE_DIRECTORY_SUCESS, deleteDirectoryPath);
+			} else {
+				formatDeletDirString = String.format(MESSAGE_DELETE_DIRECTORY_FAILURE);
+			}
+
+		} catch (Exception e) {
+			formatDeletDirString = e.getMessage();
 		}
 		return formatDeletDirString;
 	}
@@ -299,6 +308,8 @@ public class TNotesUI {
 			newTaskFile = logic.editTask(userCommandSplit);
 
 			formatEditString = checkEditType(editTaskName, editType, oldTaskFile, newTaskFile);
+
+			updateMainScreen(newTaskFile.getStartDate());
 
 		} catch (Exception e) {
 			formatEditString = e.getMessage();
@@ -346,20 +357,28 @@ public class TNotesUI {
 
 	// ==== DELETE ====
 	public String formatDeleteCommand(ArrayList<String> userCommandSplit, String deleteType) throws Exception {
-		String resultString;
+		String resultString = "";
 		ArrayList<TaskFile> updatedList = new ArrayList<TaskFile>();
 		TaskFile deletedTask;
 
-		resultString = String.format(MESSAGE_UPDATE_SCHEDULE);
-
 		if (isLetters(deleteType) == 0) {
+			resultString = String.format(MESSAGE_UPDATE_SCHEDULE);
 			int index = Integer.valueOf(deleteType);
 			deletedTask = viewList.get(index - 1);
 
 			updatedList = logic.deleteIndex(viewList, index);
 			resultString += String.format(MESSAGE_DELETE_TASK, deletedTask.getName());
 
-		} else {
+		}
+
+		else if (deleteType.equals("all")) {
+			if (logic.clearAll()) {
+				resultString += String.format(MESSAGE_DELETE_ALL);
+			}
+		}
+
+		else {
+			resultString = String.format(MESSAGE_UPDATE_SCHEDULE);
 			deletedTask = logic.deleteTask(userCommandSplit);
 			updateMainScreen(deletedTask.getStartDate());
 			resultString += String.format(MESSAGE_DELETE_TASK, deletedTask.getName());
@@ -511,31 +530,158 @@ public class TNotesUI {
 		}
 		return formatViewString;
 	}
-	
+
 	// ==== Sort ====
-	
+
 	public String formatSortCommand(ArrayList<String> userCommandSplit, String sortType) {
 		ArrayList<TaskFile> arraySort;
 		String sortString = "";
 		String dateOfList = viewList.get(0).getStartDate();
-		
+
 		if (sortType.equals("name")) {
 			sortString = String.format(MESSAGE_SORT_CONFIRMATION);
-			
+
 			try {
 				arraySort = logic.sortTask(viewList);
 				sortString += printTaskList(arraySort);
-				
-				// update to main screen // currently change is not perm, so might not work
-				// if we do it this way, we should also include a sort by time to change it back
-//				mainScreenArray = arraySort;
-//				updateMainScreen(dateOfList);
-				
+
+				// update to main screen // currently change is not perm, so
+				// might not work
+				// if we do it this way, we should also include a sort by time
+				// to change it back
+				// mainScreenArray = arraySort;
+				// updateMainScreen(dateOfList);
+
 			} catch (Exception e) {
 				sortString = e.getMessage();
 			}
 		}
 		return sortString;
+	}
+
+	// ==== SET ====
+
+	public String formatSetCommand(ArrayList<String> userCommandSplit, String taskName) {
+		String setString = "";
+		TaskFile currentTask;
+
+		try {
+			currentTask = logic.searchSingleTask(taskName.trim());
+			boolean taskStatus = currentTask.getIsDone();
+			String newStatus = userCommandSplit.get(2).trim();
+			String undone = "[UNDONE]";
+			String done = "[DONE]";
+
+			setString += changeTaskStatus(taskName, setString, taskStatus, newStatus, undone, done);
+
+			currentTask = logic.searchSingleTask(taskName.trim());
+			setString += printOneDetailedTask(currentTask);
+
+			updateMainScreen(currentTask.getStartDate());
+		} catch (Exception e) {
+			setString = e.getMessage();
+		}
+		return setString;
+	}
+
+	public String changeTaskStatus(String taskName, String setString, boolean taskStatus, String newStatus,
+			String undone, String done) throws Exception {
+
+		if (taskStatus == false && newStatus.equals("done")) {
+			if (logic.setStatus(taskName, true)) {
+				setString += String.format(MESSAGE_SET_CONFIRMATION, taskName, undone, done);
+			}
+		}
+
+		else if (taskStatus == true && newStatus.equals("undone")) {
+			if (!logic.setStatus(taskName, false)) {
+				setString += String.format(MESSAGE_SET_CONFIRMATION, taskName, done, undone);
+			}
+		}
+
+		else {
+			setString = String.format(MESSAGE_SET_ERROR, newStatus);
+		}
+		return setString;
+	}
+
+	// ==== SEARCH ====
+
+	public String formatSearchCommand(ArrayList<String> userCommandSplit) {
+		ArrayList<TaskFile> arraySearch;
+		String searchInput = userCommandSplit.get(1);
+		String searchResultString = "";
+
+		try {
+			arraySearch = logic.searchTask(userCommandSplit);
+			if (!arraySearch.isEmpty()) {
+				if (userCommandSplit.size() > 2) {
+					searchInput += longSearchInput(userCommandSplit);
+				}
+				searchResultString = String.format(MESSAGE_SEARCH_CONFIRMATION, searchInput);
+				searchResultString += printSearchList(arraySearch);
+			} else {
+				searchResultString += String.format(MESSAGE_SEARCH_FAILURE);
+			}
+		} catch (Exception e) {
+			searchResultString = e.getMessage();
+		}
+		return searchResultString;
+	}
+
+	public String longSearchInput(ArrayList<String> userCommandSplit) {
+		String searchInput = "...";
+
+		for (int i = 2; i < userCommandSplit.size(); i++) {
+			searchInput += userCommandSplit.get(i);
+			searchInput += "...";
+		}
+		return searchInput;
+	}
+
+	// ==== UNDO ====
+
+	public String formatUndoCommand() {
+		String undoString = "";
+
+		try {
+			LogicCommand logicCommand = logic.undo();
+			String commandEntered = logicCommand.getCommandType();
+			TaskFile taskFile = logicCommand.getOldTask();
+			String taskName = taskFile.getName();
+
+			undoString = String.format(MESSAGE_UNDO_CONFIRMATION, commandEntered, taskName);
+
+			String dateOfUpdatedList = taskFile.getStartDate();
+
+			updateMainScreen(dateOfUpdatedList);
+
+		} catch (Exception e) {
+			undoString = e.getMessage();
+		}
+		return undoString;
+	}
+
+	// ==== REDO ====
+	public String formatRedoCommand() {
+		String RedoString = "";
+
+		try {
+			LogicCommand logicCommand = logic.redo();
+			String commandEntered = logicCommand.getCommandType();
+			TaskFile taskFile = logicCommand.getOldTask();
+			String taskName = taskFile.getName();
+
+			RedoString = String.format(MESSAGE_REDO_CONFIRMATION, commandEntered, taskName);
+
+			String dateOfUpdatedList = taskFile.getStartDate();
+
+			updateMainScreen(dateOfUpdatedList);
+
+		} catch (Exception e) {
+			RedoString = e.getMessage();
+		}
+		return RedoString;
 	}
 
 	// ===== GUI Display Screens ====
@@ -624,118 +770,6 @@ public class TNotesUI {
 			importance = "";
 		}
 		return importance;
-	}
-
-	// ==== SET ====
-
-	public String formatSetCommand(ArrayList<String> userCommandSplit, String taskName) {
-		String setString = "";
-		TaskFile currentTask;
-
-		try {
-			currentTask = logic.searchSingleTask(taskName.trim());
-			boolean taskStatus = currentTask.getIsDone();
-			String newStatus = userCommandSplit.get(2).trim();
-			String undone = "[UNDONE]";
-			String done = "[DONE]";
-
-			setString += changeTaskStatus(taskName, setString, taskStatus, newStatus, undone, done);
-
-			currentTask = logic.searchSingleTask(taskName.trim());
-			setString += printOneDetailedTask(currentTask);
-
-			updateMainScreen(currentTask.getStartDate());
-		} catch (Exception e) {
-			setString = e.getMessage();
-		}
-		return setString;
-	}
-
-	public String changeTaskStatus(String taskName, String setString, boolean taskStatus, String newStatus,
-			String undone, String done) throws Exception {
-
-		if (taskStatus == false && newStatus.equals("done")) {
-			if (logic.setStatus(taskName, true)) {
-				setString += String.format(MESSAGE_SET_CONFIRMATION, taskName, undone, done);
-			}
-		}
-
-		else if (taskStatus == true && newStatus.equals("undone")) {
-			if (!logic.setStatus(taskName, false)) {
-				setString += String.format(MESSAGE_SET_CONFIRMATION, taskName, done, undone);
-			}
-		}
-
-		else {
-			setString = String.format(MESSAGE_SET_ERROR, newStatus);
-		}
-		return setString;
-	}
-
-	// ==== SEARCH ====
-
-	public String formatSearchCommand(ArrayList<String> userCommandSplit) {
-		ArrayList<TaskFile> arraySearch;
-		String searchInput = userCommandSplit.get(1);
-		String searchResultString = "";
-
-		try {
-			arraySearch = logic.searchTask(userCommandSplit);
-			if (!arraySearch.isEmpty()) {
-				searchResultString = String.format(MESSAGE_SEARCH_CONFIRMATION, searchInput);
-				searchResultString += printSearchList(arraySearch);
-			} else {
-				searchResultString += String.format(MESSAGE_SEARCH_FAILURE);
-			}
-		} catch (Exception e) {
-			searchResultString = e.getMessage();
-		}
-		return searchResultString;
-	}
-	
-	// ==== UNDO ====
-	
-	public String formatUndoCommand() {
-		String undoString = "";
-
-		try {
-			LogicCommand logicCommand = logic.undo();
-			String commandEntered = logicCommand.getCommandType();
-			TaskFile taskFile = logicCommand.getOldTask();
-			String taskName = taskFile.getName();
-			
-			undoString = String.format(MESSAGE_UNDO_CONFIRMATION, commandEntered, taskName);
-			
-			String dateOfUpdatedList = taskFile.getStartDate();
-			
-			updateMainScreen(dateOfUpdatedList);
-			
-		} catch (Exception e) {
-			undoString = e.getMessage();
-		}
-		return undoString;
-	}
-	
-	// ==== REDO ====
-	public String formatRedoCommand() {
-		String RedoString = "";
-
-		try {
-			LogicCommand logicCommand = logic.redo();
-			String commandEntered = logicCommand.getCommandType();
-			TaskFile taskFile = logicCommand.getOldTask();
-			String taskName = taskFile.getName();
-			
-			RedoString = String.format(MESSAGE_REDO_CONFIRMATION, commandEntered, taskName);
-			
-			String dateOfUpdatedList = taskFile.getStartDate();
-			
-			updateMainScreen(dateOfUpdatedList);
-			
-		} catch (Exception e) {
-			RedoString = e.getMessage();
-		}
-		return RedoString;
 	}
 
 	// ==== MISC METHODS ====
@@ -849,23 +883,24 @@ public class TNotesUI {
 			importance = checkImportance(currTask);
 
 			if (currTask.getIsDeadline()) {
-				printString += String.format(MESSAGE_PRINT_DEADLINE, realIndex, currTask.getStartTime(), importance,
-						currTask.getName());
+				printString += String.format(MESSAGE_PRINT_DEADLINE_W_DATE, realIndex, currTask.getStartDate(),
+						currTask.getStartTime(), importance, currTask.getName());
 			}
 
 			else if (currTask.getIsMeeting()) {
 				if (currTask.getStartDate().trim().equals(currTask.getEndDate().trim())) {
-					printString += String.format(MESSAGE_PRINT_MEETING_ONE_DATE, realIndex, currTask.getStartTime(),
-							currTask.getEndTime(), currTask.getName(), importance);
+					printString += String.format(MESSAGE_PRINT_MEETING_ONE_DATE_W_DATE, realIndex,
+							currTask.getStartDate(), currTask.getStartTime(), currTask.getEndTime(), currTask.getName(),
+							importance);
 				} else {
 					printString += String.format(MESSAGE_PRINT_MEETING_TWO_DATES, realIndex, currTask.getStartTime(),
 							currTask.getStartDate(), currTask.getEndTime(), currTask.getEndDate(), currTask.getName(),
 							importance);
 				}
 			}
-			
+
 			else if (currTask.getIsTask()) {
-				printString += String.format(MESSAGE_PRINT_FLOAT_LIST, realIndex,currTask.getName(),importance);
+				printString += String.format(MESSAGE_PRINT_FLOAT_LIST, realIndex, currTask.getName(), importance);
 			}
 		}
 		return printString;
