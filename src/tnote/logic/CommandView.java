@@ -39,9 +39,8 @@ public class CommandView {
 	private static final String TUESDAY = "tuesday";
 	private static final String MONDAY = "monday";
 	private static final String TODAY = "today";
-
-
-	TNotesStorage storage;
+	
+	private TNotesStorage storage;
 	
 	private static final String PARSER_DATE_FORMAT = "yyyy-MM-dd";
 	private static final String DAY_SHORTFORM = "EEE";

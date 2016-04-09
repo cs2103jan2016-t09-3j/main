@@ -54,7 +54,7 @@ public class CommandAdd {
 	private static final String EVERY = "every";
 	private static final String IMPORTANT = "important";
 	
-	TNotesStorage storage;
+	private TNotesStorage storage;
 
 	public CommandAdd() throws Exception {
 		storage = TNotesStorage.getInstance();
@@ -335,6 +335,8 @@ public class CommandAdd {
 							endCal.add(Calendar.WEEK_OF_YEAR, INDEX_TWO);
 						}
 					}
+				}else{
+					
 				}
 			} else if (recurArgument.equals(MONTH)) {
 				for (int i = ZERO_INDEX; i < (Integer.parseInt(recurNumDuration)); i++) {

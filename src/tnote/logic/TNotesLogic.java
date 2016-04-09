@@ -27,21 +27,21 @@ public class TNotesLogic {
 	private static final int ARRAYLISINDEXCORRECTION = 1;
 	private static final String DELETE = "delete";
 
-	TNotesStorage storage;
+	private TNotesStorage storage;
 
-	ArrayList<TaskFile> taskList = new ArrayList<TaskFile>();
-	ArrayList<String> startDates = new ArrayList<String>();
-	ArrayList<String> endDates = new ArrayList<String>();
-	Stack<LogicCommand> undoStack;
-	Stack<LogicCommand> redoStack;
+	private ArrayList<TaskFile> taskList = new ArrayList<TaskFile>();
+	private ArrayList<String> startDates = new ArrayList<String>();
+	private	ArrayList<String> endDates = new ArrayList<String>();
+	private Stack<LogicCommand> undoStack;
+	private Stack<LogicCommand> redoStack;
 
-	TaskFile currentFile = new TaskFile();
+	private TaskFile currentFile = new TaskFile();
 
-	CommandAdd cmdAdd = new CommandAdd();
-	CommandView cmdView = new CommandView();
-	CommandDelete cmdDel = new CommandDelete();
-	CommandEdit cmdEdit = new CommandEdit();
-	CommandSearch cmdSearch = new CommandSearch();
+	private CommandAdd cmdAdd = new CommandAdd();
+	private CommandView cmdView = new CommandView();
+	private CommandDelete cmdDel = new CommandDelete();
+	private CommandEdit cmdEdit = new CommandEdit();
+	private CommandSearch cmdSearch = new CommandSearch();
 
 	public TNotesLogic() throws Exception {
 		storage = TNotesStorage.getInstance();

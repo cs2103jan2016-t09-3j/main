@@ -18,7 +18,7 @@ public class CommandEdit {
 	private static final String EDIT_TYPE_STARTIME = "startTime";
 	private static final String EDIT_TYPE_TIME = "time";
 	private static final String EDIT_TYPE_NAME = "name";
-	TNotesStorage storage;
+	private TNotesStorage storage;
 
 	public CommandEdit() throws Exception {
 		storage = TNotesStorage.getInstance();

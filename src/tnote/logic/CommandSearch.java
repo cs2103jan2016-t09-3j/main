@@ -10,7 +10,7 @@ public class CommandSearch {
 	private static final int START_OF_STRING = 0;
 	private static final int ARRAYLIST_INDEX = 1;
 	private static final String STRING_UNDERSCORE = "_";
-	TNotesStorage storage;
+	private	TNotesStorage storage;
 
 	public CommandSearch() throws Exception {
 		storage = TNotesStorage.getInstance();

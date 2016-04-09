@@ -6,7 +6,7 @@ import tnote.object.TaskFile;
 import tnote.storage.TNotesStorage;
 
 public class CommandDelete {
-	TNotesStorage storage;
+	private TNotesStorage storage;
 
 	public CommandDelete() throws Exception {
 		storage = TNotesStorage.getInstance();
