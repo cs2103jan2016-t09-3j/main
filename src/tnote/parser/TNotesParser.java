@@ -64,7 +64,7 @@ public class TNotesParser {
 	public void execute() throws Exception{
 		String output = new String();
 		String input = new String();  
-		input = "add happy day every month";
+		input = "set task that haha done";
 		for (int i = 0; i < checkCommand(input).size(); i++){
 			output = checkCommand(input).get(i);
 			System.out.println(output);

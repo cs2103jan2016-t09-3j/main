@@ -1,4 +1,6 @@
 package tnote.logic;
+import java.util.logging.Logger;
+import tnote.util.log.TNoteLogger;
 
 import java.util.ArrayList;
 
@@ -18,6 +20,13 @@ public class CommandEdit {
 	private static final String EDIT_TYPE_STARTIME = "startTime";
 	private static final String EDIT_TYPE_TIME = "time";
 	private static final String EDIT_TYPE_NAME = "name";
+	private static final String EDIT_TYPE_ADD_FAIL = "did not manage to add to storage";
+	private static final String EDIT_TYPE_EDIT_FAIL = "did not edit";
+	
+	private static final String MESSAGE_LOG_ERROR = "Warning";
+	
+	private static final Logger logger = Logger.getGlobal();
+	
 	private TNotesStorage storage;
 
 	protected CommandEdit() throws Exception {
@@ -52,7 +61,7 @@ public class CommandEdit {
 			if (storage.addTask(currentFile)) {
 				return currentFile;
 			} else {
-				System.out.println("did not manage to add to storage");
+				System.out.println(EDIT_TYPE_ADD_FAIL);
 			}
 		} else if (type.equals(EDIT_TYPE_TIME) || type.equals(EDIT_TYPE_STARTIME)) {
 			storage.deleteTask(title);
@@ -61,7 +70,7 @@ public class CommandEdit {
 			if (storage.addTask(currentFile)) {
 				return currentFile;
 			} else {
-				System.out.println("did not manage to add to storage");
+				System.out.println(EDIT_TYPE_ADD_FAIL);
 			}
 		} else if (type.equals(EDIT_TYPE_ENDTIME)) {
 			storage.deleteTask(title);
@@ -70,7 +79,7 @@ public class CommandEdit {
 			if (storage.addTask(currentFile)) {
 				return currentFile;
 			} else {
-				System.out.println("did not manage to add to storage");
+				System.out.println(EDIT_TYPE_ADD_FAIL);
 			}
 		} else if (type.equals(EDIT_TYPE_DATE) || type.equals(EDIT_TYPE_STARTDATE)) {
 			storage.deleteTask(title);
@@ -78,7 +87,7 @@ public class CommandEdit {
 			if (storage.addTask(currentFile)) {
 				return currentFile;
 			} else {
-				System.out.println("did not manage to add to storage");
+				System.out.println(EDIT_TYPE_ADD_FAIL);
 			}
 		} else if (type.equals(EDIT_TYPE_ENDATE)) {
 			storage.deleteTask(title);
@@ -86,7 +95,7 @@ public class CommandEdit {
 			if (storage.addTask(currentFile)) {
 				return currentFile;
 			} else {
-				System.out.println("did not manage to add to storage");
+				System.out.println(EDIT_TYPE_ADD_FAIL);
 			}
 		} else if (type.equals(EDIT_TYPE_DETAILS)) {
 			storage.deleteTask(title);
@@ -94,7 +103,7 @@ public class CommandEdit {
 			if (storage.addTask(currentFile)) {
 				return currentFile;
 			} else {
-				System.out.println("did not manage to add to storage");
+				System.out.println(EDIT_TYPE_ADD_FAIL);
 			}
 		} else if (type.equals(EDIT_TYPE_IMPORTANT) || type.equals(EDIT_TYPE_IMPORTANCE)) {
 			storage.deleteTask(title);
@@ -106,10 +115,10 @@ public class CommandEdit {
 			if (storage.addTask(currentFile)) {
 				return currentFile;
 			} else {
-				System.out.println("did not manage to add to storage");
+				System.out.println(EDIT_TYPE_ADD_FAIL);
 			}
 		} else {
-			System.out.println("did not edit");
+			System.out.println(EDIT_TYPE_EDIT_FAIL);
 		}
 		return currentFile;
 
@@ -138,7 +147,7 @@ public class CommandEdit {
 			if (storage.addRecurringTask(recurTask)) {
 				return recurTask;
 			} else {
-				System.out.println("did not manage to add to storage");
+				System.out.println(EDIT_TYPE_ADD_FAIL);
 			}
 		} else if (type.equals(EDIT_TYPE_TIME)) {
 			storage.deleteRecurringTask(title);
@@ -147,7 +156,8 @@ public class CommandEdit {
 			if (storage.addRecurringTask(recurTask)) {
 				return recurTask;
 			} else {
-				throw new Exception("did not add to storage");
+				logger.warning(MESSAGE_LOG_ERROR);
+				throw new Exception(EDIT_TYPE_ADD_FAIL);
 			}
 		} else if (type.equals(EDIT_TYPE_STARTIME)) {
 			storage.deleteTask(title);
@@ -156,7 +166,8 @@ public class CommandEdit {
 			if (storage.addRecurringTask(recurTask)) {
 				return recurTask;
 			} else {
-				throw new Exception("did not add to storage");
+				logger.warning(MESSAGE_LOG_ERROR);
+				throw new Exception(EDIT_TYPE_ADD_FAIL);
 			}
 		} else if (type.equals(EDIT_TYPE_ENDTIME)) {
 			storage.deleteTask(title);
@@ -164,7 +175,8 @@ public class CommandEdit {
 			if (storage.addRecurringTask(recurTask)) {
 				return recurTask;
 			} else {
-				throw new Exception("did not add to storage");
+				logger.warning(MESSAGE_LOG_ERROR);
+				throw new Exception(EDIT_TYPE_ADD_FAIL);
 			}
 		} else if (type.equals(EDIT_TYPE_STARTDATE)) {
 			storage.deleteTask(title);
@@ -172,7 +184,8 @@ public class CommandEdit {
 			if (storage.addRecurringTask(recurTask)) {
 				return recurTask;
 			} else {
-				throw new Exception("did not add to storage");
+				logger.warning(MESSAGE_LOG_ERROR);
+				throw new Exception(EDIT_TYPE_ADD_FAIL);
 			}
 		} else if (type.equals(EDIT_TYPE_ENDATE)) {
 			storage.deleteTask(title);
@@ -180,7 +193,8 @@ public class CommandEdit {
 			if (storage.addRecurringTask(recurTask)) {
 				return recurTask;
 			} else {
-				throw new Exception("did not add to storage");
+				logger.warning(MESSAGE_LOG_ERROR);
+				throw new Exception(EDIT_TYPE_ADD_FAIL);
 			}
 		} else if (type.equals(EDIT_TYPE_DETAILS)) {
 			storage.deleteTask(title);
@@ -188,7 +202,8 @@ public class CommandEdit {
 			if (storage.addRecurringTask(recurTask)) {
 				return recurTask;
 			} else {
-				throw new Exception("did not add to storage");
+				logger.warning(MESSAGE_LOG_ERROR);
+				throw new Exception(EDIT_TYPE_ADD_FAIL);
 			}
 		} else if (type.equals(EDIT_TYPE_IMPORTANT)) {
 			storage.deleteTask(title);
@@ -201,7 +216,7 @@ public class CommandEdit {
 				return recurTask;
 			}
 		} else
-			throw new Exception("did not edit");
+			throw new Exception(EDIT_TYPE_EDIT_FAIL);
 		return recurTask;
 	}
 }
