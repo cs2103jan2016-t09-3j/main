@@ -41,9 +41,9 @@ public class TNotesParserView {
 			};
 	private static final int NUM_INITIALISATION = 0;
 	
-	TNotesParserTime time;
-	TNotesParserDate date;
-	TNotesParserQuery query;
+	private TNotesParserTime time;
+	private TNotesParserDate date;
+	private TNotesParserQuery query;
 	
 	public TNotesParserView(){
 		time = new TNotesParserTime();
@@ -120,12 +120,12 @@ public class TNotesParserView {
 		}
 		else{
 			viewList.clear();
+			logger.warning(MESSAGE_LOG_ERROR); 	
 			throw new Exception(MESSAGE_INVALID_VIEW_STRING);
 		}			
 		if(viewList.isEmpty()){
 			viewList.add(query.taskNameFloat(viewArr).trim());
 		}
-		logger.warning(MESSAGE_LOG_ERROR); 	
 		return viewList;
 	}
 	private int isKeyWord(String word){

@@ -45,9 +45,9 @@ public class CommandView {
 	private static final String PARSER_DATE_FORMAT = "yyyy-MM-dd";
 	private static final String DAY_SHORTFORM = "EEE";
 	
-	DateFormat df = new SimpleDateFormat(PARSER_DATE_FORMAT);
+	private DateFormat df = new SimpleDateFormat(PARSER_DATE_FORMAT);
 
-	public CommandView() throws Exception {
+	protected CommandView() throws Exception {
 		storage = TNotesStorage.getInstance();
 	}
 
@@ -84,7 +84,7 @@ public class CommandView {
 	 * @return - the inputs with an additional keyword to determine the type of
 	 *         view.
 	 */
-	public ArrayList<String> sortViewTypes(ArrayList<String> fromParser) {
+	protected ArrayList<String> sortViewTypes(ArrayList<String> fromParser) {
 		ArrayList<String> stringList = new ArrayList<String>();
 		String viewType = fromParser.get(INDEX_ONE);
 		if (fromParser.size() == 3) {
@@ -113,7 +113,7 @@ public class CommandView {
 	 * @return - returns the task with the same name, else returns null
 	 * @throws Exception
 	 */
-	public TaskFile viewTask(String taskToBeDisplayed) throws Exception {
+	protected TaskFile viewTask(String taskToBeDisplayed) throws Exception {
 		ArrayList<String> stringList = storage.readFromMasterFile();
 
 		for (String text : stringList) {
@@ -134,7 +134,7 @@ public class CommandView {
 	 * @return - an ArrayList of TaskFiles that are done
 	 * @throws Exception
 	 */
-	public ArrayList<TaskFile> viewDoneList() throws Exception {
+	protected ArrayList<TaskFile> viewDoneList() throws Exception {
 		ArrayList<String> nameList = new ArrayList<String>();
 		ArrayList<TaskFile> doneList = new ArrayList<TaskFile>();
 		nameList = storage.readFromMasterFile();
@@ -155,7 +155,7 @@ public class CommandView {
 	 * @return - ArrayList of TaskFiles over the dates
 	 * @throws Exception
 	 */
-	public ArrayList<TaskFile> viewManyDatesList(ArrayList<String> dates) throws Exception {
+	protected ArrayList<TaskFile> viewManyDatesList(ArrayList<String> dates) throws Exception {
 		Date startDate;
 		Date endDate;
 		Calendar cal = Calendar.getInstance();
@@ -201,7 +201,7 @@ public class CommandView {
 	 * @return - ArrayList of TaskFiles with the same dates as the date input
 	 * @throws Exception
 	 */
-	public ArrayList<TaskFile> viewDateList(String date) throws Exception {
+	protected ArrayList<TaskFile> viewDateList(String date) throws Exception {
 		if (date.trim().equals(TODAY)) {
 			Calendar cal = Calendar.getInstance();
 			String today = df.format(cal.getTime());
@@ -237,7 +237,7 @@ public class CommandView {
 	 * @return - ArrayList of TaskFiles which are floating
 	 * @throws Exception
 	 */
-	public ArrayList<TaskFile> viewFloatingList() throws Exception {
+	protected ArrayList<TaskFile> viewFloatingList() throws Exception {
 		ArrayList<String> stringList = storage.readFromFloatingFile();
 		ArrayList<TaskFile> taskListToBeDisplayed = new ArrayList<TaskFile>();
 		for (String text : stringList) {
@@ -254,7 +254,7 @@ public class CommandView {
 	 * @return - ArrayList of TaskFiles which have passed their deadline
 	 * @throws Exception
 	 */
-	public ArrayList<TaskFile> callOverdueTasks() throws Exception {
+	protected ArrayList<TaskFile> callOverdueTasks() throws Exception {
 		ArrayList<TaskFile> listOfOverdueTasks = storage.retrieveOverdueTasks();
 		for (TaskFile newTask : listOfOverdueTasks) {
 			if (newTask.getName().contains(STRING_UNDERSCORE)) {

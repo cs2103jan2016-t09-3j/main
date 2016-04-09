@@ -56,11 +56,11 @@ public class CommandAdd {
 	
 	private TNotesStorage storage;
 
-	public CommandAdd() throws Exception {
+	protected CommandAdd() throws Exception {
 		storage = TNotesStorage.getInstance();
 	}
 
-	public TaskFile addTask(ArrayList<String> fromParser) throws Exception {
+	protected TaskFile addTask(ArrayList<String> fromParser) throws Exception {
 		try {
 			System.out.println("addcheck " + fromParser.toString());
 			ArrayList<String> stringList = storage.readFromMasterFile();

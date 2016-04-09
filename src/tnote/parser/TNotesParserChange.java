@@ -2,7 +2,6 @@
 package tnote.parser;
 import java.util.logging.Logger;
 import tnote.log.TNoteLogger;
-
 import java.util.ArrayList;
 /**
  * This class manages the input String after command change
@@ -35,7 +34,6 @@ public class TNotesParserChange {
 	 */
 	public ArrayList <String> changeCommand(String[] changeArr) throws Exception{
 		ArrayList<String> list = new ArrayList<String>();
-		//System.out.println(changeArr[0]);
 		try{
 			list.add(MESSAGE_KEYWORD_CHANGE_DIRECTORY);
 			for (int  i= NUM_INITIALISATION;  i< changeArr.length ; i++){
@@ -44,9 +42,9 @@ public class TNotesParserChange {
 				}
 			}
 		}catch(Exception e){
+			logger.warning(MESSAGE_LOG_ERROR); 
 			throw new Exception(MESSAGE_INVALIDE_DIRECTORY);
 		}	
-		logger.warning(MESSAGE_LOG_ERROR); 
 		return list;
 
 	}

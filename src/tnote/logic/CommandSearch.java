@@ -12,7 +12,7 @@ public class CommandSearch {
 	private static final String STRING_UNDERSCORE = "_";
 	private	TNotesStorage storage;
 
-	public CommandSearch() throws Exception {
+	protected CommandSearch() throws Exception {
 		storage = TNotesStorage.getInstance();
 	}
 	/**
@@ -21,7 +21,7 @@ public class CommandSearch {
 	 * @return - the task file object with the name of the param.
 	 * @throws Exception
 	 */
-	public TaskFile searchSingleTask(String lineOfText) throws Exception {
+	protected TaskFile searchSingleTask(String lineOfText) throws Exception {
 		ArrayList<String> masterList = storage.readFromMasterFile();
 		TaskFile oldTask = new TaskFile();
 		for (String text : masterList) {
@@ -37,7 +37,7 @@ public class CommandSearch {
 	 * @return - the task file objects that either contain the phrases, or start with the letters
 	 * @throws Exception
 	 */
-	public ArrayList<TaskFile> searchTask(ArrayList<String> lineOfText) throws Exception {
+	protected ArrayList<TaskFile> searchTask(ArrayList<String> lineOfText) throws Exception {
 		for (String text : lineOfText) {
 			System.out.println(text);
 		}

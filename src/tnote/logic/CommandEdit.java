@@ -20,11 +20,11 @@ public class CommandEdit {
 	private static final String EDIT_TYPE_NAME = "name";
 	private TNotesStorage storage;
 
-	public CommandEdit() throws Exception {
+	protected CommandEdit() throws Exception {
 		storage = TNotesStorage.getInstance();
 	}
 
-	public TaskFile edit(ArrayList<String> fromParser) throws Exception {
+	protected TaskFile edit(ArrayList<String> fromParser) throws Exception {
 		TaskFile currentTask = storage.getTaskFileByName(fromParser.get(0).trim());
 		if (currentTask.getIsRecurring()) {
 			currentTask = editRecurringTask(fromParser);
@@ -34,7 +34,7 @@ public class CommandEdit {
 		return currentTask;
 	}
 
-	public TaskFile editTask(ArrayList<String> fromParser) throws Exception {
+	protected TaskFile editTask(ArrayList<String> fromParser) throws Exception {
 
 		String type = fromParser.get(1).trim();
 		String title = fromParser.get(0).trim();
@@ -115,7 +115,7 @@ public class CommandEdit {
 
 	}
 
-	public TaskFile editRecurringTask(ArrayList<String> fromParser) throws Exception {
+	protected TaskFile editRecurringTask(ArrayList<String> fromParser) throws Exception {
 		String type = fromParser.get(1).trim();
 		String title = fromParser.get(0).trim();
 		String newText = fromParser.get(2).trim();

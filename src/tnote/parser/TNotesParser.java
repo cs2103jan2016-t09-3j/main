@@ -27,16 +27,14 @@ public class TNotesParser {
 		ADD, VIEW, EDIT, DELETE, SEARCH, SORT, HELP, EXIT, SET, CHANGE, UNDO, REDO
 
 	}
-	TNotesParserAdd add;
-	TNotesParserChange change;
-	TNotesParserDelete delete;
-	TNotesParserSet set;
-	TNotesParserSort sort;
-	TNotesParserSearch search;
-	TNotesParserTime time;
-	TNotesParserDate date;
-	TNotesParserView view;
-	TNotesParserEdit edit;
+	private TNotesParserAdd add;
+	private TNotesParserChange change;
+	private TNotesParserDelete delete;
+	private TNotesParserSet set;
+	private TNotesParserSort sort;
+	private TNotesParserSearch search;
+	private TNotesParserView view;
+	private TNotesParserEdit edit;
 	
 	public TNotesParser() throws Exception{
 		TNoteLogger.setUp();
@@ -46,8 +44,6 @@ public class TNotesParser {
 		set = new TNotesParserSet();
 		sort = new TNotesParserSort();
 		search = new TNotesParserSearch();
-		time = new TNotesParserTime();
-		date = new TNotesParserDate();
 		view = new TNotesParserView();
 		edit = new TNotesParserEdit();
 	}
@@ -67,7 +63,7 @@ public class TNotesParser {
 	public void execute() throws Exception{
 		String output = new String();
 		String input = new String();  
-		input = "change directory location to c:/file";
+		input = "add happy day compulsory";
 		for (int i = 0; i < checkCommand(input).size(); i++){
 			output = checkCommand(input).get(i);
 			System.out.println(output);

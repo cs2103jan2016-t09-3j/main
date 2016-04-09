@@ -37,7 +37,7 @@ public class TNotesParserTime {
 	private static final String MESSAGE_INVALID_TIME_RANGE = "Invalid time range!";
 	private static final String MESSAGE_STANDARD_DATE_FORMAT = "yyyy-MM-dd";
 	private static final String MESSAGE_STANDARD_DATE_TIME_FORMAT = "E, y-M-d 'at' h:m:s a z";
-	private static final String MESSAGE_LOG_ERROR = "test Warning in parser command";
+	private static final String MESSAGE_LOG_ERROR = "Warning in check time";
 	
 	private static int NUM_GET_FIRST_DATE = 0;
 	private static int NUM_INITIALISATION = 0;
