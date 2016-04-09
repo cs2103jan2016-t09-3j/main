@@ -7,6 +7,8 @@ import tnote.storage.TNotesStorage;
 
 public class CommandSearch {
 
+	private static final int START_OF_STRING = 0;
+	private static final int ARRAYLIST_INDEX = 1;
 	private static final String STRING_UNDERSCORE = "_";
 	TNotesStorage storage;
 
@@ -42,17 +44,17 @@ public class CommandSearch {
 		ArrayList<TaskFile> searchTaskList = new ArrayList<TaskFile>();
 		ArrayList<String> masterList = storage.readFromMasterFile();
 		for (int i = 0; i < lineOfText.size(); i++) {
-			if (lineOfText.size() == 1) {
+			if (lineOfText.size() == ARRAYLIST_INDEX) {
 				for (String text : masterList) {
 					if (text.contains(lineOfText.get(i))) {
 						searchTaskList.add(storage.getTaskFileByName(text));
 					}
 				}
 			} else {
-				if (lineOfText.get(i).length() < 1) {
+				if (lineOfText.get(i).length() < ARRAYLIST_INDEX) {
 					System.out.println("you are searching null");
 					break;
-				} else if (lineOfText.get(i).length() == 1) {
+				} else if (lineOfText.get(i).length() == ARRAYLIST_INDEX) {
 					for (String text : masterList) {
 						if (text.startsWith(lineOfText.get(i))) {
 							TaskFile searchedTask = storage.getTaskFileByName(text); 
@@ -75,7 +77,7 @@ public class CommandSearch {
 		}
 		for (TaskFile newTask : searchTaskList) {
 			if (newTask.getName().contains(STRING_UNDERSCORE)) {
-				String formatterName = newTask.getName().substring(0, newTask.getName().indexOf(STRING_UNDERSCORE));
+				String formatterName = newTask.getName().substring(START_OF_STRING, newTask.getName().indexOf(STRING_UNDERSCORE));
 				newTask.setName(formatterName);
 			}
 			
