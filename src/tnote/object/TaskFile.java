@@ -14,14 +14,14 @@ public class TaskFile implements Comparable<TaskFile>, Cloneable {
 
 	private static final String DEFAULT_TIME = "23:59";
 
-	protected String name;
-	protected String startDate;
-	protected String startTime;
-	protected boolean isRecurr;
+	private String name;
+	private String startDate;
+	private String startTime;
+	private boolean isRecurr;
 	private String endDate;
 	private String endTime;
 	private String details;
-	protected boolean importance;
+	private boolean importance;
 
 	private boolean isDone;
 
