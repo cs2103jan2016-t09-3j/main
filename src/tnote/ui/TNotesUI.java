@@ -39,8 +39,8 @@ public class TNotesUI {
 	// Messages
 	private static final String MESSAGE_OVERDUE_TITLE = "====OVERDUE TASKS====\n";
 	private static final String MESSAGE_NOTES_TITLE = "====NOTES====\n";
-	private static final String MESSAGE_NO_NOTES_TITLE = "====NO NOTES====\n";
 	private static final String MESSAGE_DATE_TITLE = "=======%s=======\n";
+	private static final String MESSAGE_HISTORY_TITLE = "====HISTORY====\n";
 
 	private static final String MESSAGE_UPDATE_SCHEDULE = "Schedule has been updated.\n";
 	private static final String MESSAGE_SCHEDULE_ONE_DATE = "You have changed to view schedule for %s.\n";
@@ -130,7 +130,6 @@ public class TNotesUI {
 		String commandString;
 		ArrayList<String> userCommandSplit = new ArrayList<String>();
 
-		// ?? should it be like that?
 		try {
 			userCommandSplit = parser.checkCommand(userInput);
 		} catch (ParseException e) {
@@ -374,6 +373,7 @@ public class TNotesUI {
 		else if (deleteType.equals("all")) {
 			if (logic.clearAll()) {
 				resultString += String.format(MESSAGE_DELETE_ALL);
+				updateMainScreen("today");
 			}
 		}
 
@@ -466,32 +466,15 @@ public class TNotesUI {
 		}
 
 		else if (viewTypeString.equals("isViewHistory")) {
-			// String historyString ="";
-			// try {
-			// if (logic.hasHistoryList()) {
-			// ArrayList<TaskFile> arrHistory = new ArrayList<TaskFile>();
-			// arrHistory = logic.viewHistoryList();
-			//
-			// historyString = " ====HISTORY====\n";
-			// for (int i = 0; i < arrHistory.size(); i++) {
-			// historyString += i + 1 + ". ";
-			// if (arrHistory.get(i).getImportance()) {
-			// historyString += "[IMPORTANT] ";
-			// } else {
-			// historyString += arrHistory.get(i).getName() + "\n";
-			// }
-			// }
-			// historyString += "\n";
-			// } else {
-			// historyString = " ====EMPTY HISTORY====\n\n";
-			// }
-
-			// } catch (Exception e) {
-			// historyString = e.getMessage();
-			// }
-			//
-			// return historyString;
-			// }
+			ArrayList<TaskFile> historyList;
+			
+			formatViewString = String.format(MESSAGE_HISTORY_TITLE);
+			try {
+			historyList = logic.viewDoneList();
+			formatViewString += printTaskList(historyList);
+			} catch (Exception e) {
+			formatViewString = e.getMessage();
+			}
 		}
 		return formatViewString;
 	}
@@ -729,15 +712,14 @@ public class TNotesUI {
 	// Display floating tasks
 	public String displayFloats() {
 		String floatString = "";
+		
+		floatString = String.format(MESSAGE_NOTES_TITLE);
 		try {
 			if (logic.hasFloatingList()) {
 				ArrayList<TaskFile> arrayFloat = new ArrayList<TaskFile>();
-				arrayFloat = logic.viewFloatingList();
-				floatString = String.format(MESSAGE_NOTES_TITLE);
+				arrayFloat = logic.viewFloatingList();	
 				floatString += printFloatList(floatString, arrayFloat);
-			} else {
-				floatString = String.format(MESSAGE_NO_NOTES_TITLE);
-			}
+			} 
 		} catch (Exception e) {
 			floatString = e.getMessage();
 
