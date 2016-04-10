@@ -16,7 +16,8 @@ import org.junit.Test;
 public class TNotesParserTest {
 	private static final String TEXT_EXIT = "exit command successful";
 	public static ArrayList<String> listExit = new ArrayList<String>();
-	private static final List<String> listAdd1 = Arrays.asList( "call mom", "13:00");
+	private static final List<String> listAdd1 = 
+			Arrays.asList("add","call mom", "13:00");
 	private static final List<String> listAdd2 = 
 			Arrays.asList("add", "call mom", "2016-03-02", "15:00","19:00");
 	private static final List<String> listAdd3 = 
@@ -155,8 +156,8 @@ public class TNotesParserTest {
 	@Test
 	public void checkCommandAdd() throws Exception{
 		TNotesParser tester = new TNotesParser(); 		
-//		assertEquals("i want to test", listAdd1, tester.addCommand("call mom at 1pm"));
-//		System.out.println("1. call mom at 1pm (debug)");	
+		assertEquals("i want to test", listAdd1, tester.checkCommand("add call mom at 1pm"));
+		System.out.println("1. add call mom at 1pm (debug)");	
 		
 		assertEquals("i want to test", listAdd2, tester.checkCommand("add call mom due 2-3-2016 at 15:00 to 19:00"));
 		System.out.println("2. add call mom due 2-3-2016 at 15:00 to 19:00(debug)");	
@@ -293,12 +294,6 @@ public class TNotesParserTest {
 		System.out.println("4. edit call mom importance yes");
 	}
 	
-//	@Test
-//	public void checkCommand() throws Exception{
-//		TNotesParser tester = new TNotesParser(); 		
-//		assertEquals("i want to test", list1, tester.checkCommand("a"));
-//		System.out.println("1. invalid command testing");	
-//	}
 	
 	@Test
 	public void checkCommandView() throws Exception{

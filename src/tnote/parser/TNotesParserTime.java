@@ -12,7 +12,6 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import org.ocpsoft.prettytime.nlp.PrettyTimeParser;
-
 import tnote.util.log.TNoteLogger;
 
 /**
@@ -109,7 +108,8 @@ public class TNotesParserTime {
 				return parsedTime.toString();
 			}
 		}
-		logger.warning(MESSAGE_LOG_ERROR); 	
+		//if the input is not a time
+		logger.warning(MESSAGE_LOG_ERROR);
 		return MESSAGE_NULL_STRING;
 	}
 	
@@ -121,6 +121,7 @@ public class TNotesParserTime {
 			time = LocalTime.parse(timeString, formatter);
 			return time;
 		} catch (DateTimeException e) {
+			logger.warning(MESSAGE_LOG_ERROR); 	
 			return null;
 		}
 	
@@ -241,6 +242,4 @@ public class TNotesParserTime {
 			return null;
 		}
 	}
-	
-
 }

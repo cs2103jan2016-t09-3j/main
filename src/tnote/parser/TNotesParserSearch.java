@@ -48,7 +48,6 @@ public class TNotesParserSearch {
 			}
 			return list;
 		}
-		//return list;
 
      }
 }

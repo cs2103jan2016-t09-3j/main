@@ -102,7 +102,7 @@ public class TNotesParserDate {
 		return monthString;
 	}
 	
-	protected Month compareMonthFormat(String monthString, String pattern) {
+	private Month compareMonthFormat(String monthString, String pattern) {
 		assert pattern != null : MESSAGE_INVALID_MONTH;
 		try {
 			DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern);
@@ -121,7 +121,7 @@ public class TNotesParserDate {
 	 * @return	week days with the correct format
 	 * @throws DateTimeException A null exception will be thrown 
 	 */
-	 String formatWeekDay(String weekDayInput) {
+	 protected String formatWeekDay(String weekDayInput) {
 		String dayFormat = new String();
 		String weekDay = capTheFirstChar(weekDayInput);
 		String weekDayString = new String();
@@ -145,7 +145,7 @@ public class TNotesParserDate {
 		return weekDayString;
 	}
 	
-	 protected DayOfWeek compareWeekDayFormat(String dateString, String pattern) {
+	 private DayOfWeek compareWeekDayFormat(String dateString, String pattern) {
 		assert pattern != null : MESSAGE_INVALID_WEEKDAY;
 		try {
 			DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern);
@@ -179,6 +179,12 @@ public class TNotesParserDate {
 				return "day";
 			case "month" :
 				return "month";
+			case "noon" :
+				return "noon";
+			case "afternoon" :
+				return "afternoon";
+			case "evening" :
+				return "evening";
 			default   :
 				return "";
 		}	

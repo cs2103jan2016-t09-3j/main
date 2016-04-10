@@ -46,7 +46,7 @@ public class TNotesParserSort{
 			return sortList;
 		}
 	}
-	}
+}
 
 
 

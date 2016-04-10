@@ -54,24 +54,6 @@ public class TNotesParser {
 		public Object parse(String input);
 	}
 	
-	public static void main(String[] args) throws Exception{
-		TNotesParser parser = new TNotesParser();
-		parser.execute();
-		
-	}
-	
-	//Must show the level of testing
-	public void execute() throws Exception{
-		String output = new String();
-		String input = new String();  
-		input = "set task that haha done";
-		for (int i = 0; i < checkCommand(input).size(); i++){
-			output = checkCommand(input).get(i);
-			System.out.println(output);
-		}
-	}
-	
-	
 	/**
 	 * Return an ArrayList that contains all the contents.
 	 * If valid task commands are found, contents in the list are updated.

@@ -1,7 +1,6 @@
 //@@author A0131149
 package tnote.parser;
 
-import java.util.logging.Logger;
 import java.util.ArrayList;
 
 /**
@@ -22,13 +21,13 @@ public class TNotesParserEdit {
 		date = new TNotesParserDate();
 		query = new TNotesParserQuery();
 	}
-	private static final String MESSAGE_LOG_ERROR = "test Warning in parser command";
+	//private static final String MESSAGE_LOG_ERROR = "test Warning in parser command";
 	
 	private static int NUM_NEXT_STR = 1;
 	private static int NUM_START_FROM_SECOND_STR = 1;
 	private static final int NUM_INTIALISATION = 0;
 	
-	private static final Logger logger = Logger.getGlobal();
+	//private static final Logger logger = Logger.getGlobal();
 	
 	/**
 	 * Return an ArrayList that contains the contents after the command word 
@@ -78,7 +77,7 @@ public class TNotesParserEdit {
 		if(editList.isEmpty()){
 			editList.add(query.taskNameFloat(editArr));
 		}
-		logger.warning(MESSAGE_LOG_ERROR);
+
 		return editList;
 	}
 	

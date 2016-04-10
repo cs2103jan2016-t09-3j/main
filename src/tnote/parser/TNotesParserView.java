@@ -1,9 +1,5 @@
 //@@author A0131149
 package tnote.parser;
-import java.util.logging.Logger;
-
-import tnote.util.log.TNoteLogger;
-
 import java.util.ArrayList;
 
 
@@ -21,9 +17,7 @@ public class TNotesParserView {
 
 	private static final String MESSAGE_NULL_STRING = "";
 	private static final String MESSAGE_NULL_ARRAY = "The input array for view is null";
-	private static final String MESSAGE_INVALID_VIEW_STRING = "Invalid view string!";
 	private static final String MESSAGE_NULL_INPUT_STRING = "Invald input String!";
-	private static final String MESSAGE_LOG_ERROR = "test Warning in parser command";
 	
 	private static int NUM_PREVIOUS_STR = 1;
 	private static int NUM_NEXT_STR = 1;
@@ -35,9 +29,7 @@ public class TNotesParserView {
 	private static int NUM_SECOND_WORD = 1;
 	private static int NUM_START_FROM_SECOND_STR = 1;
 	private static final int NUM_INTIALISATION = 0;
-	
-	private static final Logger logger = Logger.getGlobal();
-	
+
 	private static final String keyWord [] = {
 			"from", "to", "at", "by", "due"
 			};
@@ -59,7 +51,6 @@ public class TNotesParserView {
 	 * 
 	 * @param viewArr	An Array input from the user.
 	 * @return	The an ArrayList of split Strings.
-	 * @throws Exception 
 	 */
 	protected ArrayList <String> viewCommand(String[] viewArr) throws Exception{
 		ArrayList<String> viewList = new ArrayList<String>();
@@ -122,8 +113,6 @@ public class TNotesParserView {
 		}
 		else{
 			viewList.clear();
-			logger.warning(MESSAGE_LOG_ERROR); 	
-			throw new Exception(MESSAGE_INVALID_VIEW_STRING);
 		}			
 		if(viewList.isEmpty()){
 			viewList.add(query.taskNameFloat(viewArr).trim());
@@ -154,8 +143,7 @@ public class TNotesParserView {
 					index = isKeyWord(arr[i+NUM_NEXT_STR]);
 				}
 			}
-		}
-		logger.warning(MESSAGE_LOG_ERROR); 	
+		}	
 		return index;
 		
 	}
@@ -176,7 +164,6 @@ public class TNotesParserView {
 			list.add(date.compareWeekDayMonth(arr[NUM_SECOND_WORD]));
 			
 		}
-		logger.warning(MESSAGE_LOG_ERROR); 	
 		return list;
 	}
 }

@@ -59,6 +59,7 @@ public class TNotesParserQuery {
 			}
 		}
 		}catch(Exception e){
+			logger.warning(MESSAGE_LOG_ERROR);
 			throw new Exception(MESSAGE_NULL_INPUT_ARRAY);
 		}
 		if(indexThe<indexKey){
@@ -74,15 +75,13 @@ public class TNotesParserQuery {
 	 * 
 	 * @param arr	An Array input from the user.
 	 * @return String
-	 * @throws Exception 
 	 */
 	protected String taskNameFloat(String[] arr)throws Exception {
 		String task = new String();
 		for(int j=NUM_START_FROM_SECOND_STR;j<arr.length;j++ ){
 			task += arr[j] + " ";
 		}	
-		logger.warning(MESSAGE_LOG_ERROR); 
-		return task;
+		return task.trim();
 	}
 	/**
 	 * Return an Integer that indicate the presence of 
@@ -90,7 +89,6 @@ public class TNotesParserQuery {
 	 * 
 	 * @param arr	An Array input from the user.
 	 * @return Integer
-	 * @throws Exception 
 	 */
 	protected int checkViewTo(String[] arr) throws Exception{
 		for(int i =NUM_INITIALISATION; i<arr.length;i++){
@@ -98,7 +96,6 @@ public class TNotesParserQuery {
 				return NUM_TRUE;
 			}
 		}
-		logger.warning(MESSAGE_LOG_ERROR); 
 		return NUM_FALSE;
 	}
 	/**
@@ -107,7 +104,6 @@ public class TNotesParserQuery {
 	 * 
 	 * @param arr	An Array input from the user.
 	 * @return Integer
-	 * @throws Exception 
 	 */
 	protected int findImpt(String[] arr) throws Exception{
 		int index = NUM_INITIALISATION;
@@ -118,7 +114,6 @@ public class TNotesParserQuery {
 				}
 			}
 		}
-		logger.warning(MESSAGE_LOG_ERROR); 
 		return index;
 	}
 	/**
@@ -145,18 +140,14 @@ public class TNotesParserQuery {
 	 * @param arr An Array input from the user.
 	 * 		  count An integer that indicat the position of the key word
 	 * @return String The task name
-	 * @throws Exception 
 	 */
 	protected String taskNameString(String arr[], int count) throws Exception{
 		String task = new String();
+		task = "";
 		for(int i =NUM_START_FROM_SECOND_STR;i<count ;i++){
 			task += arr[i]+" ";
 		}		
-		logger.warning(MESSAGE_LOG_ERROR); 
-		return task;
+		return task.trim();
 	}
-
-
-
 
 }
