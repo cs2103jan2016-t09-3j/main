@@ -21,6 +21,7 @@ public class CommandDelete {
 	}
 
 	/**
+	 * Method to determine if deleting a recurring task or a normal task
 	 * 
 	 * @param fromParser
 	 *            - ArrayList of String inputs from parser
@@ -63,6 +64,8 @@ public class CommandDelete {
 	}
 
 	/**
+	 * Method for deleting recurring task, called by a recurring flag check in
+	 * delete task method
 	 * 
 	 * @param fromParser
 	 *            - the sorted inputs from the user

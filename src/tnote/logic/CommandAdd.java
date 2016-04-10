@@ -21,6 +21,10 @@ import tnote.util.exceptions.TaskExistsException;
 import tnote.util.exceptions.TimeClashException;
 
 public class CommandAdd {
+	private static final String TIME_CLASH_MSG = "There is a time clash";
+
+	private static final String ARRAYLISTCHECK = "addcheck ";
+
 	private static final String MESSAGE_LOG_ERROR = "Error adding to Storage";
 
 	private static final int DEFAULT_DAY_DURATION = 12;
@@ -72,14 +76,23 @@ public class CommandAdd {
 		storage = TNotesStorage.getInstance();
 	}
 
+	/**
+	 * 
+	 * Method that creates a TaskFile object from a variation of inputs and adds
+	 * it to storage.
+	 * 
+	 * @param fromParser
+	 *            - ArrayList of sorted inputs from the parser
+	 * @return - the newly added TaskFile object
+	 * @throws Exception
+	 */
 	protected TaskFile addTask(ArrayList<String> fromParser) throws Exception {
 
-		System.out.println("addcheck " + fromParser.toString());
+		logger.info(ARRAYLISTCHECK + fromParser.toString());
+
 		ArrayList<String> stringList = storage.readFromMasterFile();
 		TaskFile currentFile = new TaskFile();
-		if (stringList.isEmpty()) {
-			System.out.println("stringlist is empty");
-		}
+
 		String importance = new String();
 		String recurArgument = new String();
 		String recurDuration = new String();
@@ -108,6 +121,7 @@ public class CommandAdd {
 			String date = df.format(cal.getTime());
 			fromParser.set(fromParser.indexOf(TODAY), date);
 		}
+		
 		if (fromParser.contains(TOMORROW)) {
 			String date = df.format(cal.getTime()).toLowerCase();
 			cal.add(Calendar.DATE, INDEX_ONE);
@@ -123,8 +137,8 @@ public class CommandAdd {
 				fromParser.set(i, date);
 			}
 		}
+		logger.info(ARRAYLISTCHECK + fromParser.toString());
 
-		// System.out.println("adcheck 2" + fromParser.toString());
 		Iterator<String> aListIterator = fromParser.iterator();
 		while (aListIterator.hasNext()) {
 			String details = aListIterator.next();
@@ -154,6 +168,8 @@ public class CommandAdd {
 	}
 
 	/**
+	 * Method to check if the to be created object is important
+	 * 
 	 * @param fromParser
 	 *            - ArrayList of string inputs from parser
 	 * @param currentFile
@@ -167,6 +183,8 @@ public class CommandAdd {
 	}
 
 	/**
+	 * Method to check if the TaskFile object clashes with any task.
+	 * 
 	 * @param stringList
 	 *            - the current list of names inside the storage
 	 * @param currentFile
@@ -177,13 +195,11 @@ public class CommandAdd {
 	private void meetingClash(ArrayList<String> stringList, TaskFile currentFile) throws Exception, TimeClashException {
 		{
 			for (String savedTaskName : stringList) {
-				// System.out.println("2." + savedTaskName);
+				logger.info(savedTaskName);
 				TaskFile savedTask = storage.getTaskFileByName(savedTaskName);
 				if (savedTask.getIsMeeting()) {
 					if (hasTimingClash(currentFile, savedTask)) {
-						// task clashes, should not add
-						throw new TimeClashException("There is a time clash", currentFile.getName(),
-								savedTask.getName());
+						throw new TimeClashException(TIME_CLASH_MSG, currentFile.getName(), savedTask.getName());
 					}
 				}
 			}
@@ -191,6 +207,9 @@ public class CommandAdd {
 	}
 
 	/**
+	 * Method specifically for adding recurring task, called by a flag in the
+	 * addTask method
+	 * 
 	 * @param currentFile
 	 *            - the TaskFile object with the amended timings and names.
 	 * @param recurArgument
@@ -212,10 +231,12 @@ public class CommandAdd {
 		{
 			String taskDetails = currentFile.getDetails();
 			taskDetails += IT_RECURS_EVERY + recurArgument;
+			
 			if (!recurDuration.isEmpty() && !recurNumDuration.isEmpty()) {
 				taskDetails += FOR + recurNumDuration + " " + recurDuration;
 			}
-			System.out.println(taskDetails);
+			
+			logger.info(taskDetails);
 			currentFile.setDetails(taskDetails);
 
 			ArrayList<String> dateList = new ArrayList<String>();
@@ -437,6 +458,8 @@ public class CommandAdd {
 	}
 
 	/**
+	 * Method to format dates accordingly
+	 * 
 	 * @param fromParser
 	 *            - the current ArrayList of inputs from the parser, after all
 	 *            the sorting
@@ -555,6 +578,7 @@ public class CommandAdd {
 	}
 
 	/**
+	 * Method to get a specific date from a certain String word
 	 * 
 	 * @param dates
 	 *            - a specific day, Monday,Tuesday, etc
@@ -564,6 +588,7 @@ public class CommandAdd {
 		Calendar cal = Calendar.getInstance();
 		DateFormat shortForm = new SimpleDateFormat(DAY_SHORTFORM);
 		String date = shortForm.format(cal.getTime()).toLowerCase();
+		
 		while (!dates.contains(date)) {
 			cal.add(Calendar.DATE, INDEX_ONE);
 			date = shortForm.format(cal.getTime()).toLowerCase();
@@ -572,6 +597,7 @@ public class CommandAdd {
 	}
 
 	/**
+	 * Method to check if the timings of the 2 TaskFile objects clash
 	 * 
 	 * @param currentFile
 	 *            - the current task that is to be added

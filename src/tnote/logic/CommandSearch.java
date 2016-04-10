@@ -1,31 +1,43 @@
 package tnote.logic;
 
+import static org.junit.Assert.assertTrue;
+
 import java.util.ArrayList;
+import java.util.logging.Logger;
 
 import tnote.object.TaskFile;
 import tnote.storage.TNotesStorage;
 
 public class CommandSearch {
 
+	private static final String ELEMENT_NOT_FOUND = "No element found";
+	
 	private static final int START_OF_STRING = 0;
 	private static final int ARRAYLIST_INDEX = 1;
+	
 	private static final String STRING_UNDERSCORE = "_";
+	
 	private TNotesStorage storage;
+
+	private static final Logger logger = Logger.getGlobal();
 
 	protected CommandSearch() throws Exception {
 		storage = TNotesStorage.getInstance();
 	}
 
 	/**
+	 * Method to return a single task to view for UI
 	 * 
 	 * @param lineOfText
 	 *            - name of the task
-	 * @return - the task file object with the name of the param.
+	 * @return - the task file object with the name of the parameter.
 	 * @throws Exception
 	 */
 	protected TaskFile searchSingleTask(String lineOfText) throws Exception {
+
 		ArrayList<String> masterList = storage.readFromMasterFile();
 		TaskFile oldTask = new TaskFile();
+
 		for (String text : masterList) {
 			if (text.equals(lineOfText.trim())) {
 				oldTask = storage.getTaskFileByName(text);
@@ -35,6 +47,8 @@ public class CommandSearch {
 	}
 
 	/**
+	 * Method that searches for task that either contain the letter or phrase.
+	 * Up to two search items can be entered
 	 * 
 	 * @param lineOfText
 	 *            - name of the task
@@ -43,11 +57,12 @@ public class CommandSearch {
 	 * @throws Exception
 	 */
 	protected ArrayList<TaskFile> searchTask(ArrayList<String> lineOfText) throws Exception {
-		for (String text : lineOfText) {
-			System.out.println(text);
-		}
+
+		logger.info(lineOfText.toString());
+
 		ArrayList<TaskFile> searchTaskList = new ArrayList<TaskFile>();
 		ArrayList<String> masterList = storage.readFromMasterFile();
+
 		for (int i = 0; i < lineOfText.size(); i++) {
 			if (lineOfText.size() == ARRAYLIST_INDEX) {
 				for (String text : masterList) {
@@ -55,14 +70,17 @@ public class CommandSearch {
 						searchTaskList.add(storage.getTaskFileByName(text));
 					}
 				}
+
 			} else {
 				if (lineOfText.get(i).length() < ARRAYLIST_INDEX) {
-					System.out.println("you are searching null");
-					break;
+					logger.warning(ELEMENT_NOT_FOUND);
+					throw new Exception(ELEMENT_NOT_FOUND);
+
 				} else if (lineOfText.get(i).length() == ARRAYLIST_INDEX) {
 					for (String text : masterList) {
 						if (text.startsWith(lineOfText.get(i))) {
 							TaskFile searchedTask = storage.getTaskFileByName(text);
+
 							if (!searchTaskList.contains(searchedTask) && !searchedTask.getIsRecurring()) {
 								searchTaskList.add(searchedTask);
 							}
@@ -72,6 +90,7 @@ public class CommandSearch {
 					for (String text : masterList) {
 						if (text.contains(lineOfText.get(i))) {
 							TaskFile searchedTask = storage.getTaskFileByName(text);
+
 							if (!searchTaskList.contains(searchedTask) && !searchedTask.getIsRecurring()) {
 								searchTaskList.add(searchedTask);
 							}
@@ -82,6 +101,9 @@ public class CommandSearch {
 		}
 		for (TaskFile newTask : searchTaskList) {
 			if (newTask.getName().contains(STRING_UNDERSCORE)) {
+
+				assertTrue(newTask.getName().contains(STRING_UNDERSCORE));
+
 				String formatterName = newTask.getName().substring(START_OF_STRING,
 						newTask.getName().indexOf(STRING_UNDERSCORE));
 				newTask.setName(formatterName);

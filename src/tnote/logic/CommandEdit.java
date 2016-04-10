@@ -1,4 +1,5 @@
 package tnote.logic;
+
 import java.util.logging.Logger;
 import tnote.util.log.TNoteLogger;
 
@@ -9,6 +10,10 @@ import tnote.object.TaskFile;
 import tnote.storage.TNotesStorage;
 
 public class CommandEdit {
+	private static final int INDEX_TWO = 2;
+	private static final int INDEX_ZERO = 0;
+	private static final int INDEX_ONE = 1;
+	
 	private static final String STRING_YES = "yes";
 	private static final String EDIT_TYPE_IMPORTANCE = "importance";
 	private static final String EDIT_TYPE_IMPORTANT = "important";
@@ -22,19 +27,29 @@ public class CommandEdit {
 	private static final String EDIT_TYPE_NAME = "name";
 	private static final String EDIT_TYPE_ADD_FAIL = "did not manage to add to storage";
 	private static final String EDIT_TYPE_EDIT_FAIL = "did not edit";
-	
+
 	private static final String MESSAGE_LOG_ERROR = "Warning";
-	
+
 	private static final Logger logger = Logger.getGlobal();
-	
+
 	private TNotesStorage storage;
 
 	protected CommandEdit() throws Exception {
 		storage = TNotesStorage.getInstance();
 	}
 
+	/**
+	 * Method to determine whether the task to be edited is a recurring task or
+	 * a normal one
+	 * 
+	 * @param fromParser
+	 *            - ArrayList of sorted inputs from Parser
+	 * @return - TaskFile that was edited
+	 * @throws Exception
+	 */
 	protected TaskFile edit(ArrayList<String> fromParser) throws Exception {
-		TaskFile currentTask = storage.getTaskFileByName(fromParser.get(0).trim());
+		TaskFile currentTask = storage.getTaskFileByName(fromParser.get(INDEX_ZERO).trim());
+		
 		if (currentTask.getIsRecurring()) {
 			currentTask = editRecurringTask(fromParser);
 		} else {
@@ -43,13 +58,24 @@ public class CommandEdit {
 		return currentTask;
 	}
 
+	/**
+	 * Method to edit the task according to the the type of edit denoted
+	 * 
+	 * @param fromParser
+	 *            - ArrayList of inputs, determining whats the type, the task
+	 *            and what changes
+	 * @return - the TaskFile object that was amended
+	 * @throws Exception
+	 */
 	protected TaskFile editTask(ArrayList<String> fromParser) throws Exception {
 
-		String type = fromParser.get(1).trim();
-		String title = fromParser.get(0).trim();
-		String newText = fromParser.get(2).trim();
+		String type = fromParser.get(INDEX_ONE).trim();
+		String title = fromParser.get(INDEX_ZERO).trim();
+		String newText = fromParser.get(INDEX_TWO).trim();
 		TaskFile oldFile = storage.getTaskFileByName(title);
 		TaskFile currentFile = new TaskFile(oldFile);
+
+		logger.info(fromParser.toString());
 
 		if (currentFile.getIsRecurring()) {
 			editRecurringTask(fromParser);
@@ -124,16 +150,28 @@ public class CommandEdit {
 
 	}
 
+	/**
+	 * Method for editing recurring Task, called by edit through a recurring
+	 * flag check.
+	 * 
+	 * @param fromParser
+	 *            - ArrayList of inputs, determining whats the type, the task
+	 *            and what changes
+	 * @return - the edited TaskFile object
+	 * @throws Exception
+	 */
 	protected TaskFile editRecurringTask(ArrayList<String> fromParser) throws Exception {
-		String type = fromParser.get(1).trim();
-		String title = fromParser.get(0).trim();
-		String newText = fromParser.get(2).trim();
+		String type = fromParser.get(INDEX_ONE).trim();
+		String title = fromParser.get(INDEX_ZERO).trim();
+		String newText = fromParser.get(INDEX_TWO).trim();
 		TaskFile oldFile = storage.getTaskFileByName(title);
 		TaskFile currentFile = new TaskFile(oldFile);
 		RecurringTaskFile recurTask = new RecurringTaskFile(currentFile);
 		ArrayList<String> dateList = storage.getRecurTaskStartDateList(title);
 		ArrayList<String> endDateList = new ArrayList<String>();
 		recurTask.addRecurringStartDate(dateList);
+		
+		logger.info(fromParser.toString());
 
 		if (currentFile.getIsMeeting()) {
 			endDateList = storage.getRecurTaskEndDateList(title);

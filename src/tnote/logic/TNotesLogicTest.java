@@ -27,6 +27,8 @@ public class TNotesLogicTest {
 		assertEquals("Chemistry Test", tList.getName());
 		
 	}
+	
+	@Test
 	public void addTaskTest2() throws Exception{
 		ArrayList<String> list = new ArrayList<String>();
 		TaskFile tList = new TaskFile();
@@ -38,6 +40,8 @@ public class TNotesLogicTest {
 		assertEquals("Chemistry Test",0, tList.getName());
 		
 	}
+	
+	@Test
 	public void deleteTaskTest() throws Exception{
 		ArrayList<String> list = new ArrayList<String>();
 		TaskFile tList = new TaskFile();
@@ -47,6 +51,8 @@ public class TNotesLogicTest {
 
 		assertEquals("file does not exist", storage.getTaskFileByName("Math Test"));
 	}
+	
+	@Test
 	public void viewTask() throws Exception{
 		ArrayList<TaskFile> list = new ArrayList<TaskFile>();
 		ArrayList<String> checkList = new ArrayList<String>();

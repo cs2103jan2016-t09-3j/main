@@ -7,6 +7,7 @@ import java.util.Collections;
 import java.util.Stack;
 
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 
@@ -16,20 +17,25 @@ import tnote.object.TaskFile;
 import tnote.storage.TNotesStorage;
 
 public class TNotesLogic {
-	private static final String ADD = "add";
-	private static final String SET = "set";
-	private static final int ARRAYLISINDEXCORRECTION = 1;
-	private static final String DELETE = "delete";
+	private static final String UNDO_ERROR = "No action to undo";
+	private static final String REDO_ERROR = "No action to redo";
+	private static final String EDIT_COMMAND = "edit";
+	private static final String ADD_COMMAND = "add";
+	private static final String SET_COMMAND = "set";
+	private static final String DELETE_COMMAND = "delete";
 
-	private TNotesStorage storage;
+	private static final int INDEX_ZERO = 0;
+	private static final int ARRAYLISINDEXCORRECTION = 1;
 
 	private ArrayList<TaskFile> taskList = new ArrayList<TaskFile>();
 	private ArrayList<String> startDates = new ArrayList<String>();
 	private ArrayList<String> endDates = new ArrayList<String>();
+
 	private Stack<LogicCommand> undoStack;
 	private Stack<LogicCommand> redoStack;
 
 	private TaskFile currentFile = new TaskFile();
+	private TNotesStorage storage;
 
 	private CommandAdd cmdAdd = new CommandAdd();
 	private CommandView cmdView = new CommandView();
@@ -44,6 +50,8 @@ public class TNotesLogic {
 	}
 
 	/**
+	 * Method to push to stack a object that holds the add or delete command
+	 * along with its TaskFile
 	 * 
 	 * @param commandWord
 	 *            - the command of the task to be done,either add or delete
@@ -58,6 +66,8 @@ public class TNotesLogic {
 	}
 
 	/**
+	 * Method to push to stack a object that holds the add or delete command
+	 * along with its recurring TaskFile
 	 * 
 	 * @param commandWord
 	 *            - the command of the recurring task to be done,either add or
@@ -81,6 +91,8 @@ public class TNotesLogic {
 	}
 
 	/**
+	 * Method to push to stack a object that holds the edit command along with
+	 * its TaskFile
 	 * 
 	 * @param commandWord
 	 *            - the command of the task to be edited
@@ -98,6 +110,8 @@ public class TNotesLogic {
 	}
 
 	/**
+	 * Method to push to stack a object that holds the edit command along with
+	 * its recurring TaskFile
 	 * 
 	 * @param commandWord
 	 *            - the command of the recurring task to be edited
@@ -125,6 +139,7 @@ public class TNotesLogic {
 
 	// ==================================ADDCommand=====================================
 	/**
+	 * Method that calls the subclass method to add a task
 	 * 
 	 * @param fromParser
 	 *            - the sorted inputs from the user
@@ -132,13 +147,15 @@ public class TNotesLogic {
 	 * @throws Exception
 	 */
 	public TaskFile addTask(ArrayList<String> fromParser) throws Exception {
-		String commandWord = fromParser.remove(0);
+		String commandWord = fromParser.remove(INDEX_ZERO);
 		currentFile = cmdAdd.addTask(fromParser);
+
 		if (currentFile.getIsRecurring()) {
 			ArrayList<String> startDateList = storage.getRecurTaskStartDateList(currentFile.getName());
 			ArrayList<String> endDateList = storage.getRecurTaskEndDateList(currentFile.getName());
 			pushToStackRecur(commandWord, currentFile, startDateList, endDateList);
 		} else {
+			assertFalse(currentFile.getIsRecurring());
 			pushToStack(commandWord, currentFile);
 		}
 		return currentFile;
@@ -146,6 +163,7 @@ public class TNotesLogic {
 
 	// ================================DELETECommands=======================================
 	/**
+	 * Method to delete everything all task at once
 	 * 
 	 * @return - true if the storage clears , false if the storage is unable to
 	 *         clear
@@ -160,6 +178,7 @@ public class TNotesLogic {
 	}
 
 	/**
+	 * Method that calls the subclass method to delete a task
 	 * 
 	 * @param fromParser
 	 *            - the sorted inputs from the user
@@ -167,19 +186,22 @@ public class TNotesLogic {
 	 * @throws Exception
 	 */
 	public TaskFile deleteTask(ArrayList<String> fromParser) throws Exception {
-		String commandWord = fromParser.remove(0);
-		startDates = storage.getRecurTaskStartDateList(fromParser.get(0));
-		endDates = storage.getRecurTaskEndDateList(fromParser.get(0));
+		String commandWord = fromParser.remove(INDEX_ZERO);
+		startDates = storage.getRecurTaskStartDateList(fromParser.get(INDEX_ZERO));
+		endDates = storage.getRecurTaskEndDateList(fromParser.get(INDEX_ZERO));
 		currentFile = cmdDel.delete(fromParser);
+
 		if (currentFile.getIsRecurring()) {
 			pushToStackRecur(commandWord, currentFile, startDates, endDates);
 		} else {
+			assertFalse(currentFile.getIsRecurring());
 			pushToStack(commandWord, currentFile);
 		}
 		return currentFile;
 	}
 
 	/**
+	 * Method to delete a task based on a number of the current viewed list.
 	 * 
 	 * @param currentList
 	 *            - the currently viewed list by the user.
@@ -190,7 +212,7 @@ public class TNotesLogic {
 	 *             - Error message thrown when deleted file cannot be found
 	 */
 	public ArrayList<TaskFile> deleteIndex(ArrayList<TaskFile> currentList, int num) throws Exception {
-		String commandWord = DELETE;
+		String commandWord = DELETE_COMMAND;
 		TaskFile removedTask = currentList.remove(num - ARRAYLISINDEXCORRECTION);
 		storage.deleteTask(removedTask.getName());
 		pushToStack(commandWord, removedTask);
@@ -233,6 +255,7 @@ public class TNotesLogic {
 	}
 
 	/**
+	 * Method to set a task status to be completed
 	 * 
 	 * @param taskName
 	 *            - name of the task
@@ -243,14 +266,15 @@ public class TNotesLogic {
 	 * @throws Exception
 	 */
 	public boolean setStatus(String taskName, boolean status) throws Exception {
-		String commandWord = SET;
+		String commandWord = SET_COMMAND;
 		TaskFile oldTask = storage.getTaskFileByName(taskName);
 		storage.deleteTask(oldTask.getName());
 		TaskFile newTask = new TaskFile(oldTask);
 		newTask.setIsDone(status);
 		storage.addTask(newTask);
-		if (newTask.getIsDone()) {
 
+		if (newTask.getIsDone()) {
+			assertTrue(newTask.getIsDone());
 			editPushToStack(commandWord, oldTask, newTask);
 			return true;
 		} else {
@@ -260,21 +284,24 @@ public class TNotesLogic {
 
 	// ================================EDITCommand=========================================
 	/**
+	 * Method that calls the subclass method to edit a task
 	 * 
 	 * @param fromParser
 	 *            - sorted user inputs from parser component
-	 * @return - the changed taskfile
+	 * @return - the changed TaskFile
 	 * @throws Exception
 	 */
 	public TaskFile editTask(ArrayList<String> fromParser) throws Exception {
-		String commandWord = fromParser.remove(0).trim();
-		TaskFile oldFile = storage.getTaskFileByName(fromParser.get(0));
+		String commandWord = fromParser.remove(INDEX_ZERO).trim();
+		TaskFile oldFile = storage.getTaskFileByName(fromParser.get(INDEX_ZERO));
 		currentFile = cmdEdit.edit(fromParser);
+
 		if (currentFile.getIsRecurring()) {
-			startDates = storage.getRecurTaskStartDateList(fromParser.get(0));
-			endDates = storage.getRecurTaskEndDateList(fromParser.get(0));
+			startDates = storage.getRecurTaskStartDateList(fromParser.get(INDEX_ZERO));
+			endDates = storage.getRecurTaskEndDateList(fromParser.get(INDEX_ZERO));
 			editPushToStackRecur(commandWord, oldFile, currentFile, startDates, endDates);
 		} else {
+			assertFalse(currentFile.getIsRecurring());
 			editPushToStack(commandWord, oldFile, currentFile);
 		}
 		return currentFile;
@@ -293,6 +320,7 @@ public class TNotesLogic {
 	}
 
 	/**
+	 * Method to check if floating tasks exist
 	 * 
 	 * @return - returns true if there are floating tasks, false if there are no
 	 *         floating task
@@ -303,11 +331,13 @@ public class TNotesLogic {
 		if (list.isEmpty()) {
 			return false;
 		} else {
+			assertFalse(list.isEmpty());
 			return true;
 		}
 	}
 
 	/**
+	 * Method to sort the list of tasks currently viewing by name
 	 * 
 	 * @param currentList
 	 *            - the current list the user is viewing, be it todays
@@ -321,6 +351,7 @@ public class TNotesLogic {
 	}
 
 	/**
+	 * Method to change the directory
 	 * 
 	 * @param directoryName
 	 *            - changes the directory name to the given string parameter
@@ -332,6 +363,7 @@ public class TNotesLogic {
 	}
 
 	/**
+	 * Method to delete the entire directory
 	 * 
 	 * @param directory
 	 *            - deletes the directory
@@ -347,6 +379,7 @@ public class TNotesLogic {
 	}
 
 	/**
+	 * Method to undo the last command
 	 * 
 	 * @return - logicCommand object that holds the task tied to the command.
 	 * @throws Exception
@@ -364,11 +397,11 @@ public class TNotesLogic {
 				recurTask.addRecurringStartDate(startDates);
 				recurTask.addRecurringEndDate(endDates);
 
-				if (commandWord.equals(ADD)) {
+				if (commandWord.equals(ADD_COMMAND)) {
 					storage.deleteRecurringTask(prevTask.getName());
-				} else if (commandWord.equals(DELETE)) {
+				} else if (commandWord.equals(DELETE_COMMAND)) {
 					storage.addRecurringTask(recurTask);
-				} else if (commandWord.equals("edit") || commandWord.equals(SET)) {
+				} else if (commandWord.equals(EDIT_COMMAND) || commandWord.equals(SET_COMMAND)) {
 					TaskFile currentTask = prevCmd.getCurrentTask();
 					storage.deleteRecurringTask(currentTask.getName());
 					storage.addRecurringTask(recurTask);
@@ -376,12 +409,12 @@ public class TNotesLogic {
 					assertEquals("", commandWord);
 				}
 			} else {
-
-				if (commandWord.equals(ADD)) {
+				assertFalse(prevCmd.getIsRecurring());
+				if (commandWord.equals(ADD_COMMAND)) {
 					storage.deleteTask(prevTask.getName());
-				} else if (commandWord.equals(DELETE)) {
+				} else if (commandWord.equals(DELETE_COMMAND)) {
 					storage.addTask(prevTask);
-				} else if (commandWord.equals("edit") || commandWord.equals(SET)) {
+				} else if (commandWord.equals(EDIT_COMMAND) || commandWord.equals(SET_COMMAND)) {
 					TaskFile currentTask = prevCmd.getCurrentTask();
 					storage.deleteTask(currentTask.getName());
 					storage.addTask(prevTask);
@@ -393,13 +426,14 @@ public class TNotesLogic {
 			redoStack.push(prevCmd);
 			return prevCmd;
 		} else {
-			throw new Exception("No action to undo");
+			throw new Exception(UNDO_ERROR);
 		}
 	}
 
 	/**
+	 * Method to redo the last method undone
 	 * 
-	 * @return - logicCommand object contain the redone command and the taskfile
+	 * @return - logicCommand object contain the redone command and the TaskFile
 	 *         tied to it.
 	 * @throws Exception
 	 */
@@ -416,11 +450,11 @@ public class TNotesLogic {
 				recurTask.addRecurringStartDate(startDates);
 				recurTask.addRecurringEndDate(endDates);
 
-				if (commandWord.equals(ADD)) {
+				if (commandWord.equals(ADD_COMMAND)) {
 					storage.addRecurringTask(recurTask);
-				} else if (commandWord.equals(DELETE)) {
+				} else if (commandWord.equals(DELETE_COMMAND)) {
 					storage.deleteRecurringTask(prevTask.getName());
-				} else if (commandWord.equals("edit") || commandWord.equals(SET)) {
+				} else if (commandWord.equals(EDIT_COMMAND) || commandWord.equals(SET_COMMAND)) {
 					TaskFile currentTask = nextCmd.getCurrentTask();
 					RecurringTaskFile recurTaskAfterEdit = new RecurringTaskFile(currentTask);
 					recurTaskAfterEdit.addRecurringStartDate(startDates);
@@ -432,11 +466,12 @@ public class TNotesLogic {
 					assertEquals("", commandWord);
 				}
 			} else {
-				if (commandWord.equals(ADD)) {
+				assertFalse(nextCmd.getIsRecurring());
+				if (commandWord.equals(ADD_COMMAND)) {
 					storage.addTask(prevTask);
-				} else if (commandWord.equals(DELETE)) {
+				} else if (commandWord.equals(DELETE_COMMAND)) {
 					storage.deleteTask(prevTask.getName());
-				} else if (commandWord.equals("edit") || commandWord.equals(SET)) {
+				} else if (commandWord.equals(EDIT_COMMAND) || commandWord.equals(SET_COMMAND)) {
 					TaskFile currentTask = nextCmd.getCurrentTask();
 					storage.deleteTask(prevTask.getName());
 					storage.addTask(currentTask);
@@ -447,7 +482,7 @@ public class TNotesLogic {
 			undoStack.push(nextCmd);
 			return nextCmd;
 		} else {
-			throw new Exception("No action to redo");
+			throw new Exception(REDO_ERROR);
 		}
 	}
 }
