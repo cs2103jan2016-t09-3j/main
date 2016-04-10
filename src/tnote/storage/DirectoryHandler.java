@@ -26,6 +26,7 @@ import java.util.logging.Logger;
  */
 public class DirectoryHandler {
 
+	private static final String MESSAGE_DELETE_PARENT_DIR = "Deleting parent directory: ";
 	private static final String MESSAGE_CLASS_CREATED = "DirectoryHandler created";
 	private static final String MESSAGE_NEW_PARENT_DIRECTORY = "New parent directory: %s";
 	private static final String MESSAGE_FILES_FOLDER_DELETE = "All files and folders in %s deleted";
@@ -146,7 +147,7 @@ public class DirectoryHandler {
 	 * @throws IOException Error deleting parent directory
 	 */
 	protected boolean deleteMasterDirectory() throws IOException {
-		logger.info(String.format("Deleting parent directory: ", parentDirectory.getAbsolutePath()));
+		logger.info(String.format(MESSAGE_DELETE_PARENT_DIR, parentDirectory.getAbsolutePath()));
 		return deleteDirectory(parentDirectory);
 	}
 

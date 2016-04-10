@@ -38,7 +38,7 @@ public class TNotesStorageTest {
 	@Test
 	public void test() {
 		try {
-			TaskFile task1 = new TaskFile("call mom", "2016-02-02", "12:00", "abc", false);
+			TaskFile task1 = new TaskFile("call mom", "2016-02-02", "12:00", "abc", false, false);
 			TaskFile task2 = new TaskFile("call dad");
 
 			assertTrue(storage.addTask(task1));
