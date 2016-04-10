@@ -53,7 +53,7 @@ public class TNotesStorageTest {
 
 			assertEquals("read from master file", masterFileAL, storage.readFromMasterFile());
 
-			String task1String = "Task: call mom, Start Date: 2016-02-02, Start Time: 12:00, End Date: 2016-02-02, End Time: 12:00, Details: abc"
+			String task1String = "Task: call mom, Start Date: 2016-02-02, Start Time: 12:00, End Date: , End Time: , Details: abc"
 					+ ", Importance: false, IsRecurring: false, IsDone: false";
 			String task2String = "Task: call dad, Start Date: , Start Time: , End Date: , End Time: , Details: "
 					+ ", Importance: false, IsRecurring: false, IsDone: false";

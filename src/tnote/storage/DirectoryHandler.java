@@ -330,12 +330,6 @@ public class DirectoryHandler {
 					newDirectory.getAbsolutePath()));
 			return true;
 
-		} catch (DirectoryNotEmptyException dirNotEmptyEx) {
-			String errorMessage = String.format(ERROR_DIRECTORY_NOT_EMPTY, newDirectory.getAbsolutePath());
-
-			logger.warning(errorMessage);
-			throw new DirectoryNotEmptyException(errorMessage);
-
 		} catch (IOException ioEx) {
 			String errorMessage = String.format(ERROR_COPYING_DIREC, newDirectory.getAbsolutePath());
 
@@ -385,7 +379,7 @@ public class DirectoryHandler {
 	 *            the name of the new directory File object
 	 * @return File the object which points to the new directory specified
 	 */
-	protected File getNewDirectoryFile(String newDirectoryString) {
+	private File getNewDirectoryFile(String newDirectoryString) {
 		File newParentDirectory = new File(newDirectoryString);
 		logger.info(String.format(MESSAGE_FILE_PATH, newParentDirectory.getAbsolutePath()));
 		return newParentDirectory;
