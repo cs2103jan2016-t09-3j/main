@@ -1,4 +1,5 @@
 package tnote.logic;
+
 import java.util.logging.Logger;
 import tnote.util.log.TNoteLogger;
 
@@ -9,16 +10,23 @@ import tnote.storage.TNotesStorage;
 
 public class CommandDelete {
 	private TNotesStorage storage;
-	
+
 	private static final String MESSAGE_LOG_ERROR = "Warning";
 	private static final String MESSAGE_INVALID_COMMAND = "invalid command";
-	
+
 	private static final Logger logger = Logger.getGlobal();
 
 	protected CommandDelete() throws Exception {
 		storage = TNotesStorage.getInstance();
 	}
 
+	/**
+	 * 
+	 * @param fromParser
+	 *            - ArrayList of String inputs from parser
+	 * @return - TaskFile object that was deleted
+	 * @throws Exception
+	 */
 	protected TaskFile delete(ArrayList<String> fromParser) throws Exception {
 		TaskFile deletedTask = storage.getTaskFileByName(fromParser.get(0));
 		if (deletedTask.getIsRecurring()) {

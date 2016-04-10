@@ -2,13 +2,8 @@
 package tnote.logic;
 
 import java.io.IOException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
-import java.util.Date;
-import java.util.Iterator;
 import java.util.Stack;
 
 import static org.junit.Assert.assertTrue;
@@ -19,7 +14,6 @@ import tnote.object.NameComparator;
 import tnote.object.RecurringTaskFile;
 import tnote.object.TaskFile;
 import tnote.storage.TNotesStorage;
-import tnote.util.exceptions.TimeClashException;
 
 public class TNotesLogic {
 	private static final String ADD = "add";
@@ -31,7 +25,7 @@ public class TNotesLogic {
 
 	private ArrayList<TaskFile> taskList = new ArrayList<TaskFile>();
 	private ArrayList<String> startDates = new ArrayList<String>();
-	private	ArrayList<String> endDates = new ArrayList<String>();
+	private ArrayList<String> endDates = new ArrayList<String>();
 	private Stack<LogicCommand> undoStack;
 	private Stack<LogicCommand> redoStack;
 
@@ -49,6 +43,13 @@ public class TNotesLogic {
 		redoStack = new Stack<LogicCommand>();
 	}
 
+	/**
+	 * 
+	 * @param commandWord
+	 *            - the command of the task to be done,either add or delete
+	 * @param previousTask
+	 *            - the TaskFile object that was affected by this command
+	 */
 	private void pushToStack(String commandWord, TaskFile previousTask) {
 		LogicCommand commandObj = new LogicCommand(commandWord);
 		commandObj.setOldTask(previousTask);
@@ -56,6 +57,18 @@ public class TNotesLogic {
 		redoStack.clear();
 	}
 
+	/**
+	 * 
+	 * @param commandWord
+	 *            - the command of the recurring task to be done,either add or
+	 *            delete
+	 * @param previousTask-
+	 *            the TaskFile object that was affected by this command
+	 * @param startDates
+	 *            - the list of start dates for the recurring task
+	 * @param endDates
+	 *            - the list of end dates for the recurring task
+	 */
 	private void pushToStackRecur(String commandWord, TaskFile previousTask, ArrayList<String> startDates,
 			ArrayList<String> endDates) {
 		LogicCommand commandObj = new LogicCommand(commandWord);
@@ -67,6 +80,15 @@ public class TNotesLogic {
 		redoStack.clear();
 	}
 
+	/**
+	 * 
+	 * @param commandWord
+	 *            - the command of the task to be edited
+	 * @param oldTask
+	 *            - the previous TaskFile object before the edit
+	 * @param mostRecentTask
+	 *            - the new edited TaskFile object
+	 */
 	private void editPushToStack(String commandWord, TaskFile oldTask, TaskFile mostRecentTask) {
 		LogicCommand commandObj = new LogicCommand(commandWord);
 		commandObj.setOldTask(oldTask);
@@ -75,6 +97,20 @@ public class TNotesLogic {
 		redoStack.clear();
 	}
 
+	/**
+	 * 
+	 * @param commandWord
+	 *            - the command of the recurring task to be edited
+	 * 
+	 * @param oldTask
+	 *            - the previous recurring TaskFile object before the edit
+	 * @param mostRecentTask
+	 *            - the new edited recurring TaskFile object
+	 * @param startDates
+	 *            - the list of start dates for the recurring TaskFile object
+	 * @param endDates
+	 *            - the list of end Dates for the recurring TaskFile object
+	 */
 	private void editPushToStackRecur(String commandWord, TaskFile oldTask, TaskFile mostRecentTask,
 			ArrayList<String> startDates, ArrayList<String> endDates) {
 		LogicCommand commandObj = new LogicCommand(commandWord);
@@ -271,15 +307,37 @@ public class TNotesLogic {
 		}
 	}
 
+	/**
+	 * 
+	 * @param currentList
+	 *            - the current list the user is viewing, be it todays
+	 *            schedule,notes, etc..
+	 * 
+	 * @return - the same ArrayList, sorted by name.
+	 */
 	public ArrayList<TaskFile> sortTask(ArrayList<TaskFile> currentList) {
 		Collections.sort(currentList, new NameComparator());
 		return currentList;
 	}
 
+	/**
+	 * 
+	 * @param directoryName
+	 *            - changes the directory name to the given string parameter
+	 * @return - boolean value, true if the change was successful.
+	 * @throws Exception
+	 */
 	public boolean changeDirectory(String directoryName) throws Exception {
 		return storage.setNewDirectory(directoryName);
 	}
 
+	/**
+	 * 
+	 * @param directory
+	 *            - deletes the directory
+	 * @return - boolean value, true if the directory was successfully deleted
+	 * @throws IOException
+	 */
 	public boolean deleteDirectory(String directory) throws IOException {
 		if (storage.deleteDirectory(directory)) {
 			return true;

@@ -17,10 +17,11 @@ import java.util.Iterator;
 import tnote.object.RecurringTaskFile;
 import tnote.object.TaskFile;
 import tnote.storage.TNotesStorage;
+import tnote.util.exceptions.TaskExistsException;
 import tnote.util.exceptions.TimeClashException;
 
 public class CommandAdd {
-	private static final String MESSAGE_LOG_ERROR = "Error Adding";
+	private static final String MESSAGE_LOG_ERROR = "Error adding to Storage";
 
 	private static final int DEFAULT_DAY_DURATION = 12;
 	private static final int DEFAULT_WEEK_DURATION = 10;
@@ -65,6 +66,8 @@ public class CommandAdd {
 
 	private static final Logger logger = Logger.getGlobal();
 
+	private DateFormat df = new SimpleDateFormat(PARSER_DATE_FORMAT);
+
 	protected CommandAdd() throws Exception {
 		storage = TNotesStorage.getInstance();
 	}
@@ -102,12 +105,10 @@ public class CommandAdd {
 			currentFile.setIsRecurr(true);
 		}
 		if (fromParser.contains(TODAY)) {
-			DateFormat df = new SimpleDateFormat(PARSER_DATE_FORMAT);
 			String date = df.format(cal.getTime());
 			fromParser.set(fromParser.indexOf(TODAY), date);
 		}
 		if (fromParser.contains(TOMORROW)) {
-			DateFormat df = new SimpleDateFormat(PARSER_DATE_FORMAT);
 			String date = df.format(cal.getTime()).toLowerCase();
 			cal.add(Calendar.DATE, INDEX_ONE);
 			date = df.format(cal.getTime()).toLowerCase();
@@ -136,7 +137,6 @@ public class CommandAdd {
 		currentFile = dateFormatter(fromParser, currentFile, recurArgument, cal);
 		currentFile.setUpTaskFile();
 
-		// only check if the task is a meeting
 		if (currentFile.getIsMeeting()) {
 			meetingClash(stringList, currentFile);
 		}
@@ -148,14 +148,16 @@ public class CommandAdd {
 			return currentFile;
 		} else {
 			logger.warning(MESSAGE_LOG_ERROR);
-			return null;
+			throw new TaskExistsException();
 		}
 
 	}
 
 	/**
 	 * @param fromParser
+	 *            - ArrayList of string inputs from parser
 	 * @param currentFile
+	 *            - currently modified taskFile object.
 	 */
 	private void importanceFlag(ArrayList<String> fromParser, TaskFile currentFile) {
 		{
@@ -166,7 +168,9 @@ public class CommandAdd {
 
 	/**
 	 * @param stringList
+	 *            - the current list of names inside the storage
 	 * @param currentFile
+	 *            - the TaskFile object that is currently being added
 	 * @throws Exception
 	 * @throws TimeClashException
 	 */
@@ -188,11 +192,17 @@ public class CommandAdd {
 
 	/**
 	 * @param currentFile
+	 *            - the TaskFile object with the amended timings and names.
 	 * @param recurArgument
+	 *            - keyword of what it recurs on
 	 * @param recurDuration
+	 *            - recurring variable that determines the type
 	 * @param recurNumDuration
+	 *            - how long it recurs for in numbers
 	 * @param cal
-	 * @return
+	 *            - calendar object
+	 * @return - a TaskFile object that is recurring, along with the recurring
+	 *         dates.
 	 * @throws ParseException
 	 * @throws NumberFormatException
 	 * @throws Exception
@@ -208,7 +218,6 @@ public class CommandAdd {
 			System.out.println(taskDetails);
 			currentFile.setDetails(taskDetails);
 
-			DateFormat df = new SimpleDateFormat(PARSER_DATE_FORMAT);
 			ArrayList<String> dateList = new ArrayList<String>();
 			ArrayList<String> endDateList = new ArrayList<String>();
 			Calendar startCal = (Calendar) currentFile.getStartCal().clone();
@@ -429,9 +438,15 @@ public class CommandAdd {
 
 	/**
 	 * @param fromParser
+	 *            - the current ArrayList of inputs from the parser, after all
+	 *            the sorting
+	 * 
 	 * @param currentFile
+	 *            - the current modified TaskFile object
 	 * @param recurArgument
+	 *            - the day input for the task, if there exist one.
 	 * @param cal
+	 *            - calendar object.
 	 */
 	private TaskFile dateFormatter(ArrayList<String> fromParser, TaskFile currentFile, String recurArgument,
 			Calendar cal) {
@@ -524,7 +539,6 @@ public class CommandAdd {
 		default:
 			assertEquals(ZERO_INDEX, fromParser.size());
 			if (!recurArgument.isEmpty()) {
-				DateFormat df = new SimpleDateFormat(PARSER_DATE_FORMAT);
 				String date;
 				if (recurArgument.equals(DAY)) {
 					date = df.format(cal.getTime());
@@ -544,18 +558,17 @@ public class CommandAdd {
 	 * 
 	 * @param dates
 	 *            - a specific day, Monday,Tuesday, etc
-	 * @return - a string of the day in DD-MM-YYYY
+	 * @return - a string of the day in DD-MM-YYYY format
 	 */
 	private String compareDates(String dates) {
 		Calendar cal = Calendar.getInstance();
-		DateFormat df = new SimpleDateFormat(DAY_SHORTFORM);
-		DateFormat dF = new SimpleDateFormat(PARSER_DATE_FORMAT);
-		String date = df.format(cal.getTime()).toLowerCase();
+		DateFormat shortForm = new SimpleDateFormat(DAY_SHORTFORM);
+		String date = shortForm.format(cal.getTime()).toLowerCase();
 		while (!dates.contains(date)) {
 			cal.add(Calendar.DATE, INDEX_ONE);
-			date = df.format(cal.getTime()).toLowerCase();
+			date = shortForm.format(cal.getTime()).toLowerCase();
 		}
-		return dF.format(cal.getTime());
+		return df.format(cal.getTime());
 	}
 
 	/**

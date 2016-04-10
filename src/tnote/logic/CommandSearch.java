@@ -10,14 +10,16 @@ public class CommandSearch {
 	private static final int START_OF_STRING = 0;
 	private static final int ARRAYLIST_INDEX = 1;
 	private static final String STRING_UNDERSCORE = "_";
-	private	TNotesStorage storage;
+	private TNotesStorage storage;
 
 	protected CommandSearch() throws Exception {
 		storage = TNotesStorage.getInstance();
 	}
+
 	/**
 	 * 
-	 * @param lineOfText - name of the task 
+	 * @param lineOfText
+	 *            - name of the task
 	 * @return - the task file object with the name of the param.
 	 * @throws Exception
 	 */
@@ -31,10 +33,13 @@ public class CommandSearch {
 		}
 		return oldTask;
 	}
+
 	/**
 	 * 
-	 * @param lineOfText - name of the task
-	 * @return - the task file objects that either contain the phrases, or start with the letters
+	 * @param lineOfText
+	 *            - name of the task
+	 * @return - the task file objects that either contain the phrases, or start
+	 *         with the letters
 	 * @throws Exception
 	 */
 	protected ArrayList<TaskFile> searchTask(ArrayList<String> lineOfText) throws Exception {
@@ -57,8 +62,8 @@ public class CommandSearch {
 				} else if (lineOfText.get(i).length() == ARRAYLIST_INDEX) {
 					for (String text : masterList) {
 						if (text.startsWith(lineOfText.get(i))) {
-							TaskFile searchedTask = storage.getTaskFileByName(text); 
-							if(!searchTaskList.contains(searchedTask)&& !searchedTask.getIsRecurring()) {
+							TaskFile searchedTask = storage.getTaskFileByName(text);
+							if (!searchTaskList.contains(searchedTask) && !searchedTask.getIsRecurring()) {
 								searchTaskList.add(searchedTask);
 							}
 						}
@@ -66,8 +71,8 @@ public class CommandSearch {
 				} else {
 					for (String text : masterList) {
 						if (text.contains(lineOfText.get(i))) {
-							TaskFile searchedTask = storage.getTaskFileByName(text); 
-							if(!searchTaskList.contains(searchedTask)&& !searchedTask.getIsRecurring()) {
+							TaskFile searchedTask = storage.getTaskFileByName(text);
+							if (!searchTaskList.contains(searchedTask) && !searchedTask.getIsRecurring()) {
 								searchTaskList.add(searchedTask);
 							}
 						}
@@ -77,12 +82,13 @@ public class CommandSearch {
 		}
 		for (TaskFile newTask : searchTaskList) {
 			if (newTask.getName().contains(STRING_UNDERSCORE)) {
-				String formatterName = newTask.getName().substring(START_OF_STRING, newTask.getName().indexOf(STRING_UNDERSCORE));
+				String formatterName = newTask.getName().substring(START_OF_STRING,
+						newTask.getName().indexOf(STRING_UNDERSCORE));
 				newTask.setName(formatterName);
 			}
-			
+
 			System.out.println(newTask.getName());
-			
+
 		}
 		return searchTaskList;
 	}

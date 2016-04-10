@@ -10,8 +10,6 @@ import java.util.Date;
 import tnote.object.TaskFile;
 import tnote.storage.TNotesStorage;
 
-
-
 public class CommandView {
 	private static final String TOMORROW = "tomorrow";
 	private static final int INDEX_ZERO = 0;
@@ -20,7 +18,7 @@ public class CommandView {
 	private static final String NUMBERS = "[0-9]+";
 
 	private static final String HISTROY = "history";
-	
+
 	private static final String STRING_UNDERSCORE = "_";
 	private static final String STRING_DASH = "-";
 
@@ -31,7 +29,7 @@ public class CommandView {
 	private static final String TYPE_IS_VIEW_MANY_LIST = "isViewManyList";
 	private static final String TYPE_IS_VIEW_DATE_LIST = "isViewDateList";
 	private static final String STRING_FLOATING = "notes";
-	
+
 	private static final String SUNDAY = "sunday";
 	private static final String SATURDAY = "saturday";
 	private static final String FRIDAY = "friday";
@@ -40,12 +38,12 @@ public class CommandView {
 	private static final String TUESDAY = "tuesday";
 	private static final String MONDAY = "monday";
 	private static final String TODAY = "today";
-	
+
 	private TNotesStorage storage;
-	
+
 	private static final String PARSER_DATE_FORMAT = "yyyy-MM-dd";
 	private static final String DAY_SHORTFORM = "EEE";
-	
+
 	private DateFormat df = new SimpleDateFormat(PARSER_DATE_FORMAT);
 
 	protected CommandView() throws Exception {
@@ -60,7 +58,7 @@ public class CommandView {
 	 */
 	private String compareDates(String dates) {
 		Calendar cal = Calendar.getInstance();
-		DateFormat shortForm = new SimpleDateFormat(DAY_SHORTFORM );
+		DateFormat shortForm = new SimpleDateFormat(DAY_SHORTFORM);
 		String date = shortForm.format(cal.getTime()).toLowerCase();
 		while (!dates.contains(date)) {
 			cal.add(Calendar.DATE, INDEX_ONE);
@@ -92,8 +90,8 @@ public class CommandView {
 			stringList.add(TYPE_IS_VIEW_MANY_LIST);
 		} else if (viewType.contains(STRING_DASH) || viewType.contains(TODAY)
 				|| (viewType.contains(MONDAY) || (viewType.contains(TUESDAY)) || (viewType.contains(WEDNESDAY))
-						|| (viewType.contains(THURSDAY)) || (viewType.contains(FRIDAY))
-						|| (viewType.contains(SATURDAY)) || (viewType.contains(SUNDAY)))) {
+						|| (viewType.contains(THURSDAY)) || (viewType.contains(FRIDAY)) || (viewType.contains(SATURDAY))
+						|| (viewType.contains(SUNDAY)))) {
 			stringList.add(TYPE_IS_VIEW_DATE_LIST);
 		} else if (viewType.contains(STRING_FLOATING)) {
 			stringList.add(TYPE_IS_VIEW_NOTES);
@@ -208,12 +206,12 @@ public class CommandView {
 			String today = df.format(cal.getTime());
 			date = today;
 		}
-		if(date.trim().equals(TOMORROW)){
+		if (date.trim().equals(TOMORROW)) {
 			Calendar cal = Calendar.getInstance();
 			cal.add(Calendar.DATE, INDEX_ONE);
 			String today = df.format(cal.getTime());
 			date = today;
-			
+
 		}
 		if (date.equals(MONDAY) || (date.equals(TUESDAY)) || (date.equals(WEDNESDAY)) || (date.equals(THURSDAY))
 				|| (date.equals(FRIDAY)) || (date.equals(SATURDAY)) || (date.equals(SUNDAY))) {
@@ -267,7 +265,8 @@ public class CommandView {
 		ArrayList<TaskFile> listOfOverdueTasks = storage.retrieveOverdueTasks();
 		for (TaskFile newTask : listOfOverdueTasks) {
 			if (newTask.getName().contains(STRING_UNDERSCORE)) {
-				String formatterName = newTask.getName().substring(INDEX_ZERO, newTask.getName().indexOf(STRING_UNDERSCORE));
+				String formatterName = newTask.getName().substring(INDEX_ZERO,
+						newTask.getName().indexOf(STRING_UNDERSCORE));
 				newTask.setName(formatterName);
 			}
 		}
