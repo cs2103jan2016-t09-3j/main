@@ -1,6 +1,7 @@
 //@@author A0127032W
 package tnote.ui;
 
+import static org.junit.Assert.assertTrue;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -169,12 +170,14 @@ public class TNotesUI {
 
 	// Main Method
 	public String executeCommand(String userInput) throws Exception {
+		
 		String resultString = "";
 		String commandString;
 		ArrayList<String> userCommandSplit = new ArrayList<String>();
 
 		try {
 			userCommandSplit = parser.checkCommand(userInput);
+			assertTrue(userCommandSplit.size()!=0);
 		} catch (ParseException e) {
 			logger.warning(MESSAGE_LOG_ERROR);
 			e.printStackTrace();

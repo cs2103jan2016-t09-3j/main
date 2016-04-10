@@ -4,6 +4,14 @@ import java.util.Scanner;
 
 import tnote.ui.TNotesUI;
 
+/**
+ * Execute the application TNote from console
+ * 
+ * 
+ * @author A0127032W
+ *
+ */
+
 public class TNotesMain {
 	
 	

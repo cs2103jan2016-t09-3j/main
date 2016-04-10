@@ -9,16 +9,23 @@ import org.junit.Before;
 import org.junit.Test;
 
 import tnote.storage.TNotesStorage;
+import java.util.Date;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+
 
 public class TNotesUITest {
 	TNotesUI tnoteUI;
-	ArrayList<String> parserOutput;
-	String output;
+	
+	private String getDateTime() {
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Date date = new Date();
+        return dateFormat.format(date);
+    }
 	
 	@Before
 	public void setUp() {
 		tnoteUI = new TNotesUI();
-		parserOutput = new ArrayList<String>();
 	}
 	
 	@After
@@ -27,27 +34,33 @@ public class TNotesUITest {
 		System.out.println(storage.deleteMasterDirectory());
 	}
 	
-	@Test 
-	public void checkWelcomMsg() {
-		output = "Hello, welcome to T-Note. How may I help you?\n";
-		assertEquals(output, tnoteUI.getWelcomeMessage());
-	}
+//	@Test
+//	public void checkFormatAddCommandTask() {	
+//		try {
+//		String expectedOutput = "I have added \"task\" to your notes!\n";
+//		String userInput = "add task";
+//		String output = tnoteUI.executeCommand(userInput);
+//		assertEquals(expectedOutput, output);
+//
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
+//	}
 	
 	@Test
-	public void checkAdd() {	
+	public void checkFormatAddCommandDeadline() {	
 		try {
-		output = "I have added \"task\" to your notes!\n";
-		assertEquals(output, tnoteUI.executeCommand("add task"));
-//		
-//		output = "I have added \"task2\" at [03:00] on [2016-03-31] to your schedule!\n";
-//		assertEquals(output, tnoteUI.executeCommand("add task2 at 3:00"));
-//		
-//		output = "You have changed the task name from \"task\" to \"task123\"!\n";
-//		assertEquals(output, tnoteUI.executeCommand("edit task name task123"));
+		String expectedOutput = String.format("I have added \"deadline\" at [23:59] on [%s] to your schedule!\n", getDateTime());
+		String userInput = "add deadline due today";
+		String output = tnoteUI.executeCommand(userInput);
+		//System.out.println(output);
+		assertEquals(expectedOutput, output);
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
+	
 	
 
 }
