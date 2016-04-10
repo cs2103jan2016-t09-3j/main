@@ -394,7 +394,7 @@ public class TNotesStorage {
 	 *             I/O Error when deleting files and folders
 	 */
 	public boolean deleteMasterDirectory() throws IOException {
-		return mFileHandler.deleteMasterDirectory();
+		return dirHandler.deleteMasterDirectory();
 	}
 
 	/**

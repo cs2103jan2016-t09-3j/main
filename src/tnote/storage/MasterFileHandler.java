@@ -19,6 +19,7 @@ import java.util.logging.Logger;
  */
 public class MasterFileHandler {
 
+	
 	private static final String MESSAGE_RECUR_FILE_READY = "Recur map file %s is empty and can be written to";
 	private static final String MESSAGE_MONTH_FILE_READY = "Month file %s is empty and can be written to";
 	private static final String MESSAGE_LIST_FILE_READY = "List File %s is empty and can be written to";
@@ -31,6 +32,7 @@ public class MasterFileHandler {
 	private static final String ERROR_RECUR_FILE_WRITE = "Error writing to recur map file %s";
 	private static final String ERROR_LIST_FILE_WRITE = "Error writing to list file %s";
 	private static final String ERROR_MONTH_FILE_WRITE = "Error writing to Month file %s";
+	private static final String ERROR_MASTER_DIR_NOT_DELETE_RE_SETUP = "Master Directory not deleted, reset storage";
 
 	private static final String OVERVIEW_FILES_FOLDER_NAME = "overview";
 	private static final String RECURRING_TASK_END_DATES_FILE_NAME = "recurringTaskEndDates.txt";
@@ -231,9 +233,14 @@ public class MasterFileHandler {
 	 *             I/O Error when deleting or creating the master files
 	 */
 	protected boolean clearMasterFile() throws IOException {
-		deleteMasterDirectory();
-		setUpStorage();
-		return true;
+		if(dirHandler.deleteMasterDirectory()) {
+			setUpStorage();
+			return true;
+		} else {
+			//Master directory was not deleted, setUp storage to ensure master files still exists.
+			logger.warning(ERROR_MASTER_DIR_NOT_DELETE_RE_SETUP);
+			return false;
+		}
 	}
 
 	/**
@@ -245,19 +252,8 @@ public class MasterFileHandler {
 	 * @throws IOException
 	 *             I/O Error when clearing the file
 	 */
-	protected boolean clearAnOverviewFile(File fileToClear) throws IOException {
+	private boolean clearAnOverviewFile(File fileToClear) throws IOException {
 		return fWHandler.clearFile(fileToClear);
-	}
-
-	/**
-	 * Method to delete the master directory and all its files and folders
-	 * 
-	 * @return true if the master directory is deleted
-	 * @throws IOException
-	 *             I/O Error deleting the master directory
-	 */
-	protected boolean deleteMasterDirectory() throws IOException {
-		return dirHandler.deleteMasterDirectory();
 	}
 
 	/*---------------------------Write to files-----------------------*/
