@@ -27,7 +27,7 @@ public class TNotesMain {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		result += tNote.displaySchedule();
+		result += tNote.displayMain();
 		result += update;
 		
 		showToUser(result);

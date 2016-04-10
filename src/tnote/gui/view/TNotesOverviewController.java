@@ -1,4 +1,4 @@
-//@@author Joelle
+//@@author A0127032W
 package tnote.gui.view;
 
 import javafx.fxml.FXML;
@@ -10,34 +10,42 @@ import tnote.ui.TNotesUI;
 import javafx.scene.control.ScrollBar;
 import javafx.scene.control.TextArea;
 
+/**
+ *	This class handles the logic in TNotesSplitView.fxml
+ *		
+ * 	@author A0127032W
+ */
+
 public class TNotesOverviewController {
 
 	@FXML
 	private TextField userInput;
 
 	@FXML
-	private TextArea displayMainScreen;
+	public TextArea displayMainScreen;
 
 	@FXML
-	private TextArea displaySideScreen;
+	protected TextArea displaySideScreen;
 
 	private ScrollBar scrollBar;
 
-	private TNotesUI tNote = new TNotesUI();
+	public TNotesUI tNote = new TNotesUI();
 
 	private MainApp mainApp;
-
+	
+	
+	
 	/**
-	 * The constructor. The constructor is called before the initialize()
-	 * method.
+	 * The constructor for TNotesOverviewController. Initializes necessary variables.
+	 * 
 	 */
 	public TNotesOverviewController() {
 		scrollBar = new ScrollBar();
 	}
 
 	/**
-	 * Initializes the controller class. This method is automatically called
-	 * after the fxml file has been loaded.
+	 * Initializes the controller class
+	 * 
 	 */
 	@FXML
 	private void initialize() {
@@ -48,6 +56,7 @@ public class TNotesOverviewController {
 
 		displayMainScreen.setWrapText(true);
 		displayMainScreen.setEditable(false);
+		displayMainScreen.setScrollTop(Double.MAX_VALUE);
 
 		String mainScreenPrint = tNote.displayMain();
 		mainScreenPrint += welcomeMsg;
@@ -62,6 +71,9 @@ public class TNotesOverviewController {
 	
 	}	
 	
+	/**
+	 * Updates TextArea whenever the user types in input in TextField
+	 */
 	@FXML
 	private void handleUserInput() {
 		String result = "";
@@ -88,12 +100,17 @@ public class TNotesOverviewController {
 			floatList += overDueList;
 			displaySideScreen.setText(floatList);
 			result += update;
-			displayMainScreen.setText(result);
+			displayMainScreen.setText(result);		
 			userInput.clear();
 		}
 
 	}
 
+	/**
+	 * Scrolls the page with keyboard buttons: Up, Down.
+	 * 
+	 * @param event
+	 */
 	@FXML
 	private void handleScrollBar(KeyEvent event) {
 		if (event.getCode() == KeyCode.UP) {

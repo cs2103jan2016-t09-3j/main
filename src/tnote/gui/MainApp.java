@@ -1,4 +1,4 @@
-//@@author Joelle
+//@@author A0127032W
 package tnote.gui;
 import java.util.logging.Logger;
 import tnote.util.log.TNoteLogger;
@@ -13,6 +13,15 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import tnote.gui.view.TNotesOverviewController;
+
+
+/**
+ * Execute the application TNote from this class
+ * 
+ * 
+ * @author A0127032W
+ *
+ */
 
 public class MainApp extends Application {
 	
@@ -73,7 +82,7 @@ public class MainApp extends Application {
 	            // Give the controller access to the main app.
 	           TNotesOverviewController controller = loader.getController();
     	        controller.setMainApp(this);
-	            
+    	        
 	        } catch (IOException e) {
 	        	logger.warning(MESSAGE_LOG_ERROR);
 	            e.printStackTrace();

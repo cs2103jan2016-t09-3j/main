@@ -1,6 +1,7 @@
-//@@author Joelle
+//@@author A0127032W
 package tnote.ui;
 
+import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.logging.Logger;
@@ -10,11 +11,26 @@ import tnote.object.TaskFile;
 import tnote.parser.TNotesParser;
 
 /**
- * This class manages the input String entered by the user, passes the String to
- * Parser and gets the command type for each input. Then it is passed to various
- * methods in Logic.
+ * This class acts as a controller, it determines how the input is from the user
+ * is processed. It handles how the resulting message should be displayed for
+ * the user to see.
  * 
- * It retrieves the contents from Logic it uses TaskFiles to format the Strings
+ * This class interacts with tnote.parser.TNotesParser, tnote.logic.TNotesLogic,
+ * and tnote.object.TaskFile frequently. Occasionally it interacts with
+ * tnote.logic.LogicCommand.
+ * 
+ * First, it calls tnote.parser.TnotesParser to split the String obtained from
+ * the input that the user typed and it is return back to this class.
+ * 
+ * Next, it decides which command that the user wishes to do, and the it then
+ * calls the appropriate method from tnote.logic.TNotesLogic and it is returned
+ * an Object or an ArrayList of Objects from tnote.Object.TaskFile or
+ * tnote.logic.LogicCommand.
+ * 
+ * After which, it format the message that would be passed to
+ * tnote.gui.view.TNotesOverviewController to be displayed to the user.
+ * 
+ * @author A0127032W
  * 
  */
 
@@ -79,7 +95,6 @@ public class TNotesUI {
 	private static final String MESSAGE_EDIT_END_DATE = "You have changed the end date in \"%s\" from [%s] to [%s]!\n";
 	private static final String MESSAGE_EDIT_DETAILS = "You have changed the details in \"%s\" from [%s] to [%s]!\n";
 	private static final String MESSAGE_EDIT_IMPORTANCE = "You have changed the importance of \"%s\" to ";
-	private static final String MESSAGE_EDIT_RECURRING = "You have set recurring in \"%s\" from [%s] to [%s]!\n";
 
 	private static final String MESSAGE_VIEW_TASK = "Displaying the task \"%s\":\n\n";
 	private static final String MESSAGE_VIEW_ONE_DATE = "Date: %s\n";
@@ -104,11 +119,18 @@ public class TNotesUI {
 
 	private static final String MESSAGE_PRINT_DEADLINE_W_DATE = "%s. [%s][%s] %s%s\n";
 	private static final String MESSAGE_PRINT_MEETING_ONE_DATE_W_DATE = "%s. [%s][%s]-[%s] %s%s\n";
-	
+
 	private static final String MESSAGE_LOG_ERROR = "Warning!";
 
 	private static final Logger logger = Logger.getGlobal();
-	
+
+	/**
+	 * The constructor for TNotesUI. Initializes necessary variables.
+	 * 
+	 * @param Nothing
+	 * @return Nothing
+	 * 
+	 */
 	// Constructor
 	public TNotesUI() {
 		try {
@@ -123,11 +145,27 @@ public class TNotesUI {
 		}
 	}
 
+	/**
+	 * This method gets the welcome string
+	 * 
+	 * @return TNote's welcome String
+	 */
+
 	// Getters
 	public String getWelcomeMessage() {
 		String welcomeMsg = String.format(MESSAGE_WELCOME);
 		return welcomeMsg;
 	}
+
+	/**
+	 * This method is main method called
+	 * 
+	 * @param userInput
+	 *            - the input String that the user typed
+	 * @return formatted string that is displayed for the user to see in a
+	 *         organized and informative manner
+	 * @throws Exception
+	 */
 
 	// Main Method
 	public String executeCommand(String userInput) throws Exception {
@@ -147,7 +185,7 @@ public class TNotesUI {
 
 		switch (command) {
 		case ADD_COMMAND:
-			resultString = formatAddCommand(resultString, userCommandSplit);
+			resultString = formatAddCommand(userCommandSplit);
 
 			break;
 		case CHANGE_DIRECTORY:
@@ -220,21 +258,39 @@ public class TNotesUI {
 
 	// ==== SubCommands ====
 
+	/**
+	 * This method formats the String for the add command
+	 * 
+	 * @param userCommandSplit
+	 *            - ArrayList<String> returned from tnote.parser.TNotesParser
+	 * @return formated String to be displayed to the user
+	 */
 	// ==== ADD ====
-	private String formatAddCommand(String resultString, ArrayList<String> userCommandSplit) {
+	private String formatAddCommand(ArrayList<String> userCommandSplit) {
 		String formatAddString = "";
 		TaskFile addTask;
 
 		try {
 			addTask = logic.addTask(userCommandSplit);
-			formatAddString = checkAddTypes(resultString, addTask);
+			formatAddString = checkAddTypes(addTask);
 		} catch (Exception e) {
 			formatAddString = e.getMessage();
 		}
 		return formatAddString;
 	}
 
-	private String checkAddTypes(String resultString, TaskFile taskFile) {
+	/**
+	 * This method checks if the task is a floating task, deadline task or
+	 * meeting task and updates the main screen display
+	 * 
+	 * @param taskFile
+	 *            - this is a TaskFile object of the added task returned from
+	 *            tnote.logic.TNotesLogic
+	 * @return formated string to be returned displaying the dates and timings
+	 *         in accordance to their various types
+	 */
+
+	private String checkAddTypes(TaskFile taskFile) {
 		String addString = "";
 
 		// Floating task case
@@ -267,6 +323,14 @@ public class TNotesUI {
 		return addString;
 	}
 
+	/**
+	 * This method formats the String for the change directory command
+	 * 
+	 * @param changeDirectoryPath
+	 *            - takes in a new directory path
+	 * @return formatted String to be displayed to the user
+	 */
+
 	// ==== CHANGE DIRECTORY ====
 
 	private String formatChangeDirectoryCommand(String changeDirectoryPath) {
@@ -283,6 +347,14 @@ public class TNotesUI {
 		}
 		return formatChangeDirString;
 	}
+
+	/**
+	 * This method formats the String for the delete directory command
+	 * 
+	 * @param deleteDirectoryPath
+	 *            - takes in existing directory path to delete
+	 * @return formatted String to be displayed to the user
+	 */
 
 	// ==== DELETE DIRECTORY ====
 
@@ -302,6 +374,19 @@ public class TNotesUI {
 		}
 		return formatDeletDirString;
 	}
+
+	/**
+	 * This method formats the String for the edit command and updates the main
+	 * screen display
+	 * 
+	 * @param userCommandSplit
+	 *            - an ArrayList<String> returned from tnote.parser.TNotesParser
+	 * @param editTaskName
+	 *            - the name of the task that will be edited
+	 * @param editType
+	 *            - the type of edit that the user wants to do
+	 * @return formatted String to be displayed to the user
+	 */
 
 	// ==== EDIT ====
 
@@ -324,6 +409,22 @@ public class TNotesUI {
 		}
 		return formatEditString;
 	}
+
+	/**
+	 * This method checks for the type of edit that the user wishes to do and
+	 * formats the String accordingly
+	 * 
+	 * @param editTaskName
+	 *            - name of the task that will be edited
+	 * @param editType
+	 *            - the type of edit
+	 * @param oldTaskFile
+	 *            - the TaskFile Object before it is edited
+	 * @param newTaskFile
+	 *            - the TaskFile Object after it is edited
+	 * @return formated String to be displayed to the user such with timing and
+	 *         dates
+	 */
 
 	private String checkEditType(String editTaskName, String editType, TaskFile oldTaskFile, TaskFile newTaskFile) {
 		String displayEditString = "";
@@ -356,12 +457,20 @@ public class TNotesUI {
 			displayEditString += displayImportance(newTaskFile);
 		}
 
-		if (editType.equals("Reccuring")) {
-			displayEditString = String.format(MESSAGE_EDIT_RECURRING, editTaskName, oldTaskFile.getIsRecurring(),
-					newTaskFile.getIsRecurring());
-		}
 		return displayEditString;
 	}
+
+	/**
+	 * This method formats the String for the delete command according to its
+	 * deleteType
+	 * 
+	 * @param userCommandSplit
+	 *            - an ArrayList<String> returned from tnote.parser.TNotesParser
+	 * @param deleteType
+	 *            - the delete type
+	 * @return formatted String to be displayed to the user
+	 * @throws Exception
+	 */
 
 	// ==== DELETE ====
 	private String formatDeleteCommand(ArrayList<String> userCommandSplit, String deleteType) throws Exception {
@@ -373,7 +482,7 @@ public class TNotesUI {
 			resultString = String.format(MESSAGE_UPDATE_SCHEDULE);
 			int index = Integer.valueOf(deleteType);
 			deletedTask = viewList.get(index - 1);
-			
+
 			updatedList = logic.deleteIndex(viewList, index);
 			updateMainScreen(deletedTask.getStartDate());
 			resultString += String.format(MESSAGE_DELETE_TASK, deletedTask.getName());
@@ -395,6 +504,17 @@ public class TNotesUI {
 		}
 		return resultString;
 	}
+
+	/**
+	 * This method formats the string for the view command and updates the
+	 * changes to the main screen display
+	 * 
+	 * @param userCommandSplit
+	 *            - ArrayList<String> returned from tnote.parser.TNotesParser
+	 * @param viewTypeString
+	 *            - the type of view that the user wishes to view
+	 * @return formatted String to be displayed to the user
+	 */
 
 	// ==== VIEW ====
 
@@ -477,17 +597,25 @@ public class TNotesUI {
 
 		else if (viewTypeString.equals("isViewHistory")) {
 			ArrayList<TaskFile> historyList;
-			
+
 			formatViewString = String.format(MESSAGE_HISTORY_TITLE);
 			try {
-			historyList = logic.viewDoneList();
-			formatViewString += printTaskList(historyList);
+				historyList = logic.viewDoneList();
+				formatViewString += printTaskList(historyList);
 			} catch (Exception e) {
-			formatViewString = e.getMessage();
+				formatViewString = e.getMessage();
 			}
 		}
 		return formatViewString;
 	}
+
+	/**
+	 * This method formats Strings from TaskFile that are informative to the user
+	 * 
+	 * @param currTask
+	 *            - TaskFile Object
+	 * @return formatted Strings from TaskFile
+	 */
 
 	private String printOneDetailedTask(TaskFile currTask) {
 		String formatViewString;
@@ -524,6 +652,16 @@ public class TNotesUI {
 		return formatViewString;
 	}
 
+	/**
+	 * This method formats the String for the sort command
+	 * 
+	 * @param userCommandSplit
+	 *            - ArrayList<String> returned from tnote.parser.TNotesParser
+	 * @param sortType
+	 *            - the type of sort that the user wishes to do
+	 * @return formatted String to be displayed to the user
+	 */
+
 	// ==== Sort ====
 
 	private String formatSortCommand(ArrayList<String> userCommandSplit, String sortType) {
@@ -538,13 +676,6 @@ public class TNotesUI {
 				arraySort = logic.sortTask(viewList);
 				sortString += printTaskList(arraySort);
 
-				// update to main screen // currently change is not perm, so
-				// might not work
-				// if we do it this way, we should also include a sort by time
-				// to change it back
-				// mainScreenArray = arraySort;
-				// updateMainScreen(dateOfList);
-
 			} catch (Exception e) {
 				logger.warning(MESSAGE_LOG_ERROR);
 				sortString = e.getMessage();
@@ -552,6 +683,17 @@ public class TNotesUI {
 		}
 		return sortString;
 	}
+
+	/**
+	 * This method formats String for set command and updates to main screen
+	 * display
+	 * 
+	 * @param userCommandSplit
+	 *            - ArrayList<String> returned from tnote.parser.TNotesParser
+	 * @param taskName
+	 *            - name of task being edited
+	 * @return formatted String to be displayed to the user
+	 */
 
 	// ==== SET ====
 
@@ -579,6 +721,25 @@ public class TNotesUI {
 		return setString;
 	}
 
+	/**
+	 * This method formats String for set command to show previous status and
+	 * current set status
+	 * 
+	 * @param taskName
+	 *            - name of tasks to be edited
+	 * @param setString
+	 *            - the command that the user typed
+	 * @param taskStatus
+	 *            - the original status of the task
+	 * @param newStatus
+	 *            - the updated status of the task
+	 * @param undone
+	 *            - String that prints "undone"
+	 * @param done
+	 *            - String that prints "done"
+	 * @return formatted String to be displayed to user
+	 * @throws Exception
+	 */
 	private String changeTaskStatus(String taskName, String setString, boolean taskStatus, String newStatus,
 			String undone, String done) throws Exception {
 
@@ -599,6 +760,14 @@ public class TNotesUI {
 		}
 		return setString;
 	}
+
+	/**
+	 * This method formats String for search command
+	 * 
+	 * @param userCommandSplit
+	 *            - ArrayList<String> returned by tnote.parser.TNotesParser
+	 * @return formatted String to be displayed to the user
+	 */
 
 	// ==== SEARCH ====
 
@@ -635,6 +804,12 @@ public class TNotesUI {
 		return searchInput;
 	}
 
+	/**
+	 * This method formats String for undo command
+	 * 
+	 * @return formatted String to be displayed to user
+	 */
+
 	// ==== UNDO ====
 
 	private String formatUndoCommand() {
@@ -658,6 +833,12 @@ public class TNotesUI {
 		}
 		return undoString;
 	}
+
+	/**
+	 * This method formats String for redo command
+	 * 
+	 * @return formatted String to be displayed to the user
+	 */
 
 	// ==== REDO ====
 	private String formatRedoCommand() {
@@ -684,6 +865,12 @@ public class TNotesUI {
 
 	// ===== GUI Display Screens ====
 
+	/**
+	 * This method displays Strings to the main screen
+	 * 
+	 * @return formated String to be displayed on the main screen
+	 */
+
 	// ==== Main screen ====
 	public String displayMain() {
 		String scheduleString = "";
@@ -697,6 +884,13 @@ public class TNotesUI {
 	}
 
 	// ==== Side screen ====
+
+	/**
+	 * This method displays Strings from overdue tasks to the side screen
+	 * 
+	 * @return formatted Strings from overdue tasks to the side screen
+	 */
+
 	// Display overdue tasks
 	public String displayOverdueTasks() {
 		String overDueString;
@@ -713,6 +907,16 @@ public class TNotesUI {
 		return overDueString;
 	}
 
+	/**
+	 * This method formats Strings from an array containing over due tasks
+	 * 
+	 * @param overDueString
+	 *            - String of overdue tasks
+	 * @param arrayOverdue
+	 *            - array of overdue tasks
+	 * @return formated Strings of overdue tasks to be displayed to side screen
+	 */
+
 	private String printOverDueList(String overDueString, ArrayList<TaskFile> arrayOverdue) {
 		TaskFile overDueTask;
 
@@ -725,17 +929,24 @@ public class TNotesUI {
 		return overDueString;
 	}
 
+	/**
+	 * This method displays Strings from floating list to the side screen
+	 * display
+	 * 
+	 * @return formatted Strings to be displayed to the side screen display
+	 */
+
 	// Display floating tasks
 	public String displayFloats() {
 		String floatString = "";
-		
+
 		floatString = String.format(MESSAGE_NOTES_TITLE);
 		try {
 			if (logic.hasFloatingList()) {
 				ArrayList<TaskFile> arrayFloat = new ArrayList<TaskFile>();
-				arrayFloat = logic.viewFloatingList();	
+				arrayFloat = logic.viewFloatingList();
 				floatString += printFloatList(floatString, arrayFloat);
-			} 
+			}
 		} catch (Exception e) {
 			logger.warning(MESSAGE_LOG_ERROR);
 			floatString = e.getMessage();
@@ -743,6 +954,16 @@ public class TNotesUI {
 		}
 		return floatString;
 	}
+
+	/**
+	 * This method formats String from an array list of floating tasks
+	 * 
+	 * @param floatString
+	 *            - String of floating tasks
+	 * @param arrayFloat
+	 *            - Array of floating tasks
+	 * @return formatted String of an array list of floating tasks
+	 */
 
 	private String printFloatList(String floatString, ArrayList<TaskFile> arrayFloat) {
 		int floatIndex;
@@ -760,6 +981,14 @@ public class TNotesUI {
 		return printString;
 	}
 
+	/**
+	 * This method checks for the importance of the TaskFile Object
+	 * 
+	 * @param taskFile
+	 *            - TaskFile Object
+	 * @return formatted String indicating its importance
+	 */
+
 	private String checkImportance(TaskFile taskFile) {
 		String importance;
 
@@ -771,7 +1000,14 @@ public class TNotesUI {
 		return importance;
 	}
 
-	// ==== MISC METHODS ====
+	/**
+	 * This method checks for the command type from the commandString
+	 * 
+	 * @param commandString
+	 *            - the first word that the user typed
+	 * @return appropriate COMMAND_TYPE
+	 */
+
 	private COMMAND_TYPE determineCommandType(String commandString) {
 		if (checkCommand(commandString, "add")) {
 			return COMMAND_TYPE.ADD_COMMAND;
@@ -816,7 +1052,14 @@ public class TNotesUI {
 		return userCommandArrayList.get(0);
 	}
 
-	// If String are letters, returns 1
+	/**
+	 * This method checks if nextString are letters
+	 * 
+	 * @param nextString
+	 *            - a String input
+	 * @return 1 if String are letter else returns 0
+	 */
+
 	private int isLetters(String nextString) {
 		if (!nextString.matches("[0-9]+")) {
 			return 1;
@@ -824,6 +1067,15 @@ public class TNotesUI {
 			return 0;
 		}
 	}
+
+	/**
+	 * This method checks for the importance of a taskFile
+	 * 
+	 * @param taskFile
+	 *            - a TaskFile Object
+	 * @return "IMPORANT" if the taskFile is important else "NOT IMPORTANT" is
+	 *         returned instead
+	 */
 
 	private String displayImportance(TaskFile taskFile) {
 		String displayImportanceString;
@@ -836,6 +1088,14 @@ public class TNotesUI {
 		return displayImportanceString;
 	}
 
+	/**
+	 * This method prints Strings from ArrayList<TaskFile>
+	 * 
+	 * @param scheduleArray
+	 * 					- ArrayList<TaskFile>
+	 * @return formatted String from ArrayList<TaskFile>
+	 */
+	
 	private String printTaskList(ArrayList<TaskFile> scheduleArray) {
 		String currStartDate = scheduleArray.get(0).getStartDate();
 		String printString = String.format(MESSAGE_DATE_TITLE, currStartDate);
@@ -871,6 +1131,14 @@ public class TNotesUI {
 		return printString;
 	}
 
+	/**
+	 * This method formats Strings from ArrayList<TaskFile> for search commands
+	 * 
+	 * @param scheduleArray
+	 * 					- ArrayList<TaskFile>
+	 * @return formatted String from ArrayList<TaskFile> for search commands
+	 */
+	
 	private String printSearchList(ArrayList<TaskFile> scheduleArray) {
 		String printString = "";
 
@@ -905,6 +1173,12 @@ public class TNotesUI {
 		return printString;
 	}
 
+	/**
+	 * This method updates the main screen display in tnote.gui.view.TNotesOverviewController
+	 * 
+	 * @param date
+	 * 			- date of schedule to be shown
+	 */
 	private void updateMainScreen(String date) {
 		ArrayList<TaskFile> updateArray;
 
