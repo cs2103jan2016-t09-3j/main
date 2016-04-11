@@ -1,0 +1,10 @@
+Main
+tnote.gui
+tnote.gui.view
+tnote.logic
+tnote.object
+tnote.parser
+tnote.storage
+tnote.ui
+tnote.util.exceptions
+tnote.util.log

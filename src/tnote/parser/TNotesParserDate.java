@@ -1,6 +1,4 @@
-//@@author A0131149
-//<<<<<<< HEAD:src/Parser/TNotesParserDate.java
-//package Parser;
+//@@author A0131149M
 
 package tnote.parser;
 import java.util.logging.Logger;
