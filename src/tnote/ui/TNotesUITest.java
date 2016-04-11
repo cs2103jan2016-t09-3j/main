@@ -28,6 +28,7 @@ public class TNotesUITest {
 	public void setUp() throws Exception {
 		tnoteUI = new TNotesUI();
 		storage = TNotesStorage.getInstance();
+		storage.setUpStorage();
 		storage.clearFiles();
 	}
 
@@ -468,5 +469,20 @@ public class TNotesUITest {
 			fail("Exception should not be thrown for valid cases");
 		}
 	}
+	
+	@Test
+	public void checkSetCommand() {
+		try {
+			String userInput = "add meeting due today";
+			String output = tnoteUI.executeCommand(userInput);
+			userInput = "set meeting done";
+			output = tnoteUI.executeCommand(userInput);
+			String expectedOutput = String.format("You have changed the status in \"meeting\" from [UNDONE] to [DONE]\n\nDisplaying the task \"meeting\":\n\nDate: %s\nTime: 23:59\nDetails: -\nStatus: Completed\nImportance: -\n",getDate());
+			assertEquals(expectedOutput, output);
+		} catch (Exception e) {
+			fail("Exception should not be thrown for valid cases");
+		}
+	}
+	
 
 }
