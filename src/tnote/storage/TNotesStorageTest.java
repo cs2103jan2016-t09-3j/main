@@ -9,7 +9,6 @@ import static org.junit.Assert.fail;
 import static org.junit.Assert.assertNull;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 
 import org.junit.After;

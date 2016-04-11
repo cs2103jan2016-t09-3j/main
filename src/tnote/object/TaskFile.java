@@ -32,7 +32,7 @@ public class TaskFile implements Comparable<TaskFile>, Cloneable {
 	private static final String DEFAULT_TIME = "23:59";
 	private static final String DATE_TIME_STRING_FORMAT = "%s %s";
 	private static final String DATE_ONLY_FORMAT = "yyyy-MM-dd";
-	private static final String DATE_TIME_FORMAT = "yyyy-MM-dd hh:mm";
+	private static final String DATE_TIME_FORMAT = "yyyy-MM-dd HH:mm";
 	private static final String TASKFILE_TO_STRING = "Task: %s, Start Date: %s, Start Time: %s, End Date: %s, "
 			+ "End Time: %s, Details: %s, Importance: %s, IsRecurring: %s, IsDone: %s";
 

@@ -8,7 +8,6 @@ import static org.junit.Assert.assertNotEquals;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.DirectoryNotEmptyException;
 
 import org.junit.After;
 import org.junit.AfterClass;

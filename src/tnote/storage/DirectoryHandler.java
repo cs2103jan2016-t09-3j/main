@@ -40,8 +40,6 @@ public class DirectoryHandler {
 	private static final String ERROR_FILE_NOT_EXIST = "%s file does not exist";
 	private static final String ERROR_CREATE_FILE = "Error creating %s";
 	private static final String ERROR_COPYING_DIREC = "Error copying to %s";
-	private static final String ERROR_DIRECTORY_NOT_EMPTY = "%s is not an empty directory. "
-									+ "Please specify an empty directory.";
 	private static final String ERROR_CHANGING_NEW_DIRECTORY = "Error changing to new directory: %s";
 	private static final String ERROR_CREATE_DIREC = "Could not create directory %s";
 	private static final String ERROR_DELETE_FILE = "Error deleting %s";
