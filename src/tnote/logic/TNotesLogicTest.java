@@ -26,6 +26,10 @@ public class TNotesLogicTest {
 		logic = new TNotesLogic();
 		storage = TNotesStorage.getInstance();
 	}
+	@After
+	public void tearDown() throws Exception {
+		System.out.println(storage.clearFiles());
+	}
 
 	@Test
 	public void addTaskTest() throws Exception {
@@ -85,8 +89,22 @@ public class TNotesLogicTest {
 		System.out.println("Array check" + list.toString());
 		assertEquals(list.get(0).getName(), checkList.get(1));
 	}
-	@After
-	public void tearDown() throws Exception {
-		System.out.println(storage.clearFiles());
+	@Test
+	public void setTask() throws Exception {
+		ArrayList<TaskFile> list = new ArrayList<TaskFile>();
+		ArrayList<String> checkList = new ArrayList<String>();
+		checkList.add("add");
+		checkList.add("homework test");
+		checkList.add("today");
+		TaskFile currentFile = logic.addTask(checkList);
+		ArrayList<String> newList = new ArrayList<String>();
+		newList.add("delete");
+		newList.add("homework test");
+		logic.deleteTask(newList);
+		
+		currentFile.setIsDone(true);
+		storage.addTask(currentFile);
+		assertTrue(currentFile.getIsDone());
 	}
+	
 }
