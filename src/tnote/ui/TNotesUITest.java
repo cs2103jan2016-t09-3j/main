@@ -173,7 +173,9 @@ public class TNotesUITest {
 	@Test
 	public void checkFormatAddCommandRecurDays() {
 		try {
-			String expectedOutput = String.format("I have added \"meeting\" at [23:59] on [%s] to your schedule!\nThings to note: \"It recurs every day for 5 days\"\n",getDate());
+			String expectedOutput = String.format(
+					"I have added \"meeting\" at [23:59] on [%s] to your schedule!\nThings to note: \"It recurs every day for 5 days\"\n",
+					getDate());
 			String userInput = "add meeting due every day for 5 days";
 			String output = tnoteUI.executeCommand(userInput);
 			assertEquals(expectedOutput, output);
@@ -181,11 +183,13 @@ public class TNotesUITest {
 			fail("Exception should not be thrown for valid cases");
 		}
 	}
-	
+
 	@Test
 	public void checkFormatAddCommandRecurWeeks() {
 		try {
-			String expectedOutput = String.format("I have added \"meeting\" at [23:59] on [%s] to your schedule!\nThings to note: \"It recurs every week for 5 weeks\"\n",getDate());
+			String expectedOutput = String.format(
+					"I have added \"meeting\" at [23:59] on [%s] to your schedule!\nThings to note: \"It recurs every week for 5 weeks\"\n",
+					getDate());
 			String userInput = "add meeting due every week for 5 weeks";
 			String output = tnoteUI.executeCommand(userInput);
 			assertEquals(expectedOutput, output);
@@ -245,6 +249,11 @@ public class TNotesUITest {
 			output = tnoteUI.executeCommand(userInput);
 			String expectedOutput = String
 					.format("You have changed the end date in \"meeting\" from [%s] to [2016-05-05]!\n", getDate());
+			assertEquals(expectedOutput, output);
+			userInput = "edit meeting startDate 2-5-2016";
+			output = tnoteUI.executeCommand(userInput);
+			expectedOutput = String
+					.format("You have changed the start date in \"meeting\" from [%s] to [2016-05-02]!\n", getDate());
 			assertEquals(expectedOutput, output);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -309,7 +318,7 @@ public class TNotesUITest {
 			fail("Exception should not be thrown for valid cases");
 		}
 	}
-	
+
 	@Test
 	public void checkFormatDeleteAll() {
 		try {
@@ -329,14 +338,30 @@ public class TNotesUITest {
 	@Test
 	public void checkFormatViewCommandName() {
 		try {
-			String userInput = "add meeting";
+			String userInput = "add meeting details meet mr lim";
 			String output = tnoteUI.executeCommand(userInput);
 			userInput = "view meeting";
 			output = tnoteUI.executeCommand(userInput);
-			String expectedOutput = "Displaying the task \"meeting\":\n\nDate: -\nTime: -\nDetails: -\nStatus: -\nImportance: -\n";
+			String expectedOutput = "Displaying the task \"meeting\":\n\nDate: -\nTime: -\nDetails: meet mr lim.\nStatus: -\nImportance: -\n";
 			assertEquals(expectedOutput, output);
 		} catch (Exception e) {
 			fail("Exception should not be thrown for valid cases");
+		}
+	}
+	
+	@Test
+	public void checkFormatViewCommandNameImportant() {
+		try {
+			String userInput = "add meeting from 3pm to 6pm important";
+			String output = tnoteUI.executeCommand(userInput);
+			userInput = "view meeting";
+			output = tnoteUI.executeCommand(userInput);
+			String expectedOutput = String.format("Displaying the task \"meeting\":\n\nDate: %s - %s\nTime: 15:00 - 18:00\nDetails: -\nStatus: -\nImportance: Highly Important\n",getDate(),getDate());
+			assertEquals(expectedOutput, output);
+		} catch (Exception e) {
+			e.printStackTrace();
+			fail("Exception should not be thrown for valid cases");
+		
 		}
 	}
 
@@ -359,6 +384,8 @@ public class TNotesUITest {
 		try {
 			String userInput = "add meeting due 5-5-2016";
 			String output = tnoteUI.executeCommand(userInput);
+			userInput = "add conference from 5-5-2016 to 6-5-2016";
+			output = tnoteUI.executeCommand(userInput);
 			userInput = "view 5-5-2016";
 			output = tnoteUI.executeCommand(userInput);
 			String expectedOutput = "You have changed to view schedule for 2016-05-05.\n";
@@ -375,9 +402,11 @@ public class TNotesUITest {
 			String output = tnoteUI.executeCommand(userInput);
 			userInput = "add conference due 6-5-2016";
 			output = tnoteUI.executeCommand(userInput);
-			userInput = "view 5-5-2016 to 6-5-2016";
+			userInput = "add revise for finals from 6-5-2016 to 8-5-2016";
 			output = tnoteUI.executeCommand(userInput);
-			String expectedOutput = "You have changed to view schedule from 2016-05-05 to 2016-05-06.\n";
+			userInput = "view 5-5-2016 to 8-5-2016";
+			output = tnoteUI.executeCommand(userInput);
+			String expectedOutput = "You have changed to view schedule from 2016-05-05 to 2016-05-08.\n";
 			assertEquals(expectedOutput, output);
 		} catch (Exception e) {
 			fail("Exception should not be thrown for valid cases");
@@ -396,6 +425,36 @@ public class TNotesUITest {
 			String expectedOutput = String.format(
 					"Displaying the task \"meeting\":\n\nDate: %s\nTime: 23:59\nDetails: -\nStatus: -\nImportance: -\n",
 					getDate());
+			assertEquals(expectedOutput, output);
+		} catch (Exception e) {
+			fail("Exception should not be thrown for valid cases");
+		}
+	}
+	
+	@Test
+	public void checkFormatViewCommandFloat() {
+		try {
+			String userInput = "add meeting important";
+			String output = tnoteUI.executeCommand(userInput);
+			userInput = "view notes";
+			output = tnoteUI.executeCommand(userInput);
+			String expectedOutput = "====NOTES====\n1. [IMPORTANT]meeting\n\n";
+			assertEquals(expectedOutput, output);
+		} catch (Exception e) {
+			fail("Exception should not be thrown for valid cases");
+		}
+	}
+	
+	@Test
+	public void checkFormatViewCommandHistory() {
+		try {
+			String userInput = "add meeting due today";
+			String output = tnoteUI.executeCommand(userInput);
+			userInput = "set meeting done";
+			output = tnoteUI.executeCommand(userInput);
+			userInput = "view history";
+			output = tnoteUI.executeCommand(userInput);
+			String expectedOutput = String.format("====HISTORY====\n=======%s=======\n1. [23:59] meeting\n",getDate());
 			assertEquals(expectedOutput, output);
 		} catch (Exception e) {
 			fail("Exception should not be thrown for valid cases");
@@ -465,11 +524,33 @@ public class TNotesUITest {
 			output = tnoteUI.executeCommand(userInput);
 			String expectedOutput = "Searching for \"apple\" .......This is what I've found:\n1. apple\n2. apple banana\n";
 			assertEquals(expectedOutput, output);
+			userInput = "search a e";
+			output = tnoteUI.executeCommand(userInput);
+			expectedOutput = "Searching for \"a...e...\" .......This is what I've found:\n1. apple\n2. apple banana\n";
+			assertEquals(expectedOutput, output);
 		} catch (Exception e) {
 			fail("Exception should not be thrown for valid cases");
 		}
 	}
 	
+	@Test
+	public void checkSearchCommandFail() {
+		try {
+			String userInput = "add apple";
+			String output = tnoteUI.executeCommand(userInput);
+			userInput = "add banana";
+			output = tnoteUI.executeCommand(userInput);
+			userInput = "add apple banana";
+			output = tnoteUI.executeCommand(userInput);
+			userInput = "search pear";
+			output = tnoteUI.executeCommand(userInput);
+			String expectedOutput = "Nothing was found......\n";
+			assertEquals(expectedOutput, output);
+		} catch (Exception e) {
+			fail("Exception should not be thrown for valid cases");
+		}
+	}
+
 	@Test
 	public void checkSetCommand() {
 		try {
@@ -477,12 +558,73 @@ public class TNotesUITest {
 			String output = tnoteUI.executeCommand(userInput);
 			userInput = "set meeting done";
 			output = tnoteUI.executeCommand(userInput);
-			String expectedOutput = String.format("You have changed the status in \"meeting\" from [UNDONE] to [DONE]\n\nDisplaying the task \"meeting\":\n\nDate: %s\nTime: 23:59\nDetails: -\nStatus: Completed\nImportance: -\n",getDate());
+			String expectedOutput = String.format(
+					"You have changed the status in \"meeting\" from [UNDONE] to [DONE]\n\nDisplaying the task \"meeting\":\n\nDate: %s\nTime: 23:59\nDetails: -\nStatus: Completed\nImportance: -\n",
+					getDate());
+			assertEquals(expectedOutput, output);
+			userInput = "set meeting undone";
+			output = tnoteUI.executeCommand(userInput);
+			expectedOutput = String.format(
+					"You have changed the status in \"meeting\" from [DONE] to [UNDONE]\n\nDisplaying the task \"meeting\":\n\nDate: %s\nTime: 23:59\nDetails: -\nStatus: -\nImportance: -\n",
+					getDate());
+			assertEquals(expectedOutput, output);
+			userInput = "set meeting undone";
+			output = tnoteUI.executeCommand(userInput);
+			expectedOutput = String.format("Error. The task is already undone!\nDisplaying the task \"meeting\":\n\nDate: %s\nTime: 23:59\nDetails: -\nStatus: -\nImportance: -\n",getDate());
+			assertEquals(expectedOutput, output);
+		} catch (Exception e) {
+			fail("Exception should not be thrown for valid cases");
+		}
+	}
+
+	@Test
+	public void checkDeleteDirCommand() {
+		try {
+			String userInput = "add meeting due 10-10-2016";
+			String output = tnoteUI.executeCommand(userInput);
+			userInput = "delete directory october";
+			output = tnoteUI.executeCommand(userInput);
+			String expectedOutput = "You have succesfully deleted the directory: october\n";
 			assertEquals(expectedOutput, output);
 		} catch (Exception e) {
 			fail("Exception should not be thrown for valid cases");
 		}
 	}
 	
-
+	@Test
+	public void checkChangeDirCommand() {
+		try {
+			String userInput = "add meeting due 10-10-2016";
+			String output = tnoteUI.executeCommand(userInput);
+			userInput = "change directory location to NewFolder";
+			output = tnoteUI.executeCommand(userInput);
+			String expectedOutput = "You have succesfully changed directory to NewFolder.\n";
+			assertEquals(expectedOutput, output);
+		} catch (Exception e) {
+			fail("Exception should not be thrown for valid cases");
+		}
+	}
+	
+	@Test
+	public void checkHelpCommand() {
+		try {
+			String userInput = "help";
+			String output = tnoteUI.executeCommand(userInput);
+			TNotesMessages msg = new TNotesMessages();
+			String expectedOutput = "List of available commands:\n\nNote: words in [] should be modified to your needs.\n\n";
+			expectedOutput += msg.printHelpArray();
+			assertEquals(expectedOutput, output);
+		} catch (Exception e) {
+			fail("Exception should not be thrown for valid cases");
+		}
+	}
+	
+	@Test
+	public void checkWelcomeMsg(){
+		String output = tnoteUI.getWelcomeMessage();
+		String expectedOutput = "Hello, welcome to T-Note. How may I help you?\n";
+		assertEquals(expectedOutput, output);
+	}
+	
+	
 }
