@@ -30,10 +30,9 @@ public class FileReadHandlerTest {
 	@Before
 	public void setUp() throws Exception {
 		storage = TNotesStorage.getInstance();
-		MasterFileHandler mFHandler = MasterFileHandler.getInstance();
-		mFHandler.setUpStorage();
 		fRHandler = FileReadHandler.getInstance();
 		fWHandler = FileWriteHandler.getInstance();
+		storage.setUpStorage();
 		storage.clearFiles();
 
 	}

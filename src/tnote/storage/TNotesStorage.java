@@ -108,7 +108,15 @@ public class TNotesStorage {
 		}
 		return instance;
 	}
-
+	
+	/**
+	 * Method to set up all the necessary storage master files when needed
+	 * @throws IOException I/O Error creating the master files
+	 */
+	public void setUpStorage() throws IOException {
+		mFileHandler.setUpStorage();
+	}
+	
 	/*---------------------------------Add Task-----------------------------------*/
 
 	/**

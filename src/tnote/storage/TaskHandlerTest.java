@@ -25,8 +25,7 @@ public class TaskHandlerTest {
 	@Before
 	public void setUp() throws Exception {
 		storage = TNotesStorage.getInstance();
-		MasterFileHandler mFHandler = MasterFileHandler.getInstance();
-		mFHandler.setUpStorage();
+		storage.setUpStorage();
 		storage.clearFiles();
 		tHandler = TaskHandler.getInstance();
 	}
