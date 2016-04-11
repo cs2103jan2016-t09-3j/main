@@ -29,8 +29,10 @@ public class MasterFileHandlerTest {
 	@Before
 	public void setUp() throws Exception {
 		storage = TNotesStorage.getInstance();
-		storage.clearFiles();
 		mFHandler = MasterFileHandler.getInstance();
+		mFHandler.setUpStorage();
+		storage.clearFiles();
+		
 
 	}
 

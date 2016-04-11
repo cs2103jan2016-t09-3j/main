@@ -29,6 +29,8 @@ public class TNotesStorageTest {
 	public void setUp() throws Exception {
 
 		storage = TNotesStorage.getInstance();
+		MasterFileHandler mFHandler = MasterFileHandler.getInstance();
+		mFHandler.setUpStorage();
 		storage.clearFiles();
 
 	}
