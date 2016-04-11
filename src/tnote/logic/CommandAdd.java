@@ -238,7 +238,8 @@ public class CommandAdd {
 	 * @throws Exception
 	 */
 	private TaskFile addRecuringTask(TaskFile currentFile, String recurArgument, String recurDuration,
-			String recurNumDuration, Calendar cal) throws ParseException, NumberFormatException, Exception {
+			String recurNumDuration , Calendar cal
+) throws ParseException, NumberFormatException, Exception {
 		{
 			String taskDetails = currentFile.getDetails();
 			taskDetails += IT_RECURS_EVERY + recurArgument;
@@ -272,8 +273,8 @@ public class CommandAdd {
 					}
 				} else if (recurDuration.contains(WEEK)) {
 					for (int i = ZERO_INDEX; i < (Integer.parseInt(recurNumDuration) * 7); i++) {
-						dateList.add(df.format(cal.getTime()));
-						cal.add(Calendar.DATE, INDEX_ONE);
+						dateList.add(df.format(startCal.getTime()));
+						startCal.add(Calendar.DATE, INDEX_ONE);
 
 						if (currentFile.getIsMeeting()) {
 							endDateList.add(df.format(endCal.getTime()));
@@ -282,8 +283,8 @@ public class CommandAdd {
 					}
 				} else if (recurDuration.contains(FORTNIGHT)) {
 					for (int i = ZERO_INDEX; i < (Integer.parseInt(recurNumDuration) * 14); i++) {
-						dateList.add(df.format(cal.getTime()));
-						cal.add(Calendar.DATE, INDEX_ONE);
+						dateList.add(df.format(startCal.getTime()));
+						startCal.add(Calendar.DATE, INDEX_ONE);
 
 						if (currentFile.getIsMeeting()) {
 							endDateList.add(df.format(endCal.getTime()));
@@ -292,8 +293,8 @@ public class CommandAdd {
 					}
 				} else if (recurDuration.contains(MONTH)) {
 					for (int i = ZERO_INDEX; i < (Integer.parseInt(recurNumDuration) * 30); i++) {
-						dateList.add(df.format(cal.getTime()));
-						cal.add(Calendar.DATE, INDEX_ONE);
+						dateList.add(df.format(startCal.getTime()));
+						startCal.add(Calendar.DATE, INDEX_ONE);
 
 						if (currentFile.getIsMeeting()) {
 							endDateList.add(df.format(endCal.getTime()));
@@ -302,8 +303,8 @@ public class CommandAdd {
 					}
 				} else {
 					for (int i = ZERO_INDEX; i < DEFAULT_DAY_DURATION; i++) {
-						dateList.add(df.format(cal.getTime()));
-						cal.add(Calendar.DATE, INDEX_ONE);
+						dateList.add(df.format(startCal.getTime()));
+						startCal.add(Calendar.DATE, INDEX_ONE);
 
 						if (currentFile.getIsMeeting()) {
 							endDateList.add(df.format(endCal.getTime()));
@@ -314,8 +315,8 @@ public class CommandAdd {
 			} else if (recurArgument.equals(WEEK)) {
 				if (recurDuration.contains(WEEK)) {
 					for (int i = ZERO_INDEX; i < (Integer.parseInt(recurNumDuration)); i++) {
-						dateList.add(df.format(cal.getTime()));
-						cal.add(Calendar.WEEK_OF_YEAR, INDEX_ONE);
+						dateList.add(df.format(startCal.getTime()));
+						startCal.add(Calendar.WEEK_OF_YEAR, INDEX_ONE);
 
 						if (currentFile.getIsMeeting()) {
 							endDateList.add(df.format(endCal.getTime()));
@@ -324,8 +325,8 @@ public class CommandAdd {
 					}
 				} else if (recurDuration.contains(FORTNIGHT)) {
 					for (int i = ZERO_INDEX; i < (Integer.parseInt(recurNumDuration) * INDEX_TWO); i++) {
-						dateList.add(df.format(cal.getTime()));
-						cal.add(Calendar.WEEK_OF_YEAR, INDEX_ONE);
+						dateList.add(df.format(startCal.getTime()));
+						startCal.add(Calendar.WEEK_OF_YEAR, INDEX_ONE);
 
 						if (currentFile.getIsMeeting()) {
 							endDateList.add(df.format(endCal.getTime()));
@@ -334,8 +335,8 @@ public class CommandAdd {
 					}
 				} else if (recurDuration.contains(MONTH)) {
 					for (int i = ZERO_INDEX; i < (Integer.parseInt(recurNumDuration) * INDEX_FOUR); i++) {
-						dateList.add(df.format(cal.getTime()));
-						cal.add(Calendar.WEEK_OF_YEAR, INDEX_ONE);
+						dateList.add(df.format(startCal.getTime()));
+						startCal.add(Calendar.WEEK_OF_YEAR, INDEX_ONE);
 
 						if (currentFile.getIsMeeting()) {
 							endDateList.add(df.format(endCal.getTime()));
@@ -344,8 +345,8 @@ public class CommandAdd {
 					}
 				} else {
 					for (int i = ZERO_INDEX; i < DEFAULT_WEEK_DURATION; i++) {
-						dateList.add(df.format(cal.getTime()));
-						cal.add(Calendar.WEEK_OF_YEAR, INDEX_ONE);
+						dateList.add(df.format(startCal.getTime()));
+						startCal.add(Calendar.WEEK_OF_YEAR, INDEX_ONE);
 
 						if (currentFile.getIsMeeting()) {
 							endDateList.add(df.format(endCal.getTime()));
@@ -357,8 +358,8 @@ public class CommandAdd {
 			} else if (recurArgument.equals(FORTNIGHT)) {
 				if (recurDuration.contains(FORTNIGHT)) {
 					for (int i = ZERO_INDEX; i < (Integer.parseInt(recurNumDuration)); i++) {
-						dateList.add(df.format(cal.getTime()));
-						cal.add(Calendar.WEEK_OF_YEAR, INDEX_TWO);
+						dateList.add(df.format(startCal.getTime()));
+						startCal.add(Calendar.WEEK_OF_YEAR, INDEX_TWO);
 
 						if (currentFile.getIsMeeting()) {
 							endDateList.add(df.format(endCal.getTime()));
@@ -367,8 +368,8 @@ public class CommandAdd {
 					}
 				} else if (recurDuration.contains(MONTH)) {
 					for (int i = ZERO_INDEX; i < (Integer.parseInt(recurNumDuration) * INDEX_TWO); i++) {
-						dateList.add(df.format(cal.getTime()));
-						cal.add(Calendar.WEEK_OF_YEAR, INDEX_TWO);
+						dateList.add(df.format(startCal.getTime()));
+						startCal.add(Calendar.WEEK_OF_YEAR, INDEX_TWO);
 
 						if (currentFile.getIsMeeting()) {
 							endDateList.add(df.format(endCal.getTime()));
@@ -377,8 +378,8 @@ public class CommandAdd {
 					}
 				} else {
 					for (int i = ZERO_INDEX; i < DEFAULT_FORTNIGHT_DURATION; i++) {
-						dateList.add(df.format(cal.getTime()));
-						cal.add(Calendar.WEEK_OF_YEAR, INDEX_TWO);
+						dateList.add(df.format(startCal.getTime()));
+						startCal.add(Calendar.WEEK_OF_YEAR, INDEX_TWO);
 
 						if (currentFile.getIsMeeting()) {
 							endDateList.add(df.format(endCal.getTime()));
@@ -389,8 +390,8 @@ public class CommandAdd {
 			} else if (recurArgument.equals(MONTH)) {
 				if (recurDuration.contains(MONTH)) {
 					for (int i = ZERO_INDEX; i < (Integer.parseInt(recurNumDuration)); i++) {
-						dateList.add(df.format(cal.getTime()));
-						cal.add(Calendar.MONTH, INDEX_ONE);
+						dateList.add(df.format(startCal.getTime()));
+						startCal.add(Calendar.MONTH, INDEX_ONE);
 
 						if (currentFile.getIsMeeting()) {
 							endDateList.add(df.format(endCal.getTime()));
@@ -399,8 +400,8 @@ public class CommandAdd {
 					}
 				} else {
 					for (int i = ZERO_INDEX; i < DEFAULT_MONTH_DURATION; i++) {
-						dateList.add(df.format(cal.getTime()));
-						cal.add(Calendar.MONTH, INDEX_ONE);
+						dateList.add(df.format(startCal.getTime()));
+						startCal.add(Calendar.MONTH, INDEX_ONE);
 
 						if (currentFile.getIsMeeting()) {
 							endDateList.add(df.format(endCal.getTime()));
@@ -413,12 +414,12 @@ public class CommandAdd {
 				String date = compareDates(recurArgument);
 				currentFile.setStartDate(date);
 				Date dateToStart = df.parse(date);
-				cal.setTime(dateToStart);
+				startCal.setTime(dateToStart);
 
 				if (recurDuration.contains(WEEK)) {
 					for (int i = ZERO_INDEX; i < (Integer.parseInt(recurNumDuration)); i++) {
-						dateList.add(df.format(cal.getTime()));
-						cal.add(Calendar.WEEK_OF_YEAR, INDEX_ONE);
+						dateList.add(df.format(startCal.getTime()));
+						startCal.add(Calendar.WEEK_OF_YEAR, INDEX_ONE);
 
 						if (currentFile.getIsMeeting()) {
 							endDateList.add(df.format(endCal.getTime()));
@@ -427,8 +428,8 @@ public class CommandAdd {
 					}
 				} else if (recurDuration.contains(FORTNIGHT)) {
 					for (int i = ZERO_INDEX; i < (Integer.parseInt(recurNumDuration) * INDEX_TWO); i++) {
-						dateList.add(df.format(cal.getTime()));
-						cal.add(Calendar.WEEK_OF_YEAR, INDEX_ONE);
+						dateList.add(df.format(startCal.getTime()));
+						startCal.add(Calendar.WEEK_OF_YEAR, INDEX_ONE);
 
 						if (currentFile.getIsMeeting()) {
 							endDateList.add(df.format(endCal.getTime()));
@@ -437,8 +438,8 @@ public class CommandAdd {
 					}
 				} else if (recurDuration.contains(MONTH)) {
 					for (int i = ZERO_INDEX; i < (Integer.parseInt(recurNumDuration) * INDEX_FOUR); i++) {
-						dateList.add(df.format(cal.getTime()));
-						cal.add(Calendar.WEEK_OF_YEAR, INDEX_ONE);
+						dateList.add(df.format(startCal.getTime()));
+						startCal.add(Calendar.WEEK_OF_YEAR, INDEX_ONE);
 
 						if (currentFile.getIsMeeting()) {
 							endDateList.add(df.format(endCal.getTime()));
@@ -447,8 +448,8 @@ public class CommandAdd {
 					}
 				} else {
 					for (int i = ZERO_INDEX; i < DEFAULT_DURATION; i++) {
-						dateList.add(df.format(cal.getTime()));
-						cal.add(Calendar.WEEK_OF_YEAR, INDEX_ONE);
+						dateList.add(df.format(startCal.getTime()));
+						startCal.add(Calendar.WEEK_OF_YEAR, INDEX_ONE);
 
 						if (currentFile.getIsMeeting()) {
 							endDateList.add(df.format(endCal.getTime()));

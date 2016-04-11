@@ -193,6 +193,7 @@ public class CommandView {
 		Date startDate;
 		Date endDate;
 		Calendar cal = Calendar.getInstance();
+
 		ArrayList<String> stringList = storage.readFromMasterFile();
 		ArrayList<Date> listOfDates = new ArrayList<Date>();
 		ArrayList<TaskFile> taskListToBeDisplayed = new ArrayList<TaskFile>();

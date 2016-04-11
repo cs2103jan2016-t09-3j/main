@@ -22,7 +22,9 @@ public class CommandAddTest {
 
 	@Before
 	public void setUp() throws Exception {
+		TNotesStorage storage = TNotesStorage.getInstance();
 		cmdAdd = new CommandAdd();
+		System.out.println(storage.clearFiles());
 	}
 
 	@After
@@ -83,7 +85,7 @@ public class CommandAddTest {
 		assertEquals("14:00pm", secondTask.getStartTime());
 		assertEquals("16:00pm", secondTask.getEndTime());
 
-		assertEquals("13-4-2016", secondTask.getStartDate());
+		assertEquals("2016-04-13", secondTask.getStartDate());
 		assertFalse(secondTask.getIsDone());
 		assertFalse(secondTask.getIsDeadline());
 		assertTrue(secondTask.getImportance());
@@ -92,27 +94,218 @@ public class CommandAddTest {
 	}
 
 	@Test
-	public void addRecurringTaskTest() throws Exception {
+	public void addRecurringTaskDayTest() throws Exception {
 		TNotesStorage storage = TNotesStorage.getInstance();
 		ArrayList<String> aList = new ArrayList<String>();
 
 		aList.add("attend tuition");
-		aList.add("15-4-2016");
-		aList.add("11:00am");
-		aList.add("13:00pm");
+		aList.add("2016-4-15");
+		aList.add("16:00");
+		aList.add("18:00");
 		aList.add("every");
 		aList.add("day");
 		
-
-		
 		TaskFile currentTask = cmdAdd.addTask(aList);
-		assertEquals("15-4-2016", currentTask.getStartDate());
+		assertEquals("2016-4-15", currentTask.getStartDate());
 		assertEquals("attend tuition", currentTask.getName());
-		assertEquals("It recurs every day", currentTask.getDetails());
+		assertEquals(" It recurs every day", currentTask.getDetails());
 		assertTrue(currentTask.getIsRecurring());
 		assertFalse(currentTask.getImportance());
-		assertEquals("",storage.getRecurTaskStartDateList("attend tuition"));
-		assertEquals("",storage.getRecurTaskEndDateList("attend tuition"));
+		
+		ArrayList<String> dateList = new  ArrayList<String>();
+		ArrayList<String> endDateList = new  ArrayList<String>();
+		dateList.add("2016-04-15");
+		dateList.add("2016-04-16");
+		dateList.add("2016-04-17");
+		dateList.add("2016-04-18");
+		dateList.add("2016-04-19");
+		dateList.add("2016-04-20");
+		dateList.add("2016-04-21");
+		dateList.add("2016-04-22");
+		dateList.add("2016-04-23");
+		dateList.add("2016-04-24");
+		dateList.add("2016-04-25");
+		dateList.add("2016-04-26");
+		
+		endDateList.add("2016-04-15");
+		endDateList.add("2016-04-16");
+		endDateList.add("2016-04-17");
+		endDateList.add("2016-04-18");
+		endDateList.add("2016-04-19");
+		endDateList.add("2016-04-20");
+		endDateList.add("2016-04-21");
+		endDateList.add("2016-04-22");
+		endDateList.add("2016-04-23");
+		endDateList.add("2016-04-24");
+		endDateList.add("2016-04-25");
+		endDateList.add("2016-04-26");
+		
+		
+		assertEquals(dateList,storage.getRecurTaskStartDateList("attend tuition"));
+		assertEquals(endDateList,storage.getRecurTaskEndDateList("attend tuition"));
 
 	}
+	@Test
+	public void addRecurringTaskWeekTest() throws Exception {
+		TNotesStorage storage = TNotesStorage.getInstance();
+		ArrayList<String> aList = new ArrayList<String>();
+
+		aList.add("do chores");
+		aList.add("2016-4-16");
+		aList.add("15:00");
+		aList.add("16:00");
+		aList.add("every");
+		aList.add("week");
+		aList.add("for");
+		aList.add("3");
+		aList.add("week");
+		
+		TaskFile currentTask = cmdAdd.addTask(aList);
+		assertEquals("2016-4-16", currentTask.getStartDate());
+		assertEquals("do chores", currentTask.getName());
+		assertEquals(" It recurs every week for 3 week", currentTask.getDetails());
+		assertTrue(currentTask.getIsRecurring());
+		assertFalse(currentTask.getImportance());
+		
+		ArrayList<String> dateList = new  ArrayList<String>();
+		ArrayList<String> endDateList = new  ArrayList<String>();
+		dateList.add("2016-04-16");
+		dateList.add("2016-04-23");
+		dateList.add("2016-04-30");
+	
+		
+		endDateList.add("2016-04-16");
+		endDateList.add("2016-04-23");
+		endDateList.add("2016-04-30");
+		
+		
+		assertEquals(dateList,storage.getRecurTaskStartDateList("do chores"));
+		assertEquals(endDateList,storage.getRecurTaskEndDateList("do chores"));
+
+	}
+	@Test
+	public void addRecurringTaskFortNightTest() throws Exception {
+		TNotesStorage storage = TNotesStorage.getInstance();
+		ArrayList<String> aList = new ArrayList<String>();
+
+		aList.add("go home");
+		aList.add("2016-4-17");
+		aList.add("14:00");
+		aList.add("15:00");
+		aList.add("every");
+		aList.add("fortnight");
+		aList.add("for");
+		aList.add("2");
+		aList.add("fortnight");
+		
+		TaskFile currentTask = cmdAdd.addTask(aList);
+		assertEquals("2016-4-17", currentTask.getStartDate());
+		assertEquals("go home", currentTask.getName());
+		assertEquals(" It recurs every fortnight for 2 fortnight", currentTask.getDetails());
+		assertTrue(currentTask.getIsRecurring());
+		assertFalse(currentTask.getImportance());
+		
+		ArrayList<String> dateList = new  ArrayList<String>();
+		ArrayList<String> endDateList = new  ArrayList<String>();
+		
+		dateList.add("2016-04-17");
+		dateList.add("2016-05-01");
+
+		endDateList.add("2016-04-17");
+		endDateList.add("2016-05-01");
+			
+		assertEquals(dateList,storage.getRecurTaskStartDateList("go home"));
+		assertEquals(endDateList,storage.getRecurTaskEndDateList("go home"));
+
+	}
+	@Test
+	public void addRecurringTaskMonthTest() throws Exception {
+		TNotesStorage storage = TNotesStorage.getInstance();
+		ArrayList<String> aList = new ArrayList<String>();
+
+		aList.add("fly kite");
+		aList.add("2016-4-18");
+		aList.add("16:00");
+		aList.add("18:00");
+		aList.add("every");
+		aList.add("month");
+		aList.add("for");
+		aList.add("3");
+		aList.add("months");
+		
+		TaskFile currentTask = cmdAdd.addTask(aList);
+		assertEquals("2016-4-18", currentTask.getStartDate());
+		assertEquals("fly kite", currentTask.getName());
+		assertEquals(" It recurs every month for 3 months", currentTask.getDetails());
+		assertTrue(currentTask.getIsRecurring());
+		assertFalse(currentTask.getImportance());
+		
+		ArrayList<String> dateList = new  ArrayList<String>();
+		ArrayList<String> endDateList = new  ArrayList<String>();
+	
+		dateList.add("2016-04-18");
+		dateList.add("2016-05-18");
+		dateList.add("2016-06-18");
+			
+		endDateList.add("2016-04-18");
+		endDateList.add("2016-05-18");
+		endDateList.add("2016-06-18");
+				
+		assertEquals(dateList,storage.getRecurTaskStartDateList("fly kite"));
+		assertEquals(endDateList,storage.getRecurTaskEndDateList("fly kite"));
+
+	}
+	@Test
+	public void addRecurringTaskForDayTest() throws Exception {
+		TNotesStorage storage = TNotesStorage.getInstance();
+		ArrayList<String> aList = new ArrayList<String>();
+
+		aList.add("attend tuition");
+		aList.add("2016-4-15");
+		aList.add("16:00");
+		aList.add("18:00");
+		aList.add("every");
+		aList.add("day");
+		
+		TaskFile currentTask = cmdAdd.addTask(aList);
+		assertEquals("2016-4-15", currentTask.getStartDate());
+		assertEquals("attend tuition", currentTask.getName());
+		assertEquals(" It recurs every day", currentTask.getDetails());
+		assertTrue(currentTask.getIsRecurring());
+		assertFalse(currentTask.getImportance());
+		
+		ArrayList<String> dateList = new  ArrayList<String>();
+		ArrayList<String> endDateList = new  ArrayList<String>();
+		dateList.add("2016-04-15");
+		dateList.add("2016-04-16");
+		dateList.add("2016-04-17");
+		dateList.add("2016-04-18");
+		dateList.add("2016-04-19");
+		dateList.add("2016-04-20");
+		dateList.add("2016-04-21");
+		dateList.add("2016-04-22");
+		dateList.add("2016-04-23");
+		dateList.add("2016-04-24");
+		dateList.add("2016-04-25");
+		dateList.add("2016-04-26");
+		
+		endDateList.add("2016-04-15");
+		endDateList.add("2016-04-16");
+		endDateList.add("2016-04-17");
+		endDateList.add("2016-04-18");
+		endDateList.add("2016-04-19");
+		endDateList.add("2016-04-20");
+		endDateList.add("2016-04-21");
+		endDateList.add("2016-04-22");
+		endDateList.add("2016-04-23");
+		endDateList.add("2016-04-24");
+		endDateList.add("2016-04-25");
+		endDateList.add("2016-04-26");
+		
+		
+		assertEquals(dateList,storage.getRecurTaskStartDateList("attend tuition"));
+		assertEquals(endDateList,storage.getRecurTaskEndDateList("attend tuition"));
+
+	}
+	
 }

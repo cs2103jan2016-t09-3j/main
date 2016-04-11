@@ -3,6 +3,7 @@ package tnote.logic;
 import java.util.logging.Logger;
 import tnote.util.log.TNoteLogger;
 
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 
 import tnote.object.TaskFile;
@@ -20,6 +21,8 @@ import tnote.storage.TNotesStorage;
  *
  */
 public class CommandDelete {
+	private static final int INDEX_TWO = 2;
+
 	private TNotesStorage storage;
 
 	private static final String MESSAGE_LOG_ERROR = "Warning";
@@ -56,9 +59,7 @@ public class CommandDelete {
 	 * @throws Exception
 	 */
 	protected TaskFile deleteTask(ArrayList<String> fromParser) throws Exception {
-		if (fromParser.isEmpty()) {
-			throw new Exception(MESSAGE_INVALID_COMMAND);
-		}
+	
 		TaskFile taskToDelete = storage.getTaskFileByName(fromParser.get(0));
 
 		if (taskToDelete.getIsRecurring()) {
@@ -84,9 +85,7 @@ public class CommandDelete {
 	 * @throws Exception
 	 */
 	protected TaskFile deleteRecurringTask(ArrayList<String> fromParser) throws Exception {
-		if (fromParser.isEmpty()) {
-			throw new Exception(MESSAGE_INVALID_COMMAND);
-		}
+	
 		TaskFile deletedTask = storage.deleteRecurringTask(fromParser.get(0));
 		if (deletedTask != null) {
 			return deletedTask;
