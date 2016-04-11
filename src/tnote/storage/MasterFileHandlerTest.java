@@ -31,8 +31,7 @@ public class MasterFileHandlerTest {
 		storage = TNotesStorage.getInstance();
 		storage.setUpStorage();
 		storage.clearFiles();
-		
-
+		mFHandler = MasterFileHandler.getInstance();
 	}
 
 	@After
