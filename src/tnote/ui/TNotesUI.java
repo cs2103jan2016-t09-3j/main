@@ -121,8 +121,14 @@ public class TNotesUI {
 	private static final String MESSAGE_PRINT_DEADLINE_W_DATE = "%s. [%s][%s] %s%s\n";
 	private static final String MESSAGE_PRINT_MEETING_ONE_DATE_W_DATE = "%s. [%s][%s]-[%s] %s%s\n";
 
-	private static final String MESSAGE_LOG_ERROR = "Warning!";
-
+	private static final String MESSAGE_LOG_ERROR = "Caught exception error";
+	private static final String MESSAGE_LOG_CONSTRUCTOR = "Entered TNotesUI constructor";
+	private static final String MESSAGE_LOG_PARSER_SUCESS = "Parsed sucessfully";
+	private static final String MESSAGE_LOG_COMMAND_WORD = "Check command: %s";
+	private static final String MESSAGE_LOG_DISPLAY_MAIN_UPDATED = "Display main screen is called";
+	private static final String MESSAGE_LOG_OVERDUE_TASK_UPDATED = "Display overdue tasks is called";
+	private static final String MESSAGE_LOG_DISPLAY_NOTES_UPDATED = "Display notes is called";
+	
 	private static final Logger logger = Logger.getGlobal();
 
 	/**
@@ -140,6 +146,7 @@ public class TNotesUI {
 			message = new TNotesMessages();
 			mainScreenArray = new ArrayList<TaskFile>();
 			mainScreenArray = logic.viewDateList("today");
+			logger.info(MESSAGE_LOG_CONSTRUCTOR);
 		} catch (Exception e) {
 			logger.warning(MESSAGE_LOG_ERROR);
 			e.getMessage();
@@ -182,10 +189,12 @@ public class TNotesUI {
 			logger.warning(MESSAGE_LOG_ERROR);
 			e.printStackTrace();
 		}
-
+		
+		logger.info(MESSAGE_LOG_PARSER_SUCESS);
 		commandString = getFirstWord(userCommandSplit);
 		COMMAND_TYPE command = determineCommandType(commandString);
 
+		logger.info(String.format(MESSAGE_LOG_COMMAND_WORD, commandString));
 		switch (command) {
 		case ADD_COMMAND:
 			resultString = formatAddCommand(userCommandSplit);
@@ -277,6 +286,7 @@ public class TNotesUI {
 			addTask = logic.addTask(userCommandSplit);
 			formatAddString = checkAddTypes(addTask);
 		} catch (Exception e) {
+			logger.warning(MESSAGE_LOG_ERROR);
 			formatAddString = e.getMessage();
 		}
 		return formatAddString;
@@ -536,6 +546,7 @@ public class TNotesUI {
 				formatViewString += printOneDetailedTask(currTask);
 
 			} catch (Exception e) {
+				logger.warning(MESSAGE_LOG_ERROR);
 				formatViewString = e.getMessage();
 			}
 		}
@@ -555,6 +566,7 @@ public class TNotesUI {
 				formatViewString = String.format(MESSAGE_SCHEDULE_ONE_DATE, date);
 
 			} catch (Exception e) {
+				logger.warning(MESSAGE_LOG_ERROR);
 				formatViewString = e.getMessage();
 			}
 		}
@@ -576,6 +588,7 @@ public class TNotesUI {
 				formatViewString = String.format(MESSAGE_SCHEDULE_DATE_TO_DATE, dateOne, dateTwo);
 
 			} catch (Exception e) {
+				logger.warning(MESSAGE_LOG_ERROR);
 				formatViewString = e.getMessage();
 			}
 
@@ -594,6 +607,7 @@ public class TNotesUI {
 				viewTaskFile = logic.viewByIndex(viewList, viewIndex);
 				formatViewString += printOneDetailedTask(viewTaskFile);
 			} catch (Exception e) {
+				logger.warning(MESSAGE_LOG_ERROR);
 				formatViewString = e.getMessage();
 			}
 		}
@@ -606,6 +620,7 @@ public class TNotesUI {
 				historyList = logic.viewDoneList();
 				formatViewString += printTaskList(historyList);
 			} catch (Exception e) {
+				logger.warning(MESSAGE_LOG_ERROR);
 				formatViewString = e.getMessage();
 			}
 		}
@@ -878,11 +893,13 @@ public class TNotesUI {
 	public String displayMain() {
 		String scheduleString = "";
 
+	
 		if (mainScreenArray.size() != 0) {
 			scheduleString += printTaskList(mainScreenArray);
 			scheduleString += "\n";
 		}
 
+		logger.info(MESSAGE_LOG_DISPLAY_MAIN_UPDATED);
 		return scheduleString;
 	}
 
@@ -903,6 +920,7 @@ public class TNotesUI {
 			arrayOverdue = logic.callOverdueTasks();
 			overDueString = String.format(MESSAGE_OVERDUE_TITLE);
 			overDueString = printOverDueList(overDueString, arrayOverdue);
+			logger.info(MESSAGE_LOG_OVERDUE_TASK_UPDATED);
 		} catch (Exception e) {
 			logger.warning(MESSAGE_LOG_ERROR);
 			overDueString = e.getMessage();
@@ -949,6 +967,7 @@ public class TNotesUI {
 				ArrayList<TaskFile> arrayFloat = new ArrayList<TaskFile>();
 				arrayFloat = logic.viewFloatingList();
 				floatString += printFloatList(floatString, arrayFloat);
+				logger.info(MESSAGE_LOG_DISPLAY_NOTES_UPDATED);
 			}
 		} catch (Exception e) {
 			logger.warning(MESSAGE_LOG_ERROR);
