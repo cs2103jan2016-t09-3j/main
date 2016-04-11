@@ -8,15 +8,25 @@ import java.util.logging.Logger;
 import tnote.object.TaskFile;
 import tnote.storage.TNotesStorage;
 
+/**
+ * This class maintains the logic of how tasks are searched for based on String
+ * inputs in an ArrayList
+ * 
+ * It searches for task with the same name or containing the letter and/or
+ * phrase within the task name and returns the TaskFile object back
+ * 
+ * @author A0124697U
+ *
+ */
 public class CommandSearch {
 
 	private static final String ELEMENT_NOT_FOUND = "No element found";
-	
+
 	private static final int START_OF_STRING = 0;
 	private static final int ARRAYLIST_INDEX = 1;
-	
+
 	private static final String STRING_UNDERSCORE = "_";
-	
+
 	private TNotesStorage storage;
 
 	private static final Logger logger = Logger.getGlobal();

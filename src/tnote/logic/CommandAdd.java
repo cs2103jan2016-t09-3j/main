@@ -20,6 +20,17 @@ import tnote.storage.TNotesStorage;
 import tnote.util.exceptions.TaskExistsException;
 import tnote.util.exceptions.TimeClashException;
 
+/**
+ * This class maintains the logic of how a task is added based on sorted String
+ * inputs in an ArrayList
+ * 
+ * It modifies an instance of a created TaskFile object according to information
+ * provided. It then calls storage to store the task , before returning the
+ * TaskFile object back to UI
+ * 
+ * @author A0124697U
+ *
+ */
 public class CommandAdd {
 	private static final String TIME_CLASH_MSG = "There is a time clash";
 
@@ -121,7 +132,7 @@ public class CommandAdd {
 			String date = df.format(cal.getTime());
 			fromParser.set(fromParser.indexOf(TODAY), date);
 		}
-		
+
 		if (fromParser.contains(TOMORROW)) {
 			String date = df.format(cal.getTime()).toLowerCase();
 			cal.add(Calendar.DATE, INDEX_ONE);
@@ -231,11 +242,11 @@ public class CommandAdd {
 		{
 			String taskDetails = currentFile.getDetails();
 			taskDetails += IT_RECURS_EVERY + recurArgument;
-			
+
 			if (!recurDuration.isEmpty() && !recurNumDuration.isEmpty()) {
 				taskDetails += FOR + recurNumDuration + " " + recurDuration;
 			}
-			
+
 			logger.info(taskDetails);
 			currentFile.setDetails(taskDetails);
 
@@ -588,7 +599,7 @@ public class CommandAdd {
 		Calendar cal = Calendar.getInstance();
 		DateFormat shortForm = new SimpleDateFormat(DAY_SHORTFORM);
 		String date = shortForm.format(cal.getTime()).toLowerCase();
-		
+
 		while (!dates.contains(date)) {
 			cal.add(Calendar.DATE, INDEX_ONE);
 			date = shortForm.format(cal.getTime()).toLowerCase();

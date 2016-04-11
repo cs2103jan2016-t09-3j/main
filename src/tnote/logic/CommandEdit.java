@@ -9,11 +9,23 @@ import tnote.object.RecurringTaskFile;
 import tnote.object.TaskFile;
 import tnote.storage.TNotesStorage;
 
+/**
+ * This class maintains the logic of how a task is edited based on sorted String
+ * inputs in an ArrayList, giving the name and what is to be edited
+ * 
+ * It differentiates between recurring task and non recurring task, and modifies
+ * it based on the provided information
+ * 
+ * It calls storage to modify the information, returns the modified Task
+ * 
+ * @author A0124697U
+ *
+ */
 public class CommandEdit {
 	private static final int INDEX_TWO = 2;
 	private static final int INDEX_ZERO = 0;
 	private static final int INDEX_ONE = 1;
-	
+
 	private static final String STRING_YES = "yes";
 	private static final String EDIT_TYPE_IMPORTANCE = "importance";
 	private static final String EDIT_TYPE_IMPORTANT = "important";
@@ -49,7 +61,7 @@ public class CommandEdit {
 	 */
 	protected TaskFile edit(ArrayList<String> fromParser) throws Exception {
 		TaskFile currentTask = storage.getTaskFileByName(fromParser.get(INDEX_ZERO).trim());
-		
+
 		if (currentTask.getIsRecurring()) {
 			currentTask = editRecurringTask(fromParser);
 		} else {
@@ -170,7 +182,7 @@ public class CommandEdit {
 		ArrayList<String> dateList = storage.getRecurTaskStartDateList(title);
 		ArrayList<String> endDateList = new ArrayList<String>();
 		recurTask.addRecurringStartDate(dateList);
-		
+
 		logger.info(fromParser.toString());
 
 		if (currentFile.getIsMeeting()) {

@@ -14,6 +14,15 @@ import java.util.logging.Logger;
 import tnote.object.TaskFile;
 import tnote.storage.TNotesStorage;
 
+/**
+ * This class maintains the logic of how various task are viewed on the GUI
+ * 
+ * It filters out task according to their own information and returns a list of
+ * tasks with the same information
+ * 
+ * @author A0124697U
+ *
+ */
 public class CommandView {
 	private static final int INDEX_THREE = 3;
 	private static final String TOMORROW = "tomorrow";
@@ -105,25 +114,25 @@ public class CommandView {
 	protected ArrayList<String> sortViewTypes(ArrayList<String> fromParser) {
 		ArrayList<String> stringList = new ArrayList<String>();
 		String viewType = fromParser.get(INDEX_ONE);
-		
+
 		if (fromParser.size() == INDEX_THREE) {
 			stringList.add(TYPE_IS_VIEW_MANY_LIST);
-			
+
 		} else if (viewType.contains(STRING_DASH) || viewType.contains(TODAY)
 				|| (viewType.contains(MONDAY) || (viewType.contains(TUESDAY)) || (viewType.contains(WEDNESDAY))
 						|| (viewType.contains(THURSDAY)) || (viewType.contains(FRIDAY)) || (viewType.contains(SATURDAY))
 						|| (viewType.contains(SUNDAY)))) {
 			stringList.add(TYPE_IS_VIEW_DATE_LIST);
-			
+
 		} else if (viewType.contains(STRING_FLOATING)) {
 			stringList.add(TYPE_IS_VIEW_NOTES);
-			
+
 		} else if (!isLetters(viewType)) {
 			stringList.add(TYPE_IS_VIEW_INDEX);
-			
+
 		} else if (viewType.contains(HISTROY)) {
 			stringList.add(TYPE_IS_VIEW_HISTORY);
-			
+
 		} else {
 			stringList.add(TYPE_IS_VIEW_TASK);
 		}
@@ -165,7 +174,7 @@ public class CommandView {
 		for (String text : nameList) {
 			TaskFile newTask = storage.getTaskFileByName(text);
 			if (newTask.getIsDone()) {
-				
+
 				doneList.add(newTask);
 			}
 		}
@@ -302,7 +311,7 @@ public class CommandView {
 	 */
 	protected ArrayList<TaskFile> callOverdueTasks() throws Exception {
 		ArrayList<TaskFile> listOfOverdueTasks = storage.retrieveOverdueTasks();
-		
+
 		for (TaskFile newTask : listOfOverdueTasks) {
 			if (newTask.getName().contains(STRING_UNDERSCORE)) {
 				String formatterName = newTask.getName().substring(INDEX_ZERO,

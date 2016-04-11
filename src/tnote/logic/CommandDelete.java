@@ -8,6 +8,17 @@ import java.util.ArrayList;
 import tnote.object.TaskFile;
 import tnote.storage.TNotesStorage;
 
+/**
+ * This class maintains the logic of how a task is deleted based on a String
+ * input containing the task name in an ArrayList
+ * 
+ * it determines whether the task to be deleted is recurring or not,calls
+ * storage to delete the task before returning the deleted TaskFile object back
+ * to UI
+ * 
+ * @author A0124697U
+ *
+ */
 public class CommandDelete {
 	private TNotesStorage storage;
 

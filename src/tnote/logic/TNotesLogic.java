@@ -16,6 +16,20 @@ import tnote.object.RecurringTaskFile;
 import tnote.object.TaskFile;
 import tnote.storage.TNotesStorage;
 
+/**
+ * This class manages what methods are called by the UI component
+ * 
+ * It maintains a stack of objects of all the commands entered as well as their
+ * accompanying TaskFile Object, so that the command can be undone or redone
+ * 
+ * It provides methods to call the various different methods in the subclasses,
+ * based on what is parsed from the parser
+ * 
+ * Tasks can be added, deleted, edited, viewed, searched and sorted by name
+ * 
+ * @author A0124697U
+ *
+ */
 public class TNotesLogic {
 	private static final String UNDO_ERROR = "No action to undo";
 	private static final String REDO_ERROR = "No action to redo";
