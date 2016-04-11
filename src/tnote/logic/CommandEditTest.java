@@ -13,13 +13,16 @@ import tnote.object.TaskFile;
 import tnote.storage.TNotesStorage;
 
 public class CommandEditTest {
+	TNotesStorage storage;
 	CommandEdit cmdEdit;
 	CommandAdd cmdAdd;
 
 	@Before
 	public void setUp() throws Exception {
+		storage = TNotesStorage.getInstance();
 		cmdEdit = new CommandEdit();
 		cmdAdd = new CommandAdd();
+		storage.setUpStorage();
 	}
 
 	@After
@@ -66,38 +69,36 @@ public class CommandEditTest {
 	public void editRecurringTaskTest() throws Exception {
 		ArrayList<String> aList = new ArrayList<String>();
 		ArrayList<String> bList = new ArrayList<String>();
+		ArrayList<String> cList = new ArrayList<String>();
 
 		aList.add("see doctor");
 		aList.add("today");
-		aList.add("20:00pm");
-		aList.add("22:00pm");
+		aList.add("20:00");
+		aList.add("22:00");
 		aList.add("every");
 		aList.add("week");
+		aList.add("for");
+		aList.add("2");
+		aList.add("weeks");
 
 		bList.add("see doctor");
 		bList.add("startTime");
-		bList.add("21:00pm");
+		bList.add("21:00");
 
 		TaskFile addTask = cmdAdd.addTask(aList);
 		TaskFile editTask = cmdEdit.edit(bList);
 
 		assertNotEquals(addTask.getStartTime(), editTask.getStartTime());
 		assertEquals(addTask.getDetails(), editTask.getDetails());
-		assertEquals(addTask.getStartDate(), editTask.getStartDate());
+		assertEquals(addTask.getStartDate(), editTask.getStartDate());;
 
-		bList.clear();
-
-		bList.add("see doctor");
-		bList.add("endDate");
-		bList.add("23:00pm");
+		cList.add("see doctor");
+		cList.add("endDate");
+		cList.add("23:00pm");
 		
-		 editTask = cmdEdit.edit(bList);
+		 editTask = cmdEdit.edit(cList);
 
 		assertNotEquals(addTask.getEndDate(), editTask.getEndDate());
 	}
-	@AfterClass
-	public static void tearDownClass() throws Exception {
-		TNotesStorage storage = TNotesStorage.getInstance();
-		System.out.println(storage.deleteMasterDirectory());
-	}
+	
 }

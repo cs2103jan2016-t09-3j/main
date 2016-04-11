@@ -179,6 +179,7 @@ public class CommandEdit {
 		TaskFile oldFile = storage.getTaskFileByName(title);
 		TaskFile currentFile = new TaskFile(oldFile);
 		RecurringTaskFile recurTask = new RecurringTaskFile(currentFile);
+		RecurringTaskFile recurTask1 = new RecurringTaskFile(currentFile);
 		ArrayList<String> dateList = storage.getRecurTaskStartDateList(title);
 		ArrayList<String> endDateList = new ArrayList<String>();
 		recurTask.addRecurringStartDate(dateList);
@@ -188,85 +189,94 @@ public class CommandEdit {
 		if (currentFile.getIsMeeting()) {
 			endDateList = storage.getRecurTaskEndDateList(title);
 			recurTask.addRecurringEndDate(endDateList);
+			recurTask1.addRecurringEndDate(endDateList);
 		}
 
 		if (type.equals(EDIT_TYPE_NAME)) {
 			storage.deleteRecurringTask(title);
 			recurTask.setName(newText);
-
+			recurTask1.setName(newText);
 			if (storage.addRecurringTask(recurTask)) {
-				return recurTask;
+				return recurTask1;
 			} else {
 				System.out.println(EDIT_TYPE_ADD_FAIL);
 			}
 		} else if (type.equals(EDIT_TYPE_TIME)) {
 			storage.deleteRecurringTask(title);
 			recurTask.setStartTime(newText);
+			recurTask1.setStartTime(newText);
 
 			if (storage.addRecurringTask(recurTask)) {
-				return recurTask;
+				return recurTask1;
 			} else {
 				logger.warning(MESSAGE_LOG_ERROR);
 				throw new Exception(EDIT_TYPE_ADD_FAIL);
 			}
 		} else if (type.equals(EDIT_TYPE_STARTIME)) {
-			storage.deleteTask(title);
+			storage.deleteRecurringTask(title);
 			recurTask.setStartTime(newText);
+			recurTask1.setStartTime(newText);
 
 			if (storage.addRecurringTask(recurTask)) {
-				return recurTask;
+				return recurTask1;
 			} else {
 				logger.warning(MESSAGE_LOG_ERROR);
 				throw new Exception(EDIT_TYPE_ADD_FAIL);
 			}
 		} else if (type.equals(EDIT_TYPE_ENDTIME)) {
-			storage.deleteTask(title);
+			storage.deleteRecurringTask(title);
 			recurTask.setEndTime(newText);
+			recurTask1.setEndTime(newText);
 			if (storage.addRecurringTask(recurTask)) {
-				return recurTask;
+				return recurTask1;
 			} else {
 				logger.warning(MESSAGE_LOG_ERROR);
 				throw new Exception(EDIT_TYPE_ADD_FAIL);
 			}
 		} else if (type.equals(EDIT_TYPE_STARTDATE)) {
-			storage.deleteTask(title);
+			storage.deleteRecurringTask(title);
 			recurTask.setStartDate(newText);
+			recurTask1.setStartDate(newText);
 			if (storage.addRecurringTask(recurTask)) {
-				return recurTask;
+				return recurTask1;
 			} else {
 				logger.warning(MESSAGE_LOG_ERROR);
 				throw new Exception(EDIT_TYPE_ADD_FAIL);
 			}
 		} else if (type.equals(EDIT_TYPE_ENDATE)) {
-			storage.deleteTask(title);
+			storage.deleteRecurringTask(title);
 			recurTask.setEndDate(newText);
+			recurTask1.setEndDate(newText);
 			if (storage.addRecurringTask(recurTask)) {
-				return recurTask;
+				return recurTask1;
 			} else {
 				logger.warning(MESSAGE_LOG_ERROR);
 				throw new Exception(EDIT_TYPE_ADD_FAIL);
 			}
 		} else if (type.equals(EDIT_TYPE_DETAILS)) {
-			storage.deleteTask(title);
+			storage.deleteRecurringTask(title);
 			recurTask.setDetails(newText);
+			recurTask1.setDetails(newText);
 			if (storage.addRecurringTask(recurTask)) {
-				return recurTask;
+				return recurTask1;
 			} else {
 				logger.warning(MESSAGE_LOG_ERROR);
 				throw new Exception(EDIT_TYPE_ADD_FAIL);
 			}
 		} else if (type.equals(EDIT_TYPE_IMPORTANT)) {
-			storage.deleteTask(title);
+			storage.deleteRecurringTask(title);
 			if (newText.equals(STRING_YES)) {
 				recurTask.setImportance(true);
+				recurTask1.setImportance(true);
 			} else {
 				recurTask.setImportance(false);
+				recurTask1.setImportance(false);
 			}
 			if (storage.addRecurringTask(recurTask)) {
-				return recurTask;
+				return recurTask1;
 			}
 		} else
 			throw new Exception(EDIT_TYPE_EDIT_FAIL);
-		return recurTask;
+		return recurTask1;
 	}
 }
