@@ -31,6 +31,7 @@ public class CommandAddTest {
 		System.out.println(storage.clearFiles());
 	}
 
+	
 	@Test
 	public void addFloatingTaskTest() throws Exception {
 		ArrayList<String> aList = new ArrayList<String>();
@@ -53,7 +54,6 @@ public class CommandAddTest {
 	public void addNormalTaskTest() throws Exception {
 		ArrayList<String> aList = new ArrayList<String>();
 		ArrayList<String> bList = new ArrayList<String>();
-		ArrayList<String> cList = new ArrayList<String>();
 		
 		aList.add("write report");
 		aList.add("today");
@@ -72,58 +72,47 @@ public class CommandAddTest {
 		assertFalse(firstTask.getImportance());
 		assertFalse(firstTask.getIsMeeting());
 
-		
 		bList.add("attend lecture");
-		bList.add("tomorrow");
+		bList.add("wednesday");
 		bList.add("14:00pm");
 		bList.add("16:00pm");
 		bList.add("important");
 
+		String dates = aList.get(1);
 		TaskFile secondTask = cmdAdd.addTask(bList);
 		assertEquals("14:00pm", secondTask.getStartTime());
 		assertEquals("16:00pm", secondTask.getEndTime());
 
-		cal.add(Calendar.DATE, 1);
-		String date1 = df.format(cal.getTime()).toLowerCase();
-
-		assertEquals(date1, secondTask.getStartDate());
+		assertEquals("13-4-2016", secondTask.getStartDate());
 		assertFalse(secondTask.getIsDone());
 		assertFalse(secondTask.getIsDeadline());
 		assertTrue(secondTask.getImportance());
+		
 		
 	}
 
 	@Test
 	public void addRecurringTaskTest() throws Exception {
+		TNotesStorage storage = TNotesStorage.getInstance();
 		ArrayList<String> aList = new ArrayList<String>();
 
 		aList.add("attend tuition");
-		aList.add("wednesday");
+		aList.add("15-4-2016");
 		aList.add("11:00am");
 		aList.add("13:00pm");
 		aList.add("every");
 		aList.add("day");
-		aList.add("for");
-		aList.add("3");
-		aList.add("days");
+		
 
+		
 		TaskFile currentTask = cmdAdd.addTask(aList);
-		
-		
-		String dates = aList.get(1);
-		TaskFile thirdTask = cmdAdd.addTask(aList);
-		DateFormat shortForm = new SimpleDateFormat("EEE");
-		String date3 = shortForm.format(cal.getTime()).toLowerCase();
-
-		while (!dates.contains(date3)) {
-			cal.add(Calendar.DATE, 1);
-			date3 = shortForm.format(cal.getTime()).toLowerCase();
-		}
-
+		assertEquals("15-4-2016", currentTask.getStartDate());
 		assertEquals("attend tuition", currentTask.getName());
-		assertEquals(currentTask.getDetails(), currentTask.getDetails());
+		assertEquals("It recurs every day", currentTask.getDetails());
 		assertTrue(currentTask.getIsRecurring());
 		assertFalse(currentTask.getImportance());
+		assertEquals("",storage.getRecurTaskStartDateList("attend tuition"));
+		assertEquals("",storage.getRecurTaskEndDateList("attend tuition"));
 
 	}
 }
