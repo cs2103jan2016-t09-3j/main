@@ -102,7 +102,8 @@ public class FileWriteHandlerTest {
 			fail("Exception should be thrown when writing a list to a directory");
 		} catch (Exception e) {
 			assertEquals("check exception class", IOException.class, e.getClass());
-			assertEquals("check exception message", "There is an error writing to C:\\TNote\\overview", e.getMessage());
+			assertEquals("check exception message", "There is an error writing to C:\\TNote\\overview",
+					e.getMessage());
 		}
 		
 		//Test IOException from clearFile
@@ -123,16 +124,14 @@ public class FileWriteHandlerTest {
 		File testTaskTextFile = new File("C:/TNote/overview/testTask.txt");
 		try {
 
-			TaskFile testTask = new TaskFile("test", "10-4-2016", "13:00", "11-4-2016", "11:00", "testDetails", true,
-					false);
+			TaskFile testTask = new TaskFile("test", "2016-4-10", "13:00", "2016-4-11",
+					"11:00", "testDetails", true, false);
 			
 			//Test valid write Task to text file
 			assertTrue("write TaskFile to txt", fWHandler.writeTaskToTextFile(testTaskTextFile, testTask));
 
-			TaskFile readTask = fRHandler.readTaskTextFile(testTaskTextFile);
-			readTask.setUpTaskFile();
-
-			assertEquals("Check what is written is correct for Task to text file", testTask, readTask);
+			assertEquals("Check what is written is correct for Task to text file", testTask, 
+					fRHandler.readTaskTextFile(testTaskTextFile));
 
 		} catch (Exception e) {
 			fail("Exception should not be thrown on a valid write task to text file");
@@ -142,15 +141,16 @@ public class FileWriteHandlerTest {
 		
 		//Test IOException from writeTaskToTextFile
 		try {
-			TaskFile testTask = new TaskFile("test", "10-4-2016", "13:00", "11-4-2016", "11:00", "testDetails", true,
-					false);
+			TaskFile testTask = new TaskFile("test", "2016-4-10", "13:00", "2016-4-11",
+					"11:00", "testDetails", true, false);
 			fWHandler.writeTaskToTextFile(directoryFile, testTask);
 
 			fail("Exception should be thrown when writing a task file to a directory");
 
 		} catch (Exception e) {
 			assertEquals("check exception class", IOException.class, e.getClass());
-			assertEquals("check exception message", "There is an error saving test as a text file", e.getMessage());
+			assertEquals("check exception message", "There is an error saving test as a text file",
+					e.getMessage());
 		}
 	}
 
@@ -183,7 +183,8 @@ public class FileWriteHandlerTest {
 
 		} catch (Exception e) {
 			assertEquals("check exception class", IOException.class, e.getClass());
-			assertEquals("check exception message", "There is an error writing to C:\\TNote\\overview", e.getMessage());
+			assertEquals("check exception message", "There is an error writing to C:\\TNote\\overview",
+					e.getMessage());
 		}
 	}
 
@@ -225,7 +226,8 @@ public class FileWriteHandlerTest {
 
 		} catch (Exception e) {
 			assertEquals("check exception class", IOException.class, e.getClass());
-			assertEquals("check exception message", "There is an error writing to C:\\TNote\\overview", e.getMessage());
+			assertEquals("check exception message", "There is an error writing to C:\\TNote\\overview",
+					e.getMessage());
 		}
 	}
 }

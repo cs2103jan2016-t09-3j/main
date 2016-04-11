@@ -236,7 +236,7 @@ public class FileReadHandler {
 			
 			bReader.close();
 			fReader.close();
-
+			
 			logger.info(String.format(MESSAGE_FILE_SUCCESSFULLY_READ, textFileToRead.getAbsolutePath()));
 			return extractedTask;
 			

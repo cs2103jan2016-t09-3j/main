@@ -663,12 +663,7 @@ public class TaskFile implements Comparable<TaskFile>, Cloneable {
 	@Override
 	public boolean equals(Object obj) {
 		TaskFile otherObj = (TaskFile) obj;
-		if (this.getName().equals(otherObj.getName())) {
-			if (this.getStartCal().equals(otherObj.getStartCal())) {
-				return true;
-			}
-		}
-		return false;
+		return this.toString().equals(otherObj.toString());
 	}
 
 	@Override

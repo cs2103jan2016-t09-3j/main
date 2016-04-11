@@ -169,21 +169,6 @@ public class TaskHandler {
 	private boolean createTaskTextFile(File task) throws IOException {
 		return dirHandler.createFile(task);
 	}
-
-	/*-------------------------------------Read Task-----------------------------------------*/
-	/**
-	 * Method to extract a Task File from a specified text file
-	 * 
-	 * @param textFileToBeRead
-	 *            the text file to be read
-	 * @return TaskFile the TaskFile object extracted from the text file
-	 * @throws IOException
-	 *             I/O Error reading the text file
-	 */
-	protected TaskFile readTaskTextFile(File textFileToBeRead) throws IOException {
-		return fRHandler.readTaskTextFile(textFileToBeRead);
-	}
-	
 	
 	/*-------------------------------------Delete Task-----------------------------------------*/
 	/**
@@ -260,7 +245,7 @@ public class TaskHandler {
 	 *            the folder name inside our TNote directory
 	 * @return File the file object with the full path to the specified folder.
 	 */
-	protected File getFolderFile(String folderName) {
+	private File getFolderFile(String folderName) {
 		return dirHandler.appendParentDirectory(folderName);
 	}
 	
@@ -275,7 +260,7 @@ public class TaskHandler {
 	 *            the String to be appended to the folder path
 	 * @return File the File object containing a path to the taskName specified
 	 */
-	protected File getFileDirectory(File folder, String taskName) {
+	private File getFileDirectory(File folder, String taskName) {
 		String textFileName = getTextFileName(taskName);
 		return dirHandler.addDirectoryToFile(folder, textFileName);
 	}
@@ -336,7 +321,7 @@ public class TaskHandler {
 	 *             Error because the text file of the specified task cannot be
 	 *             found
 	 */
-	protected File getTaskFilePath(String taskName, Map<String, String> folderMap) throws FileNotFoundException {
+	private File getTaskFilePath(String taskName, Map<String, String> folderMap) throws FileNotFoundException {
 
 		assertNotNull(taskName);
 		String folderName = folderMap.get(taskName);
@@ -354,7 +339,20 @@ public class TaskHandler {
 		logger.info(String.format(MESSAGE_TASK_FOUND, fileToBeFound.getAbsolutePath()));
 		return fileToBeFound;
 	}
-
+	
+	/**
+	 * Method to extract a Task File from a specified text file
+	 * 
+	 * @param textFileToBeRead
+	 *            the text file to be read
+	 * @return TaskFile the TaskFile object extracted from the text file
+	 * @throws IOException
+	 *             I/O Error reading the text file
+	 */
+	private TaskFile readTaskTextFile(File textFileToBeRead) throws IOException {
+		return fRHandler.readTaskTextFile(textFileToBeRead);
+	}
+	
 	/**
 	 * Method to get all overdue tasks in the system. Tasks which do not get
 	 * added into the list are either done, or the base object for a recurring

@@ -150,15 +150,12 @@ public class FileReadHandlerTest {
 		File testTaskTextFile = new File("C:/TNote/overview/testTask.txt");
 		try {
 
-			TaskFile testTask = new TaskFile("test", "10-4-2016", "13:00", "11-4-2016", "11:00",
+			TaskFile testTask = new TaskFile("test", "2016-4-10", "13:00", "2016-4-11", "11:00",
 					"testDetails", true, false);
 			fWHandler.writeTaskToTextFile(testTaskTextFile, testTask);
 
-			TaskFile readTask = fRHandler.readTaskTextFile(testTaskTextFile);
-			readTask.setUpTaskFile();
-			
 			//Test valid read from Task text file
-			assertEquals("Read from Task Text File", testTask, readTask);
+			assertEquals("Read from Task Text File", testTask, fRHandler.readTaskTextFile(testTaskTextFile));
 			
 		} catch (Exception e) {
 			fail("Exception should not be thrown on a valid read task file");
